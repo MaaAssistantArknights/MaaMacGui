@@ -7,19 +7,68 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		83042C8228F314FF0050B477 /* resource.zip in Resources */ = {isa = PBXBuildFile; fileRef = 83042C8128F314FF0050B477 /* resource.zip */; };
+		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D128F188D800D39D6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786D028F188D800D39D6F /* ContentView.swift */; };
 		833786D328F188D900D39D6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D228F188D900D39D6F /* Assets.xcassets */; };
 		833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D528F188D900D39D6F /* Preview Assets.xcassets */; };
+		833786FE28F1D50E00D39D6F /* MeoAssistant in Frameworks */ = {isa = PBXBuildFile; productRef = 833786FD28F1D50E00D39D6F /* MeoAssistant */; };
+		8337870028F1D56500D39D6F /* opencv2 in Frameworks */ = {isa = PBXBuildFile; productRef = 833786FF28F1D56500D39D6F /* opencv2 */; };
+		8337870228F1D95F00D39D6F /* Maa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870128F1D95F00D39D6F /* Maa.swift */; };
+		8337870428F1D9D900D39D6F /* ManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870328F1D9D900D39D6F /* ManageView.swift */; };
+		8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870528F1DA0500D39D6F /* SettingsView.swift */; };
+		8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 8337871128F1DFB900D39D6F /* adb */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		8337871528F1E72E00D39D6F /* VersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337871428F1E72E00D39D6F /* VersionUpdate.swift */; };
+		8383EA2828F1FCF9007DAB9D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 8383EA2728F1FCF9007DAB9D /* ZIPFoundation */; };
+		8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2A28F2314E007DAB9D /* MaaTask.swift */; };
+		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
+		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
+		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
+		83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283228F2F1BE00018D10 /* MallSettingsView.swift */; };
+		83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */; };
+		83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */; };
+		83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		8337870D28F1DD8800D39D6F /* Embed Helper Tools */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 6;
+			files = (
+				8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */,
+			);
+			name = "Embed Helper Tools";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		83042C8128F314FF0050B477 /* resource.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = resource.zip; sourceTree = "<group>"; };
+		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MeoAsstMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeoAsstMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
 		833786D028F188D800D39D6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		833786D228F188D900D39D6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		833786D528F188D900D39D6F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		833786D728F188D900D39D6F /* MeoAsstMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeoAsstMac.entitlements; sourceTree = "<group>"; };
+		833786F328F1D25500D39D6F /* MeoAssistant */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MeoAssistant; sourceTree = "<group>"; };
+		8337870128F1D95F00D39D6F /* Maa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maa.swift; sourceTree = "<group>"; };
+		8337870328F1D9D900D39D6F /* ManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageView.swift; sourceTree = "<group>"; };
+		8337870528F1DA0500D39D6F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8337871128F1DFB900D39D6F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
+		8337871228F1DFC100D39D6F /* adb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adb.entitlements; sourceTree = "<group>"; };
+		8337871428F1E72E00D39D6F /* VersionUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUpdate.swift; sourceTree = "<group>"; };
+		8383EA2A28F2314E007DAB9D /* MaaTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaTask.swift; sourceTree = "<group>"; };
+		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
+		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
+		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
+		83D3283228F2F1BE00018D10 /* MallSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallSettingsView.swift; sourceTree = "<group>"; };
+		83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaInfrastFacility.swift; sourceTree = "<group>"; };
+		83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastSettingsView.swift; sourceTree = "<group>"; };
+		83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoguelikeSettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -27,6 +76,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8337870028F1D56500D39D6F /* opencv2 in Frameworks */,
+				833786FE28F1D50E00D39D6F /* MeoAssistant in Frameworks */,
+				8383EA2828F1FCF9007DAB9D /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -36,6 +88,8 @@
 		833786C228F188D800D39D6F = {
 			isa = PBXGroup;
 			children = (
+				8337871028F1DF4A00D39D6F /* ExternalTools */,
+				833786F328F1D25500D39D6F /* MeoAssistant */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
 				833786CC28F188D800D39D6F /* Products */,
 			);
@@ -54,8 +108,22 @@
 			children = (
 				833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */,
 				833786D028F188D800D39D6F /* ContentView.swift */,
+				8337870128F1D95F00D39D6F /* Maa.swift */,
+				83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */,
+				8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */,
+				8383EA2A28F2314E007DAB9D /* MaaTask.swift */,
+				8337870328F1D9D900D39D6F /* ManageView.swift */,
+				8337870528F1DA0500D39D6F /* SettingsView.swift */,
+				83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */,
+				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
+				8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */,
+				83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */,
+				83D3283228F2F1BE00018D10 /* MallSettingsView.swift */,
+				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
+				8337871428F1E72E00D39D6F /* VersionUpdate.swift */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
+				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D428F188D900D39D6F /* Preview Content */,
 			);
 			path = MeoAsstMac;
@@ -69,6 +137,23 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		8337870728F1DA7B00D39D6F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				83042C8128F314FF0050B477 /* resource.zip */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		8337871028F1DF4A00D39D6F /* ExternalTools */ = {
+			isa = PBXGroup;
+			children = (
+				8337871128F1DFB900D39D6F /* adb */,
+				8337871228F1DFC100D39D6F /* adb.entitlements */,
+			);
+			path = ExternalTools;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -78,13 +163,20 @@
 			buildPhases = (
 				833786C728F188D800D39D6F /* Sources */,
 				833786C828F188D800D39D6F /* Frameworks */,
+				83042C7C28F312630050B477 /* Archive MeoAssistant Resources */,
 				833786C928F188D800D39D6F /* Resources */,
+				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = MeoAsstMac;
+			packageProductDependencies = (
+				833786FD28F1D50E00D39D6F /* MeoAssistant */,
+				833786FF28F1D56500D39D6F /* opencv2 */,
+				8383EA2728F1FCF9007DAB9D /* ZIPFoundation */,
+			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MeoAsstMac.app */;
 			productType = "com.apple.product-type.application";
@@ -106,13 +198,17 @@
 			};
 			buildConfigurationList = 833786C628F188D800D39D6F /* Build configuration list for PBXProject "MeoAsstMac" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = en;
+			developmentRegion = "zh-Hans";
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
 				Base,
+				"zh-Hans",
 			);
 			mainGroup = 833786C228F188D800D39D6F;
+			packageReferences = (
+				8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -129,18 +225,55 @@
 			files = (
 				833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */,
 				833786D328F188D900D39D6F /* Assets.xcassets in Resources */,
+				83042C8228F314FF0050B477 /* resource.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		83042C7C28F312630050B477 /* Archive MeoAssistant Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Archive MeoAssistant Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"",
+				MeoAsstMac/Resources/resources.zip,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		833786C728F188D800D39D6F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */,
+				8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */,
 				833786D128F188D800D39D6F /* ContentView.swift in Sources */,
+				83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */,
+				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
+				8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */,
+				8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */,
+				83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */,
+				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
+				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
+				8337870428F1D9D900D39D6F /* ManageView.swift in Sources */,
+				8337871528F1E72E00D39D6F /* VersionUpdate.swift in Sources */,
+				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
+				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +330,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -251,7 +384,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -266,6 +399,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -282,6 +416,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -293,6 +428,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -309,6 +445,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -336,6 +473,33 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.9;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		833786FD28F1D50E00D39D6F /* MeoAssistant */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = MeoAssistant;
+		};
+		833786FF28F1D56500D39D6F /* opencv2 */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = opencv2;
+		};
+		8383EA2728F1FCF9007DAB9D /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 833786C328F188D800D39D6F /* Project object */;
 }
