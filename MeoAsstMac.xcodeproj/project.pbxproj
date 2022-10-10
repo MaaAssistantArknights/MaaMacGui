@@ -245,7 +245,6 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"",
 				MeoAsstMac/Resources/resources.zip,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
