@@ -32,5 +32,6 @@ struct MallSettingsView: View {
 struct MallSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         MallSettingsView()
+            .environmentObject(AppDelegate())
     }
 }

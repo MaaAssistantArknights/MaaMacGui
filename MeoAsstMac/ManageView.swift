@@ -146,6 +146,7 @@ struct ManageView: View {
 struct ManageView_Previews: PreviewProvider {
     static var previews: some View {
         ManageView()
+            .environmentObject(AppDelegate())
     }
 }
 

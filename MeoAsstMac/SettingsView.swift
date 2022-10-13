@@ -11,38 +11,52 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Group {
-                    NavigationLink("基建设置") {
-                        InfrastSettingsView()
-                    }
-                    NavigationLink("肉鸽设置") {
-                        RoguelikeSettingsView()
-                    }
-                    NavigationLink("自动公招") {
-                        RecruitSettingsView()
-                    }
-                    NavigationLink("信用商店") {
-                        MallSettingsView()
-                    }
-                    NavigationLink("理智设置") {
-                        Text("敬请期待")
-                    }
-                }
+                settingsGroup1()
+                settingsGroup2()
                 Divider()
-                Group {
-                    NavigationLink("连接设置") {
-                        ConnectionSettingsView()
-                    }
-                    NavigationLink("界面设置") {
-                        Text("敬请期待")
-                    }
-                    NavigationLink("软件更新") {
-                        Text("敬请期待")
-                    }
-                    NavigationLink("关于我们") {
-                        Text("敬请期待")
-                    }
-                }
+                settingsGroup3()
+            }
+        }
+    }
+
+    private func settingsGroup1() -> some View {
+        Group {
+            NavigationLink("基建设置") {
+                InfrastSettingsView()
+            }
+            NavigationLink("肉鸽设置") {
+                RoguelikeSettingsView()
+            }
+            NavigationLink("自动公招") {
+                RecruitSettingsView()
+            }
+            NavigationLink("信用商店") {
+                MallSettingsView()
+            }
+        }
+    }
+
+    private func settingsGroup2() -> some View {
+        Group {
+            NavigationLink("理智设置") {
+                Text("敬请期待")
+            }
+        }
+    }
+
+    private func settingsGroup3() -> some View {
+        Group {
+            NavigationLink("连接设置") {
+                ConnectionSettingsView()
+            }
+            NavigationLink("界面设置") {
+                Text("敬请期待")
+            }
+            NavigationLink("软件更新") {
+                Text("敬请期待")
+            }
+            NavigationLink("关于我们") {
+                Text("敬请期待")
             }
         }
     }

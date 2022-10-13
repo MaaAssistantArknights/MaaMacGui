@@ -63,6 +63,7 @@ struct RoguelikeSettingsView: View {
 struct RoguelikeSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         RoguelikeSettingsView()
+            .environmentObject(AppDelegate())
     }
 }
 

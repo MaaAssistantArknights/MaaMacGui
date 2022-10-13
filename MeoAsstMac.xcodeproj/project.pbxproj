@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		83042C8228F314FF0050B477 /* resource.zip in Resources */ = {isa = PBXBuildFile; fileRef = 83042C8128F314FF0050B477 /* resource.zip */; };
+		83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; };
+		83245A0428F467C400ED6D4C /* MeoAssistant.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D128F188D800D39D6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786D028F188D800D39D6F /* ContentView.swift */; };
 		833786D328F188D900D39D6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D228F188D900D39D6F /* Assets.xcassets */; };
 		833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D528F188D900D39D6F /* Preview Assets.xcassets */; };
-		833786FE28F1D50E00D39D6F /* MeoAssistant in Frameworks */ = {isa = PBXBuildFile; productRef = 833786FD28F1D50E00D39D6F /* MeoAssistant */; };
-		8337870028F1D56500D39D6F /* opencv2 in Frameworks */ = {isa = PBXBuildFile; productRef = 833786FF28F1D56500D39D6F /* opencv2 */; };
 		8337870228F1D95F00D39D6F /* Maa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870128F1D95F00D39D6F /* Maa.swift */; };
 		8337870428F1D9D900D39D6F /* ManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870328F1D9D900D39D6F /* ManageView.swift */; };
 		8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870528F1DA0500D39D6F /* SettingsView.swift */; };
@@ -32,6 +32,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		83245A0528F467C400ED6D4C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				83245A0428F467C400ED6D4C /* MeoAssistant.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8337870D28F1DD8800D39D6F /* Embed Helper Tools */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -47,6 +58,7 @@
 
 /* Begin PBXFileReference section */
 		83042C8128F314FF0050B477 /* resource.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = resource.zip; sourceTree = "<group>"; };
+		83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MeoAssistant.xcframework; path = ../../build/MeoAssistant.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MeoAsstMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeoAsstMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
@@ -54,7 +66,6 @@
 		833786D228F188D900D39D6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		833786D528F188D900D39D6F /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		833786D728F188D900D39D6F /* MeoAsstMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MeoAsstMac.entitlements; sourceTree = "<group>"; };
-		833786F328F1D25500D39D6F /* MeoAssistant */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MeoAssistant; sourceTree = "<group>"; };
 		8337870128F1D95F00D39D6F /* Maa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maa.swift; sourceTree = "<group>"; };
 		8337870328F1D9D900D39D6F /* ManageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageView.swift; sourceTree = "<group>"; };
 		8337870528F1DA0500D39D6F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -76,8 +87,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8337870028F1D56500D39D6F /* opencv2 in Frameworks */,
-				833786FE28F1D50E00D39D6F /* MeoAssistant in Frameworks */,
+				83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */,
 				8383EA2828F1FCF9007DAB9D /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -85,13 +95,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		83245A0128F467C300ED6D4C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		833786C228F188D800D39D6F = {
 			isa = PBXGroup;
 			children = (
 				8337871028F1DF4A00D39D6F /* ExternalTools */,
-				833786F328F1D25500D39D6F /* MeoAssistant */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
 				833786CC28F188D800D39D6F /* Products */,
+				83245A0128F467C300ED6D4C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -165,6 +183,7 @@
 				833786C828F188D800D39D6F /* Frameworks */,
 				83042C7C28F312630050B477 /* Archive MeoAssistant Resources */,
 				833786C928F188D800D39D6F /* Resources */,
+				83245A0528F467C400ED6D4C /* Embed Frameworks */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
 			);
 			buildRules = (
@@ -173,8 +192,6 @@
 			);
 			name = MeoAsstMac;
 			packageProductDependencies = (
-				833786FD28F1D50E00D39D6F /* MeoAssistant */,
-				833786FF28F1D56500D39D6F /* opencv2 */,
 				8383EA2728F1FCF9007DAB9D /* ZIPFoundation */,
 			);
 			productName = MeoAsstMac;
@@ -485,14 +502,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		833786FD28F1D50E00D39D6F /* MeoAssistant */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = MeoAssistant;
-		};
-		833786FF28F1D56500D39D6F /* opencv2 */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = opencv2;
-		};
 		8383EA2728F1FCF9007DAB9D /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */;

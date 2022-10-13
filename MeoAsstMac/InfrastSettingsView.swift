@@ -71,5 +71,6 @@ struct InfrastSettingsView: View {
 struct InfrastSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         InfrastSettingsView()
+            .environmentObject(AppDelegate())
     }
 }

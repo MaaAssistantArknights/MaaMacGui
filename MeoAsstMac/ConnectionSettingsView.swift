@@ -24,5 +24,6 @@ struct ConnectionSettingsView: View {
 struct ConnectionSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         ConnectionSettingsView()
+            .environmentObject(AppDelegate())
     }
 }

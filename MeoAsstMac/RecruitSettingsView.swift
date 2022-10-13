@@ -32,5 +32,6 @@ struct RecruitSettingsView: View {
 struct RecruitSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         RecruitSettingsView()
+            .environmentObject(AppDelegate())
     }
 }
