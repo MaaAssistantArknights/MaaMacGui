@@ -138,9 +138,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @AppStorage("MAARoguelikeStartingRoles") var roguelikeStartingRoles = "取长补短"
 
     @AppStorage("MAARoguelikeStartingCoreChar") var roguelikeCoreChar = ""
-    
+
     // MARK: Connection settings
-    
+
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
     // MARK: Maa controller
@@ -308,18 +308,35 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // MARK: Resource loader
 
+    lazy var resourceArchiveURL = Bundle.main.url(forResource: "resource", withExtension: "zip")!
     lazy var appDataURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     lazy var resourceURL = appDataURL.appendingPathComponent("resource")
 
     func initializeResource() {
-        guard !FileManager.default.fileExists(atPath: resourceURL.path) else { return }
+        if !resourceNeedUpdate() {
+            return
+        }
+
         extractingResource = true
         do {
-            try FileManager.default.unzipItem(at: Bundle.main.url(forResource: "resource", withExtension: "zip")!, to: appDataURL)
+            try FileManager.default.removeItem(at: resourceURL)
+            try FileManager.default.unzipItem(at: resourceArchiveURL, to: appDataURL)
+            let dateFileURL = resourceURL.appendingPathComponent("date.txt")
+            let dateString = String(Date().timeIntervalSince1970)
+            try dateString.write(to: dateFileURL, atomically: false, encoding: .utf8)
         } catch {
             print(error)
         }
         extractingResource = false
+    }
+
+    private func resourceNeedUpdate() -> Bool {
+        let dateFileURL = resourceURL.appendingPathComponent("date.txt")
+        guard let dateString = try? String(contentsOf: dateFileURL) else { return true }
+        guard let dateTimestamp = Double(dateString) else { return true }
+        guard let attributes = try? FileManager.default.attributesOfItem(atPath: resourceArchiveURL.path) else { return true }
+        guard let archiveDate = attributes[.creationDate] as? Date else { return true }
+        return archiveDate.timeIntervalSince1970 > dateTimestamp
     }
 }
 

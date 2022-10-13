@@ -1,6 +1,7 @@
 DerivedData/
 Export/
 *.xcarchive
+*.dmg
 MeoAsstMac/Resources/resource.zip
 
 # Created by https://www.toptal.com/developers/gitignore/api/xcode,macos
