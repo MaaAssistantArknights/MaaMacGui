@@ -23,7 +23,7 @@ struct FightSettingsView: View {
             HStack {
                 Toggle("指定次数*", isOn: $appDelegate.limitPerformBattles).frame(width: 80, alignment: .leading)
                 TextField("", value: $appDelegate.performBattles, format: .number).frame(width: 80)
-            }.disabled(true)
+            }
             Toggle(isOn: .constant(false)) {
                 Picker("指定材料", selection: .constant(0)) {}
             }

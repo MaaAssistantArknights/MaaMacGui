@@ -20,7 +20,7 @@
 		8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870528F1DA0500D39D6F /* SettingsView.swift */; };
 		8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 8337871128F1DFB900D39D6F /* adb */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		8337871528F1E72E00D39D6F /* VersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337871428F1E72E00D39D6F /* VersionUpdate.swift */; };
-		8383EA2828F1FCF9007DAB9D /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 8383EA2728F1FCF9007DAB9D /* ZIPFoundation */; };
+		83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 83808F902907CEDE00A52AAA /* ZIPFoundation */; };
 		8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2A28F2314E007DAB9D /* MaaTask.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
@@ -88,7 +88,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */,
-				8383EA2828F1FCF9007DAB9D /* ZIPFoundation in Frameworks */,
+				83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -192,7 +192,7 @@
 			);
 			name = MeoAsstMac;
 			packageProductDependencies = (
-				8383EA2728F1FCF9007DAB9D /* ZIPFoundation */,
+				83808F902907CEDE00A52AAA /* ZIPFoundation */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MeoAsstMac.app */;
@@ -224,7 +224,7 @@
 			);
 			mainGroup = 833786C228F188D800D39D6F;
 			packageReferences = (
-				8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -266,7 +266,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
+			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\nmkdir -p $WORKDIR/resource/PaddleCharOCR/det\nmkdir -p $WORKDIR/resource/PaddleCharOCR/rec\ntouch $WORKDIR/resource/PaddleCharOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -493,20 +493,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+		83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.9;
+				minimumVersion = 0.9.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		8383EA2728F1FCF9007DAB9D /* ZIPFoundation */ = {
+		83808F902907CEDE00A52AAA /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 8383EA2628F1FCF9007DAB9D /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			package = 83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */

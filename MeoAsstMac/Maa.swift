@@ -55,9 +55,20 @@ public struct Maa {
     public func stop() -> Bool {
         AsstStop(handle)
     }
-    
+
+    public func destroy() {
+        AsstDestroy(handle)
+    }
+
     public var running: Bool {
         AsstRunning(handle)
+    }
+
+    public static var version: String? {
+        if let versionString = AsstGetVersion() {
+            return String(cString: versionString)
+        }
+        return nil
     }
 
     static func publishLogMessage(message: MaaMessage) {

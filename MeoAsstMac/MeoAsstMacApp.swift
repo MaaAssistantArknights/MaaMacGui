@@ -151,6 +151,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
 
+    nonisolated func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        true
+    }
+
     private(set) var handle: Maa?
 
     func initializeMaa() {
@@ -203,6 +207,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func stopMaa() -> Bool {
         handle?.stop() ?? false
+    }
+
+    func cleanupMaa() {
+        handle?.destroy()
     }
 
     func switchRoguelikeTheme(to: Int) {
@@ -319,11 +327,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         extractingResource = true
         do {
-            try FileManager.default.removeItem(at: resourceURL)
+            if FileManager.default.fileExists(atPath: resourceURL.path) {
+                try FileManager.default.removeItem(at: resourceURL)
+            }
             try FileManager.default.unzipItem(at: resourceArchiveURL, to: appDataURL)
-            let dateFileURL = resourceURL.appendingPathComponent("date.txt")
-            let dateString = String(Date().timeIntervalSince1970)
-            try dateString.write(to: dateFileURL, atomically: false, encoding: .utf8)
+            let versionFileURL = resourceURL.appendingPathComponent("version.txt")
+            let versionString = Maa.version ?? "UNKNOWN VERSION"
+            try versionString.write(to: versionFileURL, atomically: false, encoding: .utf8)
         } catch {
             print(error)
         }
@@ -331,12 +341,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func resourceNeedUpdate() -> Bool {
-        let dateFileURL = resourceURL.appendingPathComponent("date.txt")
-        guard let dateString = try? String(contentsOf: dateFileURL) else { return true }
-        guard let dateTimestamp = Double(dateString) else { return true }
-        guard let attributes = try? FileManager.default.attributesOfItem(atPath: resourceArchiveURL.path) else { return true }
-        guard let archiveDate = attributes[.creationDate] as? Date else { return true }
-        return archiveDate.timeIntervalSince1970 > dateTimestamp
+        let versionFileURL = resourceURL.appendingPathComponent("version.txt")
+        guard let localVersion = try? String(contentsOf: versionFileURL) else { return true }
+        guard let appVersion = Maa.version else { return true }
+        return localVersion != appVersion
     }
 }
 

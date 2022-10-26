@@ -28,6 +28,9 @@ struct ContentView: View {
             appDelegate.initializeResource()
             appDelegate.initializeMaa()
         }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
+            appDelegate.cleanupMaa()
+        }
     }
 }
 
