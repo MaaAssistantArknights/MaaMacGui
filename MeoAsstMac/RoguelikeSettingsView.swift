@@ -13,8 +13,9 @@ struct RoguelikeSettingsView: View {
     var body: some View {
         VStack(spacing: 15) {
             Picker("肉鸽主题", selection: $appDelegate.rougelikeTheme) {
-                Text("傀影").tag(0)
-                Text("水月").tag(1)
+                ForEach(RoguelikeTheme.allCases, id: \.rawValue) { theme in
+                    Text("\(theme.description)").tag(theme.rawValue)
+                }
             }
             
             Picker("策略", selection: $appDelegate.roguelikeMode) {
@@ -54,9 +55,6 @@ struct RoguelikeSettingsView: View {
             }
         }
         .padding()
-        .onChange(of: appDelegate.rougelikeTheme) { newValue in
-            appDelegate.switchRoguelikeTheme(to: newValue)
-        }
     }
 }
 
@@ -64,6 +62,20 @@ struct RoguelikeSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         RoguelikeSettingsView()
             .environmentObject(AppDelegate())
+    }
+}
+
+public enum RoguelikeTheme: String, CaseIterable, CustomStringConvertible {
+    case Phantom
+    case Mizuki
+    
+    public var description: String {
+        switch self {
+        case .Phantom:
+            return "傀影"
+        case .Mizuki:
+            return "水月"
+        }
     }
 }
 

@@ -121,7 +121,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // MARK: Roguelike settings
 
-    @AppStorage("MAARougelikeTheme") var rougelikeTheme = 0
+    @AppStorage("MAARougelikeTheme") var rougelikeTheme = "Phantom"
 
     @AppStorage("MAARoguelikeMode") var roguelikeMode = 0
 
@@ -180,13 +180,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             return
         }
 
-        if rougelikeTheme == 1 {
-            guard Maa.loadResource(path: appDataURL.appendingPathComponent("resource/addition/Roguelike2").path) else {
-                appLogs.append("资源读取失败")
-                return
-            }
-        }
-
         appLogs.append("资源读取成功")
     }
 
@@ -211,22 +204,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func cleanupMaa() {
         handle?.destroy()
-    }
-
-    func switchRoguelikeTheme(to: Int) {
-        if to == 1 {
-            guard Maa.loadResource(path: appDataURL.appendingPathComponent("resource/addition/Roguelike2").path) else {
-                appLogs.append("资源读取失败")
-                return
-            }
-        }
-        if to == 0 {
-            guard Maa.loadResource(path: appDataURL.path) else {
-                appLogs.append("资源读取失败")
-                return
-            }
-        }
-        appLogs.append("资源读取成功")
     }
 
     private func connectAVD() -> Bool {
@@ -304,7 +281,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         case .Award:
             return AwardConfiguration()
         case .Roguelike:
-            return RoguelikeConfiguration(mode: roguelikeMode,
+            return RoguelikeConfiguration(theme: rougelikeTheme,
+                                          mode: roguelikeMode,
                                           starts_count: roguelikeTimesLimit,
                                           investments_count: roguelikeGoldLimit,
                                           stop_when_investment_full: roguelikeStopWhenGoldLimit,
@@ -393,6 +371,7 @@ private struct MallConfiguration: MaaTaskConfiguration {
 private struct AwardConfiguration: MaaTaskConfiguration {}
 
 private struct RoguelikeConfiguration: MaaTaskConfiguration {
+    let theme: String
     let mode: Int
     let starts_count: Int
     let investments_count: Int
