@@ -297,6 +297,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     lazy var resourceArchiveURL = Bundle.main.url(forResource: "resource", withExtension: "zip")!
     lazy var appDataURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     lazy var resourceURL = appDataURL.appendingPathComponent("resource")
+    lazy var asstLogURL = appDataURL.appendingPathComponent("asst.log")
 
     func initializeResource() {
         if !resourceNeedUpdate() {

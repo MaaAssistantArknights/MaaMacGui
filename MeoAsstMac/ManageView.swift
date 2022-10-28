@@ -94,7 +94,7 @@ struct ManageView: View {
                 
                 VStack {
                     Text("""
-                    今日关卡小提示：
+                    周日关卡小提示：
                     货物运送（龙门币）
                     粉碎防御（红票）
                     空中威胁（技能）
@@ -105,6 +105,16 @@ struct ManageView: View {
                     """)
                 }
                 .padding()
+                
+                Button("打开日志文件夹") {
+                    let url = appDelegate.asstLogURL
+                    if FileManager.default.fileExists(atPath: url.path) {
+                        NSWorkspace.shared.activateFileViewerSelecting([url])
+                    } else {
+                        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: appDelegate.appDataURL.path)
+                    }
+                    
+                }
             }
             .frame(maxWidth: .infinity)
             
