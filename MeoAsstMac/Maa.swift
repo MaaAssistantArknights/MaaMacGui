@@ -45,7 +45,7 @@ public struct Maa {
     }
 
     public func connect(adbPath: String, address: String) -> Bool {
-        AsstConnect(handle, adbPath, address, "General")
+        AsstConnect(handle, adbPath, address, "Compatible")
     }
 
     public func start() -> Bool {
