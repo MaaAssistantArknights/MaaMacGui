@@ -143,6 +143,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
+    // MARK: Startup settings
+
+    @AppStorage("MAAClientChannel") var clientChannel = "default"
+
     // MARK: Maa controller
 
     nonisolated func applicationWillFinishLaunching(_ notification: Notification) {
@@ -178,6 +182,17 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         guard Maa.loadResource(path: appDataURL.path) else {
             appLogs.append("资源读取失败")
             return
+        }
+
+        if clientChannel != "default" {
+            let extraDataURL = resourceURL
+                .appendingPathComponent("global")
+                .appendingPathComponent(clientChannel)
+            guard Maa.loadResource(path: extraDataURL.path) else {
+                appLogs.append("资源读取失败")
+                return
+            }
+            appLogs.append("\(clientChannel) 资源读取成功")
         }
 
         appLogs.append("资源读取成功")

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		83042C8228F314FF0050B477 /* resource.zip in Resources */ = {isa = PBXBuildFile; fileRef = 83042C8128F314FF0050B477 /* resource.zip */; };
+		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; };
 		83245A0428F467C400ED6D4C /* MeoAssistant.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
@@ -58,6 +59,7 @@
 
 /* Begin PBXFileReference section */
 		83042C8128F314FF0050B477 /* resource.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = resource.zip; sourceTree = "<group>"; };
+		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
 		83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MeoAssistant.xcframework; path = ../../build/MeoAssistant.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MeoAsstMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeoAsstMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -133,6 +135,7 @@
 				8337870328F1D9D900D39D6F /* ManageView.swift */,
 				8337870528F1DA0500D39D6F /* SettingsView.swift */,
 				83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */,
+				8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */,
 				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
 				8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */,
 				83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */,
@@ -278,6 +281,7 @@
 				8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */,
 				8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */,
 				833786D128F188D800D39D6F /* ContentView.swift in Sources */,
+				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */,
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */,

@@ -15,6 +15,7 @@ struct SettingsView: View {
                 settingsGroup2()
                 Divider()
                 settingsGroup3()
+                settingsGroup4()
             }
         }
     }
@@ -52,6 +53,14 @@ struct SettingsView: View {
             NavigationLink("界面设置") {
                 Text("敬请期待")
             }
+            NavigationLink("启动设置") {
+                StartupSettingsView()
+            }
+        }
+    }
+
+    private func settingsGroup4() -> some View {
+        Group {
             NavigationLink("软件更新") {
                 Text("敬请期待")
             }
