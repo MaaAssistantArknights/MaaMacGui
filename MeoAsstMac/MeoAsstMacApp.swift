@@ -145,7 +145,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // MARK: Startup settings
 
-    @AppStorage("MAAClientChannel") var clientChannel = "default"
+    @AppStorage("MAAClientChannel") var clientChannel = MaaClientChannel.default
 
     // MARK: Maa controller
 
@@ -184,10 +184,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             return
         }
 
-        if clientChannel != "default" {
+        if clientChannel.isGlobal {
             let extraDataURL = resourceURL
                 .appendingPathComponent("global")
-                .appendingPathComponent(clientChannel)
+                .appendingPathComponent(clientChannel.rawValue)
             guard Maa.loadResource(path: extraDataURL.path) else {
                 appLogs.append("资源读取失败")
                 return
@@ -247,7 +247,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func taskConfiguration(for task: MaaTask) -> any MaaTaskConfiguration {
         switch task.key {
         case .StartUp:
-            return StartupConfiguration()
+            if clientChannel != .default {
+                return StartupConfiguration(client_type: clientChannel.rawValue, start_game_enabled: true)
+            } else {
+                return StartupConfiguration(client_type: "", start_game_enabled: false)
+            }
         case .Recruit:
             let select = [4, 5]
             let confirm = {
@@ -346,7 +350,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
 private protocol MaaTaskConfiguration: Encodable {}
 
-private struct StartupConfiguration: MaaTaskConfiguration {}
+private struct StartupConfiguration: MaaTaskConfiguration {
+    let client_type: String
+    let start_game_enabled: Bool
+}
 
 private struct FightConfiguration: MaaTaskConfiguration {
     let stage: String

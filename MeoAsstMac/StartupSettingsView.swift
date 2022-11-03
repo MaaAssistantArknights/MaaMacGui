@@ -16,7 +16,7 @@ struct StartupSettingsView: View {
         VStack {
             Picker("客户端版本", selection: $appDelegate.clientChannel) {
                 ForEach(MaaClientChannel.allCases, id: \.rawValue) { channel in
-                    Text("\(channel.description)").tag(channel.rawValue)
+                    Text("\(channel.description)").tag(channel)
                 }
             }
         }
@@ -41,6 +41,8 @@ struct StartupSettingsView_Previews: PreviewProvider {
 
 enum MaaClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     case `default`
+    case Official
+    case Bilibili
     case YoStarEN
     case YoStarJP
     case YoStarKR
@@ -49,7 +51,11 @@ enum MaaClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "默认（国服）"
+            return "不选择"
+        case .Official:
+            return "国服"
+        case .Bilibili:
+            return "Bilibili服"
         case .YoStarEN:
             return "国际服（YoStarEN）"
         case .YoStarJP:
@@ -58,6 +64,25 @@ enum MaaClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
             return "韩服（YoStarKR）"
         case .txwy:
             return "繁中服（txwy）"
+        }
+    }
+    
+    var isGlobal: Bool {
+        switch self {
+        case .default:
+            return false
+        case .Official:
+            return false
+        case .Bilibili:
+            return false
+        case .YoStarEN:
+            return true
+        case .YoStarJP:
+            return true
+        case .YoStarKR:
+            return true
+        case .txwy:
+            return true
         }
     }
 }
