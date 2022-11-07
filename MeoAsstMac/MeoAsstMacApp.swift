@@ -342,7 +342,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         let versionFileURL = resourceURL.appendingPathComponent("version.txt")
         guard let localVersion = try? String(contentsOf: versionFileURL) else { return true }
         guard let appVersion = Maa.version else { return true }
-        return localVersion != appVersion
+        return localVersion.hasSuffix("-dirty") || localVersion != appVersion
     }
 }
 
