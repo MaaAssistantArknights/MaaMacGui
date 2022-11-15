@@ -111,10 +111,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     @AppStorage("MAAMallSocialPtShop") var socialPtShop = true
 
     /// - Tag: 优先购买 子串即可 分号分隔
-    @AppStorage("MaaMallHighPriority") var highPriority = "碳；家具"
+    @AppStorage("MaaMallHighPriority") var highPriority = "招聘许可;龙门币"
 
     /// - Tag: 黑名单 子串即可 分号分隔
-    @AppStorage("MaaMallBlacklist") var blacklist = "招聘许可；龙门币"
+    @AppStorage("MaaMallBlacklist") var blacklist = "碳;家具"
 
     /// - Tag: 信用溢出时无视黑名单
     @AppStorage("MAAMallForceShoppingIfCreditFull") var forceShoppingIfCreditFull = false

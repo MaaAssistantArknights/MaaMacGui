@@ -11,7 +11,7 @@ struct MallSettingsView: View {
     @EnvironmentObject private var appDelegate: AppDelegate
 
     var body: some View {
-        VStack() {
+        VStack {
             HStack(spacing: 50) {
                 Spacer()
                 Toggle("信用购物", isOn: $appDelegate.socialPtShop)
@@ -20,12 +20,20 @@ struct MallSettingsView: View {
             }
             .padding(.horizontal)
             Form {
-                TextField("黑名单 子串即可 分号分隔", text: $appDelegate.highPriority)
-                TextField("优先购买 子串即可 分号分隔", text: $appDelegate.blacklist)
+                TextField("黑名单 子串即可 分号分隔", text: $appDelegate.blacklist)
+                TextField("优先购买 子串即可 分号分隔", text: $appDelegate.highPriority)
+
+                if hasChineseSemicolon {
+                    Text("请使用英文分号 ;").font(.footnote).foregroundColor(.red)
+                }
             }
             .padding(.top)
             .padding(.horizontal)
         }
+    }
+
+    private var hasChineseSemicolon: Bool {
+        [appDelegate.blacklist, appDelegate.highPriority].contains { $0.contains("；") }
     }
 }
 
