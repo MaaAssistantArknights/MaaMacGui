@@ -143,6 +143,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
+    @AppStorage("MAAConnectionProfile") var connectionProfile = "CompatMac"
+
     // MARK: Startup settings
 
     @AppStorage("MAAClientChannel") var clientChannel = MaaClientChannel.default
@@ -222,7 +224,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     private func connectAVD() -> Bool {
-        handle?.connect(adbPath: Bundle.main.url(forAuxiliaryExecutable: "adb")!.path, address: connectionAddress) ?? false
+        handle?.connect(adbPath: Bundle.main.url(forAuxiliaryExecutable: "adb")!.path, address: connectionAddress, profile: connectionProfile) ?? false
     }
 
     private func setupTasks() -> Bool {

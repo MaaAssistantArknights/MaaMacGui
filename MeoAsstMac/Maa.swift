@@ -44,8 +44,8 @@ public struct Maa {
         AsstAppendTask(handle, taskType, taskConfig)
     }
 
-    public func connect(adbPath: String, address: String) -> Bool {
-        AsstConnect(handle, adbPath, address, "Compatible")
+    public func connect(adbPath: String, address: String, profile: String) -> Bool {
+        AsstConnect(handle, adbPath, address, profile)
     }
 
     public func start() -> Bool {

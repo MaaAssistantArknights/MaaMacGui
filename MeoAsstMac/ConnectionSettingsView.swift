@@ -9,15 +9,37 @@ import SwiftUI
 
 struct ConnectionSettingsView: View {
     @EnvironmentObject private var appDelegate: AppDelegate
-    
+
+    private let gzipInfo = """
+    使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。
+    """
+
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             HStack {
                 Text("ADB地址")
                 TextField("", text: $appDelegate.connectionAddress)
             }
+
+            Toggle(isOn: allowGzip) {
+                Text("允许使用 Gzip")
+                Text(gzipInfo)
+            }
+            .padding(.top)
         }
         .padding(.horizontal)
+    }
+
+    private var allowGzip: Binding<Bool> {
+        Binding {
+            appDelegate.connectionProfile == "Compatible"
+        } set: { allow in
+            if allow {
+                appDelegate.connectionProfile = "Compatible"
+            } else {
+                appDelegate.connectionProfile = "CompatMac"
+            }
+        }
     }
 }
 
