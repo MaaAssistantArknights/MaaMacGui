@@ -27,9 +27,15 @@ struct MeoAsstMacApp: App {
 class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // MARK: App states
 
+    enum MaaStatus: Equatable {
+        case pending
+        case value(Bool)
+    }
+
     @Published var appLogs: [String] = []
     @Published var extractingResource = false
-    @Published var maaRunning = false
+    @Published var maaRunning = MaaStatus.value(false)
+    @Published var maaVersion: String?
 
     private var logObserver: AnyCancellable?
     private var maaObserver: AnyCancellable?
@@ -163,7 +169,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     private(set) var handle: Maa?
 
-    func initializeMaa() {
+    func initializeMaa() async {
         /// - Tag: MaaCallbackMesage
         logObserver = NotificationCenter.default
             .publisher(for: .MAAReceivedCallbackMessage)
@@ -175,13 +181,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                 }
             }
 
-        guard Maa.setUserDirectory(path: appDataURL.path) else {
+        guard await Maa.setUserDirectory(path: appDataURL.path) else {
             appLogs.append("目录设置失败")
             return
         }
         appLogs.append("目录设置成功")
 
-        guard Maa.loadResource(path: appDataURL.path) else {
+        guard await Maa.loadResource(path: appDataURL.path) else {
             appLogs.append("资源读取失败")
             return
         }
@@ -190,7 +196,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             let extraDataURL = resourceURL
                 .appendingPathComponent("global")
                 .appendingPathComponent(clientChannel.rawValue)
-            guard Maa.loadResource(path: extraDataURL.path) else {
+            guard await Maa.loadResource(path: extraDataURL.path) else {
                 appLogs.append("资源读取失败")
                 return
             }
@@ -200,42 +206,58 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         appLogs.append("资源读取成功")
     }
 
-    func setupMaa() -> Bool {
-        handle = Maa()
-        return connectAVD() && setupTasks()
+    func setupMaa() async -> Bool {
+        handle = await Maa()
+        guard await connectAVD() else { return false }
+        guard await setupTasks() else { return false }
+        return true
     }
 
-    func startMaa() -> Bool {
+    func startMaa() async -> Bool {
         maaObserver = Timer.publish(every: 1.0, on: RunLoop.main, in: .common)
             .autoconnect()
             .receive(on: RunLoop.main)
             .sink { [weak self] _ in
-                self?.maaRunning = self?.handle?.running ?? false
+                Task {
+                    let running = await self?.handle?.running
+                    self?.maaRunning = .value(running ?? false)
+                }
             }
-        return handle?.start() ?? false
+        return await handle?.start() ?? false
     }
 
-    func stopMaa() -> Bool {
-        handle?.stop() ?? false
+    func stopMaa() async -> Bool {
+        await handle?.stop() ?? false
     }
 
-    func cleanupMaa() {
-        handle?.destroy()
+    func cleanupMaa() async {
+        await handle?.destroy()
     }
 
-    private func connectAVD() -> Bool {
-        handle?.connect(adbPath: Bundle.main.url(forAuxiliaryExecutable: "adb")!.path, address: connectionAddress, profile: connectionProfile) ?? false
+    private func connectAVD() async -> Bool {
+        await handle?.connect(adbPath: Bundle.main.url(forAuxiliaryExecutable: "adb")!.path, address: connectionAddress, profile: connectionProfile) ?? false
     }
 
-    private func setupTasks() -> Bool {
-        tasks
+    private func setupTasks() async -> Bool {
+        guard let handle = handle else { return false }
+
+        let runners = tasks
             .filter { $0.enabled }
             .map { task in
                 let taskType = task.key.rawValue
                 let taskParams = taskParams(for: task)
-                return handle?.appendTask(taskType: taskType, taskConfig: taskParams) ?? 0
+                return Task {
+                    await handle.appendTask(taskType: taskType, taskConfig: taskParams)
+                }
             }
-            .allSatisfy { $0 > 0 }
+
+        for runner in runners {
+            if await runner.value <= 0 {
+                return false
+            }
+        }
+
+        return true
     }
 
     // MARK: Maa configuration
@@ -320,7 +342,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     lazy var resourceURL = appDataURL.appendingPathComponent("resource")
     lazy var asstLogURL = appDataURL.appendingPathComponent("asst.log")
 
-    func initializeResource() {
+    func initializeResource() async {
+        maaVersion = await Maa.version
+
         if !resourceNeedUpdate() {
             return
         }
@@ -332,7 +356,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             }
             try FileManager.default.unzipItem(at: resourceArchiveURL, to: appDataURL)
             let versionFileURL = resourceURL.appendingPathComponent("version.txt")
-            let versionString = Maa.version ?? "UNKNOWN VERSION"
+            let versionString = maaVersion ?? "UNKNOWN VERSION"
             try versionString.write(to: versionFileURL, atomically: false, encoding: .utf8)
         } catch {
             print(error)
@@ -343,7 +367,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private func resourceNeedUpdate() -> Bool {
         let versionFileURL = resourceURL.appendingPathComponent("version.txt")
         guard let localVersion = try? String(contentsOf: versionFileURL) else { return true }
-        guard let appVersion = Maa.version else { return true }
+        guard let appVersion = maaVersion else { return true }
         return localVersion.hasSuffix("-dirty") || localVersion != appVersion
     }
 }

@@ -25,11 +25,15 @@ struct ContentView: View {
             ProgressView("解压数据中").padding()
         })
         .onAppear {
-            appDelegate.initializeResource()
-            appDelegate.initializeMaa()
+            Task {
+                await appDelegate.initializeResource()
+                await appDelegate.initializeMaa()
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.willTerminateNotification)) { _ in
-            appDelegate.cleanupMaa()
+            Task {
+                await appDelegate.cleanupMaa()
+            }
         }
     }
 }

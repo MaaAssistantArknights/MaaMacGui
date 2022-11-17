@@ -62,24 +62,30 @@ struct ManageView: View {
                 }
                 .padding(.top)
                 
-                if appDelegate.maaRunning {
+                if appDelegate.maaRunning == .value(true) {
                     Button {
-                        _ = appDelegate.stopMaa()
+                        Task {
+                            appDelegate.maaRunning = .pending
+                            await _ = appDelegate.stopMaa()
+                        }
                     } label: {
                         Text("停 止").padding()
                     }
                     .padding(.top)
+                    .disabled(appDelegate.maaRunning == .pending)
                 } else {
                     Button {
-                        Task.detached {
+                        Task {
+                            appDelegate.maaRunning = .pending
                             _ = await appDelegate.setupMaa()
                             let success = await appDelegate.startMaa()
-                            Task { @MainActor in appDelegate.maaRunning = success }
+                            appDelegate.maaRunning = .value(success)
                         }
                     } label: {
                         Text("Link Start!").padding()
                     }
                     .padding(.top)
+                    .disabled(appDelegate.maaRunning == .pending)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -113,7 +119,6 @@ struct ManageView: View {
                     } else {
                         NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: appDelegate.appDataURL.path)
                     }
-                    
                 }
             }
             .frame(maxWidth: .infinity)

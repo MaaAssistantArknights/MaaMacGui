@@ -8,6 +8,14 @@
 import Foundation
 import MeoAssistant
 
+@globalActor
+public struct MaaActor {
+    public actor MaaActor {}
+
+    public static let shared = MaaActor()
+}
+
+@MaaActor
 public struct Maa {
     static var resourceLoaded = false
 
