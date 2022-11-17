@@ -269,7 +269,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\nmkdir -p $WORKDIR/resource/PaddleCharOCR/det\nmkdir -p $WORKDIR/resource/PaddleCharOCR/rec\ntouch $WORKDIR/resource/PaddleCharOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
+			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\ncp -R ../../3rdparty/resource/minitouch $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\nmkdir -p $WORKDIR/resource/PaddleCharOCR/det\nmkdir -p $WORKDIR/resource/PaddleCharOCR/rec\ntouch $WORKDIR/resource/PaddleCharOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
