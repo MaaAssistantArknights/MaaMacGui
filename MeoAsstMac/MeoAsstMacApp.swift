@@ -151,6 +151,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     @AppStorage("MAAConnectionProfile") var connectionProfile = "CompatMac"
 
+    @AppStorage("MAAAdbTouchMode") var adbTouchMode = true
+
     // MARK: Startup settings
 
     @AppStorage("MAAClientChannel") var clientChannel = MaaClientChannel.default
@@ -207,7 +209,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     }
 
     func setupMaa() async -> Bool {
-        handle = await Maa()
+        let options = [
+            Int32(1): adbTouchMode ? "0" : "1"
+        ]
+        handle = await Maa(options: options)
         guard await connectAVD() else { return false }
         guard await setupTasks() else { return false }
         return true

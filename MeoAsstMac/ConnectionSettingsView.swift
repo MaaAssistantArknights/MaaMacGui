@@ -26,6 +26,12 @@ struct ConnectionSettingsView: View {
                 Text(gzipInfo)
             }
             .padding(.top)
+
+            Toggle(isOn: $appDelegate.adbTouchMode) {
+                Text("触控兼容模式")
+                Text("不使用 minitouch")
+            }
+            .padding(.top)
         }
         .padding(.horizontal)
     }

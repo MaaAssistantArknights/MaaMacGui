@@ -33,7 +33,7 @@ public struct Maa {
         AsstSetUserDir(path)
     }
 
-    public init() {
+    public init(options: [Int32: String]? = nil) {
         let callback: AsstApiCallback = { msg, details, _ in
             if msg >= 20000 {
                 return
@@ -43,6 +43,10 @@ public struct Maa {
                 let message = MaaMessage(msg: msg, details: details)
                 Self.publishLogMessage(message: message)
             }
+        }
+
+        options?.forEach { key, value in
+            AsstSetProcessOption(key, value)
         }
 
         self.handle = AsstCreateEx(callback, nil)
