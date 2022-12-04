@@ -70,9 +70,9 @@ enum MaaMessage: Decodable, CustomStringConvertible {
         case .internalError:
             return "internal error"
         case .initFailed(let initFailedDetails):
-            return "initFailed: \(initFailedDetails.why)"
+            return "initFailed: \(initFailedDetails.what) \(initFailedDetails.why)"
         case .connectionInfo(let connectionInfoDetails):
-            return "connectionInfo: \(connectionInfoDetails.why)"
+            return "connectionInfo: \(connectionInfoDetails.what) \(connectionInfoDetails.why)"
         case .allTasksCompleted(_):
             return "全部任务已完成"
         case .taskChainError:
@@ -90,7 +90,7 @@ enum MaaMessage: Decodable, CustomStringConvertible {
         case .subTaskCompleted:
             return "subTaskCompleted"
         case .subTaskExtraInfo:
-            return "subTaskExtraInfor"
+            return "subTaskExtraInfo"
         case .unknown:
             return "Unknown message"
         }

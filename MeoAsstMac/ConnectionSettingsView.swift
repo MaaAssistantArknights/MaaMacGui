@@ -27,9 +27,10 @@ struct ConnectionSettingsView: View {
             }
             .padding(.top)
 
-            Toggle(isOn: $appDelegate.adbTouchMode) {
-                Text("触控兼容模式")
-                Text("不使用 minitouch")
+            Picker("触控模式", selection: $appDelegate.touchMode) {
+                ForEach(MaaTouchMode.allCases, id: \.self) { mode in
+                    Text(mode.rawValue)
+                }
             }
             .padding(.top)
         }
@@ -54,4 +55,10 @@ struct ConnectionSettingsView_Previews: PreviewProvider {
         ConnectionSettingsView()
             .environmentObject(AppDelegate())
     }
+}
+
+enum MaaTouchMode: String, CaseIterable {
+    case minitouch
+    case maatouch
+    case adb
 }

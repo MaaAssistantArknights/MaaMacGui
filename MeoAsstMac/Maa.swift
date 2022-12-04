@@ -33,7 +33,7 @@ public struct Maa {
         AsstSetUserDir(path)
     }
 
-    public init(options: [Int32: String]? = nil) {
+    public init(options: [MaaInstanceOptionKey: String]? = nil) {
         let callback: AsstApiCallback = { msg, details, _ in
             if msg >= 20000 {
                 return
@@ -48,7 +48,7 @@ public struct Maa {
         self.handle = AsstCreateEx(callback, nil)
 
         options?.forEach { key, value in
-            AsstSetInstanceOption(handle, key, value)
+            AsstSetInstanceOption(handle, key.rawValue, value)
         }
     }
 
@@ -90,4 +90,9 @@ public struct Maa {
 
 public extension Notification.Name {
     static let MAAReceivedCallbackMessage = Notification.Name("MAAReceivedCallbackMessage")
+}
+
+public enum MaaInstanceOptionKey: Int32 {
+    case Invalid = 0
+    case TouchMode = 2
 }
