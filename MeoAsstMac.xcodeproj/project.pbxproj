@@ -58,16 +58,6 @@
 			name = "Embed Helper Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		83734A9029332EDA008A454C /* Embed 3rd-party Libraries */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed 3rd-party Libraries";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -76,7 +66,7 @@
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
 		831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Paddle2ONNX.xcframework; path = ../../build/Paddle2ONNX.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
-		833786CB28F188D800D39D6F /* MeoAsstMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeoAsstMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		833786CB28F188D800D39D6F /* MAA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
 		833786D028F188D800D39D6F /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		833786D228F188D900D39D6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,7 +124,7 @@
 		833786CC28F188D800D39D6F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				833786CB28F188D800D39D6F /* MeoAsstMac.app */,
+				833786CB28F188D800D39D6F /* MAA.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -194,28 +184,27 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		833786CA28F188D800D39D6F /* MeoAsstMac */ = {
+		833786CA28F188D800D39D6F /* MAA */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MeoAsstMac" */;
+			buildConfigurationList = 833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MAA" */;
 			buildPhases = (
 				833786C728F188D800D39D6F /* Sources */,
 				833786C828F188D800D39D6F /* Frameworks */,
 				83042C7C28F312630050B477 /* Archive MeoAssistant Resources */,
 				833786C928F188D800D39D6F /* Resources */,
 				83245A0528F467C400ED6D4C /* Embed Frameworks */,
-				83734A9029332EDA008A454C /* Embed 3rd-party Libraries */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = MeoAsstMac;
+			name = MAA;
 			packageProductDependencies = (
 				83808F902907CEDE00A52AAA /* ZIPFoundation */,
 			);
 			productName = MeoAsstMac;
-			productReference = 833786CB28F188D800D39D6F /* MeoAsstMac.app */;
+			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -250,7 +239,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				833786CA28F188D800D39D6F /* MeoAsstMac */,
+				833786CA28F188D800D39D6F /* MAA */,
 			);
 		};
 /* End PBXProject section */
@@ -502,7 +491,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MeoAsstMac" */ = {
+		833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MAA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				833786DB28F188D900D39D6F /* Debug */,
