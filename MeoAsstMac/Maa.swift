@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import MeoAssistant
+import MaaCore
 
 @globalActor
 public struct MaaActor {
@@ -45,11 +45,11 @@ public struct Maa {
             }
         }
 
-        options?.forEach { key, value in
-            AsstSetProcessOption(key, value)
-        }
-
         self.handle = AsstCreateEx(callback, nil)
+
+        options?.forEach { key, value in
+            AsstSetInstanceOption(handle, key, value)
+        }
     }
 
     public func appendTask(taskType: String, taskConfig: String) -> Int32 {

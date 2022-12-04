@@ -9,8 +9,10 @@
 /* Begin PBXBuildFile section */
 		83042C8228F314FF0050B477 /* resource.zip in Resources */ = {isa = PBXBuildFile; fileRef = 83042C8128F314FF0050B477 /* resource.zip */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
-		83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; };
-		83245A0428F467C400ED6D4C /* MeoAssistant.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
+		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		831D248C293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */; };
+		831D248D293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D128F188D800D39D6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786D028F188D800D39D6F /* ContentView.swift */; };
@@ -39,7 +41,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				83245A0428F467C400ED6D4C /* MeoAssistant.xcframework in Embed Frameworks */,
+				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
+				831D248D293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -55,12 +58,23 @@
 			name = "Embed Helper Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		83734A9029332EDA008A454C /* Embed 3rd-party Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed 3rd-party Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		83042C8128F314FF0050B477 /* resource.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = resource.zip; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
-		83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MeoAssistant.xcframework; path = ../../build/MeoAssistant.xcframework; sourceTree = "<group>"; };
+		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
+		831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Paddle2ONNX.xcframework; path = ../../build/Paddle2ONNX.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MeoAsstMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeoAsstMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
@@ -89,7 +103,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83245A0328F467C400ED6D4C /* MeoAssistant.xcframework in Frameworks */,
+				831D248C293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Frameworks */,
+				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -100,7 +115,8 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				83245A0228F467C400ED6D4C /* MeoAssistant.xcframework */,
+				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
+				831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -187,6 +203,7 @@
 				83042C7C28F312630050B477 /* Archive MeoAssistant Resources */,
 				833786C928F188D800D39D6F /* Resources */,
 				83245A0528F467C400ED6D4C /* Embed Frameworks */,
+				83734A9029332EDA008A454C /* Embed 3rd-party Libraries */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
 			);
 			buildRules = (
@@ -269,7 +286,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\ncp -R ../../3rdparty/resource/minitouch $WORKDIR/resource/\n\n# Make ResourceLoader happy\nmkdir -p $WORKDIR/resource/PaddleOCR/det\nmkdir -p $WORKDIR/resource/PaddleOCR/rec\ntouch $WORKDIR/resource/PaddleOCR/ppocr_keys_v1.txt\nmkdir -p $WORKDIR/resource/PaddleCharOCR/det\nmkdir -p $WORKDIR/resource/PaddleCharOCR/rec\ntouch $WORKDIR/resource/PaddleCharOCR/ppocr_keys_v1.txt\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
+			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\ncp -R ../../3rdparty/resource/minitouch $WORKDIR/resource/\ncp -R ../../3rdparty/resource/PaddleOCR $WORKDIR/resource/\ncp -R ../../3rdparty/resource/PaddleCharOCR $WORKDIR/resource/\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
