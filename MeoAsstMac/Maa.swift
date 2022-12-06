@@ -22,7 +22,7 @@ public struct Maa {
     private let handle: AsstHandle
 
     public static func loadResource(path: String) -> Bool {
-        if AsstLoadResource(path) {
+        if AsstLoadResource(path) != 0 {
             resourceLoaded = true
             return true
         }
@@ -30,7 +30,7 @@ public struct Maa {
     }
 
     public static func setUserDirectory(path: String) -> Bool {
-        AsstSetUserDir(path)
+        AsstSetUserDir(path) != 0
     }
 
     public init(options: [MaaInstanceOptionKey: String]? = nil) {
@@ -57,15 +57,15 @@ public struct Maa {
     }
 
     public func connect(adbPath: String, address: String, profile: String) -> Bool {
-        AsstConnect(handle, adbPath, address, profile)
+        AsstConnect(handle, adbPath, address, profile) != 0
     }
 
     public func start() -> Bool {
-        AsstStart(handle)
+        AsstStart(handle) != 0
     }
 
     public func stop() -> Bool {
-        AsstStop(handle)
+        AsstStop(handle) != 0
     }
 
     public func destroy() {
@@ -73,7 +73,7 @@ public struct Maa {
     }
 
     public var running: Bool {
-        AsstRunning(handle)
+        AsstRunning(handle) != 0
     }
 
     public static var version: String? {
