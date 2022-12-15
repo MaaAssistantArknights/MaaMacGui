@@ -32,6 +32,12 @@
 		83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */; };
 		83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */; };
 		83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */; };
+		83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D133294B74230091D1FF /* OpenCV.xcframework */; };
+		83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D133294B74230091D1FF /* OpenCV.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; };
+		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		83E9D13B294B74470091D1FF /* FastDeploy.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; };
+		83E9D13C294B74470091D1FF /* FastDeploy.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +48,9 @@
 			dstSubfolderSpec = 10;
 			files = (
 				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
+				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
+				83E9D13C294B74470091D1FF /* FastDeploy.xcframework in Embed Frameworks */,
+				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
 				831D248D293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -86,6 +95,9 @@
 		83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaInfrastFacility.swift; sourceTree = "<group>"; };
 		83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastSettingsView.swift; sourceTree = "<group>"; };
 		83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoguelikeSettingsView.swift; sourceTree = "<group>"; };
+		83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FastDeploy.xcframework; path = ../../build/FastDeploy.xcframework; sourceTree = "<group>"; };
+		83E9D133294B74230091D1FF /* OpenCV.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenCV.xcframework; path = ../../build/OpenCV.xcframework; sourceTree = "<group>"; };
+		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,8 +105,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83E9D13B294B74470091D1FF /* FastDeploy.xcframework in Frameworks */,
 				831D248C293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
+				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
+				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
 				83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -105,7 +120,10 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
+				83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */,
+				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 				831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */,
 			);
 			name = Frameworks;
@@ -310,6 +328,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -366,10 +385,40 @@
 			};
 			name = Debug;
 		};
-		833786D928F188D900D39D6F /* Release */ = {
+		833786DB28F188D900D39D6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
+				DEVELOPMENT_TEAM = 29V29Y67P2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		83E9D13D294B8C310091D1FF /* Release-arm64 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = arm64;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -417,38 +466,9 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
-			name = Release;
+			name = "Release-arm64";
 		};
-		833786DB28F188D900D39D6F /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
-				DEVELOPMENT_TEAM = 29V29Y67P2;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-			};
-			name = Debug;
-		};
-		833786DC28F188D900D39D6F /* Release */ = {
+		83E9D13E294B8C310091D1FF /* Release-arm64 */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -477,7 +497,92 @@
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
-			name = Release;
+			name = "Release-arm64";
+		};
+		83E9D13F294B8C3E0091D1FF /* Release-x86_64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = x86_64;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = "Release-x86_64";
+		};
+		83E9D140294B8C3E0091D1FF /* Release-x86_64 */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = 29V29Y67P2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = "Release-x86_64";
 		};
 /* End XCBuildConfiguration section */
 
@@ -486,19 +591,21 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				833786D828F188D900D39D6F /* Debug */,
-				833786D928F188D900D39D6F /* Release */,
+				83E9D13F294B8C3E0091D1FF /* Release-x86_64 */,
+				83E9D13D294B8C310091D1FF /* Release-arm64 */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MAA" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				833786DB28F188D900D39D6F /* Debug */,
-				833786DC28F188D900D39D6F /* Release */,
+				83E9D140294B8C3E0091D1FF /* Release-x86_64 */,
+				83E9D13E294B8C310091D1FF /* Release-arm64 */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 
