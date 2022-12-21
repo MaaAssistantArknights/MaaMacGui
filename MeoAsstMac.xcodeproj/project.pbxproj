@@ -293,7 +293,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\ncp -R ../../3rdparty/resource/Arknights-Tile-Pos $WORKDIR/resource/\ncp -R ../../3rdparty/resource/minitouch $WORKDIR/resource/\ncp -R ../../3rdparty/resource/PaddleOCR $WORKDIR/resource/\ncp -R ../../3rdparty/resource/PaddleCharOCR $WORKDIR/resource/\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
+			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
