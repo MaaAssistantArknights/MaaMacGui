@@ -26,7 +26,6 @@ struct ContentView: View {
         })
         .onAppear {
             Task {
-                await appDelegate.initializeResource()
                 await appDelegate.initializeMaa()
             }
         }

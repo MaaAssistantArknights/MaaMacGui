@@ -7,7 +7,6 @@
 
 import Combine
 import SwiftUI
-import ZIPFoundation
 
 @main
 struct MeoAsstMacApp: App {
@@ -189,7 +188,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
         appLogs.append("目录设置成功")
 
-        guard await Maa.loadResource(path: appDataURL.path) else {
+        guard await Maa.loadResource(path: Bundle.main.resourcePath!) else {
             appLogs.append("资源读取失败")
             return
         }
@@ -342,39 +341,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // MARK: Resource loader
 
-    lazy var resourceArchiveURL = Bundle.main.url(forResource: "resource", withExtension: "zip")!
+    lazy var resourceURL = Bundle.main.resourceURL!.appendingPathComponent("resource")
     lazy var appDataURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-    lazy var resourceURL = appDataURL.appendingPathComponent("resource")
-    lazy var asstLogURL = appDataURL.appendingPathComponent("asst.log")
-
-    func initializeResource() async {
-        maaVersion = await Maa.version
-
-        if !resourceNeedUpdate() {
-            return
-        }
-
-        extractingResource = true
-        do {
-            if FileManager.default.fileExists(atPath: resourceURL.path) {
-                try FileManager.default.removeItem(at: resourceURL)
-            }
-            try FileManager.default.unzipItem(at: resourceArchiveURL, to: appDataURL)
-            let versionFileURL = resourceURL.appendingPathComponent("version.txt")
-            let versionString = maaVersion ?? "UNKNOWN VERSION"
-            try versionString.write(to: versionFileURL, atomically: false, encoding: .utf8)
-        } catch {
-            print(error)
-        }
-        extractingResource = false
-    }
-
-    private func resourceNeedUpdate() -> Bool {
-        let versionFileURL = resourceURL.appendingPathComponent("version.txt")
-        guard let localVersion = try? String(contentsOf: versionFileURL) else { return true }
-        guard let appVersion = maaVersion else { return true }
-        return localVersion.hasSuffix("-dirty") || localVersion != appVersion
-    }
+    lazy var asstLogURL = appDataURL.appendingPathComponent("debug").appendingPathComponent("asst.log")
 }
 
 // MARK: Task configurations

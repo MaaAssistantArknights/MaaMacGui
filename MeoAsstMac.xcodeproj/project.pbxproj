@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		83042C8228F314FF0050B477 /* resource.zip in Resources */ = {isa = PBXBuildFile; fileRef = 83042C8128F314FF0050B477 /* resource.zip */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -22,8 +21,6 @@
 		8337870428F1D9D900D39D6F /* ManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870328F1D9D900D39D6F /* ManageView.swift */; };
 		8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870528F1DA0500D39D6F /* SettingsView.swift */; };
 		8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 8337871128F1DFB900D39D6F /* adb */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		8337871528F1E72E00D39D6F /* VersionUpdate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337871428F1E72E00D39D6F /* VersionUpdate.swift */; };
-		83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 83808F902907CEDE00A52AAA /* ZIPFoundation */; };
 		8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2A28F2314E007DAB9D /* MaaTask.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
@@ -38,6 +35,8 @@
 		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83E9D13B294B74470091D1FF /* FastDeploy.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; };
 		83E9D13C294B74470091D1FF /* FastDeploy.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		83FF5A9A2978563D000AE831 /* AutoPilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FF5A992978563D000AE831 /* AutoPilotView.swift */; };
+		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -86,7 +85,6 @@
 		8337870528F1DA0500D39D6F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		8337871128F1DFB900D39D6F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		8337871228F1DFC100D39D6F /* adb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adb.entitlements; sourceTree = "<group>"; };
-		8337871428F1E72E00D39D6F /* VersionUpdate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionUpdate.swift; sourceTree = "<group>"; };
 		8383EA2A28F2314E007DAB9D /* MaaTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaTask.swift; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
@@ -98,6 +96,8 @@
 		83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FastDeploy.xcframework; path = ../../build/FastDeploy.xcframework; sourceTree = "<group>"; };
 		83E9D133294B74230091D1FF /* OpenCV.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenCV.xcframework; path = ../../build/OpenCV.xcframework; sourceTree = "<group>"; };
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
+		83FF5A992978563D000AE831 /* AutoPilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPilotView.swift; sourceTree = "<group>"; };
+		83FF5A9B2978FE27000AE831 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resource; path = ../../../../resource; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,7 +110,6 @@
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
 				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
-				83808F912907CEDE00A52AAA /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -157,15 +156,8 @@
 				8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */,
 				8383EA2A28F2314E007DAB9D /* MaaTask.swift */,
 				8337870328F1D9D900D39D6F /* ManageView.swift */,
-				8337870528F1DA0500D39D6F /* SettingsView.swift */,
-				83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */,
-				8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */,
-				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
-				8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */,
-				83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */,
-				83D3283228F2F1BE00018D10 /* MallSettingsView.swift */,
-				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
-				8337871428F1E72E00D39D6F /* VersionUpdate.swift */,
+				83FF5A992978563D000AE831 /* AutoPilotView.swift */,
+				83FF5A98297855E5000AE831 /* Settings */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
 				8337870728F1DA7B00D39D6F /* Resources */,
@@ -185,6 +177,7 @@
 		8337870728F1DA7B00D39D6F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				83FF5A9B2978FE27000AE831 /* resource */,
 				83042C8128F314FF0050B477 /* resource.zip */,
 			);
 			path = Resources;
@@ -199,6 +192,21 @@
 			path = ExternalTools;
 			sourceTree = "<group>";
 		};
+		83FF5A98297855E5000AE831 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				8337870528F1DA0500D39D6F /* SettingsView.swift */,
+				83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */,
+				8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */,
+				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
+				8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */,
+				83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */,
+				83D3283228F2F1BE00018D10 /* MallSettingsView.swift */,
+				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -208,7 +216,6 @@
 			buildPhases = (
 				833786C728F188D800D39D6F /* Sources */,
 				833786C828F188D800D39D6F /* Frameworks */,
-				83042C7C28F312630050B477 /* Archive MeoAssistant Resources */,
 				833786C928F188D800D39D6F /* Resources */,
 				83245A0528F467C400ED6D4C /* Embed Frameworks */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
@@ -219,7 +226,6 @@
 			);
 			name = MAA;
 			packageProductDependencies = (
-				83808F902907CEDE00A52AAA /* ZIPFoundation */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -251,7 +257,6 @@
 			);
 			mainGroup = 833786C228F188D800D39D6F;
 			packageReferences = (
-				83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -267,35 +272,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83FF5A9C2978FE27000AE831 /* resource in Resources */,
 				833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */,
 				833786D328F188D900D39D6F /* Assets.xcassets in Resources */,
-				83042C8228F314FF0050B477 /* resource.zip in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		83042C7C28F312630050B477 /* Archive MeoAssistant Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Archive MeoAssistant Resources";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				MeoAsstMac/Resources/resources.zip,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "WORKDIR=$(mktemp -d)\n\ncp -R ../../resource $WORKDIR\n\nditto -c -k --keepParent $WORKDIR/resource $WORKDIR/resource.zip\nmv $WORKDIR/resource.zip MeoAsstMac/Resources/\n\nrm -rf $WORKDIR\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		833786C728F188D800D39D6F /* Sources */ = {
@@ -305,6 +288,7 @@
 				8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */,
 				8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */,
 				833786D128F188D800D39D6F /* ContentView.swift in Sources */,
+				83FF5A9A2978563D000AE831 /* AutoPilotView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */,
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
@@ -315,7 +299,6 @@
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				8337870428F1D9D900D39D6F /* ManageView.swift in Sources */,
-				8337871528F1E72E00D39D6F /* VersionUpdate.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 			);
@@ -608,25 +591,6 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.9.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		83808F902907CEDE00A52AAA /* ZIPFoundation */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 83808F8F2907CEDE00A52AAA /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
-			productName = ZIPFoundation;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 833786C328F188D800D39D6F /* Project object */;
 }
