@@ -339,6 +339,29 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         }
     }
 
+    // MARK: Copilot
+
+    func startCopilotTask(for url: URL, formation: Bool, sss: Bool, times: Int) async -> Bool {
+        if handle == nil {
+            let options = [
+                MaaInstanceOptionKey.TouchMode: touchMode.rawValue
+            ]
+            handle = await Maa(options: options)
+        }
+        guard let handle, await !handle.running else { return false }
+        let config = CopilotConfiguration(filename: url.path, formation: formation)
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = .withoutEscapingSlashes
+        let configData = try! encoder.encode(config)
+        let configString = String(data: configData, encoding: .utf8)!
+        let taskType = sss ? "SSSCopilot" : "Copilot"
+        for _ in 0 ..< times {
+            _ = await handle.appendTask(taskType: taskType, taskConfig: configString)
+        }
+        guard await connectAVD() else { return false }
+        return await startMaa()
+    }
+
     // MARK: Resource loader
 
     lazy var resourceURL = Bundle.main.resourceURL!.appendingPathComponent("resource")
@@ -402,6 +425,11 @@ private struct RoguelikeConfiguration: MaaTaskConfiguration {
     let squad: String
     let roles: String
     let core_char: String
+}
+
+private struct CopilotConfiguration: MaaTaskConfiguration {
+    let filename: String
+    let formation: Bool
 }
 
 // MARK: Date formatter

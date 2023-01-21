@@ -15,7 +15,7 @@ struct ContentView: View {
     var body: some View {
         TabView(selection: $tab) {
             ManageView().tabItem { Text("一键长草") }.tag(1)
-            Text("敬请期待").tabItem { Text("自动战斗") }.tag(2)
+            AutoPilotView().tabItem { Text("自动战斗") }.tag(2)
             Text("敬请期待").tabItem { Text("公招识别") }.tag(3)
             Text("敬请期待").tabItem { Text("仓库识别 beta") }.tag(4)
             SettingsView().tabItem { Text("设置") }.tag(5)

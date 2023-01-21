@@ -9,8 +9,11 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct AutoPilotView: View {
+    @EnvironmentObject private var appDelegate: AppDelegate
     @State private var showImporter = false
     @State private var fileURL: URL?
+    @State private var formation = false
+    @State private var `repeat` = false
     @State private var times = 1
 
     var body: some View {
@@ -20,17 +23,31 @@ struct AutoPilotView: View {
                 bundledPicker().padding()
 
                 Form {
-                    Toggle("自动编队", isOn: $showImporter)
-                    Toggle(isOn: $showImporter) {
-                        TextField("循环次数", value: $times, format: .number).frame(maxWidth: 125)
+                    Toggle("自动编队", isOn: $formation)
+                    Toggle(isOn: $repeat) {
+                        TextField("循环次数", value: $times, format: .number)
+                            .frame(maxWidth: 125)
+                            .disabled(!`repeat`)
                     }
                 }
 
-                Button("开 始") {
-                    //
+                if appDelegate.maaRunning == .value(true) {
+                    Button("停 止") {
+                        Task {
+                            appDelegate.maaRunning = .pending
+                            _ = await appDelegate.stopMaa()
+                            appDelegate.maaRunning = .value(false)
+                        }
+                    }
+                    .padding()
+                    .disabled(appDelegate.maaRunning == .pending)
+                } else {
+                    Button("开 始") {
+                        startCopilot()
+                    }
+                    .padding()
+                    .disabled(!maaAvailable)
                 }
-                .padding()
-                .disabled(pilot == nil)
 
                 Spacer()
 
@@ -143,15 +160,21 @@ struct AutoPilotView: View {
         }
 
         if let toolmen = pilot.tool_men {
-            Text(toolmen.map { "\($1)\($0)" }.joined(separator: ", "))
+            Text(toolmen.sorted { $0.key < $1.key }.map { "\($1)\($0)" }.joined(separator: ", "))
         }
     }
 
     // MARK: - Methods
 
     private func startCopilot() {
-//        guard let pilot else { return }
-//        let configuration = CopilotConfiguration();
+        guard let fileURL, let pilot else { return }
+        let isSSS = pilot.type == "SSS"
+        let times = self.repeat ? self.times : 1
+        Task {
+            appDelegate.maaRunning = .pending
+            let success = await appDelegate.startCopilotTask(for: fileURL, formation: true, sss: isSSS, times: times)
+            appDelegate.maaRunning = .value(success)
+        }
     }
 
     // MARK: - Computed properties
@@ -173,6 +196,10 @@ struct AutoPilotView: View {
     private var maaResourceURL: URL {
         Bundle.main.resourceURL!.appendingPathComponent("resource")
     }
+
+    private var maaAvailable: Bool {
+        pilot != nil && appDelegate.maaRunning == .value(false)
+    }
 }
 
 struct AutoPilotView_Previews: PreviewProvider {
@@ -190,6 +217,7 @@ struct MaaAutoPilot: Codable {
     let doc: Documentation?
 
     /// - Tag: SSS
+    let type: String?
     let equipment: [String]?
     let strategy: String?
     let tool_men: [String: Int]?
