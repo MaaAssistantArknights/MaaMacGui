@@ -16,7 +16,6 @@ struct MaaTask: Codable {
         case Recruit
         case Infrast
         case Fight
-        case Visit
         case Mall
         case Award
         case Roguelike
@@ -27,7 +26,6 @@ struct MaaTask: Codable {
         MaaTask(key: .Recruit, enabled: true),
         MaaTask(key: .Infrast, enabled: true),
         MaaTask(key: .Fight, enabled: true),
-        MaaTask(key: .Visit, enabled: true),
         MaaTask(key: .Mall, enabled: true),
         MaaTask(key: .Award, enabled: true),
         MaaTask(key: .Roguelike, enabled: false)
@@ -51,8 +49,6 @@ extension MaaTask.TaskKey: CustomStringConvertible {
             return NSLocalizedString("基建换班", comment: "")
         case .Fight:
             return NSLocalizedString("刷理智", comment: "")
-        case .Visit:
-            return NSLocalizedString("访问好友", comment: "")
         case .Mall:
             return NSLocalizedString("收取信用及购物", comment: "")
         case .Award:

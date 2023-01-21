@@ -316,8 +316,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                                       medicine: useSanityPotion ? sanityPotion : nil,
                                       stone: useOriginitePrime ? originitePrime : nil,
                                       times: limitPerformBattles ? performBattles : nil)
-        case .Visit:
-            return VisitConfiguration()
         case .Mall:
             let buyFirst = highPriority.split(separator: ";").map { $0.trimmingCharacters(in: .whitespaces) }
             let buyBlacklist = blacklist.split(separator: ";").map { $0.trimmingCharacters(in: .whitespaces) }
@@ -404,8 +402,6 @@ private struct InfrastConfiguration: MaaTaskConfiguration {
     let dorm_notstationed_enabled: Bool
     let dorm_trust_enabled: Bool
 }
-
-private struct VisitConfiguration: MaaTaskConfiguration {}
 
 private struct MallConfiguration: MaaTaskConfiguration {
     let shopping: Bool
