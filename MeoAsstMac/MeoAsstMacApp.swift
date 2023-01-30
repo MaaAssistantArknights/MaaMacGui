@@ -337,6 +337,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                                           squad: roguelikeStartingSquad,
                                           roles: roguelikeStartingRoles,
                                           core_char: roguelikeCoreChar)
+        case .ReclamationAlgorithm:
+            return ReclamationConfiguration()
         }
     }
 
@@ -431,6 +433,8 @@ private struct CopilotConfiguration: MaaTaskConfiguration {
     let filename: String
     let formation: Bool
 }
+
+private struct ReclamationConfiguration: MaaTaskConfiguration {}
 
 // MARK: Date formatter
 

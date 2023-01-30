@@ -31,6 +31,7 @@ struct ManageView: View {
                         }
                     }
                     .frame(maxHeight: 12 * rowHeight)
+                    .onAppear { migrateNewTasks(tasks: &appDelegate.tasks) }
                     HStack {
                         Button {
                             for i in appDelegate.tasks.indices {
@@ -143,6 +144,19 @@ struct ManageView: View {
             .frame(maxWidth: .infinity)
         }
         .padding()
+    }
+    
+    // MARK: - Methods
+    
+    private func migrateNewTasks(tasks: inout [MaaTask]) {
+        tasks.removeAll { task in
+            !MaaTask.defaults.map(\.key).contains(task.key)
+        }
+        
+        let newTasks = MaaTask.defaults.filter { task in
+            !tasks.map(\.key).contains(task.key)
+        }
+        tasks.append(contentsOf: newTasks)
     }
     
     // MARK: Custom bindings

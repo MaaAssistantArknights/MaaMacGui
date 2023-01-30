@@ -19,6 +19,7 @@ struct MaaTask: Codable {
         case Mall
         case Award
         case Roguelike
+        case ReclamationAlgorithm
     }
 
     static let defaults = [
@@ -28,7 +29,8 @@ struct MaaTask: Codable {
         MaaTask(key: .Fight, enabled: true),
         MaaTask(key: .Mall, enabled: true),
         MaaTask(key: .Award, enabled: true),
-        MaaTask(key: .Roguelike, enabled: false)
+        MaaTask(key: .Roguelike, enabled: false),
+        MaaTask(key: .ReclamationAlgorithm, enabled: false)
     ]
 }
 
@@ -55,6 +57,8 @@ extension MaaTask.TaskKey: CustomStringConvertible {
             return NSLocalizedString("领取日常奖励", comment: "")
         case .Roguelike:
             return NSLocalizedString("自动肉鸽", comment: "")
+        case .ReclamationAlgorithm:
+            return NSLocalizedString("自动生息演算", comment: "")
         }
     }
 }
