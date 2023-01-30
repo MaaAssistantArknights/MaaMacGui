@@ -150,6 +150,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     @AppStorage("MAAConnectionProfile") var connectionProfile = "CompatMac"
 
+    @AppStorage("MAAUseAdbLite") var useAdbLite = true
+
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch
 
     // MARK: Startup settings
@@ -209,7 +211,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     func setupMaa() async -> Bool {
         let options = [
-            MaaInstanceOptionKey.TouchMode: touchMode.rawValue
+            MaaInstanceOptionKey.TouchMode: touchMode.rawValue,
+            MaaInstanceOptionKey.AdbLiteEnabled: useAdbLite ? "1" : "0"
         ]
         handle = await Maa(options: options)
         guard await connectAVD() else { return false }
@@ -342,7 +345,8 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     func startCopilotTask(for url: URL, formation: Bool, sss: Bool, times: Int) async -> Bool {
         if handle == nil {
             let options = [
-                MaaInstanceOptionKey.TouchMode: touchMode.rawValue
+                MaaInstanceOptionKey.TouchMode: touchMode.rawValue,
+                MaaInstanceOptionKey.AdbLiteEnabled: useAdbLite ? "1" : "0"
             ]
             handle = await Maa(options: options)
         }

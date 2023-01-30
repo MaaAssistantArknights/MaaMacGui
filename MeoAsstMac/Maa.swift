@@ -95,4 +95,6 @@ public extension Notification.Name {
 public enum MaaInstanceOptionKey: Int32 {
     case Invalid = 0
     case TouchMode = 2
+    case DeploymentWithPause = 3
+    case AdbLiteEnabled = 4
 }

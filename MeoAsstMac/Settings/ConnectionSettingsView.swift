@@ -14,6 +14,10 @@ struct ConnectionSettingsView: View {
     使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。
     """
 
+    private let adbLiteInfo = """
+    实验性功能，理论性能更好。
+    """
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -22,8 +26,18 @@ struct ConnectionSettingsView: View {
             }
 
             Toggle(isOn: allowGzip) {
-                Text("允许使用 Gzip")
-                Text(gzipInfo)
+                VStack(alignment: .leading) {
+                    Text("允许使用 Gzip")
+                    Text(gzipInfo).font(.caption).foregroundColor(.secondary)
+                }
+            }
+            .padding(.top)
+
+            Toggle(isOn: $appDelegate.useAdbLite) {
+                VStack(alignment: .leading) {
+                    Text("使用 adb-lite 连接")
+                    Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
+                }
             }
             .padding(.top)
 
