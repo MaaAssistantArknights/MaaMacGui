@@ -172,7 +172,7 @@ struct AutoPilotView: View {
         let times = self.repeat ? self.times : 1
         Task {
             appDelegate.maaRunning = .pending
-            let success = await appDelegate.startCopilotTask(for: fileURL, formation: true, sss: isSSS, times: times)
+            let success = await appDelegate.startCopilotTask(for: fileURL, formation: formation, sss: isSSS, times: times)
             appDelegate.maaRunning = .value(success)
         }
     }

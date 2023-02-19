@@ -58,7 +58,7 @@ extension MaaTask.TaskKey: CustomStringConvertible {
         case .Roguelike:
             return NSLocalizedString("自动肉鸽", comment: "")
         case .ReclamationAlgorithm:
-            return NSLocalizedString("自动生息演算", comment: "")
+            return NSLocalizedString("生息演算", comment: "")
         }
     }
 }
