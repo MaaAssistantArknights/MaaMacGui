@@ -10,8 +10,6 @@
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		831D248C293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */; };
-		831D248D293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D128F188D800D39D6F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786D028F188D800D39D6F /* ContentView.swift */; };
@@ -21,6 +19,8 @@
 		8337870428F1D9D900D39D6F /* ManageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870328F1D9D900D39D6F /* ManageView.swift */; };
 		8337870628F1DA0500D39D6F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870528F1DA0500D39D6F /* SettingsView.swift */; };
 		8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 8337871128F1DFB900D39D6F /* adb */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		833F7B2A29A34C440001DB2D /* MaaDerpLearning.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */; };
+		833F7B2B29A34C440001DB2D /* MaaDerpLearning.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2A28F2314E007DAB9D /* MaaTask.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
@@ -33,8 +33,6 @@
 		83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D133294B74230091D1FF /* OpenCV.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; };
 		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		83E9D13B294B74470091D1FF /* FastDeploy.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; };
-		83E9D13C294B74470091D1FF /* FastDeploy.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83FF5A9A2978563D000AE831 /* AutoPilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83FF5A992978563D000AE831 /* AutoPilotView.swift */; };
 		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
 /* End PBXBuildFile section */
@@ -46,11 +44,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				833F7B2B29A34C440001DB2D /* MaaDerpLearning.xcframework in Embed Frameworks */,
 				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
 				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
-				83E9D13C294B74470091D1FF /* FastDeploy.xcframework in Embed Frameworks */,
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
-				831D248D293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -69,10 +66,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		83042C8128F314FF0050B477 /* resource.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; path = resource.zip; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
-		831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Paddle2ONNX.xcframework; path = ../../build/Paddle2ONNX.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MAA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
@@ -85,6 +80,7 @@
 		8337870528F1DA0500D39D6F /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		8337871128F1DFB900D39D6F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		8337871228F1DFC100D39D6F /* adb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adb.entitlements; sourceTree = "<group>"; };
+		833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaDerpLearning.xcframework; path = ../../build/MaaDerpLearning.xcframework; sourceTree = "<group>"; };
 		8383EA2A28F2314E007DAB9D /* MaaTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaTask.swift; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
@@ -93,7 +89,6 @@
 		83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaInfrastFacility.swift; sourceTree = "<group>"; };
 		83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastSettingsView.swift; sourceTree = "<group>"; };
 		83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoguelikeSettingsView.swift; sourceTree = "<group>"; };
-		83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = FastDeploy.xcframework; path = ../../build/FastDeploy.xcframework; sourceTree = "<group>"; };
 		83E9D133294B74230091D1FF /* OpenCV.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenCV.xcframework; path = ../../build/OpenCV.xcframework; sourceTree = "<group>"; };
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83FF5A992978563D000AE831 /* AutoPilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPilotView.swift; sourceTree = "<group>"; };
@@ -105,8 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83E9D13B294B74470091D1FF /* FastDeploy.xcframework in Frameworks */,
-				831D248C293C9CEB005AC1CE /* Paddle2ONNX.xcframework in Frameworks */,
+				833F7B2A29A34C440001DB2D /* MaaDerpLearning.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
 				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
@@ -119,11 +113,10 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				83E9D131294B73DF0091D1FF /* FastDeploy.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
+				833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */,
 				83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */,
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
-				831D248B293C9CEB005AC1CE /* Paddle2ONNX.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -178,7 +171,6 @@
 			isa = PBXGroup;
 			children = (
 				83FF5A9B2978FE27000AE831 /* resource */,
-				83042C8128F314FF0050B477 /* resource.zip */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
