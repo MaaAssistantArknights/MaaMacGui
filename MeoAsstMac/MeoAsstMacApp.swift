@@ -308,7 +308,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
                                         recruitment_time: recruitmentTime)
         case .Infrast:
             return InfrastConfiguration(mode: infrastMode,
-                                        facility: facilities.map(\.name.rawValue),
+                                        facility: facilities.filter { $0.enabled }.map(\.name.rawValue),
                                         drones: droneUsage.rawValue,
                                         threshold: Float(dormThreshold),
                                         replenish: originiumReplenishment,
