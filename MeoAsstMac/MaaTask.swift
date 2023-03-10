@@ -30,7 +30,7 @@ struct MaaTask: Codable {
         MaaTask(key: .Mall, enabled: true),
         MaaTask(key: .Award, enabled: true),
         MaaTask(key: .Roguelike, enabled: false),
-        MaaTask(key: .ReclamationAlgorithm, enabled: false)
+//        MaaTask(key: .ReclamationAlgorithm, enabled: false)
     ]
 }
 
