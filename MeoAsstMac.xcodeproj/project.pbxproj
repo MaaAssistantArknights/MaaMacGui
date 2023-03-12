@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
+		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -66,6 +68,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
+		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
@@ -81,6 +85,7 @@
 		8337871128F1DFB900D39D6F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		8337871228F1DFC100D39D6F /* adb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adb.entitlements; sourceTree = "<group>"; };
 		833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaDerpLearning.xcframework; path = ../../build/MaaDerpLearning.xcframework; sourceTree = "<group>"; };
+		8368855029BD851F00C5B999 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		8383EA2A28F2314E007DAB9D /* MaaTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaTask.swift; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
@@ -100,6 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
 				833F7B2A29A34C440001DB2D /* MaaDerpLearning.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
@@ -126,6 +132,7 @@
 			children = (
 				8337871028F1DF4A00D39D6F /* ExternalTools */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
+				8368855029BD851F00C5B999 /* Version.xcconfig */,
 				833786CC28F188D800D39D6F /* Products */,
 				83245A0128F467C300ED6D4C /* Frameworks */,
 			);
@@ -150,8 +157,10 @@
 				8383EA2A28F2314E007DAB9D /* MaaTask.swift */,
 				8337870328F1D9D900D39D6F /* ManageView.swift */,
 				83FF5A992978563D000AE831 /* AutoPilotView.swift */,
+				830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
+				830C3D1F29BC86EE00B13A9F /* Info.plist */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D428F188D900D39D6F /* Preview Content */,
@@ -218,6 +227,7 @@
 			);
 			name = MAA;
 			packageProductDependencies = (
+				830C3D1B29BC7D8600B13A9F /* Sparkle */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -249,6 +259,7 @@
 			);
 			mainGroup = 833786C228F188D800D39D6F;
 			packageReferences = (
+				830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -288,6 +299,7 @@
 				8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */,
 				83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */,
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
+				830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				8337870428F1D9D900D39D6F /* ManageView.swift in Sources */,
@@ -363,6 +375,7 @@
 		};
 		833786DB28F188D900D39D6F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -370,19 +383,18 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
 				DEVELOPMENT_TEAM = 29V29Y67P2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MeoAsstMac/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -448,6 +460,7 @@
 		};
 		83E9D13E294B8C310091D1FF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -456,7 +469,6 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
@@ -464,12 +476,12 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MeoAsstMac/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -500,6 +512,25 @@
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		830C3D1B29BC7D8600B13A9F /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 833786C328F188D800D39D6F /* Project object */;
 }

@@ -6,11 +6,17 @@
 //
 
 import Combine
+import Sparkle
 import SwiftUI
 
 @main
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
+    private let updaterController: SPUStandardUpdaterController
+
+    init() {
+        updaterController = .init(startingUpdater: false, updaterDelegate: nil, userDriverDelegate: nil)
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -18,6 +24,9 @@ struct MeoAsstMacApp: App {
         }
         .commands {
             CommandGroup(replacing: .newItem, addition: {})
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesView(updater: updaterController.updater)
+            }
         }
     }
 }
