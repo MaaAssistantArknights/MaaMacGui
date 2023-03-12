@@ -15,7 +15,7 @@ struct MeoAsstMacApp: App {
     private let updaterController: SPUStandardUpdaterController
 
     init() {
-        updaterController = .init(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+        updaterController = .init(startingUpdater: true, updaterDelegate: MaaUpdaterDelegate(), userDriverDelegate: nil)
     }
 
     var body: some Scene {
@@ -27,6 +27,26 @@ struct MeoAsstMacApp: App {
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
             }
+        }
+
+        Settings {
+            TabView {
+                UpdaterSettingsView(updater: updaterController.updater).tabItem {
+                    Label("更新设置", systemImage: "square.and.arrow.down")
+                }
+            }.frame(minWidth: 320, minHeight: 240)
+        }
+    }
+}
+
+final class MaaUpdaterDelegate: NSObject, SPUUpdaterDelegate {
+    @AppStorage("MaaUseBetaChannel") private var useBetaChannel = false
+
+    func allowedChannels(for updater: SPUUpdater) -> Set<String> {
+        if useBetaChannel {
+            return Set(["beta"])
+        } else {
+            return Set()
         }
     }
 }

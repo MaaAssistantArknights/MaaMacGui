@@ -31,6 +31,7 @@
 		83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */; };
 		83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */; };
 		83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */; };
+		83DD50B729BE393C000E84E7 /* UpdaterSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */; };
 		83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D133294B74230091D1FF /* OpenCV.xcframework */; };
 		83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D133294B74230091D1FF /* OpenCV.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; };
@@ -94,6 +95,7 @@
 		83D3283428F2F5CE00018D10 /* MaaInfrastFacility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaInfrastFacility.swift; sourceTree = "<group>"; };
 		83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastSettingsView.swift; sourceTree = "<group>"; };
 		83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoguelikeSettingsView.swift; sourceTree = "<group>"; };
+		83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdaterSettingsView.swift; sourceTree = "<group>"; };
 		83E9D133294B74230091D1FF /* OpenCV.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenCV.xcframework; path = ../../build/OpenCV.xcframework; sourceTree = "<group>"; };
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83FF5A992978563D000AE831 /* AutoPilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoPilotView.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				8337870328F1D9D900D39D6F /* ManageView.swift */,
 				83FF5A992978563D000AE831 /* AutoPilotView.swift */,
 				830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */,
+				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				830C3D1F29BC86EE00B13A9F /* Info.plist */,
@@ -293,6 +296,7 @@
 				833786D128F188D800D39D6F /* ContentView.swift in Sources */,
 				83FF5A9A2978563D000AE831 /* AutoPilotView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
+				83DD50B729BE393C000E84E7 /* UpdaterSettingsView.swift in Sources */,
 				83D3283528F2F5CE00018D10 /* MaaInfrastFacility.swift in Sources */,
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				8383EA2B28F2314E007DAB9D /* MaaTask.swift in Sources */,
