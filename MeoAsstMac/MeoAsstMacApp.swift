@@ -15,7 +15,7 @@ struct MeoAsstMacApp: App {
     private let updaterController: SPUStandardUpdaterController
 
     init() {
-        updaterController = .init(startingUpdater: false, updaterDelegate: nil, userDriverDelegate: nil)
+        updaterController = .init(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
     }
 
     var body: some Scene {
