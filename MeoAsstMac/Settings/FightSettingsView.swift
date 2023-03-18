@@ -34,7 +34,7 @@ struct FightSettingsView: View {
                 Text("CE-6").tag("CE-6")
                 Text("AP-5").tag("AP-5")
                 Text("CA-5").tag("CA-5")
-                Text("LS-6").tag("LS-5")
+                Text("LS-6").tag("LS-6")
                 Text("剿灭模式").tag("Annihilation")
             }
             Picker("剩余理智", selection: $appDelegate.remainingSanityStage) {
@@ -43,7 +43,7 @@ struct FightSettingsView: View {
                 Text("龙门币 CE-6").tag("CE-6")
                 Text("红票 AP-5").tag("AP-5")
                 Text("技能书 CA-5").tag("CA-5")
-                Text("经验书 LS-6").tag("LS-5")
+                Text("经验书 LS-6").tag("LS-6")
                 Text("剿灭模式").tag("Annihilation")
             }
             Text("标注 * 的选项重启后不保存").font(.footnote)
