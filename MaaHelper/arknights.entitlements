@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<key>com.apple.security.assets.movies.read-write</key>
+	<true/>
+	<key>com.apple.security.assets.music.read-write</key>
+	<true/>
+	<key>com.apple.security.assets.pictures.read-write</key>
+	<true/>
+	<key>com.apple.security.device.audio-input</key>
+	<true/>
+	<key>com.apple.security.device.bluetooth</key>
+	<true/>
+	<key>com.apple.security.device.camera</key>
+	<true/>
+	<key>com.apple.security.device.microphone</key>
+	<true/>
+	<key>com.apple.security.device.usb</key>
+	<true/>
+	<key>com.apple.security.files.downloads.read-write</key>
+	<true/>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+	<key>com.apple.security.personal-information.addressbook</key>
+	<true/>
+	<key>com.apple.security.personal-information.calendars</key>
+	<true/>
+	<key>com.apple.security.personal-information.location</key>
+	<true/>
+	<key>com.apple.security.print</key>
+	<true/>
+	<key>com.apple.security.temporary-exception.sbpl</key>
+	<array>
+		<string>(deny process-fork)</string>
+		<string>(deny file* file-read* file-read-metadata file-ioctl)</string>
+		<string>(allow network* ipc-posix*)</string>
+		<string>(allow file* file-read* file-write* file-write-data file-read-metadata file-ioctl
+				(subpath &quot;/Users/{NSUserName}/Library/Containers/io.playcover.PlayCover&quot;))</string>
+		<string>(allow file* file-read*
+				(subpath &quot;/Users/{NSUserName}/Library/Group Containers/&quot;))</string>
+		<string>(allow user-preference-read
+				(preference-domain &quot;.GlobalPreferences&quot;))</string>
+		<string>(allow user-preference-write
+				(preference-domain &quot;.GlobalPreferences&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl 
+				(literal &quot;/usr/lib/libobjc-trampolines.dylib&quot;))</string>
+		<string>(allow file-read-metadata
+				(subpath &quot;/private/var/db/timezone/&quot;))</string>
+		<string>(allow file* file-read* file-read-data file-read-metadata file-ioctl file-write* file-write-data
+				(literal &quot;/var/folders/kd/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/Users/{NSUserName}/Library/Containers/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/Users/{NSUserName}/Library/Group Containers/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/Users/{NSUserName}/Library/Spelling/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/usr/share/icu/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/System/Library/CoreServices/SystemVersion.bundle&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/System/&quot;))</string>
+		<string>(allow file-read-metadata file-ioctl
+				(literal &quot;/private/var/db/.AppleSetupDone&quot;))</string>
+		<string>(allow file* file-read* file-read-data file-read-metadata file-ioctl file-write* file-write-data
+				(subpath &quot;/private/var/folders/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(subpath &quot;/private/var/db/timezone/tz/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/private/var/db/nsurlstoraged/dafsaData.bin&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/private/var/folders/&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/Library/Preferences/Logging/com.apple.diagnosticd.filter.plist&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/Library/Caches/com.apple.iconservices.store&quot;))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/Library/Apple/Library/Bundles/InputAlternatives.bundle&quot;))</string>
+		<string>(allow file-read*
+				(literal &quot;/dev/autofs_nowait&quot;)
+				(literal &quot;/dev/random&quot;)
+				(literal &quot;/dev/urandom&quot;))</string>
+		<string>(allow file-read* file-write-data
+				(literal &quot;/dev/null&quot;)
+				(literal &quot;/dev/zero&quot;))</string>
+		<string>(allow file-read-data (regex #&quot;^/private/var/db/mds/&quot;))</string>
+		<string>(allow file-ioctl file* file-read* file-read-data file-read-metadata
+				(subpath &quot;/private/var/db/mds/system/&quot;))</string>
+		<string>(allow file-read-metadata file-read* file-write*
+				(regex #&quot;^/private/var/db/mds/[0-9]+(/|$)&quot;))</string>
+		<string>(allow file* file-read* file-read-data file-read-metadata file-ioctl file-write* file-write-data
+				(subpath &quot;/private/tmp&quot;))</string>
+		<string>(allow file-read-data
+				(regex #&quot;^/Users/[^/]+/Library/Preferences/com.apple.CloudKit.plist&quot;))</string>
+		<string>(allow file-read-metadata file-read* file-read-data
+				(literal &quot;/usr/share/langid/langid.inv&quot;))</string>
+		<string>(allow file-map-executable
+				(subpath &quot;/Library/Apple/System/Library/Frameworks&quot;)
+				(subpath &quot;/Library/Apple/System/Library/PrivateFrameworks&quot;)
+				(subpath &quot;/System/Library/Frameworks&quot;)
+				(subpath &quot;/System/Library/PrivateFrameworks&quot;)
+				(subpath &quot;/System/iOSSupport/System/Library/Frameworks&quot;)
+				(subpath &quot;/System/iOSSupport/System/Library/PrivateFrameworks&quot;)
+				(subpath &quot;/usr/lib&quot;))
+				(with-filter (system-attribute apple-internal)
+				(allow file-map-executable
+				(subpath &quot;/AppleInternal/Library/Frameworks&quot;)))</string>
+		<string>(allow file-read-metadata
+				(literal &quot;/private/etc/localtime&quot;))</string>
+		<string>(allow file-read-metadata
+				(path-ancestors &quot;/System/Volumes/Data/private&quot;))</string>
+		<string>(allow file-read*
+				(literal &quot;/&quot;))</string>
+		<string>(allow file-read* file-read-metadata
+				(subpath &quot;/Library/Apple/System&quot;)
+				(subpath &quot;/Library/Filesystems/NetFSPlugins&quot;)
+				(subpath &quot;/Library/Preferences/Logging&quot;)
+				(subpath &quot;/System&quot;)
+				(subpath &quot;/private/var/db/dyld&quot;)
+				(subpath &quot;/private/var/db/timezone&quot;)
+				(subpath &quot;/usr/lib&quot;))</string>
+		<string>(with-filter (system-attribute apple-internal)
+				(allow file-read*
+				(subpath &quot;/AppleInternal/Library/Frameworks&quot;)))</string>
+		<string>(allow file-read*
+				(literal &quot;/dev/autofs_nowait&quot;)
+				(literal &quot;/dev/random&quot;)
+				(literal &quot;/dev/urandom&quot;)
+				(literal &quot;/private/etc/master.passwd&quot;)
+				(literal &quot;/private/etc/passwd&quot;)
+				(literal &quot;/private/etc/protocols&quot;)
+				(literal &quot;/private/etc/services&quot;))</string>
+		<string>(allow file-read* file-write-data file-ioctl
+				(literal &quot;/dev/dtracehelper&quot;))</string>
+		<string>(with-filter (system-attribute apple-internal)
+				(allow file-read* file-map-executable
+				(subpath &quot;/usr/local/lib/sanitizers&quot;)
+				(subpath &quot;/usr/appleinternal/lib/sanitizers&quot;)))</string>
+		<string>(with-filter (system-attribute apple-internal)
+				(allow file-read*
+				(literal &quot;/usr/local/share/posix_spawn_filtering_rules&quot;))) 
+				(with-filter (system-attribute apple-internal)
+				(allow file-read*
+				(subpath &quot;/AppleInternal/Library/Preferences/Logging&quot;))
+				(allow file-read* file-map-executable
+				(subpath &quot;/usr/local/lib/log&quot;)))</string>
+		<string>(allow file* file-read* file-read-metadata file-ioctl
+				(literal &quot;/System/Library/Frameworks/Foundation.framework/Foundation&quot;))</string>
+	</array>
+</dict>
+</plist>

@@ -8,5 +8,16 @@
 	<string>https://maa-release.hguandl.com/macos/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>M7+pTisnfp6xtF7c6MK5ggzCD/5m0Xxvh0IGRVa/0TM=</string>
+	<key>UTImportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeIcons</key>
+			<dict/>
+			<key>UTTypeIdentifier</key>
+			<string>com.apple.itunes.ipa</string>
+			<key>UTTypeTagSpecification</key>
+			<dict/>
+		</dict>
+	</array>
 </dict>
 </plist>

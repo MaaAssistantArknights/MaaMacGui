@@ -11,6 +11,8 @@ struct ManageView: View {
     @EnvironmentObject private var appDelegate: AppDelegate
     
     @Environment(\.defaultMinListRowHeight) private var rowHeight
+    
+    @State private var showImport = false
         
     let dateFormatter: DateFormatter = {
         let df = DateFormatter()
@@ -119,6 +121,25 @@ struct ManageView: View {
                         NSWorkspace.shared.activateFileViewerSelecting([url])
                     } else {
                         NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: appDelegate.appDataURL.path)
+                    }
+                }
+                
+                Button("安装原生App") {
+                    showImport = true
+                }
+                .fileImporter(isPresented: $showImport, allowedContentTypes: [.fileURL, .init(importedAs: "com.apple.itunes.ipa")]) { result in
+                    guard case let .success(url) = result else {
+                        return
+                    }
+                    
+                    let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MaaHelper")
+                    connectionToService.remoteObjectInterface = NSXPCInterface(with: MaaHelperProtocol.self)
+                    connectionToService.resume()
+
+                    if let proxy = connectionToService.remoteObjectProxy as? MaaHelperProtocol {
+                        proxy.installApp(url: url) { result in
+                            NSLog("Result string was: \(result)")
+                        }
                     }
                 }
             }
