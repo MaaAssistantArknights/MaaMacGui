@@ -72,7 +72,8 @@ struct ConnectionSettingsView_Previews: PreviewProvider {
 }
 
 enum MaaTouchMode: String, CaseIterable {
+    case adb
     case minitouch
     case maatouch
-    case adb
+    case MacPlayTools
 }
