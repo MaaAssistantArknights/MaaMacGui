@@ -13,9 +13,10 @@ import SwiftUI
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     private let updaterController: SPUStandardUpdaterController
+    private let updaterDelegate = MaaUpdaterDelegate()
 
     init() {
-        updaterController = .init(startingUpdater: true, updaterDelegate: MaaUpdaterDelegate(), userDriverDelegate: nil)
+        updaterController = .init(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
     }
 
     var body: some Scene {
