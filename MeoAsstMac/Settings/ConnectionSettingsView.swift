@@ -18,6 +18,10 @@ struct ConnectionSettingsView: View {
     实验性功能，理论性能更好。
     """
 
+    private let playToolsInfo = try! AttributedString(markdown: """
+    PlayTools 的使用请参考[文档](https://maa.plus/docs/1.4-Mac%E6%A8%A1%E6%8B%9F%E5%99%A8%E6%94%AF%E6%8C%81.html)。
+    """)
+
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
@@ -47,6 +51,10 @@ struct ConnectionSettingsView: View {
                 }
             }
             .padding(.top)
+
+            if appDelegate.touchMode == .MacPlayTools {
+                Text(playToolsInfo).font(.caption).foregroundColor(.secondary)
+            }
         }
         .padding(.horizontal)
     }
