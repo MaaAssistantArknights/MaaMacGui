@@ -12,13 +12,16 @@ struct AutoPilotView: View {
     @EnvironmentObject private var appDelegate: AppDelegate
     @State private var showImporter = false
     @State private var fileURL: URL?
+    @State private var prtsURL: String = ""
     @State private var formation = false
     @State private var `repeat` = false
     @State private var times = 1
+    let prefix = "maa://"
 
     var body: some View {
         HStack {
             VStack {
+                prtsInput().padding()
                 fileButton().padding()
                 bundledPicker().padding()
 
@@ -70,6 +73,18 @@ struct AutoPilotView: View {
                 }
             }
             .frame(maxWidth: .infinity)
+        }
+    }
+
+    @ViewBuilder private func prtsInput() -> some View {
+        HStack {
+            Text("神秘代码：")
+            TextField(prefix, text: $prtsURL, onCommit: {
+                if self.prtsURL.hasPrefix(prefix) {
+                    validateAndJoin2Url()
+                    getPrtsCopilotData()
+                }
+            })
         }
     }
 
@@ -175,6 +190,54 @@ struct AutoPilotView: View {
             let success = await appDelegate.startCopilotTask(for: fileURL, formation: formation, sss: isSSS, times: times)
             appDelegate.maaRunning = .value(success)
         }
+    }
+
+    private func validateAndJoin2Url() {
+        let str = self.prtsURL
+        if str.hasPrefix(prefix) {
+            let index = str.index(str.startIndex, offsetBy: prefix.count)
+            let suffix = str[index...]
+            self.prtsURL = "https://prts.maa.plus/copilot/get/\(suffix)"
+        }
+    }
+
+    private func getPrtsCopilotData() {
+        guard let url = URL(string: self.prtsURL) else {
+            return
+        }
+        
+        let task = URLSession.shared.dataTask(with: url) { (replay, response, error) in
+            guard let replay = replay, error == nil else {
+                return
+            }
+
+            // 解析得到的 JSON 数据
+            do {
+                let json = try JSONSerialization.jsonObject(with: replay, options: []) as! [String: Any]
+                if let statusCode = json["status_code"] as? Int {
+                    if statusCode != 200 {
+                        return
+                    }
+                }
+
+                if let data = json["data"] as? [String: Any],
+                   let content = data["content"] as? String {
+                    do {
+                        let temporaryDirectory = NSTemporaryDirectory()
+                        let fileUrl = URL(fileURLWithPath: temporaryDirectory).appendingPathComponent("copilot.json")
+                        try content.write(to: fileUrl, atomically: true, encoding: .utf8)
+                        fileURL = fileUrl
+                    } catch {
+                        return
+                    }
+                } else {
+                    return
+                }
+            } catch {
+                return
+            }
+        }
+        task.resume()
     }
 
     // MARK: - Computed properties
