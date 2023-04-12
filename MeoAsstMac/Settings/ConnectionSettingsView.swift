@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ConnectionSettingsView: View {
-    @EnvironmentObject private var appDelegate: AppDelegate
+    @EnvironmentObject private var viewModel: MAAViewModel
 
     private let gzipInfo = """
     使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。
@@ -24,49 +24,49 @@ struct ConnectionSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("ADB地址")
-                TextField("", text: $appDelegate.connectionAddress)
-            }
-
-            Toggle(isOn: allowGzip) {
-                VStack(alignment: .leading) {
-                    Text("允许使用 Gzip")
-                    Text(gzipInfo).font(.caption).foregroundColor(.secondary)
-                }
-            }
-            .padding(.top)
-
-            Toggle(isOn: $appDelegate.useAdbLite) {
-                VStack(alignment: .leading) {
-                    Text("使用 adb-lite 连接")
-                    Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
-                }
-            }
-            .padding(.top)
-
-            Picker("触控模式", selection: $appDelegate.touchMode) {
+            Picker("触控模式", selection: $viewModel.touchMode) {
                 ForEach(MaaTouchMode.allCases, id: \.self) { mode in
                     Text(mode.rawValue)
                 }
             }
-            .padding(.top)
 
-            if appDelegate.touchMode == .MacPlayTools {
+            if viewModel.touchMode == .MacPlayTools {
                 Text(playToolsInfo).font(.caption).foregroundColor(.secondary)
             }
+
+            HStack {
+                Text("连接地址")
+                TextField("", text: $viewModel.connectionAddress)
+            }
+
+            Divider()
+
+            Toggle(isOn: allowGzip) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("允许使用 Gzip")
+                    Text(gzipInfo).font(.caption).foregroundColor(.secondary)
+                }
+            }
+
+            Toggle(isOn: $viewModel.useAdbLite) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("使用 adb-lite 连接")
+                    Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
+                }
+            }
         }
-        .padding(.horizontal)
+        .padding()
+        .animation(.default, value: viewModel.touchMode)
     }
 
     private var allowGzip: Binding<Bool> {
         Binding {
-            appDelegate.connectionProfile == "Compatible"
+            viewModel.connectionProfile == "Compatible"
         } set: { allow in
             if allow {
-                appDelegate.connectionProfile = "Compatible"
+                viewModel.connectionProfile = "Compatible"
             } else {
-                appDelegate.connectionProfile = "CompatMac"
+                viewModel.connectionProfile = "CompatMac"
             }
         }
     }
@@ -75,7 +75,7 @@ struct ConnectionSettingsView: View {
 struct ConnectionSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         ConnectionSettingsView()
-            .environmentObject(AppDelegate())
+            .environmentObject(MAAViewModel())
     }
 }
 
