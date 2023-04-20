@@ -1,44 +1,64 @@
 //
-//  MaaInfrastFacility.swift
-//  MeoAsstMac
+//  InfrastConfiguration.swift
+//  MAA
 //
-//  Created by hguandl on 9/10/2022.
+//  Created by hguandl on 16/4/2023.
 //
 
 import Foundation
 
-struct MaaInfrastFacility: Codable {
-    let name: Facility
-    var enabled: Bool
+struct InfrastConfiguration: MAATaskConfiguration {
+    var enable = true
+    var mode = 0
 
-    enum Facility: String, Codable {
-        case Mfg
-        case Trade
-        case Power
-        case Control
-        case Reception
-        case Office
-        case Dorm
+    var facility = MAAInfrastFacility.allCases
+    var drones = MAAInfrastDroneUsage.NotUse
+    var threshold = 0.3
+    var replenish = false
+
+    var dorm_notstationed_enabled = false
+    var dorm_trust_enabled = false
+
+    var filename = ""
+    var plan_index = 0
+
+    var title: String {
+        MAATask.TypeName.Infrast.description
     }
-    
-    static let defaults = [
-        MaaInfrastFacility(name: .Mfg, enabled: true),
-        MaaInfrastFacility(name: .Trade, enabled: true),
-        MaaInfrastFacility(name: .Control, enabled: true),
-        MaaInfrastFacility(name: .Power, enabled: true),
-        MaaInfrastFacility(name: .Reception, enabled: true),
-        MaaInfrastFacility(name: .Office, enabled: true),
-        MaaInfrastFacility(name: .Dorm, enabled: true)
-    ]
+
+    var subtitle: String {
+        if let plan = try? MAAInfrast(path: filename) {
+            return plan.title ?? filename
+        } else {
+            return NSLocalizedString("默认换班", comment: "")
+        }
+    }
+
+    var summary: String {
+        if let plan = try? MAAInfrast(path: filename) {
+            return plan.plans[plan_index].name ?? "\(plan_index)"
+        } else {
+            return NSLocalizedString("单设施最优解", comment: "")
+        }
+    }
+
+    private var customPlan: MAAInfrast? {
+        guard mode == 10000 else { return nil }
+        return try? MAAInfrast(path: filename)
+    }
 }
 
-extension MaaInfrastFacility: CustomStringConvertible {
-    var description: String {
-        name.description
-    }
-}
+enum MAAInfrastFacility: String, CaseIterable, Codable, CustomStringConvertible, Identifiable {
+    case Mfg
+    case Trade
+    case Power
+    case Control
+    case Reception
+    case Office
+    case Dorm
 
-extension MaaInfrastFacility.Facility: CustomStringConvertible {
+    var id: String { rawValue }
+
     var description: String {
         switch self {
         case .Mfg:
@@ -59,7 +79,7 @@ extension MaaInfrastFacility.Facility: CustomStringConvertible {
     }
 }
 
-enum DroneUsage: String, Codable, CaseIterable, CustomStringConvertible {
+enum MAAInfrastDroneUsage: String, CaseIterable, Codable, CustomStringConvertible {
     case NotUse = "_NotUse"
     case Money
     case SyntheticJade
@@ -67,7 +87,7 @@ enum DroneUsage: String, Codable, CaseIterable, CustomStringConvertible {
     case PureGold
     case OriginStone
     case Chip
-    
+
     var description: String {
         switch self {
         case .NotUse:
