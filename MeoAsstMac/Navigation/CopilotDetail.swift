@@ -43,6 +43,7 @@ struct CopilotDetail: View {
                 viewModel.showLog = true
             } label: {
                 Label("日志", systemImage: "note.text")
+                    .foregroundColor(url == nil ? Color.accentColor : nil)
             }
             .help("运行日志")
         }

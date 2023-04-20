@@ -44,6 +44,7 @@ struct TaskDetail: View {
                 viewModel.showLog = true
             } label: {
                 Label("日志", systemImage: "note.text")
+                    .foregroundColor(id == nil ? Color.accentColor : nil)
             }
             .help("运行日志")
         }

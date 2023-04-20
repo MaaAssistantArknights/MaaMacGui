@@ -59,7 +59,7 @@ struct CopilotContent: View {
                 Label("移除", systemImage: "trash")
             }
             .help("移除作业")
-            .disabled(isBundled(selection))
+            .disabled(shouldDisableDeletion)
         }
 
         ToolbarItemGroup {
@@ -96,6 +96,10 @@ struct CopilotContent: View {
             deselectCopilot(true)
             try await viewModel.startCopilot()
         }
+    }
+
+    private func loadUserCopilots() {
+        copilots.formUnion(externalDirectory.copilots)
     }
 
     private func addCopilots(_ providers: [NSItemProvider]) -> Bool {
@@ -151,14 +155,14 @@ struct CopilotContent: View {
 
     private func deselectCopilot(_ shouldDeselect: Bool) {
         if shouldDeselect {
-            selection
+            selection = nil
         }
     }
 
-    // MARK: - State Handlers
+    // MARK: - State Wrappers
 
-    private func loadUserCopilots() {
-        copilots.formUnion(externalDirectory.copilots)
+    private var shouldDisableDeletion: Bool {
+        selection == nil || isBundled(selection)
     }
 
     private func isBundled(_ url: URL?) -> Bool {

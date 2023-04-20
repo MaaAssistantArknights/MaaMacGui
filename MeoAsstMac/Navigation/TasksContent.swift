@@ -32,7 +32,7 @@ struct TasksContent: View {
                 Label("删除", systemImage: "trash")
             }
             .help("删除任务")
-            .disabled(viewModel.tasks.count <= 1)
+            .disabled(shouldDisableDeletion)
         }
 
         ToolbarItemGroup {
@@ -100,6 +100,12 @@ struct TasksContent: View {
         if shouldSelect {
             selection = viewModel.tasks.keys.last
         }
+    }
+
+    // MARK: - State Wrappers
+
+    private var shouldDisableDeletion: Bool {
+        selection == nil || viewModel.tasks.count <= 1
     }
 }
 
