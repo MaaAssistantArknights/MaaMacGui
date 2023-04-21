@@ -93,23 +93,20 @@ struct InfrastSettingsView: View {
 
         if useCustomPlan.wrappedValue {
             Picker("", selection: customPlan) {
-                if case .custom = customPlan.wrappedValue {
-                    Text(customPlan.wrappedValue.description).tag(customPlan.wrappedValue)
+                if !String.bundledPlans.contains(customPlan.wrappedValue) {
+                    customPlan.wrappedValue.label
                 }
 
-                ForEach(InfrastPlan.bundled, id: \.self) { plan in
-                    Text(plan.description).tag(plan)
+                ForEach(String.bundledPlans, id: \.self) { path in
+                    path.label
                 }
 
-                Text("选择配置文件…").tag(InfrastPlan.import)
+                Text("选择配置文件…").tag(String.import)
             }
             .padding(.top, 2)
-            .onChange(of: customPlan.wrappedValue) {
-                showImport = $0 == .import
-            }
             .fileImporter(isPresented: $showImport, allowedContentTypes: [.json]) { result in
                 if case let .success(url) = result {
-                    self.customPlan.wrappedValue = .init(path: url.path)
+                    self.customPlan.wrappedValue = url.path
                 }
             }
 
@@ -122,11 +119,16 @@ struct InfrastSettingsView: View {
 
     // MARK: - State Wrappers
 
-    private var customPlan: Binding<InfrastPlan> {
+    private var customPlan: Binding<String> {
         Binding {
-            InfrastPlan(path: config.filename.wrappedValue)
+            config.filename.wrappedValue
         } set: {
-            config.filename.wrappedValue = $0.path
+            if $0 == .import {
+                showImport = true
+            } else {
+                config.plan_index.wrappedValue = 0
+                config.filename.wrappedValue = $0
+            }
         }
     }
 
@@ -155,93 +157,32 @@ struct InfrastSettingsView: View {
             }
         }
     }
-
-    // MARK: - Infrast Plan
-
-    enum InfrastPlan: Hashable {
-        case bundled153_3
-        case bundled243_3
-        case bundled243_4
-        case bundled252_3
-        case bundled333_3
-
-        case `import`
-        case custom(String, MAAInfrast)
-    }
 }
 
-extension InfrastSettingsView.InfrastPlan: CustomStringConvertible {
-    init(path: String) {
-        switch path {
-        case Self.bundled153_3.path:
-            self = .bundled153_3
-            return
-        case Self.bundled243_3.path:
-            self = .bundled243_3
-            return
-        case Self.bundled243_4.path:
-            self = .bundled243_4
-            return
-        case Self.bundled252_3.path:
-            self = .bundled252_3
-            return
-        case Self.bundled333_3.path:
-            self = .bundled333_3
-            return
-        default:
-            break
-        }
+// MARK: - Infrast Plan
 
-        if let plan = try? MAAInfrast(path: path) {
-            self = .custom(path, plan)
+private extension String {
+    var label: some View {
+        if let plan = try? MAAInfrast(path: self) {
+            return Text(plan.title ?? self).tag(self)
         } else {
-            self = .bundled153_3
+            return Text("无效文件").tag(self)
         }
     }
 
-    var description: String {
-        switch self {
-        case .bundled153_3:
-            return NSLocalizedString("153_3", comment: "")
-        case .bundled243_3:
-            return NSLocalizedString("243_3", comment: "")
-        case .bundled243_4:
-            return NSLocalizedString("243_4", comment: "")
-        case .bundled252_3:
-            return NSLocalizedString("252_3", comment: "")
-        case .bundled333_3:
-            return NSLocalizedString("333_3", comment: "")
-        case .import:
-            return NSLocalizedString("选择配置文件…", comment: "")
-        case let .custom(path, plan):
-            return plan.title ?? plan.description ?? path
-        }
-    }
+    static let `import` = "::import"
 
-    static var bundled: [Self] {
-        [.bundled153_3, .bundled243_3, .bundled243_4, .bundled252_3, .bundled333_3]
-    }
+    static let bundledPlans = [
+        plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3
+    ]
 
-    var path: String {
-        switch self {
-        case .bundled153_3:
-            return bundledPath(for: "153_layout_3_times_a_day.json")
-        case .bundled243_3:
-            return bundledPath(for: "243_layout_3_times_a_day.json")
-        case .bundled243_4:
-            return bundledPath(for: "243_layout_4_times_a_day.json")
-        case .bundled252_3:
-            return bundledPath(for: "252_layout_3_times_a_day.json")
-        case .bundled333_3:
-            return bundledPath(for: "333_layout_for_Orundum_3_times_a_day.json")
-        case .import:
-            return ""
-        case let .custom(path, _):
-            return path
-        }
-    }
+    static let plan_153_3 = bundledPath(for: "153_layout_3_times_a_day.json")
+    static let plan_243_3 = bundledPath(for: "243_layout_3_times_a_day.json")
+    static let plan_243_4 = bundledPath(for: "243_layout_4_times_a_day.json")
+    static let plan_252_3 = bundledPath(for: "252_layout_3_times_a_day.json")
+    static let plan_333_3 = bundledPath(for: "333_layout_for_Orundum_3_times_a_day.json")
 
-    private func bundledPath(for name: String) -> String {
+    private static func bundledPath(for name: String) -> String {
         Bundle.main.resourceURL?
             .appendingPathComponent("resource")
             .appendingPathComponent("custom_infrast")

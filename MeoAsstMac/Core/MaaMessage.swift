@@ -136,7 +136,8 @@ extension MAAViewModel {
                 if let id = taskID(taskDetails: message.details),
                    let task = tasks[id],
                    case let .infrast(config) = task,
-                   let plan = try? MAAInfrast(path: config.filename)
+                   let plan = try? MAAInfrast(path: config.filename),
+                   plan.plans.count > 0
                 {
                     var newConfig = config
                     newConfig.plan_index = (config.plan_index + 1) % plan.plans.count

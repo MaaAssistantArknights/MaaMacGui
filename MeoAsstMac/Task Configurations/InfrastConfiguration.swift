@@ -27,18 +27,26 @@ struct InfrastConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
+        if mode != 10000 {
+            return NSLocalizedString("默认换班", comment: "")
+        }
+
         if let plan = try? MAAInfrast(path: filename) {
             return plan.title ?? filename
         } else {
-            return NSLocalizedString("默认换班", comment: "")
+            return NSLocalizedString("无法识别配置", comment: "")
         }
     }
 
     var summary: String {
-        if let plan = try? MAAInfrast(path: filename) {
+        if mode != 10000 {
+            return NSLocalizedString("单设施最优解", comment: "")
+        }
+
+        if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
             return plan.plans[plan_index].name ?? "\(plan_index)"
         } else {
-            return NSLocalizedString("单设施最优解", comment: "")
+            return NSLocalizedString("未知排班", comment: "")
         }
     }
 
