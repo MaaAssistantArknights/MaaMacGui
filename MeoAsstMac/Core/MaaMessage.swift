@@ -52,7 +52,7 @@ extension MAAViewModel {
 
         switch what {
         case "Connected":
-            logTrace("模拟器已连接。")
+            break
 
         case "UnsupportedResolution":
             logError("ResolutionNotSupported")
@@ -579,7 +579,7 @@ private extension Int {
 
 // MARK: - Convenience Methods
 
-private extension MAAViewModel {
+extension MAAViewModel {
     func logTrace(_ key: String, comment: String = "", _ arguments: CVarArg...) {
         let content = localize(key, comment: comment, arguments)
         logs.append(MAALog(date: Date(), content: content, color: .trace))

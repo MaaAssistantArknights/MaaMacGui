@@ -22,6 +22,10 @@ struct OpenLogFileView: View {
                 NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: userDirectory.path)
             }
         }
+
+        Button("PlayCover 链接…") {
+            NSWorkspace.shared.open(URL(string: "https://github.com/hguandl/PlayCover/releases")!)
+        }
     }
 
     private var userDirectory: URL? {

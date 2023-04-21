@@ -6,6 +6,8 @@
   
 */
 
+"ConnectingToEmulator" = "正在连接……";
+"Running" = "正在运行中……";
 "Stopped" = "已停止";
 
 "ResolutionNotSupported" = "模拟器分辨率不支持，请设置为 720p 或更高，且为 16:9 比例";

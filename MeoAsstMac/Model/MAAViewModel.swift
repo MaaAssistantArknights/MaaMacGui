@@ -112,7 +112,13 @@ extension MAAViewModel {
         logs.removeAll()
         taskIDMap.removeAll()
         taskStatus.removeAll()
+
+        logTrace("ConnectingToEmulator")
+        if touchMode == .MacPlayTools {
+            logTrace(["如果长时间连接不上或出错，请尝试下载使用", "“文件” > “PlayCover链接…” 中的最新版本"])
+        }
         try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
+        logTrace("Running")
     }
 
     func stop() async throws {
