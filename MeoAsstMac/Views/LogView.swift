@@ -17,6 +17,7 @@ struct LogView: View {
                     .width(min: 100, ideal: 125, max: 150)
                 TableColumn("信息") { log in
                     Text(log.content)
+                        .textSelection(.enabled)
                         .foregroundColor(log.color.textColor)
                 }
                 .width(min: 100, ideal: 300)

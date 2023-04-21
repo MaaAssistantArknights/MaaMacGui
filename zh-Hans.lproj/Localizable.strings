@@ -88,6 +88,7 @@
 "ConnectFailed" = "连接失败";
 "TryToStartEmulator" = "正在尝试启动模拟器";
 "CheckSettings" = "请检查连接设置或尝试重启电脑";
+"Save to %@" = "保存至：%@";
 
 // MARK: - RecruitView
 

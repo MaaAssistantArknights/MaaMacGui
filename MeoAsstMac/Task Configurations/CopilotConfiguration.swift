@@ -19,6 +19,15 @@ struct SSSCopilotConfiguration: Codable {
     var loop_times = 1
 }
 
+struct VideoRecognitionConfiguration: Codable {
+    var enable = true
+    var filename: String
+
+    var params: String? {
+        jsonString(self)
+    }
+}
+
 enum CopilotConfiguration {
     case regular(RegularCopilotConfiguration)
     case sss(SSSCopilotConfiguration)

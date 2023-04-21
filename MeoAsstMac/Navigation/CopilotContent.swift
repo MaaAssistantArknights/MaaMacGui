@@ -45,6 +45,7 @@ struct CopilotContent: View {
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
         .onReceive(viewModel.$showLog, perform: deselectCopilot)
         .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
+        .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
         .fileImporter(isPresented: $viewModel.showImportCopilot,
                       allowedContentTypes: [.json],
                       allowsMultipleSelection: true,
@@ -100,13 +101,19 @@ struct CopilotContent: View {
 
     private func loadUserCopilots() {
         copilots.formUnion(externalDirectory.copilots)
+        copilots.formUnion(recordingDirectory.copilots)
     }
 
     private func addCopilots(_ providers: [NSItemProvider]) -> Bool {
         Task {
             for provider in providers {
                 if let url = try? await provider.loadURL() {
-                    self.copilots.insert(url)
+                    let value = try? url.resourceValues(forKeys: [.contentTypeKey])
+                    if value?.contentType == .json {
+                        copilots.insert(url)
+                    } else if value?.contentType?.conforms(to: .movie) == true {
+                        try? await viewModel.recognizeVideo(video: url)
+                    }
                 }
             }
             self.selection = self.copilots.urls.last
@@ -148,7 +155,7 @@ struct CopilotContent: View {
     private func deleteSelectedCopilot() {
         guard let selection else { return }
         copilots.remove(selection)
-        if isDownloaded(selection) {
+        if canDelete(selection) {
             try? FileManager.default.removeItem(at: selection)
         }
     }
@@ -156,6 +163,13 @@ struct CopilotContent: View {
     private func deselectCopilot(_ shouldDeselect: Bool) {
         if shouldDeselect {
             selection = nil
+        }
+    }
+
+    private func selectNewCopilot(url: URL?) {
+        if let url {
+            copilots.insert(url)
+            selection = copilots.urls.last
         }
     }
 
@@ -169,8 +183,11 @@ struct CopilotContent: View {
         return url?.path.starts(with: bundledDirectory.path) ?? false
     }
 
-    private func isDownloaded(_ url: URL?) -> Bool {
-        return url?.path.starts(with: externalDirectory.path) ?? false
+    private func canDelete(_ url: URL?) -> Bool {
+        [externalDirectory, recordingDirectory]
+            .compactMap { url?.path.starts(with: $0.path) }
+            .first(where: { $0 })
+            ?? false
     }
 
     // MARK: - File Paths
@@ -195,6 +212,14 @@ struct CopilotContent: View {
         }
 
         return directory
+    }
+
+    private var recordingDirectory: URL {
+        FileManager.default
+            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first!
+            .appendingPathComponent("cache")
+            .appendingPathComponent("CombatRecord")
     }
 }
 

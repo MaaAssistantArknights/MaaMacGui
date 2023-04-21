@@ -57,6 +57,8 @@
 		8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AF29E8722E005D5A1C /* TaskCell.swift */; };
 		8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B329E918A2005D5A1C /* TasksContent.swift */; };
 		8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B729E9E2B2005D5A1C /* Sidebar.swift */; };
+		8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0029F2F26100F715E8 /* OperBoxView.swift */; };
+		8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0229F2F34100F715E8 /* MAAOperBox.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
@@ -150,6 +152,8 @@
 		8355E7AF29E8722E005D5A1C /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		8355E7B329E918A2005D5A1C /* TasksContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksContent.swift; sourceTree = "<group>"; };
 		8355E7B729E9E2B2005D5A1C /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
+		8366DE0029F2F26100F715E8 /* OperBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperBoxView.swift; sourceTree = "<group>"; };
+		8366DE0229F2F34100F715E8 /* MAAOperBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAOperBox.swift; sourceTree = "<group>"; };
 		8368855029BD851F00C5B999 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
@@ -241,6 +245,7 @@
 				832985A929EE9958009F7ED5 /* RecruitView.swift */,
 				832985AB29EE9977009F7ED5 /* DepotView.swift */,
 				83531D5E29F00F0A008A5DF8 /* CopilotView.swift */,
+				8366DE0029F2F26100F715E8 /* OperBoxView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,6 +349,7 @@
 				832985B529EF1890009F7ED5 /* MAADepot.swift */,
 				83531D6229F0A033008A5DF8 /* MAAInfrast.swift */,
 				8341195229EC25A900044F45 /* MAALog.swift */,
+				8366DE0229F2F34100F715E8 /* MAAOperBox.swift */,
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
@@ -461,6 +467,7 @@
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
+				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
 				8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */,
 				832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */,
 				83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */,
@@ -484,6 +491,7 @@
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
 				83264A2D29EBEDD80074E33A /* FightConfiguration.swift in Sources */,
+				8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */,
 				832985C129EFB665009F7ED5 /* RecognitionDetail.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,

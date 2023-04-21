@@ -337,6 +337,9 @@ extension MAAViewModel {
         case "Depot":
             depot = subTaskDetails.parseTo()
 
+        case "OperBox":
+            operBox = subTaskDetails.parseTo()
+
         default:
             break
         }
@@ -499,6 +502,8 @@ extension MAAViewModel {
         }
     }
 
+    // MARK: Recruit Recoginition
+
     private func processRecruitMessage(details: JSON) {
         guard let what = details["what"].string else {
             return
@@ -519,6 +524,8 @@ extension MAAViewModel {
         }
     }
 
+    // MARK: Video Recognition
+
     private func processVideoMessage(details: JSON) {
         guard let what = details["what"].string else {
             return
@@ -526,8 +533,9 @@ extension MAAViewModel {
 
         switch what {
         case "Finished":
-            // TODO: break
-            break
+            let filename = details["details"]["filename"].string ?? "No output"
+            videoRecoginition = URL(fileURLWithPath: filename)
+            logInfo("Save to %@", filename)
 
         default:
             break

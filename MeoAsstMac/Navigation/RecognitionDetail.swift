@@ -17,6 +17,8 @@ struct RecognitionDetail: View {
                     RecruitView()
                 case .depot:
                     DepotView()
+                case .oper:
+                    OperBoxView()
                 case .none:
                     Text("请选择识别项目")
             }

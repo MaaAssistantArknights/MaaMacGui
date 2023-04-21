@@ -62,6 +62,8 @@ import SwiftUI
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
     @Published var depot: MAADepot?
+    @Published var videoRecoginition: URL?
+    @Published var operBox: MAAOperBox?
 
     // MARK: - Connection Settings
 
@@ -248,6 +250,41 @@ extension MAAViewModel {
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .Depot, params: "")
+        try await handle?.start()
+
+        status = .busy
+    }
+
+    func recognizeVideo(video url: URL) async throws {
+        status = .pending
+        defer {
+            if status == .pending {
+                status = .idle
+            }
+        }
+
+        let config = VideoRecognitionConfiguration(filename: url.path)
+        guard let params = config.params else {
+            return
+        }
+
+        try await ensureHandle()
+        try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
+        try await handle?.start()
+
+        status = .busy
+    }
+
+    func recognizeOperBox() async throws {
+        status = .pending
+        defer {
+            if status == .pending {
+                status = .idle
+            }
+        }
+
+        try await ensureHandle()
+        try await _ = handle?.appendTask(type: .OperBox, params: "")
         try await handle?.start()
 
         status = .busy
