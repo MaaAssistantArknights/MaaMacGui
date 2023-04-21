@@ -66,8 +66,8 @@ struct FightSettingsView: View {
             Divider()
 
             Section {
-                Toggle("博朗台碎石模式", isOn: .constant(true))
-                Toggle("无限吃48小时内过期的理智药", isOn: .constant(true))
+                Toggle("博朗台碎石模式", isOn: config.DrGrandet)
+                Toggle("无限吃48小时内过期的理智药", isOn: useExpiringMedicine)
             }
 
             Divider()
@@ -75,6 +75,14 @@ struct FightSettingsView: View {
             TextField("企鹅物流ID", text: .constant("351247352"))
         }
         .padding()
+    }
+
+    private var useExpiringMedicine: Binding<Bool> {
+        Binding {
+            config.expiring_medicine.wrappedValue ?? 0 > 0
+        } set: {
+            config.expiring_medicine.wrappedValue = $0 ? 999 : nil
+        }
     }
 
     private var useMedicine: Binding<Bool> {
