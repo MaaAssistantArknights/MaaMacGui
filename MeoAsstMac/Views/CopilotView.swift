@@ -12,8 +12,8 @@ struct CopilotView: View {
     let url: URL
 
     var body: some View {
-        VStack(spacing: 20) {
-            if let copilot = MAACopilot(url: url) {
+        if let copilot = MAACopilot(url: url) {
+            VStack(spacing: 20) {
                 pilotConfiguration()
 
                 Divider()
@@ -21,17 +21,24 @@ struct CopilotView: View {
                 ScrollView {
                     pilotDescription(pilot: copilot)
                 }
-                .onAppear {
-                    if copilot.type == "SSS" {
-                        viewModel.copilot = .sss(.init(filename: url.path))
-                    } else {
-                        viewModel.copilot = .regular(.init(filename: url.path))
-                    }
-                }
-            } else {
-                Text("文件格式错误")
             }
+            .onAppear(perform: { updateCopilot(copilot) })
+            .onChange(of: copilot, perform: updateCopilot)
+        } else {
+            Text("文件格式错误")
         }
+    }
+
+    private func updateCopilot(_ newValue: MAACopilot) {
+        if newValue.type == "SSS" {
+            viewModel.copilot = .sss(.init(filename: url.path))
+        } else {
+            viewModel.copilot = .regular(.init(filename: url.path))
+        }
+    }
+
+    private var copilot: MAACopilot? {
+        MAACopilot(url: url)
     }
 
     // MARK: - Copilot Config

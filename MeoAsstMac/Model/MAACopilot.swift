@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MAACopilot: Codable {
+struct MAACopilot: Codable, Equatable {
     let stage_name: String
     let opers: [Operator]
     let groups: [Group]?
@@ -21,17 +21,17 @@ struct MAACopilot: Codable {
     let strategy: String?
     let tool_men: [String: Int]?
 
-    struct Operator: Codable {
+    struct Operator: Codable, Equatable {
         let name: String
         let skill: Int?
     }
 
-    struct Group: Codable {
+    struct Group: Codable, Equatable {
         let name: String
         let opers: [Operator]
     }
 
-    struct Documentation: Codable {
+    struct Documentation: Codable, Equatable {
         let title: String?
         let title_color: String?
         let details: String?
