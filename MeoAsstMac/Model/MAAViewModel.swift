@@ -168,7 +168,7 @@ extension MAAViewModel {
             guard let params = task.params else { continue }
 
             if case let .startup(config) = task, config.client_type.isGlobal {
-                let extraResource = userDirectory
+                let extraResource = Bundle.main.resourceURL!
                     .appendingPathComponent("resource")
                     .appendingPathComponent("global")
                     .appendingPathComponent(config.client_type.rawValue)
