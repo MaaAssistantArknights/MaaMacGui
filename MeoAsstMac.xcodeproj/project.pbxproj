@@ -26,7 +26,6 @@
 		8329858C29EDA952009F7ED5 /* OpenLogFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */; };
 		8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8329859429EDB9EB009F7ED5 /* SwiftyJSON */; };
 		8329859829EDFCA4009F7ED5 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 8329859729EDFCA4009F7ED5 /* Introspect */; };
-		832985A429EE0D6F009F7ED5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 832985A629EE0D6F009F7ED5 /* Localizable.strings */; };
 		832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985A929EE9958009F7ED5 /* RecruitView.swift */; };
 		832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AB29EE9977009F7ED5 /* DepotView.swift */; };
 		832985AE29EEE672009F7ED5 /* RecognitionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AD29EEE672009F7ED5 /* RecognitionContent.swift */; };
@@ -57,6 +56,7 @@
 		8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AF29E8722E005D5A1C /* TaskCell.swift */; };
 		8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B329E918A2005D5A1C /* TasksContent.swift */; };
 		8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B729E9E2B2005D5A1C /* Sidebar.swift */; };
+		83661E2929F62984007793CA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 832985A629EE0D6F009F7ED5 /* Localizable.strings */; };
 		8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0029F2F26100F715E8 /* OperBoxView.swift */; };
 		8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0229F2F34100F715E8 /* MAAOperBox.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
@@ -281,6 +281,7 @@
 			children = (
 				8337871028F1DF4A00D39D6F /* ExternalTools */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
+				83661E2529F628DA007793CA /* Resources */,
 				8368855029BD851F00C5B999 /* Version.xcconfig */,
 				833786CC28F188D800D39D6F /* Products */,
 				83245A0128F467C300ED6D4C /* Frameworks */,
@@ -310,7 +311,6 @@
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				830C3D1F29BC86EE00B13A9F /* Info.plist */,
-				832985A629EE0D6F009F7ED5 /* Localizable.strings */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
 				833786D428F188D900D39D6F /* Preview Content */,
 			);
@@ -356,6 +356,14 @@
 				83531D6029F026E8008A5DF8 /* OrderedStore.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		83661E2529F628DA007793CA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				832985A629EE0D6F009F7ED5 /* Localizable.strings */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		83FF5A98297855E5000AE831 /* Settings */ = {
@@ -438,8 +446,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				83661E2929F62984007793CA /* Localizable.strings in Resources */,
 				83FF5A9C2978FE27000AE831 /* resource in Resources */,
-				832985A429EE0D6F009F7ED5 /* Localizable.strings in Resources */,
 				833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */,
 				833786D328F188D900D39D6F /* Assets.xcassets in Resources */,
 			);
@@ -513,7 +521,7 @@
 				832985A529EE0D6F009F7ED5 /* zh-Hans */,
 			);
 			name = Localizable.strings;
-			sourceTree = SOURCE_ROOT;
+			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
 
