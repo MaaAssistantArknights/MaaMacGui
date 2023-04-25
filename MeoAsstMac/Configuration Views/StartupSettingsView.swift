@@ -17,6 +17,10 @@ struct StartupSettingsView: View {
 
     var body: some View {
         Form {
+            Text("注意：若客户端类型为非国服，此任务必须开启以加载对应资源。")
+                .font(.headline)
+                .padding(.bottom)
+
             Picker("客户端类型：", selection: config.client_type) {
                 ForEach(MAAClientChannel.allCases, id: \.rawValue) { channel in
                     Text("\(channel.description)").tag(channel)
