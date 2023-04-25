@@ -13,31 +13,33 @@ struct OperBoxView: View {
     var body: some View {
         List {
             Section {
+                ForEach(ownedOpers, id: \.id) { oper in
+                    oper.label
+                }
+            } header: {
+                Text("已拥有干员：\(ownedOpers.count)")
+            }
+
+            Section {
                 ForEach(unownedOpers, id: \.id) { oper in
                     Text(oper.name)
                 }
             } header: {
                 Text("未拥有干员：\(unownedOpers.count)")
             }
-
-            Section {
-                ForEach(ownedOpers, id: \.id) { oper in
-                    Text(oper.name)
-                }
-            } header: {
-                Text("已拥有干员：\(ownedOpers.count)")
-            }
         }
         .padding()
-        .animation(.default, value: viewModel.operBox?.operbox)
+        .animation(.default, value: viewModel.operBox)
     }
 
-    var ownedOpers: [MAAOperBox.Oper] {
-        viewModel.operBox?.operbox.filter(\.own) ?? []
+    var ownedOpers: [MAAOperBox.OwnedOper] {
+        viewModel.operBox?.own_opers
+            .sorted()
+            ?? []
     }
 
     var unownedOpers: [MAAOperBox.Oper] {
-        viewModel.operBox?.operbox
+        viewModel.operBox?.all_opers
             .filter { !$0.own }
             .filter { !excludedOperNames.contains($0.name) }
             ?? []
