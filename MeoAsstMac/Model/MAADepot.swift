@@ -35,9 +35,9 @@ struct MAADepot: Codable {
 
 extension MAADepot: CustomStringConvertible {
     var contents: [String] {
-        arkplanner.object.items.map {
-            "\($0.name): \($0.have)"
-        }
+        arkplanner.object.items
+            .sorted { $0.id < $1.id }
+            .map { "\($0.name): \($0.have)" }
     }
     
     var description: String {
