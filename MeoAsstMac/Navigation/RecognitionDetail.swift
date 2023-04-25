@@ -19,6 +19,8 @@ struct RecognitionDetail: View {
                     DepotView()
                 case .oper:
                     OperBoxView()
+                case .video:
+                    VideoRecogView()
                 case .none:
                     Text("请选择识别项目")
             }

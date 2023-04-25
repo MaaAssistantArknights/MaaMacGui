@@ -59,6 +59,8 @@ struct RecognitionContent: View {
                 try await viewModel.recognizeDepot()
             case .oper:
                 try await viewModel.recognizeOperBox()
+            case .video:
+                break
             case .none:
                 break
             }
@@ -81,6 +83,7 @@ enum RecognitionEntry: Int, CaseIterable, Codable, Identifiable {
     case recruit
     case depot
     case oper
+    case video
 }
 
 extension RecognitionEntry: CustomStringConvertible {
@@ -92,6 +95,8 @@ extension RecognitionEntry: CustomStringConvertible {
             return NSLocalizedString("仓库材料", comment: "")
         case .oper:
             return NSLocalizedString("干员列表", comment: "")
+        case .video:
+            return NSLocalizedString("视频作业", comment: "")
         }
     }
 
@@ -103,6 +108,8 @@ extension RecognitionEntry: CustomStringConvertible {
             return "house"
         case .oper:
             return "person.fill.checkmark"
+        case .video:
+            return "video"
         }
     }
 
