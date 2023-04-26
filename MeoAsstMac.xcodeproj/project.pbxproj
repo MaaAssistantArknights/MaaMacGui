@@ -36,6 +36,11 @@
 		832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BA29EFA26D009F7ED5 /* TaskDetail.swift */; };
 		832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BC29EFA43B009F7ED5 /* MAADetail.swift */; };
 		832985C129EFB665009F7ED5 /* RecognitionDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985C029EFB665009F7ED5 /* RecognitionDetail.swift */; };
+		8330225429F8D5B30025CE12 /* MAAHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */; };
+		8330225629F8D5B30025CE12 /* MAAHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225529F8D5B30025CE12 /* MAAHelper.swift */; };
+		8330225829F8D5B30025CE12 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225729F8D5B30025CE12 /* main.swift */; };
+		8330225D29F8D5B30025CE12 /* MAAHelper.xpc in Embed XPC Services */ = {isa = PBXBuildFile; fileRef = 8330225129F8D5B30025CE12 /* MAAHelper.xpc */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8330226229F8D7E90025CE12 /* MAAHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D328F188D900D39D6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D228F188D900D39D6F /* Assets.xcassets */; };
@@ -75,6 +80,16 @@
 		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		8330225B29F8D5B30025CE12 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 833786C328F188D800D39D6F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8330225029F8D5B30025CE12;
+			remoteInfo = MAAHelper;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXCopyFilesBuildPhase section */
 		83245A0528F467C400ED6D4C /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -88,6 +103,17 @@
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8330225E29F8D5B30025CE12 /* Embed XPC Services */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/XPCServices";
+			dstSubfolderSpec = 16;
+			files = (
+				8330225D29F8D5B30025CE12 /* MAAHelper.xpc in Embed XPC Services */,
+			);
+			name = "Embed XPC Services";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8337870D28F1DD8800D39D6F /* Embed Helper Tools */ = {
@@ -131,6 +157,11 @@
 		832985BA29EFA26D009F7ED5 /* TaskDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetail.swift; sourceTree = "<group>"; };
 		832985BC29EFA43B009F7ED5 /* MAADetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAADetail.swift; sourceTree = "<group>"; };
 		832985C029EFB665009F7ED5 /* RecognitionDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionDetail.swift; sourceTree = "<group>"; };
+		8330225129F8D5B30025CE12 /* MAAHelper.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = MAAHelper.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
+		8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAHelperProtocol.swift; sourceTree = "<group>"; };
+		8330225529F8D5B30025CE12 /* MAAHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAHelper.swift; sourceTree = "<group>"; };
+		8330225729F8D5B30025CE12 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		8330225929F8D5B30025CE12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionSettingsView.swift; sourceTree = "<group>"; };
 		833786CB28F188D800D39D6F /* MAA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MAA.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMacApp.swift; sourceTree = "<group>"; };
@@ -171,6 +202,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8330224E29F8D5B30025CE12 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		833786C828F188D800D39D6F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -279,11 +317,23 @@
 			path = Navigation;
 			sourceTree = "<group>";
 		};
+		8330225229F8D5B30025CE12 /* MAAHelper */ = {
+			isa = PBXGroup;
+			children = (
+				8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */,
+				8330225529F8D5B30025CE12 /* MAAHelper.swift */,
+				8330225729F8D5B30025CE12 /* main.swift */,
+				8330225929F8D5B30025CE12 /* Info.plist */,
+			);
+			path = MAAHelper;
+			sourceTree = "<group>";
+		};
 		833786C228F188D800D39D6F = {
 			isa = PBXGroup;
 			children = (
 				8337871028F1DF4A00D39D6F /* ExternalTools */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
+				8330225229F8D5B30025CE12 /* MAAHelper */,
 				83661E2529F628DA007793CA /* Resources */,
 				8368855029BD851F00C5B999 /* Version.xcconfig */,
 				833786CC28F188D800D39D6F /* Products */,
@@ -295,6 +345,7 @@
 			isa = PBXGroup;
 			children = (
 				833786CB28F188D800D39D6F /* MAA.app */,
+				8330225129F8D5B30025CE12 /* MAAHelper.xpc */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -381,6 +432,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8330225029F8D5B30025CE12 /* MAAHelper */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8330226129F8D5B30025CE12 /* Build configuration list for PBXNativeTarget "MAAHelper" */;
+			buildPhases = (
+				8330224D29F8D5B30025CE12 /* Sources */,
+				8330224E29F8D5B30025CE12 /* Frameworks */,
+				8330224F29F8D5B30025CE12 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MAAHelper;
+			productName = MAAHelper;
+			productReference = 8330225129F8D5B30025CE12 /* MAAHelper.xpc */;
+			productType = "com.apple.product-type.xpc-service";
+		};
 		833786CA28F188D800D39D6F /* MAA */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 833786DA28F188D900D39D6F /* Build configuration list for PBXNativeTarget "MAA" */;
@@ -390,10 +458,12 @@
 				833786C928F188D800D39D6F /* Resources */,
 				83245A0528F467C400ED6D4C /* Embed Frameworks */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
+				8330225E29F8D5B30025CE12 /* Embed XPC Services */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				8330225C29F8D5B30025CE12 /* PBXTargetDependency */,
 			);
 			name = MAA;
 			packageProductDependencies = (
@@ -412,9 +482,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1420;
 				TargetAttributes = {
+					8330225029F8D5B30025CE12 = {
+						CreatedOnToolsVersion = 14.3;
+					};
 					833786CA28F188D800D39D6F = {
 						CreatedOnToolsVersion = 14.0.1;
 					};
@@ -440,11 +513,19 @@
 			projectRoot = "";
 			targets = (
 				833786CA28F188D800D39D6F /* MAA */,
+				8330225029F8D5B30025CE12 /* MAAHelper */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8330224F29F8D5B30025CE12 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		833786C928F188D800D39D6F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -459,6 +540,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8330224D29F8D5B30025CE12 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8330225429F8D5B30025CE12 /* MAAHelperProtocol.swift in Sources */,
+				8330225629F8D5B30025CE12 /* MAAHelper.swift in Sources */,
+				8330225829F8D5B30025CE12 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		833786C728F188D800D39D6F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -477,6 +568,7 @@
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
+				8330226229F8D7E90025CE12 /* MAAHelperProtocol.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
@@ -518,6 +610,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		8330225C29F8D5B30025CE12 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8330225029F8D5B30025CE12 /* MAAHelper */;
+			targetProxy = 8330225B29F8D5B30025CE12 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		832985A629EE0D6F009F7ED5 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
@@ -530,8 +630,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8330225F29F8D5B30025CE12 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 29V29Y67P2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MAAHelper/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MAAHelper;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MAAHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8330226029F8D5B30025CE12 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 29V29Y67P2;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MAAHelper/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MAAHelper;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MAAHelper;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		833786D828F188D900D39D6F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -594,8 +736,8 @@
 		};
 		833786DB28F188D900D39D6F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
@@ -624,6 +766,7 @@
 		};
 		83E9D13D294B8C310091D1FF /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -679,19 +822,17 @@
 		};
 		83E9D13E294B8C310091D1FF /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8368855029BD851F00C5B999 /* Version.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 29V29Y67P2;
+				DEVELOPMENT_TEAM = 29V29Y67P2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -712,6 +853,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8330226129F8D5B30025CE12 /* Build configuration list for PBXNativeTarget "MAAHelper" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8330225F29F8D5B30025CE12 /* Debug */,
+				8330226029F8D5B30025CE12 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		833786C628F188D800D39D6F /* Build configuration list for PBXProject "MeoAsstMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

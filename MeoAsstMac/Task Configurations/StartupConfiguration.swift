@@ -60,4 +60,17 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     var isGlobal: Bool {
         ![MAAClientChannel.default, .Official, .Bilibili].contains(self)
     }
+
+    var appBundleName: String {
+        switch self {
+        case .Official, .Bilibili, .txwy, .default:
+            return "明日方舟.app"
+        case .YoStarEN:
+            return "Arknights.app"
+        case .YoStarJP:
+            return "アークナイツ.app"
+        case .YoStarKR:
+            return "명일방주.app"
+        }
+    }
 }

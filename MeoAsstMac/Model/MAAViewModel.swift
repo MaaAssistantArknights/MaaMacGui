@@ -6,6 +6,7 @@
 //
 
 import Combine
+import Network
 import SwiftUI
 
 @MainActor class MAAViewModel: ObservableObject {
@@ -159,6 +160,17 @@ extension MAAViewModel {
         defer {
             if status == .pending {
                 status = .idle
+            }
+        }
+
+        for (_, task) in tasks.items {
+            if touchMode == .MacPlayTools,
+               case let .startup(config) = task,
+               config.enable, config.start_game_enabled
+            {
+                guard await startGame(client: config.client_type) else {
+                    throw NSError()
+                }
             }
         }
 
@@ -323,5 +335,74 @@ extension MAAViewModel {
         case .none:
             EmptyView()
         }
+    }
+}
+
+// MARK: - MAAHelper XPC
+
+extension MAAViewModel {
+    func startGame(client: MAAClientChannel) async -> Bool {
+        let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MAAHelper")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: MAAHelperProtocol.self)
+        connectionToService.resume()
+
+        defer { connectionToService.invalidate() }
+
+        if let proxy = connectionToService.remoteObjectProxy as? MAAHelperProtocol {
+            let result = await withCheckedContinuation { continuation in
+                proxy.startGame(bundleName: client.appBundleName) { success in
+                    continuation.resume(returning: success)
+                }
+            }
+
+            if !result {
+                return false
+            } else {
+                return await waitForEndpoint(address: connectionAddress)
+            }
+        }
+
+        return false
+    }
+}
+
+// MARK: - TCP Port Watcher
+
+private func waitForEndpoint(address: String) async -> Bool {
+    let parts = address.split(separator: ":")
+    guard parts.count >= 2,
+          let portNumber = UInt16(parts[1]),
+          let port = NWEndpoint.Port(rawValue: portNumber)
+    else {
+        return false
+    }
+    let host = NWEndpoint.Host(String(parts[0]))
+    let endpoint = NWEndpoint.hostPort(host: host, port: port)
+
+    while await !isEndpointOpen(endpoint: endpoint) {
+        try? await Task.sleep(nanoseconds: 500_000_000)
+    }
+
+    return true
+}
+
+private func isEndpointOpen(endpoint: NWEndpoint) async -> Bool {
+    let connection = NWConnection(to: endpoint, using: .tcp)
+    return await withCheckedContinuation { continuation in
+        connection.stateUpdateHandler = { state in
+            switch state {
+            case .setup, .preparing:
+                break
+            case .waiting, .failed:
+                connection.cancel()
+            case .ready:
+                continuation.resume(returning: true)
+            case .cancelled:
+                continuation.resume(returning: false)
+            @unknown default:
+                fatalError()
+            }
+        }
+        connection.start(queue: .global(qos: .background))
     }
 }
