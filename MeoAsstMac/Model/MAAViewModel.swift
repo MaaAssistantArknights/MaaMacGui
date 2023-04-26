@@ -164,10 +164,19 @@ extension MAAViewModel {
         }
 
         for (_, task) in tasks.items {
-            if touchMode == .MacPlayTools,
-               case let .startup(config) = task,
-               config.enable, config.start_game_enabled
-            {
+            guard case let .startup(config) = task else {
+                continue
+            }
+
+            if config.client_type.isGlobal {
+                let extraResource = Bundle.main.resourceURL!
+                    .appendingPathComponent("resource")
+                    .appendingPathComponent("global")
+                    .appendingPathComponent(config.client_type.rawValue)
+                try await MAAProvider.shared.loadResource(path: extraResource.path)
+            }
+
+            if touchMode == .MacPlayTools, config.enable, config.start_game_enabled {
                 guard await startGame(client: config.client_type) else {
                     throw NSError()
                 }
@@ -178,14 +187,6 @@ extension MAAViewModel {
 
         for (id, task) in tasks.items {
             guard let params = task.params else { continue }
-
-            if case let .startup(config) = task, config.client_type.isGlobal {
-                let extraResource = Bundle.main.resourceURL!
-                    .appendingPathComponent("resource")
-                    .appendingPathComponent("global")
-                    .appendingPathComponent(config.client_type.rawValue)
-                try await MAAProvider.shared.loadResource(path: extraResource.path)
-            }
 
             if let coreID = try await handle?.appendTask(type: task.typeName, params: params) {
                 taskIDMap[coreID] = id
