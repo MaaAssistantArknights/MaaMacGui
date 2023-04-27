@@ -6,6 +6,7 @@
 //
 
 import Combine
+import IOKit.pwr_mgt
 import Network
 import SwiftUI
 
@@ -17,6 +18,9 @@ import SwiftUI
         case idle
         case pending
     }
+
+    private var statusObserver: Cancellable?
+    private var awakeAssertionID: UInt32?
 
     @Published var status = Status.idle
     @Published var showLog = false
@@ -87,6 +91,7 @@ import SwiftUI
         }
 
         taskObserver = $tasks.sink(receiveValue: writeBack)
+        statusObserver = $status.sink(receiveValue: switchAwakeGuard)
 
         logObserver = NotificationCenter.default
             .publisher(for: .MAAReceivedCallbackMessage)
@@ -336,6 +341,38 @@ extension MAAViewModel {
         case .none:
             EmptyView()
         }
+    }
+}
+
+// MARK: - Prevent Sleep
+
+extension MAAViewModel {
+    func switchAwakeGuard(_ newValue: Status) {
+        switch newValue {
+        case .busy, .pending:
+            enableAwake()
+        case .idle:
+            disableAwake()
+        }
+    }
+
+    private func enableAwake() {
+        guard awakeAssertionID == nil else { return }
+        var assertionID: UInt32 = 0
+        let name = "MAA is running; sleep is diabled."
+        let properties = [kIOPMAssertionTypeKey: kIOPMAssertionTypeNoDisplaySleep as CFString,
+                          kIOPMAssertionNameKey: name as CFString,
+                          kIOPMAssertionLevelKey: UInt32(kIOPMAssertionLevelOn)] as [String: Any]
+        let result = IOPMAssertionCreateWithProperties(properties as CFDictionary, &assertionID)
+        if result == kIOReturnSuccess {
+            awakeAssertionID = assertionID
+        }
+    }
+
+    private func disableAwake() {
+        guard let awakeAssertionID else { return }
+        IOPMAssertionRelease(awakeAssertionID)
+        self.awakeAssertionID = nil
     }
 }
 
