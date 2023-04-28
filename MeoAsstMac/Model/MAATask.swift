@@ -125,7 +125,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 
     static var daily: [MAATask.TypeName] {
-        [.StartUp, .Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike]
+        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike]
     }
 }
 

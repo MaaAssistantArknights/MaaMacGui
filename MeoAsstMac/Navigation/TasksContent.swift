@@ -105,7 +105,11 @@ struct TasksContent: View {
     // MARK: - State Wrappers
 
     private var shouldDisableDeletion: Bool {
-        selection == nil || viewModel.tasks.count <= 1
+        if let selection, case .startup = viewModel.tasks[selection] {
+            return true
+        } else {
+            return selection == nil
+        }
     }
 }
 
