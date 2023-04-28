@@ -42,6 +42,11 @@ struct MeoAsstMacApp: App {
                         Label("连接设置", systemImage: "rectangle.connected.to.line.below")
                     }
 
+                GameSettingsView()
+                    .tabItem {
+                        Label("游戏设置", systemImage: "gamecontroller")
+                    }
+
                 UpdaterSettingsView(updater: updaterController.updater)
                     .tabItem {
                         Label("更新设置", systemImage: "square.and.arrow.down")

@@ -17,15 +17,13 @@ struct StartupSettingsView: View {
 
     var body: some View {
         Form {
-            Text("注意：若客户端类型为非国服，此任务必须开启以加载对应资源。")
-                .font(.headline)
-                .padding(.bottom)
-
-            Picker("客户端类型：", selection: config.client_type) {
-                ForEach(MAAClientChannel.allCases, id: \.rawValue) { channel in
-                    Text("\(channel.description)").tag(channel)
-                }
+            VStack(alignment: .leading, spacing: 3) {
+                Text("客户端类型：\(config.client_type.wrappedValue.description)")
+                Text("请在“设置” > “游戏设置” 中选择客户端类型。")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
+            .padding(.bottom)
 
             Toggle("自动启动客户端", isOn: config.start_game_enabled)
                 .disabled(config.client_type.wrappedValue == .default)

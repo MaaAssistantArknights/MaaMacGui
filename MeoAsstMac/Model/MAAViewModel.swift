@@ -19,27 +19,23 @@ import SwiftUI
         case pending
     }
 
-    private var statusObserver: Cancellable?
-    private var awakeAssertionID: UInt32?
-
     @Published var status = Status.idle
     @Published var showLog = false
 
+    private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
+    private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Core Callback
 
     @Published var logs = [MAALog]()
     @Published var trackTail = false
 
-    private var logObserver: Cancellable?
-
     // MARK: - Daily Tasks
 
     @Published var tasks: OrderedStore<MAATask>
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
-    private var taskObserver: Cancellable?
 
     enum TaskStatus: Equatable {
         case cancel
@@ -80,6 +76,14 @@ import SwiftUI
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch
 
+    // MARK: - Game Settings
+
+    @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.default {
+        didSet {
+            updateChannel(channel: clientChannel)
+        }
+    }
+
     // MARK: - Initializer
 
     init() {
@@ -90,13 +94,14 @@ import SwiftUI
             tasks = .init(MAATask.defaults)
         }
 
-        taskObserver = $tasks.sink(receiveValue: writeBack)
-        statusObserver = $status.sink(receiveValue: switchAwakeGuard)
+        $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
+        $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
-        logObserver = NotificationCenter.default
+        NotificationCenter.default
             .publisher(for: .MAAReceivedCallbackMessage)
             .receive(on: RunLoop.main)
             .sink(receiveValue: processMessage)
+            .store(in: &cancellables)
     }
 }
 
@@ -105,7 +110,7 @@ import SwiftUI
 extension MAAViewModel {
     func initialize() async throws {
         try await MAAProvider.shared.setUserDirectory(path: userDirectory.path)
-        try await MAAProvider.shared.loadResource(path: Bundle.main.resourcePath!)
+        try await loadResource(channel: clientChannel)
     }
 
     func ensureHandle() async throws {
@@ -141,6 +146,37 @@ extension MAAViewModel {
         status = .idle
     }
 
+    private func loadResource(channel: MAAClientChannel) async throws {
+        try await MAAProvider.shared.loadResource(path: Bundle.main.resourcePath!)
+
+        if channel.isGlobal {
+            let extraResource = Bundle.main.resourceURL!
+                .appendingPathComponent("resource")
+                .appendingPathComponent("global")
+                .appendingPathComponent(channel.rawValue)
+            try await MAAProvider.shared.loadResource(path: extraResource.path)
+        }
+    }
+
+    private func updateChannel(channel: MAAClientChannel) {
+        for (id, task) in tasks.items {
+            guard case var .startup(config) = task else {
+                continue
+            }
+
+            config.client_type = channel
+            if config.client_type == .default {
+                config.start_game_enabled = false
+            }
+
+            tasks[id] = .startup(config)
+        }
+
+        Task {
+            try await loadResource(channel: channel)
+        }
+    }
+
     private var userDirectory: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     }
@@ -171,14 +207,6 @@ extension MAAViewModel {
         for (_, task) in tasks.items {
             guard case let .startup(config) = task else {
                 continue
-            }
-
-            if config.client_type.isGlobal {
-                let extraResource = Bundle.main.resourceURL!
-                    .appendingPathComponent("resource")
-                    .appendingPathComponent("global")
-                    .appendingPathComponent(config.client_type.rawValue)
-                try await MAAProvider.shared.loadResource(path: extraResource.path)
             }
 
             if touchMode == .MacPlayTools, config.enable, config.start_game_enabled {
