@@ -443,32 +443,37 @@ private func waitForEndpoint(address: String) async -> Bool {
         return false
     }
     let host = NWEndpoint.Host(String(parts[0]))
-    let endpoint = NWEndpoint.hostPort(host: host, port: port)
+    let connection = NWConnection(host: host, port: port, using: .tcp)
+    connection.start(queue: .global(qos: .background))
 
-    while await !isEndpointOpen(endpoint: endpoint) {
+    for await online in connection.onlinePolls {
+        if online { break }
         try? await Task.sleep(nanoseconds: 500_000_000)
+        connection.restart()
     }
 
     return true
 }
 
-private func isEndpointOpen(endpoint: NWEndpoint) async -> Bool {
-    let connection = NWConnection(to: endpoint, using: .tcp)
-    return await withCheckedContinuation { continuation in
-        connection.stateUpdateHandler = { state in
-            switch state {
-            case .setup, .preparing:
-                break
-            case .waiting, .failed:
-                connection.cancel()
-            case .ready:
-                continuation.resume(returning: true)
-            case .cancelled:
-                continuation.resume(returning: false)
-            @unknown default:
-                fatalError()
+private extension NWConnection {
+    var onlinePolls: AsyncStream<Bool> {
+        AsyncStream { continuation in
+            self.stateUpdateHandler = { state in
+                switch state {
+                case .setup, .preparing, .cancelled:
+                    break
+                case .waiting, .failed:
+                    continuation.yield(false)
+                case .ready:
+                    continuation.yield(true)
+                @unknown default:
+                    fatalError()
+                }
+            }
+
+            continuation.onTermination = { @Sendable _ in
+                self.cancel()
             }
         }
-        connection.start(queue: .global(qos: .background))
     }
 }
