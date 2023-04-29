@@ -72,7 +72,7 @@ struct FightSettingsView: View {
 
             Divider()
 
-            TextField("企鹅物流ID", text: .constant("351247352"))
+            TextField("企鹅物流ID", text: .constant(""))
         }
         .padding()
     }

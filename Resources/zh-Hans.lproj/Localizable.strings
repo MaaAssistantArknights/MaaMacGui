@@ -57,6 +57,7 @@
 "GameDrop" = "游戏掉线，重新连接";
 "GameDropNoRestart" = "游戏掉线，不重新连接，停止任务";
 "RoguelikeGamePass" = "肉鸽通关啦！";
+"RoguelikeSpecialItemBought" = "购买了特殊商品！";
 "SSSGamePass" = "保全通关啦！";
 "Trader" = "关卡：诡意行商";
 "SafeHouse" = "关卡：安全的角落";

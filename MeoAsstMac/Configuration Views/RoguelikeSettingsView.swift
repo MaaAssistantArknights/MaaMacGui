@@ -42,12 +42,9 @@ struct RoguelikeSettingsView: View {
     }
 
     @ViewBuilder private func goldSettings() -> some View {
-        HStack {
-            Toggle("投资源石锭", isOn: config.investment_enabled)
-            Spacer()
-            Toggle("储备源石锭达到上限时停止", isOn: config.stop_when_investment_full)
-            Spacer()
-        }
+        Toggle("投资源石锭", isOn: config.investment_enabled)
+        Toggle("刷新商店（指路鳞）", isOn: config.refresh_trader_with_dice)
+        Toggle("储备源石锭达到上限时停止", isOn: config.stop_when_investment_full)
 
         TextField("最多投资源石锭数量：", value: config.investments_count, format: .number)
     }
@@ -66,6 +63,8 @@ struct RoguelikeSettingsView: View {
         }
 
         TextField("开局干员（单个）：", text: config.core_char)
+        Toggle("“开局干员”使用助战", isOn: config.use_support)
+        Toggle("可以使用非好友助战", isOn: config.use_nonfriend_support)
     }
 }
 

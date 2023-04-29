@@ -301,6 +301,9 @@ extension MAAViewModel {
             case "BattleStartAll":
                 logInfo("MissionStart")
 
+            case "StageTraderSpecialShoppingAfterRefresh":
+                logRare("RoguelikeSpecialItemBought")
+
             default:
                 break
             }
