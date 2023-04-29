@@ -22,7 +22,12 @@ struct InfrastSettingsView: View {
                 facilityList
                 preferenceForm
             }
+
+            if useCustomPlan.wrappedValue {
+                customPlanView
+            }
         }
+        .animation(.default, value: useCustomPlan.wrappedValue)
         .padding()
     }
 
@@ -79,41 +84,42 @@ struct InfrastSettingsView: View {
 
             Divider()
 
-            Section {
-                customPlanView
-            }
+            Toggle("启用自定义基建配置(beta)", isOn: useCustomPlan)
         }
-        .animation(.default, value: useCustomPlan.wrappedValue)
     }
 
-    @State private var showImport = false
-
     @ViewBuilder private var customPlanView: some View {
-        Toggle("启用自定义基建配置(beta)", isOn: useCustomPlan)
-
-        if useCustomPlan.wrappedValue {
-            Picker("", selection: customPlan) {
-                if !String.bundledPlans.contains(customPlan.wrappedValue) {
-                    customPlan.wrappedValue.label
+        VStack {
+            Picker("方案：", selection: customPlan) {
+                Section {
+                    ForEach(customInfrastPaths, id: \.self) { path in
+                        path.label
+                    }
+                } header: {
+                    Text("自定义排班")
                 }
 
-                ForEach(String.bundledPlans, id: \.self) { path in
-                    path.label
-                }
-
-                Text("选择配置文件…").tag(String.import)
-            }
-            .padding(.top, 2)
-            .fileImporter(isPresented: $showImport, allowedContentTypes: [.json]) { result in
-                if case let .success(url) = result {
-                    self.customPlan.wrappedValue = url.path
+                Section {
+                    ForEach(String.bundledPlans, id: \.self) { path in
+                        path.label
+                    }
+                } header: {
+                    Text("内置排班")
                 }
             }
 
-            Picker("", selection: config.plan_index) {
+            Picker("班次：", selection: config.plan_index) {
                 try? MAAInfrast(path: config.filename.wrappedValue).planList
             }
-            .padding(.top, 6)
+
+            HStack(spacing: 20) {
+                Button("打开自定义排班文件夹…") {
+                    NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: customInfrastDirectory.path)
+                }
+                Button("重新加载文件") {
+                    refreshCustomPlans.toggle()
+                }
+            }
         }
     }
 
@@ -123,12 +129,8 @@ struct InfrastSettingsView: View {
         Binding {
             config.filename.wrappedValue
         } set: {
-            if $0 == .import {
-                showImport = true
-            } else {
-                config.plan_index.wrappedValue = 0
-                config.filename.wrappedValue = $0
-            }
+            config.plan_index.wrappedValue = 0
+            config.filename.wrappedValue = $0
         }
     }
 
@@ -157,6 +159,42 @@ struct InfrastSettingsView: View {
             }
         }
     }
+
+    // MARK: - File Paths
+
+    @State private var refreshCustomPlans = false
+
+    private var customInfrastPaths: [String] {
+        guard let urls = try? FileManager.default.contentsOfDirectory(
+            at: customInfrastDirectory,
+            includingPropertiesForKeys: [.contentTypeKey],
+            options: .skipsHiddenFiles)
+        else { return [] }
+
+        // Dummy state to force refreshing files
+        _ = refreshCustomPlans
+
+        return urls
+            .filter { url in
+                let value = try? url.resourceValues(forKeys: [.contentTypeKey])
+                return value?.contentType == .json
+            }
+            .map(\.path)
+    }
+
+    private var customInfrastDirectory: URL {
+        let directory = FileManager.default
+            .urls(for: .documentDirectory, in: .userDomainMask)
+            .first!
+            .appendingPathComponent("infrast")
+
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            try? FileManager.default.createDirectory(
+                at: directory, withIntermediateDirectories: true)
+        }
+
+        return directory
+    }
 }
 
 // MARK: - Infrast Plan
@@ -169,8 +207,6 @@ private extension String {
             return Text("无效文件").tag(self)
         }
     }
-
-    static let `import` = "::import"
 
     static let bundledPlans = [
         plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3
