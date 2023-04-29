@@ -40,20 +40,6 @@ struct Sidebar: View {
         .frame(minWidth: 150)
     }
 
-    @ViewBuilder private func contentView(for entry: SidebarEntry) -> some View {
-        Group {
-            switch entry {
-            case .daily:
-                EmptyView()
-            case .copilot:
-                EmptyView()
-            case .recognition:
-                EmptyView()
-            }
-        }
-        .frame(minWidth: 260)
-    }
-
     // MARK: - Actions
 
     private func toggleSideBar() {
@@ -83,7 +69,7 @@ enum SidebarEntry: Int, CaseIterable, Identifiable {
     var id: Self { self }
     case daily
     case copilot
-    case recognition
+    case utility
 }
 
 extension SidebarEntry: CustomStringConvertible {
@@ -93,8 +79,8 @@ extension SidebarEntry: CustomStringConvertible {
             return NSLocalizedString("一键长草", comment: "")
         case .copilot:
             return NSLocalizedString("自动战斗", comment: "")
-        case .recognition:
-            return NSLocalizedString("识别助手", comment: "")
+        case .utility:
+            return NSLocalizedString("实用工具", comment: "")
         }
     }
 
@@ -104,8 +90,8 @@ extension SidebarEntry: CustomStringConvertible {
             return "cup.and.saucer"
         case .copilot:
             return "play.rectangle"
-        case .recognition:
-            return "text.viewfinder"
+        case .utility:
+            return "wrench.and.screwdriver"
         }
     }
 

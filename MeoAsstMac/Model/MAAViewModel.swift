@@ -272,7 +272,7 @@ extension MAAViewModel {
     }
 }
 
-// MARK: Recognition
+// MARK: Utility
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {

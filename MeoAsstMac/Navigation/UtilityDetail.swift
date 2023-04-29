@@ -1,5 +1,5 @@
 //
-//  RecognitionDetail.swift
+//  UtilityDetail.swift
 //  MAA
 //
 //  Created by hguandl on 19/4/2023.
@@ -7,8 +7,8 @@
 
 import SwiftUI
 
-struct RecognitionDetail: View {
-    let entry: RecognitionEntry?
+struct UtilityDetail: View {
+    let entry: UtilityEntry?
 
     var body: some View {
         VStack {
@@ -35,9 +35,9 @@ struct RecognitionDetail: View {
     }
 }
 
-struct RecognitionDetail_Previews: PreviewProvider {
+struct UtilityDetail_Previews: PreviewProvider {
     static var previews: some View {
-        RecognitionDetail(entry: .recruit)
+        UtilityDetail(entry: .recruit)
             .environmentObject(MAAViewModel())
     }
 }

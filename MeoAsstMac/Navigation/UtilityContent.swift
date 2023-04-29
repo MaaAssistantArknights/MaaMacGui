@@ -1,5 +1,5 @@
 //
-//  RecognitionContent.swift
+//  UtilityContent.swift
 //  MAA
 //
 //  Created by hguandl on 19/4/2023.
@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-struct RecognitionContent: View {
+struct UtilityContent: View {
     @EnvironmentObject private var viewModel: MAAViewModel
-    @Binding var selection: RecognitionEntry?
+    @Binding var selection: UtilityEntry?
 
     var body: some View {
-        List(RecognitionEntry.allCases, selection: $selection) { entry in
+        List(UtilityEntry.allCases, selection: $selection) { entry in
             entry.label
         }
         .toolbar(content: listToolbar)
@@ -68,17 +68,17 @@ struct RecognitionContent: View {
     }
 }
 
-struct RecognitionContent_Previews: PreviewProvider {
+struct UtilityDetailContent_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            RecognitionContent(selection: .constant(.recruit))
+            UtilityContent(selection: .constant(.recruit))
         }
     }
 }
 
-// MARK: - Recognition Entry
+// MARK: - Utility Entry
 
-enum RecognitionEntry: Int, CaseIterable, Codable, Identifiable {
+enum UtilityEntry: Int, CaseIterable, Codable, Identifiable {
     var id: Self { self }
     case recruit
     case depot
@@ -87,7 +87,7 @@ enum RecognitionEntry: Int, CaseIterable, Codable, Identifiable {
     case gacha
 }
 
-extension RecognitionEntry: CustomStringConvertible {
+extension UtilityEntry: CustomStringConvertible {
     var description: String {
         switch self {
         case .recruit:

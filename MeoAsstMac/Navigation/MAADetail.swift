@@ -12,16 +12,19 @@ struct MAADetail: View {
     @Binding var selection: ContentEntry
 
     var body: some View {
-        switch sidebar {
-        case .daily:
-            TaskDetail(id: selection.task)
-        case .copilot:
-            CopilotDetail(url: selection.copilot)
-        case .recognition:
-            RecognitionDetail(entry: selection.recognition)
-        case .none:
-            Text("请选择内容项目")
+        Group {
+            switch sidebar {
+                case .daily:
+                    TaskDetail(id: selection.task)
+                case .copilot:
+                    CopilotDetail(url: selection.copilot)
+                case .utility:
+                    UtilityDetail(entry: selection.utility)
+                case .none:
+                    Text("请选择内容项目")
+            }
         }
+        .frame(minWidth: 450, minHeight: 360)
     }
 }
 

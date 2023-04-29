@@ -27,14 +27,14 @@
 		8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8329859429EDB9EB009F7ED5 /* SwiftyJSON */; };
 		832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985A929EE9958009F7ED5 /* RecruitView.swift */; };
 		832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AB29EE9977009F7ED5 /* DepotView.swift */; };
-		832985AE29EEE672009F7ED5 /* RecognitionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AD29EEE672009F7ED5 /* RecognitionContent.swift */; };
+		832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AD29EEE672009F7ED5 /* UtilityContent.swift */; };
 		832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */; };
 		832985B429EF1219009F7ED5 /* MAARecruit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985B329EF1219009F7ED5 /* MAARecruit.swift */; };
 		832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985B529EF1890009F7ED5 /* MAADepot.swift */; };
 		832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985B829EF9D50009F7ED5 /* MAAContent.swift */; };
 		832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BA29EFA26D009F7ED5 /* TaskDetail.swift */; };
 		832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BC29EFA43B009F7ED5 /* MAADetail.swift */; };
-		832985C129EFB665009F7ED5 /* RecognitionDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985C029EFB665009F7ED5 /* RecognitionDetail.swift */; };
+		832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985C029EFB665009F7ED5 /* UtilityDetail.swift */; };
 		8330225429F8D5B30025CE12 /* MAAHelperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */; };
 		8330225629F8D5B30025CE12 /* MAAHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225529F8D5B30025CE12 /* MAAHelper.swift */; };
 		8330225829F8D5B30025CE12 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8330225729F8D5B30025CE12 /* main.swift */; };
@@ -150,14 +150,14 @@
 		832985A529EE0D6F009F7ED5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		832985A929EE9958009F7ED5 /* RecruitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitView.swift; sourceTree = "<group>"; };
 		832985AB29EE9977009F7ED5 /* DepotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepotView.swift; sourceTree = "<group>"; };
-		832985AD29EEE672009F7ED5 /* RecognitionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionContent.swift; sourceTree = "<group>"; };
+		832985AD29EEE672009F7ED5 /* UtilityContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityContent.swift; sourceTree = "<group>"; };
 		832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReclamationConfiguration.swift; sourceTree = "<group>"; };
 		832985B329EF1219009F7ED5 /* MAARecruit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAARecruit.swift; sourceTree = "<group>"; };
 		832985B529EF1890009F7ED5 /* MAADepot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAADepot.swift; sourceTree = "<group>"; };
 		832985B829EF9D50009F7ED5 /* MAAContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAContent.swift; sourceTree = "<group>"; };
 		832985BA29EFA26D009F7ED5 /* TaskDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDetail.swift; sourceTree = "<group>"; };
 		832985BC29EFA43B009F7ED5 /* MAADetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAADetail.swift; sourceTree = "<group>"; };
-		832985C029EFB665009F7ED5 /* RecognitionDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionDetail.swift; sourceTree = "<group>"; };
+		832985C029EFB665009F7ED5 /* UtilityDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityDetail.swift; sourceTree = "<group>"; };
 		8330225129F8D5B30025CE12 /* MAAHelper.xpc */ = {isa = PBXFileReference; explicitFileType = "wrapper.xpc-service"; includeInIndex = 0; path = MAAHelper.xpc; sourceTree = BUILT_PRODUCTS_DIR; };
 		8330225329F8D5B30025CE12 /* MAAHelperProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAHelperProtocol.swift; sourceTree = "<group>"; };
 		8330225529F8D5B30025CE12 /* MAAHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAHelper.swift; sourceTree = "<group>"; };
@@ -312,10 +312,10 @@
 				832985BC29EFA43B009F7ED5 /* MAADetail.swift */,
 				8355E7B329E918A2005D5A1C /* TasksContent.swift */,
 				8341195C29EC719B00044F45 /* CopilotContent.swift */,
-				832985AD29EEE672009F7ED5 /* RecognitionContent.swift */,
+				832985AD29EEE672009F7ED5 /* UtilityContent.swift */,
 				832985BA29EFA26D009F7ED5 /* TaskDetail.swift */,
 				8329858929ED121A009F7ED5 /* CopilotDetail.swift */,
-				832985C029EFB665009F7ED5 /* RecognitionDetail.swift */,
+				832985C029EFB665009F7ED5 /* UtilityDetail.swift */,
 			);
 			path = Navigation;
 			sourceTree = "<group>";
@@ -589,7 +589,7 @@
 				83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */,
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
-				832985AE29EEE672009F7ED5 /* RecognitionContent.swift in Sources */,
+				832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */,
 				832985B429EF1219009F7ED5 /* MAARecruit.swift in Sources */,
 				83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */,
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
@@ -599,7 +599,7 @@
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
 				83264A2D29EBEDD80074E33A /* FightConfiguration.swift in Sources */,
 				8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */,
-				832985C129EFB665009F7ED5 /* RecognitionDetail.swift in Sources */,
+				832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,

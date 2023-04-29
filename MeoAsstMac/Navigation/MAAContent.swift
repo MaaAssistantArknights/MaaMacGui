@@ -12,16 +12,19 @@ struct MAAContent: View {
     @Binding var selection: ContentEntry
 
     var body: some View {
-        switch sidebar {
-        case .daily:
-            TasksContent(selection: $selection.task)
-        case .copilot:
-            CopilotContent(selection: $selection.copilot)
-        case .recognition:
-            RecognitionContent(selection: $selection.recognition)
-        case .none:
-            Text("请从边栏选择功能")
+        Group {
+            switch sidebar {
+                case .daily:
+                    TasksContent(selection: $selection.task)
+                case .copilot:
+                    CopilotContent(selection: $selection.copilot)
+                case .utility:
+                    UtilityContent(selection: $selection.utility)
+                case .none:
+                    Text("请从边栏选择功能")
+            }
         }
+        .frame(minWidth: 260)
     }
 }
 
@@ -35,5 +38,5 @@ struct MAAContent_Previews: PreviewProvider {
 struct ContentEntry: Codable {
     var task: UUID?
     var copilot: URL?
-    var recognition: RecognitionEntry?
+    var utility: UtilityEntry?
 }
