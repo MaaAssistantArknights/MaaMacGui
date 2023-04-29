@@ -21,6 +21,8 @@ struct RecognitionDetail: View {
                     OperBoxView()
                 case .video:
                     VideoRecogView()
+                case .gacha:
+                    GachaView()
                 case .none:
                     Text("请选择识别项目")
             }

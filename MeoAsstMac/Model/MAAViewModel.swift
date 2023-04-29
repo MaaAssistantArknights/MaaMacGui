@@ -146,6 +146,14 @@ extension MAAViewModel {
         status = .idle
     }
 
+    func screenshot() async throws -> NSImage {
+        guard let image = try await handle?.getImage() else {
+            throw NSError()
+        }
+
+        return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
+    }
+
     private func loadResource(channel: MAAClientChannel) async throws {
         try await MAAProvider.shared.loadResource(path: Bundle.main.resourcePath!)
 
@@ -331,6 +339,27 @@ extension MAAViewModel {
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .OperBox, params: "")
+        try await handle?.start()
+
+        status = .busy
+    }
+
+    func gachaPoll(once: Bool) async throws {
+        status = .pending
+        defer {
+            if status == .pending {
+                status = .idle
+            }
+        }
+
+        try await ensureHandle()
+
+        let name = once ? "GachaOnce" : "GachaTenTimes"
+        let params = ["task_names": [name]]
+        let data = try JSONSerialization.data(withJSONObject: params)
+        let string = String(data: data, encoding: .utf8)
+
+        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
         try await handle?.start()
 
         status = .busy

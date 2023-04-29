@@ -67,6 +67,7 @@
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
 		838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82129FBB9E3000566A0 /* GameSettingsView.swift */; };
+		838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82629FDD0F9000566A0 /* GachaView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
 		83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283228F2F1BE00018D10 /* MallSettingsView.swift */; };
@@ -191,6 +192,7 @@
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
 		838FF82129FBB9E3000566A0 /* GameSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsView.swift; sourceTree = "<group>"; };
+		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
 		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
 		83D3283228F2F1BE00018D10 /* MallSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallSettingsView.swift; sourceTree = "<group>"; };
@@ -287,6 +289,7 @@
 				83531D5E29F00F0A008A5DF8 /* CopilotView.swift */,
 				8366DE0029F2F26100F715E8 /* OperBoxView.swift */,
 				83661E2B29F77CFF007793CA /* VideoRecogView.swift */,
+				838FF82629FDD0F9000566A0 /* GachaView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -601,6 +604,7 @@
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
+				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
 				83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */,

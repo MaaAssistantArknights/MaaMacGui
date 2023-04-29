@@ -31,6 +31,7 @@ enum MAATask: Codable, Equatable {
         case ReclamationAlgorithm
         case VideoRecognition
         case OperBox
+        case Custom
     }
 
     static let defaults: [MAATask] = [
@@ -121,6 +122,8 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
             return NSLocalizedString("视频识别", comment: "")
         case .OperBox:
             return NSLocalizedString("干员识别", comment: "")
+        case .Custom:
+            return NSLocalizedString("自定义", comment: "")
         }
     }
 

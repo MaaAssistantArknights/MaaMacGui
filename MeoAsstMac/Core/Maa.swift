@@ -5,6 +5,7 @@
 //  Created by hguandl on 9/10/2022.
 //
 
+import CoreGraphics
 import Foundation
 import MaaCore
 import SwiftyJSON
@@ -89,6 +90,25 @@ actor MAAHandle {
         }
     }
 
+    func getImage() throws -> CGImage {
+        let size = 1280 * 720 * 3
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+
+        if AsstGetImage(handle, buffer, AsstSize(size)) == AsstGetNullSize() {
+            throw MaaCoreError.getImageFailed
+        }
+
+        let data = Data(bytesNoCopy: buffer, count: size, deallocator: .free)
+        guard let provider = CGDataProvider(data: data as CFData),
+              let image = CGImage(pngDataProviderSource: provider, decode: nil,
+                                  shouldInterpolate: false, intent: .defaultIntent)
+        else {
+            throw MaaCoreError.getImageFailed
+        }
+
+        return image
+    }
+
     var connected: Bool {
         AsstConnected(handle).isTrue
     }
@@ -106,6 +126,7 @@ enum MaaCoreError: Error {
     case startFailed
     case stopFailed
     case connectFailed
+    case getImageFailed
 }
 
 enum MAAInstanceOptionKey: Int32 {
