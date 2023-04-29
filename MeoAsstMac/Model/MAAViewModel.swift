@@ -113,7 +113,7 @@ extension MAAViewModel {
         try await loadResource(channel: clientChannel)
     }
 
-    func ensureHandle() async throws {
+    func ensureHandle(requireConnect: Bool = true) async throws {
         if handle == nil {
             handle = try MAAHandle(options: instanceOptions)
         }
@@ -126,6 +126,8 @@ extension MAAViewModel {
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
+        guard requireConnect else { return }
+
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
             logTrace(["如果长时间连接不上或出错，请尝试下载使用", "“文件” > “PlayCover链接…” 中的最新版本"])
@@ -136,11 +138,7 @@ extension MAAViewModel {
 
     func stop() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .busy
-            }
-        }
+        defer { handleEarlyReturn(backTo: .busy) }
 
         try await handle?.stop()
         status = .idle
@@ -185,6 +183,12 @@ extension MAAViewModel {
         }
     }
 
+    private func handleEarlyReturn(backTo: Status) {
+        if status == .pending {
+            status = backTo
+        }
+    }
+
     private var userDirectory: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     }
@@ -206,11 +210,7 @@ extension MAAViewModel {
 extension MAAViewModel {
     func startTasks() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         for (_, task) in tasks.items {
             guard case let .startup(config) = task else {
@@ -245,11 +245,7 @@ extension MAAViewModel {
 extension MAAViewModel {
     func startCopilot() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         guard let copilot,
               let params = copilot.params
@@ -277,11 +273,7 @@ extension MAAViewModel {
 extension MAAViewModel {
     func recognizeRecruit() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         guard let params = MAATask.recruit(recruitConfig).params else {
             return
@@ -296,11 +288,7 @@ extension MAAViewModel {
 
     func recognizeDepot() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .Depot, params: "")
@@ -311,18 +299,14 @@ extension MAAViewModel {
 
     func recognizeVideo(video url: URL) async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         let config = VideoRecognitionConfiguration(filename: url.path)
         guard let params = config.params else {
             return
         }
 
-        try await ensureHandle()
+        try await ensureHandle(requireConnect: false)
         try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
         try await handle?.start()
 
@@ -331,11 +315,7 @@ extension MAAViewModel {
 
     func recognizeOperBox() async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .OperBox, params: "")
@@ -346,11 +326,7 @@ extension MAAViewModel {
 
     func gachaPoll(once: Bool) async throws {
         status = .pending
-        defer {
-            if status == .pending {
-                status = .idle
-            }
-        }
+        defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
 
