@@ -18,7 +18,7 @@ struct MallSettingsView: View {
 
     var body: some View {
         VStack(spacing: 30) {
-            HStack(spacing: 25) {
+            HStack(spacing: 10) {
                 Spacer()
                 Toggle("信用购物", isOn: config.shopping)
                 Toggle("信用溢出时无视黑名单", isOn: config.force_shopping_if_credit_full)

@@ -42,7 +42,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     }
 }
 
-extension RoguelikeConfiguration: Decodable {
+extension RoguelikeConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.enable = try container.decode(Bool.self, forKey: .enable)
