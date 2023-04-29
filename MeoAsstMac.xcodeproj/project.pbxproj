@@ -68,6 +68,7 @@
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
 		838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82129FBB9E3000566A0 /* GameSettingsView.swift */; };
 		838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82629FDD0F9000566A0 /* GachaView.swift */; };
+		838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82829FDE1FA000566A0 /* MAAError.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
 		83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283228F2F1BE00018D10 /* MallSettingsView.swift */; };
@@ -193,6 +194,7 @@
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
 		838FF82129FBB9E3000566A0 /* GameSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsView.swift; sourceTree = "<group>"; };
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
+		838FF82829FDE1FA000566A0 /* MAAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAError.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
 		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
 		83D3283228F2F1BE00018D10 /* MallSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallSettingsView.swift; sourceTree = "<group>"; };
@@ -404,6 +406,7 @@
 			children = (
 				8341195629EC58CF00044F45 /* MAACopilot.swift */,
 				832985B529EF1890009F7ED5 /* MAADepot.swift */,
+				838FF82829FDE1FA000566A0 /* MAAError.swift */,
 				83531D6229F0A033008A5DF8 /* MAAInfrast.swift */,
 				8341195229EC25A900044F45 /* MAALog.swift */,
 				8366DE0229F2F34100F715E8 /* MAAOperBox.swift */,
@@ -590,6 +593,7 @@
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */,
+				838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */,
 				832985B429EF1219009F7ED5 /* MAARecruit.swift in Sources */,
 				83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */,
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,

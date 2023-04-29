@@ -119,7 +119,7 @@ extension MAAViewModel {
         }
 
         guard await handle?.running == false else {
-            throw NSError()
+            throw MAAError.handleNotRunning
         }
 
         logs.removeAll()
@@ -146,7 +146,7 @@ extension MAAViewModel {
 
     func screenshot() async throws -> NSImage {
         guard let image = try await handle?.getImage() else {
-            throw NSError()
+            throw MAAError.imageUnavailable
         }
 
         return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
@@ -219,7 +219,7 @@ extension MAAViewModel {
 
             if touchMode == .MacPlayTools, config.enable, config.start_game_enabled {
                 guard await startGame(client: config.client_type) else {
-                    throw NSError()
+                    throw MAAError.gameStartFailed
                 }
             }
         }

@@ -276,7 +276,7 @@ private extension NSItemProvider {
                     }
 
                     guard let object else {
-                        continuation.resume(throwing: NSError())
+                        continuation.resume(throwing: MAAError.emptyItemObject)
                         return
                     }
 
