@@ -33,6 +33,7 @@ struct TaskCell: View {
         }
         .padding(.vertical, 6)
         .animation(.default, value: viewModel.taskStatus[id])
+        .contextMenu(menuItems: menuItems)
     }
 
     @ViewBuilder private var indicator: some View {
@@ -48,6 +49,10 @@ struct TaskCell: View {
         case .none:
             EmptyView()
         }
+    }
+
+    @ViewBuilder private func menuItems() -> some View {
+        TaskButtons(viewModel: viewModel)
     }
 
     private var enabled: Binding<Bool> {

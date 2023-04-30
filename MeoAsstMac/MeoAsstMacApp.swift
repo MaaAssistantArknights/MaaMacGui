@@ -33,6 +33,7 @@ struct MeoAsstMacApp: App {
                 CheckForUpdatesView(updater: updaterController.updater)
             }
             SidebarCommands()
+            TaskCommands(viewModel: appViewModel)
         }
 
         Settings {
