@@ -24,7 +24,7 @@ struct VideoRecognitionConfiguration: Codable {
     var filename: String
 
     var params: String? {
-        jsonString(self)
+        try? jsonString()
     }
 }
 
@@ -35,17 +35,9 @@ enum CopilotConfiguration {
     var params: String? {
         switch self {
         case .regular(let config):
-            return jsonString(config)
+            return try? config.jsonString()
         case .sss(let config):
-            return jsonString(config)
+            return try? config.jsonString()
         }
     }
-}
-
-private func jsonString<C: Encodable>(_ config: C) -> String? {
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = .withoutEscapingSlashes
-
-    guard let data = try? encoder.encode(config) else { return nil }
-    return String(data: data, encoding: .utf8)
 }

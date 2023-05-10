@@ -19,8 +19,7 @@ import SwiftUI
         case pending
     }
 
-    @Published var status = Status.idle
-    @Published var showLog = false
+    @Published private(set) var status = Status.idle
 
     private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
@@ -33,9 +32,16 @@ import SwiftUI
 
     // MARK: - Daily Tasks
 
+    enum DailyTasksDetailMode: Hashable {
+        case taskConfig
+        case log
+        case timerConfig
+    }
+
     @Published var tasks: OrderedStore<MAATask>
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
+    @Published var dailyTasksDetailMode: DailyTasksDetailMode = .log
 
     enum TaskStatus: Equatable {
         case cancel
@@ -52,11 +58,28 @@ import SwiftUI
         .appendingPathComponent("UserTasks")
         .appendingPathExtension("plist")
 
+    @AppStorage("MAAScheduledDailyTaskTimer") var serializedScheduledDailyTaskTimers: String?
+
+    struct DailyTaskTimer: Codable {
+        let id: UUID
+        var hour: Int
+        var minute: Int
+        var isEnabled: Bool
+    }
+
+    @Published var scheduledDailyTaskTimers: [DailyTaskTimer] = []
+
     // MARK: - Copilot
+
+    enum CopilotDetailMode: Hashable {
+        case copilotConfig
+        case log
+    }
 
     @Published var copilot: CopilotConfiguration?
     @Published var downloadCopilot: String?
     @Published var showImportCopilot = false
+    @Published var copilotDetailMode: CopilotDetailMode = .log
 
     // MARK: - Recognition
 
@@ -102,6 +125,8 @@ import SwiftUI
             .receive(on: RunLoop.main)
             .sink(receiveValue: processMessage)
             .store(in: &cancellables)
+
+        initScheduledDailyTaskTimer()
     }
 }
 
@@ -141,6 +166,10 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .busy) }
 
         try await handle?.stop()
+        status = .idle
+    }
+
+    func resetStatus() {
         status = .idle
     }
 
@@ -237,6 +266,38 @@ extension MAAViewModel {
         try await handle?.start()
 
         status = .busy
+    }
+
+    private func initScheduledDailyTaskTimer() {
+        scheduledDailyTaskTimers = {
+            guard let serializedString = serializedScheduledDailyTaskTimers else {
+                return []
+            }
+
+            return JSONHelper.json(from: serializedString, of: [DailyTaskTimer].self) ?? []
+        }()
+        $scheduledDailyTaskTimers
+            .sink { [weak self] value in
+                guard let self else {
+                    return
+                }
+
+                guard let jsonString = try? value.jsonString() else {
+                    print("Skip saving $scheduledDailyTaskTimers. Failed to serialize daily task timer.")
+                    return
+                }
+
+                guard jsonString != self.serializedScheduledDailyTaskTimers else {
+                    return
+                }
+
+                self.serializedScheduledDailyTaskTimers = jsonString
+            }
+            .store(in: &cancellables)
+    }
+
+    func appendNewTaskTimer() {
+        scheduledDailyTaskTimers.append(DailyTaskTimer(id: UUID(), hour: 9, minute: 0, isEnabled: false))
     }
 }
 

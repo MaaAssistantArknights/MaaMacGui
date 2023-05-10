@@ -24,6 +24,9 @@ struct MeoAsstMacApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appViewModel)
+                .onAppear {
+                    TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
+                }
         }
         .commands {
             CommandGroup(replacing: .newItem) {

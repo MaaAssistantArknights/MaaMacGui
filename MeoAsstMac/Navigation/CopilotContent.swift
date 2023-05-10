@@ -43,7 +43,7 @@ struct CopilotContent: View {
         .animation(.default, value: downloading)
         .onAppear(perform: loadUserCopilots)
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
-        .onReceive(viewModel.$showLog, perform: deselectCopilot)
+        .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
         .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
         .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
         .fileImporter(isPresented: $viewModel.showImportCopilot,
@@ -94,7 +94,7 @@ struct CopilotContent: View {
 
     private func start() {
         Task {
-            deselectCopilot(true)
+            viewModel.copilotDetailMode = .log
             try await viewModel.startCopilot()
         }
     }
@@ -160,8 +160,8 @@ struct CopilotContent: View {
         }
     }
 
-    private func deselectCopilot(_ shouldDeselect: Bool) {
-        if shouldDeselect {
+    private func deselectCopilot(_ viewMode: MAAViewModel.CopilotDetailMode) {
+        if viewMode != .copilotConfig {
             selection = nil
         }
     }

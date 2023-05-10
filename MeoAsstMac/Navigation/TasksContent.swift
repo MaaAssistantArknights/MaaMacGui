@@ -18,9 +18,9 @@ struct TasksContent: View {
             }
             .onMove(perform: moveTask)
         }
+        .onChange(of: selection, perform: updateViewMode)
         .toolbar(content: listToolbar)
         .animation(.default, value: viewModel.tasks)
-        .onReceive(viewModel.$showLog, perform: deselectTask)
         .onReceive(viewModel.$newTaskAdded, perform: selectLastTask)
     }
 
@@ -60,7 +60,7 @@ struct TasksContent: View {
 
     private func start() {
         Task {
-            deselectTask(true)
+            viewModel.dailyTasksDetailMode = .log
             try await viewModel.startTasks()
         }
     }
@@ -90,8 +90,8 @@ struct TasksContent: View {
         viewModel.tasks.keys.move(fromOffsets: from, toOffset: to)
     }
 
-    private func deselectTask(_ shouldDeselect: Bool) {
-        if shouldDeselect {
+    private func deselectTask(_ viewMode: MAAViewModel.DailyTasksDetailMode) {
+        if viewMode != .taskConfig {
             selection = nil
         }
     }
@@ -100,6 +100,11 @@ struct TasksContent: View {
         if shouldSelect {
             selection = viewModel.tasks.keys.last
         }
+    }
+
+    private func updateViewMode(_ selectedTaskID: UUID?) {
+        guard selectedTaskID != nil else { return }
+        viewModel.dailyTasksDetailMode = .taskConfig
     }
 
     // MARK: - State Wrappers
