@@ -107,6 +107,14 @@ import SwiftUI
         }
     }
 
+    // MARK: - System Settings
+
+    @AppStorage("MAAPreventSystemSleeping") var preventSystemSleeping = false {
+        didSet {
+            NotificationCenter.default.post(name: .MAAPreventSystemSleepingChanged, object: preventSystemSleeping)
+        }
+    }
+
     // MARK: - Initializer
 
     init() {

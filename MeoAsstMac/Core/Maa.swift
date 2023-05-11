@@ -141,6 +141,7 @@ typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]
 
 extension Notification.Name {
     static let MAAReceivedCallbackMessage = Notification.Name("MAAReceivedCallbackMessage")
+    static let MAAPreventSystemSleepingChanged = Notification.Name("MAAPreventSystemSleepingChanged")
 }
 
 extension JSON {

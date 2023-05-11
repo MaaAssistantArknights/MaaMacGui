@@ -55,6 +55,11 @@ struct MeoAsstMacApp: App {
                     .tabItem {
                         Label("更新设置", systemImage: "square.and.arrow.down")
                     }
+
+                SystemSettingsView()
+                    .tabItem {
+                        Label("系统设置", systemImage: "wrench.adjustable")
+                    }
             }
             .environmentObject(appViewModel)
             .frame(minWidth: 320, minHeight: 240)

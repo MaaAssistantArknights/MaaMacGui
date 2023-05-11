@@ -83,6 +83,7 @@
 		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
 		92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CDF6212A065E55005669EC /* Codeable+JSON.swift */; };
+		92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */; };
 		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 /* End PBXBuildFile section */
@@ -212,6 +213,7 @@
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83FF5A9B2978FE27000AE831 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resource; path = ../../../../resource; sourceTree = "<group>"; };
 		92CDF6212A065E55005669EC /* Codeable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codeable+JSON.swift"; sourceTree = "<group>"; };
+		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -448,6 +450,7 @@
 				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
+				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -628,6 +631,7 @@
 				83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */,
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
+				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
@@ -674,7 +678,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				DEVELOPMENT_TEAM = 29V29Y67P2;
+				DEVELOPMENT_TEAM = U4UY55HCP6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MAAHelper/Info.plist;
@@ -697,7 +701,7 @@
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 29V29Y67P2;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = U4UY55HCP6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MAAHelper/Info.plist;
@@ -787,7 +791,7 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
-				DEVELOPMENT_TEAM = 29V29Y67P2;
+				DEVELOPMENT_TEAM = U4UY55HCP6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -875,7 +879,7 @@
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 29V29Y67P2;
+				"DEVELOPMENT_TEAM[sdk=macosx*]" = U4UY55HCP6;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

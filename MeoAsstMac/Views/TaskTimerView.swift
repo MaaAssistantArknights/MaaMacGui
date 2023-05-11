@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TaskTimerView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
+    @State private var showingAlertForPreventingSleep = false
 
     var body: some View {
         HStack {
@@ -15,17 +16,37 @@ struct TaskTimerView: View {
         }
         List {
             ForEach($viewModel.scheduledDailyTaskTimers.indices, id: \.self) { index in
-                TaskTimerItem(taskTimer: $viewModel.scheduledDailyTaskTimers[index]) {
-                    viewModel.scheduledDailyTaskTimers.remove(at: index)
-                }
+                TaskTimerItem(
+                    taskTimer: $viewModel.scheduledDailyTaskTimers[index],
+                    onDelete: {
+                        viewModel.scheduledDailyTaskTimers.remove(at: index)
+                },
+                    onEnabled: showAlertIfNeeded
+                )
             }
         }
+        .alert("允许阻止系统睡眠",
+               isPresented: $showingAlertForPreventingSleep,
+               actions: {
+            Button("允许") {
+                viewModel.preventSystemSleeping = true
+            }
+            Button("取消", role: .cancel) {}
+        }, message: {
+            Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
+        })
+    }
+
+    private func showAlertIfNeeded() {
+        guard !viewModel.preventSystemSleeping else { return }
+        showingAlertForPreventingSleep = true
     }
 }
 
 struct TaskTimerItem: View {
     @Binding var taskTimer: MAAViewModel.DailyTaskTimer
     var onDelete: (() -> Void)
+    var onEnabled: (() -> Void)
 
     let hours = Array(0...23)
     let minutes = Array(0...59)
@@ -62,6 +83,11 @@ struct TaskTimerItem: View {
                 Text("开启")
             })
             .toggleStyle(.switch)
+            .onChange(of: taskTimer.isEnabled) {
+                if $0 {
+                    onEnabled()
+                }
+            }
             
             Spacer()
         }

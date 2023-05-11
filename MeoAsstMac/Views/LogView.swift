@@ -24,11 +24,15 @@ struct LogView: View {
             }
             .animation(.default, value: viewModel.logs)
             .toolbar {
-                Toggle(isOn: $viewModel.trackTail) {
-                    Label("现在", systemImage: "arrow.down.to.line")
-                        .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
+                HStack {
+                    Divider()
+
+                    Toggle(isOn: $viewModel.trackTail) {
+                        Label("现在", systemImage: "arrow.down.to.line")
+                            .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
+                    }
+                    .help("自动滚动到底部")
                 }
-                .help("自动滚动到底部")
             }
             .onChange(of: viewModel.logs) { _ in
                 if viewModel.trackTail {

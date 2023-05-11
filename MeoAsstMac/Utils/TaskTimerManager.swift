@@ -12,6 +12,9 @@ final class TaskTimerManager {
     private var viewModel: MAAViewModel?
     private var runningTimers: [String: RunningTimer] = [:]
 
+    private var sleepDisabled = false
+    var sleepAssertionID: IOPMAssertionID = 0
+
     private var cancellables = Set<AnyCancellable>()
 
     private init() {}
@@ -25,6 +28,16 @@ final class TaskTimerManager {
                     self?.updateRunningTimers(timerConfigs: $0)
                 }
                 .store(in: &cancellables)
+
+
+            NotificationCenter.default
+                .publisher(for: .MAAPreventSystemSleepingChanged)
+                .sink { [weak self] in
+                    self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false)
+                }
+                .store(in: &cancellables)
+            // Call it manually for the first time
+            preventSystemFromSleepingIfNeeded(await viewModel.preventSystemSleeping)
         }
 
         print("TaskTimerManager connected")
@@ -100,6 +113,19 @@ final class TaskTimerManager {
             }
 
             try await viewModel.startTasks()
+            print("Started daily task by shcedmed timer (\(config.uniqueKey)")
+        }
+    }
+
+    private func preventSystemFromSleepingIfNeeded(_ needed: Bool) {
+        if needed {
+            sleepDisabled = IOPMAssertionCreateWithName(kIOPMAssertionTypeNoIdleSleep as CFString, IOPMAssertionLevel(kIOPMAssertionLevelOn), "Daily task timer need to be run all the time" as CFString, &sleepAssertionID) == kIOReturnSuccess
+            print("Disable screen sleep: \(sleepDisabled ? "successful" : "failed")")
+        } else if sleepDisabled {
+            // Enable screen sleep again
+            IOPMAssertionRelease(sleepAssertionID)
+            sleepDisabled = false
+            print("Enabled screen sleep")
         }
     }
 }
