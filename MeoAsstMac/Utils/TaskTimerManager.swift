@@ -1,4 +1,5 @@
 import Foundation
+import AppKit
 import Combine
 
 final class TaskTimerManager {
@@ -36,11 +37,39 @@ final class TaskTimerManager {
                     self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false)
                 }
                 .store(in: &cancellables)
+
+            NSWorkspace.shared.notificationCenter
+                .publisher(for: NSWorkspace.screensDidWakeNotification)
+                .sink { [weak self] _ in
+                    print("System wakes up, try to refresh timer")
+                    self?.refreshRunningTimersIfNecessary()
+                }
+                .store(in: &cancellables)
             // Call it manually for the first time
             preventSystemFromSleepingIfNeeded(await viewModel.preventSystemSleeping)
         }
 
         print("TaskTimerManager connected")
+    }
+
+    func refreshRunningTimersIfNecessary() {
+        Task {
+            guard let viewModel else {
+                print("Skip refreshing daily task timer, due to missing viewModel.")
+                return
+            }
+            let isDailyTaskRunning = await viewModel.status != .idle
+            guard !isDailyTaskRunning else {
+                print("Skip refreshing daily task timer, due to running daily task.")
+                return
+            }
+
+            print("Refresing Daily Tasks Timers")
+            for (key, runningTimer) in runningTimers {
+                runningTimer.stop()
+                runningTimers[key] = setupNewTimer(for: runningTimer.config)
+            }
+        }
     }
 
     private func updateRunningTimers(timerConfigs: [MAAViewModel.DailyTaskTimer]) {
