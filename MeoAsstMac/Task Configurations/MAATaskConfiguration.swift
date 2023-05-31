@@ -17,39 +17,37 @@ protocol MAATaskConfiguration: Codable & Hashable {
     init()
 }
 
+extension MAATaskConfiguration {
+  func jsonStringIfEnabled() -> String? {
+    guard enable else { return nil }
+
+    return try? jsonString()
+  }
+}
+
 // MARK: JSON TaskParams
 
 extension MAATask {
     var params: String? {
         switch self {
         case .startup(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .recruit(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .infrast(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .fight(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .mall(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .award(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .roguelike(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         case .reclamation(let config):
-            return jsonString(config)
+          return config.jsonStringIfEnabled()
         }
     }
-}
-
-private func jsonString<C: MAATaskConfiguration>(_ config: C) -> String? {
-    guard config.enable else { return nil }
-
-    let encoder = JSONEncoder()
-    encoder.outputFormatting = .withoutEscapingSlashes
-
-    guard let data = try? encoder.encode(config) else { return nil }
-    return String(data: data, encoding: .utf8)
 }
 
 // MARK: Type-erased TaskConfig

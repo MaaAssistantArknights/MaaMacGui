@@ -24,6 +24,9 @@ struct MeoAsstMacApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appViewModel)
+                .onAppear {
+                    TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
+                }
         }
         .commands {
             CommandGroup(replacing: .newItem) {
@@ -51,6 +54,11 @@ struct MeoAsstMacApp: App {
                 UpdaterSettingsView(updater: updaterController.updater)
                     .tabItem {
                         Label("更新设置", systemImage: "square.and.arrow.down")
+                    }
+
+                SystemSettingsView()
+                    .tabItem {
+                        Label("系统设置", systemImage: "wrench.adjustable")
                     }
             }
             .environmentObject(appViewModel)

@@ -40,7 +40,7 @@ struct CopilotDetail: View {
 
         ToolbarItemGroup {
             Button {
-                viewModel.showLog = true
+                viewModel.copilotDetailMode = .log
             } label: {
                 Label("日志", systemImage: "note.text")
                     .foregroundColor(url == nil ? Color.accentColor : nil)

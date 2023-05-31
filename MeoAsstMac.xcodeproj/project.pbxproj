@@ -82,6 +82,10 @@
 		83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; };
 		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
+		92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CDF6212A065E55005669EC /* Codeable+JSON.swift */; };
+		92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */; };
+		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
+		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -186,7 +190,7 @@
 		83531D5E29F00F0A008A5DF8 /* CopilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotView.swift; sourceTree = "<group>"; };
 		83531D6029F026E8008A5DF8 /* OrderedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedStore.swift; sourceTree = "<group>"; };
 		83531D6229F0A033008A5DF8 /* MAAInfrast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAInfrast.swift; sourceTree = "<group>"; };
-		8355E7AD29E7F9DD005D5A1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		8355E7AD29E7F9DD005D5A1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; tabWidth = 2; };
 		8355E7AF29E8722E005D5A1C /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
 		8355E7B329E918A2005D5A1C /* TasksContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TasksContent.swift; sourceTree = "<group>"; };
 		8355E7B729E9E2B2005D5A1C /* Sidebar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sidebar.swift; sourceTree = "<group>"; };
@@ -208,6 +212,10 @@
 		83E9D133294B74230091D1FF /* OpenCV.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OpenCV.xcframework; path = ../../build/OpenCV.xcframework; sourceTree = "<group>"; };
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83FF5A9B2978FE27000AE831 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resource; path = ../../../../resource; sourceTree = "<group>"; };
+		92CDF6212A065E55005669EC /* Codeable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codeable+JSON.swift"; sourceTree = "<group>"; };
+		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
+		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
+		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +306,7 @@
 				8366DE0029F2F26100F715E8 /* OperBoxView.swift */,
 				83661E2B29F77CFF007793CA /* VideoRecogView.swift */,
 				838FF82629FDD0F9000566A0 /* GachaView.swift */,
+				92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -372,6 +381,7 @@
 				8329858D29EDAC1C009F7ED5 /* Main Menu */,
 				83264A3629EBF0700074E33A /* Configuration Views */,
 				83264A2729EBEB9B0074E33A /* Task Configurations */,
+				92CDF6202A065E20005669EC /* Utils */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
@@ -379,8 +389,10 @@
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
 				833786D428F188D900D39D6F /* Preview Content */,
 			);
+			indentWidth = 4;
 			path = MeoAsstMac;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		833786D428F188D900D39D6F /* Preview Content */ = {
 			isa = PBXGroup;
@@ -438,8 +450,18 @@
 				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
+				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		92CDF6202A065E20005669EC /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
+				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
+			);
+			path = Utils;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -591,8 +613,11 @@
 				8355E7AE29E7F9DD005D5A1C /* ContentView.swift in Sources */,
 				8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */,
 				8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */,
+				92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */,
 				83DD50B729BE393C000E84E7 /* UpdaterSettingsView.swift in Sources */,
+				92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */,
 				83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */,
+				92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */,
 				8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */,
 				83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */,
 				83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */,
@@ -606,6 +631,7 @@
 				83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */,
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
+				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,

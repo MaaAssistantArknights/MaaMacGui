@@ -116,7 +116,7 @@ extension MAAViewModel {
             if let id = taskID(taskDetails: message.details) {
                 taskStatus[id] = .cancel
             }
-            status = .idle
+            resetStatus()
             logTrace("Stopped")
 
         case .TaskChainError:
@@ -159,7 +159,7 @@ extension MAAViewModel {
             break
 
         case .AllTasksCompleted:
-            status = .idle
+            resetStatus()
             logTrace("AllTasksComplete")
 
         default:
