@@ -55,6 +55,9 @@ struct RoguelikeSettingsView: View {
                 Text(squad).tag(squad)
             }
         }
+        .onChange(of: config.wrappedValue.theme) { newValue in
+            config.wrappedValue.squad = roguelikeSquads[newValue]?.first ?? ""
+        }
 
         Picker("开局职业组：", selection: config.roles) {
             ForEach(roguelikeRoles, id: \.self) { role in
