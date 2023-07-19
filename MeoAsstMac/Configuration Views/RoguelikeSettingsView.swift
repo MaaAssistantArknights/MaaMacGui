@@ -83,7 +83,7 @@ struct RoguelikeSettingsView: View {
 enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
     case Phantom
     case Mizuki
-    case Expeditioner
+    case Sami
 
     var description: String {
         switch self {
@@ -91,7 +91,7 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
             return NSLocalizedString("傀影", comment: "")
         case .Mizuki:
             return NSLocalizedString("水月", comment: "")
-        case .Expeditioner:
+        case .Sami:
             return NSLocalizedString("萨米", comment: "")
         }
     }
@@ -105,7 +105,7 @@ private let roguelikeSquads: [RoguelikeTheme: [String]] = [
               "指挥分队", "集群分队", "后勤分队", "矛头分队",
               "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
               "研究分队", "高规格分队"],
-    .Expeditioner: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
+    .Sami: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
                     "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
                     "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队"]
 ]
