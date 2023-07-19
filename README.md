@@ -13,28 +13,10 @@ MAA 的意思是 MAA Assistant Arknights
 2. 初始化 submodule `git submodule update --init --recursive`
 
 ### Build MAA Core
-> 这部分内容可能过时，请参考 workflow 定义中与 macOS-GUI 相关的内容, 其中一部分步骤与 CPU 架构有关
+> 为方便使用，现已将编译过程写成一键脚本。在版本迭代过程中，脚本可能无法及时更新。这时请以 workflow 定义中与 macOS 相关的内容为准
 
-#### Intel Mac
 1. 安装依赖 `brew install ninja`
-2. 下载预构建的第三方库 `python3 maadeps-download.py x64-osx`
-3. `mkdir -p build && cmake -B build -GNinja -DCMAKE_OSX_ARCHITECTURES="x86_64"`
-
-#### Apple Silicon Mac
-1. 安装依赖 `brew install ninja`
-2. 下载预构建的第三方库 `python3 maadeps-download.py arm64-osx`
-3. `mkdir -p build && cmake -B build -GNinja -DCMAKE_OSX_ARCHITECTURES="arm64"`
-
-### 以下与架构无关
-4. `cmake --build build`
-5. `cmake --install build --prefix build`
-6. `cd build`
-7. ```
-   xcodebuild -create-xcframework -library   libMaaCore.dylib -headers ../include -output   MaaCore.xcframework
-   xcodebuild -create-xcframework -library   libMaaDerpLearning.dylib -output   MaaDerpLearning.xcframework
-   xcodebuild -create-xcframework -library   libonnxruntime.*.dylib -output ONNXRuntime   xcframework
-   xcodebuild -create-xcframework -library libopencv*.dylib -output OpenCV.xcframework
-   ```
+2. 运行位于主仓库的脚本 `./tools/build_macos_universal.zsh`
 
 🎉 打开 Xcode 可以尝试 build 了
 
