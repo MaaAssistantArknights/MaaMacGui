@@ -199,6 +199,12 @@ extension MAAViewModel {
                 .appendingPathComponent(channel.rawValue)
             try await MAAProvider.shared.loadResource(path: extraResource.path)
         }
+
+        let platformResource = Bundle.main.resourceURL!
+            .appendingPathComponent("resource")
+            .appendingPathComponent("platform_diff")
+            .appendingPathComponent("macOS")
+        try await MAAProvider.shared.loadResource(path: platformResource.path)
     }
 
     private func updateChannel(channel: MAAClientChannel) {
