@@ -97,7 +97,11 @@ import SwiftUI
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
 
-    @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch
+    @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
+        didSet {
+            Task { try await loadResource(channel: clientChannel) }
+        }
+    }
 
     // MARK: - Game Settings
 
