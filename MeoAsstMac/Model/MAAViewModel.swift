@@ -200,11 +200,13 @@ extension MAAViewModel {
             try await MAAProvider.shared.loadResource(path: extraResource.path)
         }
 
-        let platformResource = Bundle.main.resourceURL!
-            .appendingPathComponent("resource")
-            .appendingPathComponent("platform_diff")
-            .appendingPathComponent("iOS")
-        try await MAAProvider.shared.loadResource(path: platformResource.path)
+        if touchMode == .MacPlayTools {
+            let platformResource = Bundle.main.resourceURL!
+                .appendingPathComponent("resource")
+                .appendingPathComponent("platform_diff")
+                .appendingPathComponent("iOS")
+            try await MAAProvider.shared.loadResource(path: platformResource.path)
+        }
     }
 
     private func updateChannel(channel: MAAClientChannel) {
