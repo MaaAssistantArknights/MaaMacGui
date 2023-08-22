@@ -203,7 +203,7 @@ extension MAAViewModel {
         let platformResource = Bundle.main.resourceURL!
             .appendingPathComponent("resource")
             .appendingPathComponent("platform_diff")
-            .appendingPathComponent("macOS")
+            .appendingPathComponent("iOS")
         try await MAAProvider.shared.loadResource(path: platformResource.path)
     }
 
