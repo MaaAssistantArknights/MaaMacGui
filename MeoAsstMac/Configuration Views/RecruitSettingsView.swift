@@ -23,7 +23,7 @@ struct RecruitSettingsView: View {
 
             Toggle("3星设置7:40而非9:00", isOn: level3UseShortTime)
 
-            Stepper(value: config.times, in: 0 ... 4) {
+            Stepper(value: config.times, in: 0 ... 1000) {
                 Text("每次执行时最大招募次数: \(config.times.wrappedValue)").padding(.vertical)
             }
 
