@@ -128,7 +128,14 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 
     static var daily: [MAATask.TypeName] {
-        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike]
+        if let channelValue = UserDefaults().string(forKey: "MAAClientChannel"),
+           let channel = MAAClientChannel(rawValue: channelValue),
+           channel.isGlobal
+        {
+            return [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm]
+        } else {
+            return [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike]
+        }
     }
 }
 
