@@ -6,7 +6,9 @@
 //
 
 import Foundation
+import AppKit
 
 @objc protocol MAAHelperProtocol {
     func startGame(bundleName: String, with reply: @escaping (Bool) -> Void)
+    func terminateGame(processIdentifier: Int32)
 }

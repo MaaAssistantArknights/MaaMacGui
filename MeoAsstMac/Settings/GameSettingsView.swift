@@ -17,6 +17,11 @@ struct GameSettingsView: View {
                     Text("\(channel.description)").tag(channel)
                 }
             }
+            Picker("完成后：", selection: $viewModel.actionsAfterComplete) {
+                ForEach(MAAViewModel.ActionsAfterComplete.allCases, id: \.self) {
+                    choice in Text(choice.rawValue).tag(choice)
+                }
+            }
         }
         .padding()
     }
@@ -24,6 +29,6 @@ struct GameSettingsView: View {
 
 struct GameSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        GameSettingsView()
+        GameSettingsView().environmentObject(MAAViewModel())
     }
 }

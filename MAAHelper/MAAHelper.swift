@@ -30,4 +30,9 @@ class MAAHelper: NSObject, MAAHelperProtocol {
             }
         }
     }
+    
+    @objc func terminateGame(processIdentifier: Int32) {
+        // NSWorkspace.shared.runningApplications is not updated in this helper when arknights is closed and opened again, can't figure out why so I have to get pid in main process and kill with pid in the helper
+        kill(processIdentifier, SIGTERM)
+    }
 }

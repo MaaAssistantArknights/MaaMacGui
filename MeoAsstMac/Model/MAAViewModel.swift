@@ -110,6 +110,13 @@ import SwiftUI
             updateChannel(channel: clientChannel)
         }
     }
+    
+    @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete: ActionsAfterComplete = .doNothing
+    
+    enum ActionsAfterComplete: String, CaseIterable {
+        case doNothing = "无动作"
+        case closeGame = "退出PlayCover客户端"
+    }
 
     // MARK: - System Settings
 
@@ -180,6 +187,24 @@ extension MAAViewModel {
         try await handle?.stop()
         status = .idle
     }
+    
+    func actionAfterComplete() {
+        // get startup configs
+        print(actionsAfterComplete)
+        if actionsAfterComplete == .closeGame {
+            for (_, task) in tasks.items {
+                guard case let .startup(config) = task else {
+                    continue
+                }
+
+                if touchMode == .MacPlayTools, config.enable {
+                    stopGame(client: config.client_type)
+                }
+            }
+        }
+        logTrace("AllTasksComplete")
+    }
+
 
     func resetStatus() {
         status = .idle
@@ -515,6 +540,24 @@ extension MAAViewModel {
         }
 
         return false
+    }
+    
+    func stopGame(client: MAAClientChannel) {
+        let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MAAHelper")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: MAAHelperProtocol.self)
+        connectionToService.resume()
+
+        defer { connectionToService.invalidate() }
+        
+        if let gameClient = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.hypergryph.arknights" }), gameClient.processIdentifier != 0 {
+            let pidPlayCover: Int32 = gameClient.processIdentifier
+            
+            if let proxy = connectionToService.remoteObjectProxy as? MAAHelperProtocol {
+                proxy.terminateGame(processIdentifier: pidPlayCover)
+            }
+        } else {
+            logTrace(["Game client not found or has an invalid PID."])
+        }
     }
 }
 
