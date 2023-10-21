@@ -21,6 +21,7 @@ import SwiftUI
 
     @Published private(set) var status = Status.idle
 
+    private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
@@ -489,15 +490,28 @@ extension MAAViewModel {
     func switchAwakeGuard(_ newValue: Status) {
         switch newValue {
         case .busy, .pending:
+            wakeupSystem()
             enableAwake()
         case .idle:
             disableAwake()
         }
     }
+    
+    // wakes the system from asleep
+    private func wakeupSystem() {
+        guard wakeupAssertionID == nil else { return }
+        var assertionID : IOPMAssertionID = 0
+        let name = "MAA is starting up, waking up the system"
+        let result = IOPMAssertionDeclareUserActivity(name as CFString, kIOPMUserActiveLocal, &assertionID)
+        if result == kIOReturnSuccess {
+            wakeupAssertionID = assertionID
+        }
+    }
 
+    // keeps the system from sleeping during tasks
     private func enableAwake() {
         guard awakeAssertionID == nil else { return }
-        var assertionID: UInt32 = 0
+        var assertionID: IOPMAssertionID = 0
         let name = "MAA is running; sleep is diabled."
         let properties = [kIOPMAssertionTypeKey: kIOPMAssertionTypeNoDisplaySleep as CFString,
                           kIOPMAssertionNameKey: name as CFString,
@@ -510,8 +524,11 @@ extension MAAViewModel {
 
     private func disableAwake() {
         guard let awakeAssertionID else { return }
+        guard let wakeupAssertionID else { return }
         IOPMAssertionRelease(awakeAssertionID)
+        IOPMAssertionRelease(wakeupAssertionID)
         self.awakeAssertionID = nil
+        self.wakeupAssertionID = nil
     }
 }
 
