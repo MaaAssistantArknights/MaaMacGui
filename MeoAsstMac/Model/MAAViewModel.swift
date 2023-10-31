@@ -21,6 +21,7 @@ import SwiftUI
 
     @Published private(set) var status = Status.idle
 
+    private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
@@ -110,6 +111,13 @@ import SwiftUI
             updateChannel(channel: clientChannel)
         }
     }
+    
+    @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete: ActionsAfterComplete = .doNothing
+    
+    enum ActionsAfterComplete: String, CaseIterable {
+        case doNothing = "无动作"
+        case closeGame = "退出PlayCover客户端"
+    }
 
     // MARK: - System Settings
 
@@ -180,6 +188,24 @@ extension MAAViewModel {
         try await handle?.stop()
         status = .idle
     }
+    
+    func actionAfterComplete() {
+        // get startup configs
+        print(actionsAfterComplete)
+        if actionsAfterComplete == .closeGame {
+            for (_, task) in tasks.items {
+                guard case let .startup(config) = task else {
+                    continue
+                }
+
+                if touchMode == .MacPlayTools, config.enable {
+                    stopGame(client: config.client_type)
+                }
+            }
+        }
+        logTrace("AllTasksComplete")
+    }
+
 
     func resetStatus() {
         status = .idle
@@ -464,15 +490,28 @@ extension MAAViewModel {
     func switchAwakeGuard(_ newValue: Status) {
         switch newValue {
         case .busy, .pending:
+            wakeupSystem()
             enableAwake()
         case .idle:
             disableAwake()
         }
     }
+    
+    // wakes the system from asleep
+    private func wakeupSystem() {
+        guard wakeupAssertionID == nil else { return }
+        var assertionID : IOPMAssertionID = 0
+        let name = "MAA is starting up, waking up the system"
+        let result = IOPMAssertionDeclareUserActivity(name as CFString, kIOPMUserActiveLocal, &assertionID)
+        if result == kIOReturnSuccess {
+            wakeupAssertionID = assertionID
+        }
+    }
 
+    // keeps the system from sleeping during tasks
     private func enableAwake() {
         guard awakeAssertionID == nil else { return }
-        var assertionID: UInt32 = 0
+        var assertionID: IOPMAssertionID = 0
         let name = "MAA is running; sleep is diabled."
         let properties = [kIOPMAssertionTypeKey: kIOPMAssertionTypeNoDisplaySleep as CFString,
                           kIOPMAssertionNameKey: name as CFString,
@@ -485,8 +524,11 @@ extension MAAViewModel {
 
     private func disableAwake() {
         guard let awakeAssertionID else { return }
+        guard let wakeupAssertionID else { return }
         IOPMAssertionRelease(awakeAssertionID)
+        IOPMAssertionRelease(wakeupAssertionID)
         self.awakeAssertionID = nil
+        self.wakeupAssertionID = nil
     }
 }
 
@@ -515,6 +557,24 @@ extension MAAViewModel {
         }
 
         return false
+    }
+    
+    func stopGame(client: MAAClientChannel) {
+        let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MAAHelper")
+        connectionToService.remoteObjectInterface = NSXPCInterface(with: MAAHelperProtocol.self)
+        connectionToService.resume()
+
+        defer { connectionToService.invalidate() }
+        
+        if let gameClient = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.hypergryph.arknights" }), gameClient.processIdentifier != 0 {
+            let pidPlayCover: Int32 = gameClient.processIdentifier
+            
+            if let proxy = connectionToService.remoteObjectProxy as? MAAHelperProtocol {
+                proxy.terminateGame(processIdentifier: pidPlayCover)
+            }
+        } else {
+            logTrace(["Game client not found or has an invalid PID."])
+        }
     }
 }
 
