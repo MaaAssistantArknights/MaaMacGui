@@ -107,7 +107,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
         case .Mall:
             return NSLocalizedString("收取信用及购物", comment: "")
         case .Award:
-            return NSLocalizedString("领取日常奖励", comment: "")
+            return NSLocalizedString("领取奖励", comment: "")
         case .Roguelike:
             return NSLocalizedString("自动肉鸽", comment: "")
         case .Copilot:

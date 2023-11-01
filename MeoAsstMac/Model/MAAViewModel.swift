@@ -473,7 +473,7 @@ extension MAAViewModel {
         case .mall:
             MallSettingsView(id: id)
         case .award:
-            Text("此任务无自定义选项")
+            AwardSettingsView(id: id)
         case .roguelike:
             RoguelikeSettingsView(id: id)
         case .reclamation:

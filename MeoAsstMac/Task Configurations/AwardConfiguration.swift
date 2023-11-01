@@ -9,13 +9,23 @@ import Foundation
 
 struct AwardConfiguration: MAATaskConfiguration {
     var enable = true
+    var award = true
+    var mail = true
 
     var title: String {
         MAATask.TypeName.Award.description
     }
 
     var subtitle: String {
-        NSLocalizedString("日常任务 周常任务", comment: "")
+        var awards = [String]()
+        if award {
+            awards.append(NSLocalizedString("日常任务", comment: ""))
+            awards.append(NSLocalizedString("周常任务", comment: ""))
+        }
+        if mail {
+            awards.append(NSLocalizedString("邮件", comment: ""))
+        }
+        return awards.joined(separator: " ")
     }
 
     var summary: String { "" }
