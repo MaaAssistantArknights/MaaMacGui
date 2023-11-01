@@ -25,7 +25,9 @@ struct AwardSettingsView: View {
     }
 }
 
-#Preview {
-    AwardSettingsView(id: UUID())
-        .environmentObject(MAAViewModel())
+struct AwardSettings_Preview: PreviewProvider {
+    static var previews: some View {
+        AwardSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
 }
