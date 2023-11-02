@@ -30,3 +30,14 @@ struct AwardConfiguration: MAATaskConfiguration {
 
     var summary: String { "" }
 }
+
+extension AwardConfiguration {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.enable = try container.decode(Bool.self, forKey: .enable)
+
+        // Migration
+        self.award = try container.decodeIfPresent(Bool.self, forKey: .award) ?? false
+        self.mail = try container.decodeIfPresent(Bool.self, forKey: .mail) ?? false
+    }
+}
