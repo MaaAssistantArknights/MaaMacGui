@@ -71,6 +71,7 @@
 		838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82129FBB9E3000566A0 /* GameSettingsView.swift */; };
 		838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82629FDD0F9000566A0 /* GachaView.swift */; };
 		838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82829FDE1FA000566A0 /* MAAError.swift */; };
+		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
@@ -204,6 +205,7 @@
 		838FF82129FBB9E3000566A0 /* GameSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsView.swift; sourceTree = "<group>"; };
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
 		838FF82829FDE1FA000566A0 /* MAAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAError.swift; sourceTree = "<group>"; };
+		8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolClient.swift; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
 		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
@@ -319,6 +321,7 @@
 			children = (
 				8337870128F1D95F00D39D6F /* Maa.swift */,
 				8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */,
+				8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -646,6 +649,7 @@
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
+				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,

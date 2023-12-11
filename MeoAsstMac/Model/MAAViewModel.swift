@@ -7,7 +7,6 @@
 
 import Combine
 import IOKit.pwr_mgt
-import Network
 import SwiftUI
 
 @MainActor class MAAViewModel: ObservableObject {
@@ -111,9 +110,9 @@ import SwiftUI
             updateChannel(channel: clientChannel)
         }
     }
-    
+
     @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete: ActionsAfterComplete = .doNothing
-    
+
     enum ActionsAfterComplete: String, CaseIterable {
         case doNothing = "无动作"
         case closeGame = "退出PlayCover客户端"
@@ -188,7 +187,7 @@ extension MAAViewModel {
         try await handle?.stop()
         status = .idle
     }
-    
+
     func actionAfterComplete() {
         // get startup configs
         print(actionsAfterComplete)
@@ -199,13 +198,12 @@ extension MAAViewModel {
                 }
 
                 if touchMode == .MacPlayTools, config.enable {
-                    stopGame(client: config.client_type)
+                    Task { try? await stopGame() }
                 }
             }
         }
         logTrace("AllTasksComplete")
     }
-
 
     func resetStatus() {
         status = .idle
@@ -496,11 +494,11 @@ extension MAAViewModel {
             disableAwake()
         }
     }
-    
+
     // wakes the system from asleep
     private func wakeupSystem() {
         guard wakeupAssertionID == nil else { return }
-        var assertionID : IOPMAssertionID = 0
+        var assertionID: IOPMAssertionID = 0
         let name = "MAA is starting up, waking up the system"
         let result = IOPMAssertionDeclareUserActivity(name as CFString, kIOPMUserActiveLocal, &assertionID)
         if result == kIOReturnSuccess {
@@ -535,91 +533,25 @@ extension MAAViewModel {
 // MARK: - MAAHelper XPC
 
 extension MAAViewModel {
-    func startGame(client: MAAClientChannel) async -> Bool {
-        let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MAAHelper")
-        connectionToService.remoteObjectInterface = NSXPCInterface(with: MAAHelperProtocol.self)
-        connectionToService.resume()
+    nonisolated func startGame(client: MAAClientChannel) async -> Bool {
+        let appBundle = URL(fileURLWithPath: "/Users")
+            .appendingPathComponent(NSUserName())
+            .appendingPathComponent("Library")
+            .appendingPathComponent("Containers")
+            .appendingPathComponent("io.playcover.PlayCover")
+            .appendingPathComponent(client.appBundleName)
 
-        defer { connectionToService.invalidate() }
-
-        if let proxy = connectionToService.remoteObjectProxy as? MAAHelperProtocol {
-            let result = await withCheckedContinuation { continuation in
-                proxy.startGame(bundleName: client.appBundleName) { success in
-                    continuation.resume(returning: success)
-                }
-            }
-
-            if !result {
-                return false
-            } else {
-                return await waitForEndpoint(address: connectionAddress)
-            }
-        }
-
-        return false
-    }
-    
-    func stopGame(client: MAAClientChannel) {
-        let connectionToService = NSXPCConnection(serviceName: "com.hguandl.MAAHelper")
-        connectionToService.remoteObjectInterface = NSXPCInterface(with: MAAHelperProtocol.self)
-        connectionToService.resume()
-
-        defer { connectionToService.invalidate() }
-        
-        if let gameClient = NSWorkspace.shared.runningApplications.first(where: { $0.bundleIdentifier == "com.hypergryph.arknights" }), gameClient.processIdentifier != 0 {
-            let pidPlayCover: Int32 = gameClient.processIdentifier
-            
-            if let proxy = connectionToService.remoteObjectProxy as? MAAHelperProtocol {
-                proxy.terminateGame(processIdentifier: pidPlayCover)
-            }
-        } else {
-            logTrace(["Game client not found or has an invalid PID."])
+        do {
+            try await NSWorkspace.shared.openApplication(at: appBundle, configuration: .init())
+            let client = await MaaToolClient(address: connectionAddress)
+            return client != nil
+        } catch {
+            return false
         }
     }
-}
 
-// MARK: - TCP Port Watcher
-
-private func waitForEndpoint(address: String) async -> Bool {
-    let parts = address.split(separator: ":")
-    guard parts.count >= 2,
-          let portNumber = UInt16(parts[1]),
-          let port = NWEndpoint.Port(rawValue: portNumber)
-    else {
-        return false
-    }
-    let host = NWEndpoint.Host(String(parts[0]))
-    let connection = NWConnection(host: host, port: port, using: .tcp)
-    connection.start(queue: .global(qos: .background))
-
-    for await online in connection.onlinePolls {
-        if online { break }
-        try? await Task.sleep(nanoseconds: 500_000_000)
-        connection.restart()
-    }
-
-    return true
-}
-
-private extension NWConnection {
-    var onlinePolls: AsyncStream<Bool> {
-        AsyncStream { continuation in
-            self.stateUpdateHandler = { state in
-                switch state {
-                case .setup, .preparing, .cancelled:
-                    break
-                case .waiting, .failed:
-                    continuation.yield(false)
-                case .ready:
-                    continuation.yield(true)
-                @unknown default:
-                    fatalError()
-                }
-            }
-
-            continuation.onTermination = { @Sendable _ in
-                self.cancel()
-            }
-        }
+    func stopGame() async throws {
+        guard let client = await MaaToolClient(address: connectionAddress) else { return }
+        try await client.terminate()
     }
 }
