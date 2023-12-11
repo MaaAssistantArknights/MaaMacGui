@@ -530,7 +530,7 @@ extension MAAViewModel {
     }
 }
 
-// MARK: - MAAHelper XPC
+// MARK: - MaaTools Client
 
 extension MAAViewModel {
     nonisolated func startGame(client: MAAClientChannel) async -> Bool {
