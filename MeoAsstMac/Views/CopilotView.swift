@@ -22,15 +22,15 @@ struct CopilotView: View {
                     pilotDescription(pilot: copilot)
                 }
             }
-            .onAppear(perform: { updateCopilot(copilot) })
-            .onChange(of: copilot, perform: updateCopilot)
+            .task(id: url) { updateCopilot() }
         } else {
             Text("文件格式错误")
         }
     }
 
-    private func updateCopilot(_ newValue: MAACopilot) {
-        if newValue.type == "SSS" {
+    private func updateCopilot() {
+        guard let copilot = MAACopilot(url: url) else { return }
+        if copilot.type == "SSS" {
             viewModel.copilot = .sss(.init(filename: url.path))
         } else {
             viewModel.copilot = .regular(.init(filename: url.path))
