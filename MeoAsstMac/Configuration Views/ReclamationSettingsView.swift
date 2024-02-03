@@ -16,13 +16,21 @@ struct ReclamationSettingsView: View {
     }
 
     var body: some View {
-        Form {
-            Picker("模式", selection: config.mode) {
-                Text("刷分与建造点，进入战斗直接退出").tag(0)
-                Text("刷赤金，联络员买水后基地锻造").tag(1)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 15) {
+                Text("目前生息演算的支持仍处于早期阶段，使用时请注意：")
+                    .font(.title2)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.bottom)
+
+                Text("1. 不能在已经有存档的情况下使用")
+
+                Text("2. 不能在编队中有干员的情况下使用（把所有编队清空即可）")
+
+                Text("3. 必须在生息演算主界面开始任务（导航还没写）")
             }
+            .padding()
         }
-        .padding()
     }
 }
 

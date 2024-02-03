@@ -88,7 +88,7 @@ extension MAATask {
         case .roguelike:
             return .Roguelike
         case .reclamation:
-            return .ReclamationAlgorithm
+            return .Custom
         }
     }
 }
@@ -128,14 +128,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 
     static var daily: [MAATask.TypeName] {
-        if let channelValue = UserDefaults().string(forKey: "MAAClientChannel"),
-           let channel = MAAClientChannel(rawValue: channelValue),
-           channel.isGlobal
-        {
-            return [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm]
-        } else {
-            return [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike]
-        }
+        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm]
     }
 }
 
