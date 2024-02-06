@@ -13,9 +13,10 @@ struct TaskButtons: View {
     var body: some View {
         Button("全部启用") {
             for id in viewModel.tasks.keys {
-                if viewModel.tasks[id]?.typeName == .Roguelike {
+                switch viewModel.tasks[id]?.typeName {
+                case .Roguelike, .ReclamationAlgorithm:
                     continue
-                } else {
+                default:
                     viewModel.tasks[id]?.enabled = true
                 }
             }
