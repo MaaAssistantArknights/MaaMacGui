@@ -29,6 +29,7 @@ actor MAAProvider {
 
 actor MAAHandle {
     private let handle: AsstHandle
+    private let uuid = UUID()
     private let uuidPointer = UnsafeMutablePointer<UUID>.allocate(capacity: 1)
 
     private let callback: AsstApiCallback = { msg, details_json, custom_arg in
@@ -48,7 +49,7 @@ actor MAAHandle {
     }
 
     init(options: MAAInstanceOptions = [:]) throws {
-        uuidPointer.initialize(to: UUID())
+        uuidPointer.initialize(to: uuid)
         handle = AsstCreateEx(callback, uuidPointer)
 
         for (key, value) in options {
@@ -62,10 +63,6 @@ actor MAAHandle {
     deinit {
         AsstDestroy(handle)
         uuidPointer.deallocate()
-    }
-
-    nonisolated var uuid: UUID {
-        uuidPointer.pointee
     }
 
     func appendTask(type: MAATask.TypeName, params: String) throws -> Int32 {

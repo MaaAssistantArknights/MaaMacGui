@@ -264,7 +264,7 @@ private struct CopilotResponse: Codable {
 // MARK: - Convenience Methods
 
 private extension NSItemProvider {
-    func loadURL() async throws -> URL {
+    @MainActor func loadURL() async throws -> URL {
         let handle = ProgressActor()
 
         return try await withTaskCancellationHandler {
@@ -297,13 +297,16 @@ private extension NSItemProvider {
 
 private actor ProgressActor {
     private var progress: Progress?
+    private var cancelled = false
 
     func bind(progress: Progress) {
+        guard !cancelled else { return }
         self.progress = progress
         progress.resume()
     }
 
     func cancel() {
+        cancelled = true
         progress?.cancel()
     }
 }
