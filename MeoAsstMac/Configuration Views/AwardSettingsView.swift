@@ -20,6 +20,12 @@ struct AwardSettingsView: View {
             Toggle("领取每日/每周任务奖励", isOn: config.award)
 
             Toggle("领取所有邮件奖励", isOn: config.mail)
+
+            Toggle("进行每日免费单抽", isOn: config.recruit)
+
+            Toggle("领取幸运墙合成玉奖励", isOn: config.orundum)
+
+            Toggle("领取五周年赠送月卡奖励", isOn: config.specialaccess)
         }
         .padding()
     }

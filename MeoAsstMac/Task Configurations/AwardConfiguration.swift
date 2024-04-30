@@ -11,6 +11,9 @@ struct AwardConfiguration: MAATaskConfiguration {
     var enable = true
     var award = true
     var mail = true
+    var recruit = false
+    var orundum = false
+    var specialaccess = false
 
     var title: String {
         MAATask.TypeName.Award.description
@@ -24,6 +27,15 @@ struct AwardConfiguration: MAATaskConfiguration {
         }
         if mail {
             awards.append(NSLocalizedString("邮件", comment: ""))
+        }
+        if recruit {
+            awards.append(NSLocalizedString("免费单抽", comment: ""))
+        }
+        if orundum {
+            awards.append(NSLocalizedString("幸运墙", comment: ""))
+        }
+        if specialaccess {
+            awards.append(NSLocalizedString("专享月卡", comment: ""))
         }
         return awards.joined(separator: " ")
     }
@@ -39,5 +51,8 @@ extension AwardConfiguration {
         // Migration
         self.award = try container.decodeIfPresent(Bool.self, forKey: .award) ?? false
         self.mail = try container.decodeIfPresent(Bool.self, forKey: .mail) ?? false
+        self.recruit = try container.decodeIfPresent(Bool.self, forKey: .recruit) ?? false
+        self.orundum = try container.decodeIfPresent(Bool.self, forKey: .orundum) ?? false
+        self.specialaccess = try container.decodeIfPresent(Bool.self, forKey: .specialaccess) ?? false
     }
 }
