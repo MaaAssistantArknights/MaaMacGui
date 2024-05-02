@@ -13,6 +13,7 @@ struct AwardConfiguration: MAATaskConfiguration {
     var mail = true
     var recruit = false
     var orundum = false
+    var mining = false
     var specialaccess = false
 
     var title: String {
@@ -34,6 +35,9 @@ struct AwardConfiguration: MAATaskConfiguration {
         if orundum {
             awards.append(NSLocalizedString("幸运墙", comment: ""))
         }
+        if mining {
+            awards.append(NSLocalizedString("限时开采许可", comment: ""))
+        }
         if specialaccess {
             awards.append(NSLocalizedString("专享月卡", comment: ""))
         }
@@ -53,6 +57,7 @@ extension AwardConfiguration {
         self.mail = try container.decodeIfPresent(Bool.self, forKey: .mail) ?? false
         self.recruit = try container.decodeIfPresent(Bool.self, forKey: .recruit) ?? false
         self.orundum = try container.decodeIfPresent(Bool.self, forKey: .orundum) ?? false
+        self.mining = try container.decodeIfPresent(Bool.self, forKey: .mining) ?? false
         self.specialaccess = try container.decodeIfPresent(Bool.self, forKey: .specialaccess) ?? false
     }
 }
