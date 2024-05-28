@@ -16,6 +16,7 @@ struct FightSettingsView: View {
     }
 
     @State private var useCustomStage = false
+    @State private var dropItemList: [(name: String, id: String)] = []
 
     var body: some View {
         Form {
@@ -58,13 +59,35 @@ struct FightSettingsView: View {
                 TextField(value: config.series, format: .number) {
                     Toggle("连战次数", isOn: seriesBattles)
                 }
+            }
 
-                Picker(selection: .constant(0)) {
-                    // TODO: stage
+            Divider()
+
+            Section {
+                Picker(selection: dropItemIdx) {
+                    Text("").tag(nil as Int?)
+                    ForEach(Array(zip(dropItemList.indices, dropItemList)), id: \.0) {
+                        Text($1.0).tag($0 as Int?)
+                    }
                 } label: {
-                    Toggle("指定材料", isOn: .constant(false))
+                    Toggle("指定材料", isOn: dropItemToggle)
                 }
-                .disabled(true)
+                if dropItemToggle.wrappedValue {
+                    TextField(value: dropItemCount, format: .number) {
+                        Text("刷取数量")
+                    }
+                }
+            }.onAppear {
+                do {
+                    try FightConfiguration.initDropItems("zh-cn")
+                } catch let err {
+                    let msg = "Read item_index.json failed: \(err)"
+                    viewModel.logs.append(MAALog(date: Date(), content: msg, color: .error))
+                }
+                dropItemList = FightConfiguration.dropItems.map {
+                    (name: $0.item.name, id: $0.id)
+                }
+                dropItem = config.drops.wrappedValue?.first
             }
 
             Divider()
@@ -120,6 +143,52 @@ struct FightSettingsView: View {
             config.series.wrappedValue != nil
         } set: {
             config.series.wrappedValue = $0 ? 1 : nil
+        }
+    }
+
+    @State private var dropItem: (String, Int)? = nil {
+        didSet {
+            if dropItemToggle.wrappedValue {
+                config.drops.wrappedValue = if let dropItem {
+                    [dropItem.0: dropItem.1]
+                } else {
+                    nil
+                }
+            }
+        }
+    }
+
+    private var dropItemIdx: Binding<Int?> {
+        Binding {
+            guard let id = dropItem?.0 else { return nil }
+            return FightConfiguration.id2index[id]
+        } set: {
+            dropItem = if let idx = $0 {
+                (dropItemList[idx].id, dropItemCount.wrappedValue)
+            } else {
+                nil
+            }
+        }
+    }
+
+    private var dropItemCount: Binding<Int> {
+        Binding {
+            dropItem?.1 ?? 5
+        } set: {
+            guard dropItem != nil else { return }
+            dropItem!.1 = $0
+        }
+    }
+
+    private var dropItemToggle: Binding<Bool> {
+        Binding {
+            config.drops.wrappedValue != nil
+        } set: {
+            config.drops.wrappedValue = if $0 {
+                if let dropItem { [dropItem.0: dropItem.1] } else { nil }
+            } else {
+                nil
+            }
         }
     }
 
