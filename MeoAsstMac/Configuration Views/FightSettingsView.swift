@@ -76,7 +76,9 @@ struct FightSettingsView: View {
 
             Divider()
 
-            TextField("企鹅物流ID", text: .constant(""))
+            TextField(text: config.penguin_id) {
+                Toggle("企鹅物流汇报ID", isOn: config.report_to_penguin)
+            }
         }
         .padding()
     }
