@@ -36,12 +36,12 @@ struct MallSettingsView: View {
     }
 }
 
-// struct MallSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = MallConfiguration.default()
-//    static var previews: some View {
-//        MallSettingsView(config: $config)
-//    }
-// }
+ struct MallSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        MallSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+ }
 
 // MARK: - EditableTextList
 

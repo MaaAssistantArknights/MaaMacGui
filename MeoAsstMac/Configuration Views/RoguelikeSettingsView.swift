@@ -71,12 +71,12 @@ struct RoguelikeSettingsView: View {
     }
 }
 
-// struct RoguelikeSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = RoguelikeConfiguration.default()
-//    static var previews: some View {
-//        RoguelikeSettingsView(config: $config)
-//    }
-// }
+ struct RoguelikeSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        RoguelikeSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+ }
 
 // MARK: - Constants
 

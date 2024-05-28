@@ -32,8 +32,9 @@ struct StartupSettingsView: View {
     }
 }
 
-// struct StartupSettingsView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StartupSettingsView(id: MAAViewModel().tasks.randomElement()?.id ?? UUID())
-//    }
-// }
+ struct StartupSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        StartupSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+ }

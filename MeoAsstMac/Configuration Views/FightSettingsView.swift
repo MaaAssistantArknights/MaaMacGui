@@ -124,9 +124,9 @@ struct FightSettingsView: View {
     private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
 }
 
-// struct FightSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = FightConfiguration.default()
-//    static var previews: some View {
-//        FightSettingsView(config: $config)
-//    }
-// }
+ struct FightSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        FightSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+ }
