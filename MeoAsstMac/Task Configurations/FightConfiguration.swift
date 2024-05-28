@@ -14,6 +14,7 @@ struct FightConfiguration: MAATaskConfiguration {
     var expiring_medicine: Int?
     var stone: Int?
     var times: Int?
+    var series: Int?
     var drops: [String: Int]?
 
     var report_to_penguin = false

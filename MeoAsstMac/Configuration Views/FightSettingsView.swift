@@ -55,6 +55,10 @@ struct FightSettingsView: View {
                     Toggle("指定次数", isOn: limitBattles)
                 }
 
+                TextField(value: config.series, format: .number) {
+                    Toggle("连战次数", isOn: seriesBattles)
+                }
+
                 Picker(selection: .constant(0)) {
                     // TODO: stage
                 } label: {
@@ -106,6 +110,14 @@ struct FightSettingsView: View {
             config.times.wrappedValue != nil
         } set: {
             config.times.wrappedValue = $0 ? 5 : nil
+        }
+    }
+
+    private var seriesBattles: Binding<Bool> {
+        Binding {
+            config.series.wrappedValue != nil
+        } set: {
+            config.series.wrappedValue = $0 ? 1 : nil
         }
     }
 
