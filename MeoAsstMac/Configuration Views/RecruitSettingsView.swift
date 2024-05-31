@@ -27,7 +27,7 @@ struct RecruitSettingsView: View {
                 Text("每次执行时最大招募次数: \(config.times.wrappedValue)").padding(.vertical)
             }
 
-            Toggle("手动确认“支援机械”", isOn: config.skip_robot)
+            Toggle("手动确认1星", isOn: config.skip_robot)
             Toggle("自动确认3星", isOn: autoConfirm(level: 3))
             Toggle("自动确认4星", isOn: autoConfirm(level: 4))
             Toggle("自动确认5星", isOn: autoConfirm(level: 5))
@@ -63,9 +63,9 @@ struct RecruitSettingsView: View {
     }
 }
 
-// struct RecruitSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = RecruitConfiguration.default()
-//    static var previews: some View {
-//        RecruitSettingsView(config: $config)
-//    }
-// }
+struct RecruitSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        RecruitSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+}

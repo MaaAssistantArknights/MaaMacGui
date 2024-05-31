@@ -63,6 +63,6 @@ private extension Date? {
 
 struct LogView_Previews: PreviewProvider {
     static var previews: some View {
-        LogView()
+        LogView().environmentObject(MAAViewModel())
     }
 }

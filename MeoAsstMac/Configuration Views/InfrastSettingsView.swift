@@ -227,9 +227,9 @@ private extension String {
     }
 }
 
-// struct InfrastSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = InfrastConfiguration.default()
-//    static var previews: some View {
-//        InfrastSettingsView(config: $config)
-//    }
-// }
+ struct InfrastSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        InfrastSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+ }

@@ -34,9 +34,9 @@ struct ReclamationSettingsView: View {
     }
 }
 
-//struct ReclamationSettingsView_Previews: PreviewProvider {
-//    @State static var config: any MAATaskConfiguration = ReclamationConfiguration.default()
-//    static var previews: some View {
-//        ReclamationSettingsView(config: $config)
-//    }
-//}
+struct ReclamationSettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        ReclamationSettingsView(id: UUID())
+            .environmentObject(MAAViewModel())
+    }
+}
