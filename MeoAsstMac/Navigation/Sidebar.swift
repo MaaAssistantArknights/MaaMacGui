@@ -18,9 +18,7 @@ struct Sidebar: View {
 
             Spacer()
 
-            Button {
-                showSettings()
-            } label: {
+            SettingsLink {
                 Label("设置", systemImage: "gear")
             }
             .buttonStyle(.borderless)
@@ -44,14 +42,6 @@ struct Sidebar: View {
 
     private func toggleSideBar() {
         NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
-    }
-
-    private func showSettings() {
-        if #available(macOS 13, *) {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        } else {
-            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-        }
     }
 }
 
@@ -97,5 +87,44 @@ extension SidebarEntry: CustomStringConvertible {
 
     var label: some View {
         Label(description, systemImage: iconImage)
+    }
+}
+
+@available(macOS, introduced: 10.15, obsoleted: 14)
+private struct SettingsLink<Label: View>: View {
+    private let label: Label
+
+    init(@ViewBuilder label: () -> Label) {
+        self.label = label()
+    }
+
+    var body: some View {
+#if swift(>=5.9)
+        if #available(macOS 14.0, *) {
+            SwiftUI.SettingsLink {
+                label
+            }
+        } else {
+            oldBody
+        }
+#else
+        oldBody
+#endif
+    }
+
+    @ViewBuilder private var oldBody: some View {
+        Button {
+            showSettings()
+        } label: {
+            label
+        }
+    }
+
+    private func showSettings() {
+        if #available(macOS 13, *) {
+            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+        } else {
+            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+        }
     }
 }
