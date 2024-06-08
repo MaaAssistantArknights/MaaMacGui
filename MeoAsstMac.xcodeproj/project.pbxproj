@@ -41,8 +41,8 @@
 		833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D528F188D900D39D6F /* Preview Assets.xcassets */; };
 		8337870228F1D95F00D39D6F /* Maa.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8337870128F1D95F00D39D6F /* Maa.swift */; };
 		8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 8337871128F1DFB900D39D6F /* adb */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		833F7B2A29A34C440001DB2D /* MaaDerpLearning.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */; };
-		833F7B2B29A34C440001DB2D /* MaaDerpLearning.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		833F7B2A29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */; };
+		833F7B2B29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */; };
 		8341195329EC25A900044F45 /* MAALog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195229EC25A900044F45 /* MAALog.swift */; };
 		8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195429EC55C600044F45 /* CopilotConfiguration.swift */; };
@@ -92,7 +92,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				833F7B2B29A34C440001DB2D /* MaaDerpLearning.xcframework in Embed Frameworks */,
+				833F7B2B29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Embed Frameworks */,
 				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
 				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
@@ -150,7 +150,7 @@
 		8337870128F1D95F00D39D6F /* Maa.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Maa.swift; sourceTree = "<group>"; };
 		8337871128F1DFB900D39D6F /* adb */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = adb; sourceTree = "<group>"; };
 		8337871228F1DFC100D39D6F /* adb.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = adb.entitlements; sourceTree = "<group>"; };
-		833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaDerpLearning.xcframework; path = ../../build/MaaDerpLearning.xcframework; sourceTree = "<group>"; };
+		833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = fastdeploy_ppocr.xcframework; path = ../../build/fastdeploy_ppocr.xcframework; sourceTree = "<group>"; };
 		8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoguelikeConfiguration.swift; sourceTree = "<group>"; };
 		8341195229EC25A900044F45 /* MAALog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAALog.swift; sourceTree = "<group>"; };
 		8341195429EC55C600044F45 /* CopilotConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotConfiguration.swift; sourceTree = "<group>"; };
@@ -198,7 +198,7 @@
 			files = (
 				8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
-				833F7B2A29A34C440001DB2D /* MaaDerpLearning.xcframework in Frameworks */,
+				833F7B2A29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
 				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
@@ -212,7 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
-				833F7B2929A34C430001DB2D /* MaaDerpLearning.xcframework */,
+				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
 				83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */,
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 			);
