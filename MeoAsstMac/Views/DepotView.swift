@@ -26,7 +26,7 @@ struct DepotView: View {
                 }
                 Button("明日方舟工具箱") {
                     copyToPasteboard(text: viewModel.depot?.lolicon.data)
-                    NSWorkspace.shared.open(URL(string: "https://arkn.lolicon.app/#/material")!)
+                    NSWorkspace.shared.open(URL(string: "https://arkntools.app/#/material")!)
                 }
             }
             .disabled(viewModel.depot?.done != true)
