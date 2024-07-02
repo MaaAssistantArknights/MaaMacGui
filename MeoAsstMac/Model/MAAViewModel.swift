@@ -99,9 +99,20 @@ import SwiftUI
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
-            Task { try await loadResource(channel: clientChannel) }
+            Task {
+                if touchMode == .MacPlayTools {
+                    useAdbLite = false
+                    connectionProfile = "CompatMac"
+                } else {
+                    useAdbLite = true
+                }
+
+                try await loadResource(channel: clientChannel)
+            }
         }
     }
+
+    @AppStorage("ArknightsIdentifier") var gamePackageName = "com.hypergryph.arknights"
 
     // MARK: - Game Settings
 
@@ -533,19 +544,27 @@ extension MAAViewModel {
 // MARK: - MaaTools Client
 
 extension MAAViewModel {
-    nonisolated func startGame(client: MAAClientChannel) async -> Bool {
-        let appBundle = URL(fileURLWithPath: "/Users")
+    nonisolated func startGame(client _: MAAClientChannel) async -> Bool {
+        let appBundle = await URL(fileURLWithPath: "/Users")
             .appendingPathComponent(NSUserName())
             .appendingPathComponent("Library")
             .appendingPathComponent("Containers")
             .appendingPathComponent("io.playcover.PlayCover")
-            .appendingPathComponent(client.appBundleName)
+            .appendingPathComponent("Applications")
+            .appendingPathComponent(gamePackageName)
+            .appendingPathExtension("app")
 
         do {
             try await NSWorkspace.shared.openApplication(at: appBundle, configuration: .init())
             let client = await MaaToolClient(address: connectionAddress)
             return client != nil
         } catch {
+            let nsError = error as NSError
+            if nsError.domain == NSCocoaErrorDomain, nsError.code == 260 {
+                await logError("无法找到游戏文件。")
+                await logTrace(["PlayCover的版本须为3.0.0.maa.5及以上，",
+                                "请在“连接设置”内检查“游戏包名”选项。"])
+            }
             return false
         }
     }

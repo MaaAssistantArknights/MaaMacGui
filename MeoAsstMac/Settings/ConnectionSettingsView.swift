@@ -19,7 +19,7 @@ struct ConnectionSettingsView: View {
     """
 
     private let playToolsInfo = try! AttributedString(markdown: """
-    PlayTools 的使用请参考[文档](https://maa.plus/docs/1.4-Mac%E6%A8%A1%E6%8B%9F%E5%99%A8%E6%94%AF%E6%8C%81.html)。
+    PlayTools 的使用请参考[文档](https://maa.plus/docs/用户手册/模拟器和设备支持/Mac模拟器.html)。
     """)
 
     var body: some View {
@@ -41,17 +41,27 @@ struct ConnectionSettingsView: View {
 
             Divider()
 
-            Toggle(isOn: allowGzip) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("允许使用 Gzip")
-                    Text(gzipInfo).font(.caption).foregroundColor(.secondary)
+            if viewModel.touchMode == .MacPlayTools {
+                HStack {
+                    Text("游戏包名")
+                    TextField("", text: $viewModel.gamePackageName)
                 }
-            }
+                Text("请在PlayCover中右键点击游戏，选择“在访达中查看”，然后输入显示的文件名。")
+                    .font(.caption).foregroundColor(.secondary)
 
-            Toggle(isOn: $viewModel.useAdbLite) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("使用 adb-lite 连接")
-                    Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
+            } else {
+                Toggle(isOn: allowGzip) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("允许使用 Gzip")
+                        Text(gzipInfo).font(.caption).foregroundColor(.secondary)
+                    }
+                }
+
+                Toggle(isOn: $viewModel.useAdbLite) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("使用 adb-lite 连接")
+                        Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
+                    }
                 }
             }
         }
