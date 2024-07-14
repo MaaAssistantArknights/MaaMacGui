@@ -36,6 +36,8 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
             return NSLocalizedString("优先层数", comment: "")
         case 1:
             return NSLocalizedString("优先投资", comment: "")
+        case 5:
+            return NSLocalizedString("优先坍缩", comment: "")
         default:
             return NSLocalizedString("未知策略", comment: "")
         }

@@ -500,6 +500,13 @@ extension MAAViewModel {
                 logInfo("AlgorithmDoneSmeltGold %d UnitTime", count)
             }
 
+        case "RoguelikeCollapsalParadigms":
+            if let cur = subTaskDetails["cur"].string,
+               let deepen_or_weaken = subTaskDetails["deepen_or_weaken"].int,
+               deepen_or_weaken == 1 {
+                logInfo("GainParadigm %@", cur)
+            }
+
         default:
             break
         }

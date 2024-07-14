@@ -34,8 +34,12 @@ struct RoguelikeSettingsView: View {
         }
 
         Picker("策略：", selection: config.mode) {
-            Text("刷蜡烛，尽可能稳定地打更多层数").tag(0)
-            Text("刷源石锭，第一层投资完就退出").tag(1)
+            ForEach(roguelikeModes[nil] ?? [], id: \.0) { pair in
+                Text(pair.1).tag(pair.0)
+            }
+            ForEach(roguelikeModes[config.theme.wrappedValue] ?? [], id: \.0) { pair in
+                Text(pair.1).tag(pair.0)
+            }
         }
 
         TextField("最多探索次数：", value: config.starts_count, format: .number)
@@ -96,6 +100,18 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
         }
     }
 }
+
+private let roguelikeModes: [RoguelikeTheme?: [(Int, String)]] = [
+    nil: [
+        (0, "刷蜡烛，尽可能稳定地打更多层数"),
+        (1, "刷源石锭，第一层投资完就退出")
+    ],
+    .Phantom: [],
+    .Mizuki: [],
+    .Sami: [
+        (5, "刷坍缩范式，尽可能地积累坍缩值")
+    ]
+]
 
 private let roguelikeSquads: [RoguelikeTheme: [String]] = [
     .Phantom: ["指挥分队", "集群分队", "后勤分队", "矛头分队",

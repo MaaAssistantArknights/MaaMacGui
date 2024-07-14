@@ -19,7 +19,7 @@ struct ConnectionSettingsView: View {
     """
 
     private let playToolsInfo = try! AttributedString(markdown: """
-    PlayTools 的使用请参考[文档](https://maa.plus/docs/用户手册/模拟器和设备支持/Mac模拟器.html)。
+    PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。
     """)
 
     var body: some View {
