@@ -11,6 +11,21 @@ struct TaskButtons: View {
     @ObservedObject var viewModel: MAAViewModel
 
     var body: some View {
+        Button("开始任务") {
+            Task {
+                viewModel.dailyTasksDetailMode = .log
+                try await viewModel.startTasks()
+            }
+        }
+        .keyboardShortcut("R", modifiers: .command)
+
+        Button("停止任务") {
+            Task {
+                try await viewModel.stop()
+            }
+        }
+        .keyboardShortcut(".", modifiers: .command)
+
         Button("全部启用") {
             for id in viewModel.tasks.keys {
                 switch viewModel.tasks[id]?.typeName {
