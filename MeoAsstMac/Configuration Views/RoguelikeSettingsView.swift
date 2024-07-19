@@ -75,12 +75,12 @@ struct RoguelikeSettingsView: View {
     }
 }
 
- struct RoguelikeSettingsView_Previews: PreviewProvider {
+struct RoguelikeSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         RoguelikeSettingsView(id: UUID())
             .environmentObject(MAAViewModel())
     }
- }
+}
 
 // MARK: - Constants
 
@@ -88,6 +88,7 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
     case Phantom
     case Mizuki
     case Sami
+    case Sarkaz
 
     var description: String {
         switch self {
@@ -97,6 +98,8 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
             return NSLocalizedString("水月", comment: "")
         case .Sami:
             return NSLocalizedString("萨米", comment: "")
+        case .Sarkaz:
+            return NSLocalizedString("萨卡兹", comment: "")
         }
     }
 }
@@ -104,7 +107,8 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
 private let roguelikeModes: [RoguelikeTheme?: [(Int, String)]] = [
     nil: [
         (0, "刷蜡烛，尽可能稳定地打更多层数"),
-        (1, "刷源石锭，第一层投资完就退出")
+        (1, "刷源石锭，第一层投资完就退出"),
+        (4, "刷开局，到达第三层后直接退出")
     ],
     .Phantom: [],
     .Mizuki: [],
@@ -122,8 +126,12 @@ private let roguelikeSquads: [RoguelikeTheme: [String]] = [
               "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
               "研究分队", "高规格分队"],
     .Sami: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
-                    "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-                    "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队"]
+            "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+            "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队"],
+    .Sarkaz: ["魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
+              "指挥分队", "集群分队", "后勤分队", "矛头分队",
+              "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+              "高规格分队", "因地制宜分队"]
 ]
 
 private let roguelikeRoles = ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
