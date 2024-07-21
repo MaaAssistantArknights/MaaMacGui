@@ -88,7 +88,7 @@ extension MAATask {
         case .roguelike:
             return .Roguelike
         case .reclamation:
-            return .Custom
+            return .ReclamationAlgorithm
         }
     }
 }

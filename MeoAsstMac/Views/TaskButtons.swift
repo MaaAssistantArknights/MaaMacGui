@@ -29,7 +29,7 @@ struct TaskButtons: View {
         Button("全部启用") {
             for id in viewModel.tasks.keys {
                 switch viewModel.tasks[id]?.typeName {
-                case .Roguelike, .Custom:
+                case .Roguelike, .ReclamationAlgorithm:
                     continue
                 default:
                     viewModel.tasks[id]?.enabled = true
