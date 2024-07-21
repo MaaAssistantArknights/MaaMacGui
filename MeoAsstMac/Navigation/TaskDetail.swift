@@ -11,7 +11,6 @@ struct TaskDetail: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     let id: UUID?
 
-
     var body: some View {
         VStack {
             switch viewModel.dailyTasksDetailMode {
@@ -80,7 +79,6 @@ struct ViewDetaiTabButton: View {
         }
     }
 }
-
 
 struct TaskDetail_Previews: PreviewProvider {
     static var previews: some View {

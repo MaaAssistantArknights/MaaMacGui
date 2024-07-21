@@ -163,7 +163,7 @@ extension MAAViewModel {
         case .AllTasksCompleted:
             logTrace("AllTasksComplete")
             resetStatus()
-            
+
         default:
             break
         }
@@ -505,7 +505,8 @@ extension MAAViewModel {
         case "RoguelikeCollapsalParadigms":
             if let cur = subTaskDetails["cur"].string,
                let deepen_or_weaken = subTaskDetails["deepen_or_weaken"].int,
-               deepen_or_weaken == 1 {
+               deepen_or_weaken == 1
+            {
                 logInfo("GainParadigm %@", cur)
             }
 

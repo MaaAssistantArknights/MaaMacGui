@@ -18,11 +18,11 @@ protocol MAATaskConfiguration: Codable & Hashable {
 }
 
 extension MAATaskConfiguration {
-  func jsonStringIfEnabled() -> String? {
-    guard enable else { return nil }
+    func jsonStringIfEnabled() -> String? {
+        guard enable else { return nil }
 
-    return try? jsonString()
-  }
+        return try? jsonString()
+    }
 }
 
 // MARK: JSON TaskParams
@@ -31,23 +31,23 @@ extension MAATask {
     var params: String? {
         switch self {
         case .startup(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .closedown(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .recruit(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .infrast(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .fight(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .mall(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .award(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .roguelike(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         case .reclamation(let config):
-          return config.jsonStringIfEnabled()
+            return config.jsonStringIfEnabled()
         }
     }
 }

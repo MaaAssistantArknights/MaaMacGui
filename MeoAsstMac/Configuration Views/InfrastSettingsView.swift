@@ -227,9 +227,9 @@ private extension String {
     }
 }
 
- struct InfrastSettingsView_Previews: PreviewProvider {
+struct InfrastSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         InfrastSettingsView(id: UUID())
             .environmentObject(MAAViewModel())
     }
- }
+}

@@ -20,7 +20,7 @@ struct TaskTimerView: View {
                     taskTimer: $viewModel.scheduledDailyTaskTimers[index],
                     onDelete: {
                         viewModel.scheduledDailyTaskTimers.remove(at: index)
-                },
+                    },
                     onEnabled: showAlertIfNeeded
                 )
             }
@@ -28,13 +28,13 @@ struct TaskTimerView: View {
         .alert("允许阻止系统睡眠",
                isPresented: $showingAlertForPreventingSleep,
                actions: {
-            Button("允许") {
-                viewModel.preventSystemSleeping = true
-            }
-            Button("取消", role: .cancel) {}
-        }, message: {
-            Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
-        })
+                   Button("允许") {
+                       viewModel.preventSystemSleeping = true
+                   }
+                   Button("取消", role: .cancel) {}
+               }, message: {
+                   Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
+               })
     }
 
     private func showAlertIfNeeded() {
@@ -45,8 +45,8 @@ struct TaskTimerView: View {
 
 struct TaskTimerItem: View {
     @Binding var taskTimer: MAAViewModel.DailyTaskTimer
-    var onDelete: (() -> Void)
-    var onEnabled: (() -> Void)
+    var onDelete: () -> Void
+    var onEnabled: () -> Void
 
     let hours = Array(0...23)
     let minutes = Array(0...59)
@@ -88,7 +88,7 @@ struct TaskTimerItem: View {
                     onEnabled()
                 }
             }
-            
+
             Spacer()
         }
         .padding()

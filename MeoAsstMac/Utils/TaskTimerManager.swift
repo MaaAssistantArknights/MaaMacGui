@@ -1,6 +1,6 @@
-import Foundation
 import AppKit
 import Combine
+import Foundation
 
 final class TaskTimerManager {
     static let shared = TaskTimerManager()
@@ -29,7 +29,6 @@ final class TaskTimerManager {
                     self?.updateRunningTimers(timerConfigs: $0)
                 }
                 .store(in: &cancellables)
-
 
             NotificationCenter.default
                 .publisher(for: .MAAPreventSystemSleepingChanged)
@@ -159,7 +158,6 @@ final class TaskTimerManager {
     }
 }
 
-
 extension TaskTimerManager.RunningTimer {
     var key: String {
         config.uniqueKey
@@ -171,6 +169,6 @@ extension TaskTimerManager.RunningTimer {
 }
 
 // Use uniqueKey to detect if the config changes
-fileprivate extension MAAViewModel.DailyTaskTimer {
+private extension MAAViewModel.DailyTaskTimer {
     var uniqueKey: String { "\(id)-\(hour)-\(minute)" }
 }

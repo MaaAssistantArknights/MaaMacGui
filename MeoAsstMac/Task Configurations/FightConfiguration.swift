@@ -54,22 +54,22 @@ struct FightConfiguration: MAATaskConfiguration {
     }
 
     // 掉落物品列表
-    static var dropItems: [(id: String, item: DropItem)] = [];
-    static var id2index: [String: Int] = [:]; // (id -> idx of dropItems)
+    static var dropItems: [(id: String, item: DropItem)] = []
+    static var id2index: [String: Int] = [:] // (id -> idx of dropItems)
     static let _excludedValues = Set([
         3213, 3223, 3233, 3243, // 双芯片
         3253, 3263, 3273, 3283, // 双芯片
         7001, 7002, 7003, 7004, // 许可
-        6001,                   // 演习卷
-        4004, 4005,             // 凭证
-        3141, 4002,             // 源石
-        32001,                  // 芯片助剂
-        30115,                  // 聚合剂
-        30125,                  // 双极纳米片
-        30135,                  // D32钢
-        30145,                  // 晶体电子单元
-        30155,                  // 烧结核凝晶
-    ]);
+        6001, // 演习卷
+        4004, 4005, // 凭证
+        3141, 4002, // 源石
+        32001, // 芯片助剂
+        30115, // 聚合剂
+        30125, // 双极纳米片
+        30135, // D32钢
+        30145, // 晶体电子单元
+        30155, // 烧结核凝晶
+    ])
 
     static func initDropItems(_ language: String) throws {
         if !dropItems.isEmpty { return }
@@ -81,7 +81,7 @@ struct FightConfiguration: MAATaskConfiguration {
         default: nil
         }
         let url_base = Bundle.main.resourceURL!
-            .appendingPathComponent("resource");
+            .appendingPathComponent("resource")
         let url_mid = if let local {
             url_base.appendingPathComponent("global")
                 .appendingPathComponent(local)
@@ -97,7 +97,7 @@ struct FightConfiguration: MAATaskConfiguration {
             guard !_excludedValues.contains(k) else { continue }
             dropItems.append((id: item.key, item: item.value))
         }
-        dropItems.sort{ $0.1.name.localizedCompare($1.1.name) == .orderedAscending }
+        dropItems.sort { $0.1.name.localizedCompare($1.1.name) == .orderedAscending }
         for (idx, item) in dropItems.enumerated() {
             id2index[item.0] = idx
         }
@@ -112,4 +112,3 @@ struct DropItem: Codable, Equatable {
     let sortId: Int
     let usage: String?
 }
-

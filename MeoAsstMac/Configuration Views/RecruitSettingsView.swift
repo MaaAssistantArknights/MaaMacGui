@@ -24,7 +24,7 @@ struct RecruitSettingsView: View {
             Toggle("3星设置7:40而非9:00", isOn: level3UseShortTime)
 
             Stepper(value: config.times, in: 0 ... 1000) {
-                HStack{
+                HStack {
                     Text("每次执行时最大招募次数: ")
                     TextField("", value: config.times, format: .number)
                         .frame(maxWidth: 50)

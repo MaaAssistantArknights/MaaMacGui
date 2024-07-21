@@ -36,12 +36,12 @@ struct MallSettingsView: View {
     }
 }
 
- struct MallSettingsView_Previews: PreviewProvider {
+struct MallSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         MallSettingsView(id: UUID())
             .environmentObject(MAAViewModel())
     }
- }
+}
 
 // MARK: - EditableTextList
 
