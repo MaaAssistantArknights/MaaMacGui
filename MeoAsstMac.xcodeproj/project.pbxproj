@@ -50,6 +50,7 @@
 		8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195C29EC719B00044F45 /* CopilotContent.swift */; };
 		83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB129FEA12300A5FF99 /* TaskCommands.swift */; };
 		83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB329FEA7A500A5FF99 /* TaskButtons.swift */; };
+		834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */; };
 		83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D5E29F00F0A008A5DF8 /* CopilotView.swift */; };
 		83531D6129F026E8008A5DF8 /* OrderedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6029F026E8008A5DF8 /* OrderedStore.swift */; };
 		83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6229F0A033008A5DF8 /* MAAInfrast.swift */; };
@@ -158,6 +159,7 @@
 		8341195C29EC719B00044F45 /* CopilotContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotContent.swift; sourceTree = "<group>"; };
 		83477CB129FEA12300A5FF99 /* TaskCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCommands.swift; sourceTree = "<group>"; };
 		83477CB329FEA7A500A5FF99 /* TaskButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskButtons.swift; sourceTree = "<group>"; };
+		834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedownConfiguration.swift; sourceTree = "<group>"; };
 		83531D5E29F00F0A008A5DF8 /* CopilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotView.swift; sourceTree = "<group>"; };
 		83531D6029F026E8008A5DF8 /* OrderedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedStore.swift; sourceTree = "<group>"; };
 		83531D6229F0A033008A5DF8 /* MAAInfrast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAInfrast.swift; sourceTree = "<group>"; };
@@ -225,6 +227,7 @@
 			children = (
 				83264A2829EBEBB00074E33A /* MAATaskConfiguration.swift */,
 				83264A2A29EBED780074E33A /* StartupConfiguration.swift */,
+				834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */,
 				83264A2C29EBEDD80074E33A /* FightConfiguration.swift */,
 				83264A2E29EBEE140074E33A /* RecruitConfiguration.swift */,
 				83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */,
@@ -511,6 +514,7 @@
 				8341195329EC25A900044F45 /* MAALog.swift in Sources */,
 				83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */,
 				832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */,
+				834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */,
 				83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */,
 				8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */,
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,

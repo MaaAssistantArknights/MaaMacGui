@@ -9,6 +9,7 @@ import SwiftUI
 
 enum MAATask: Codable, Equatable {
     case startup(StartupConfiguration)
+    case closedown(ClosedownConfiguration)
     case recruit(RecruitConfiguration)
     case infrast(InfrastConfiguration)
     case fight(FightConfiguration)
@@ -19,6 +20,7 @@ enum MAATask: Codable, Equatable {
 
     enum TypeName: String {
         case StartUp
+        case CloseDown
         case Recruit
         case Infrast
         case Fight
@@ -42,12 +44,16 @@ enum MAATask: Codable, Equatable {
         .mall(.init()),
         .award(.init()),
         .roguelike(.init()),
+        .reclamation(.init()),
+        .closedown(.init()),
     ]
 
     init(type: TypeName) {
         switch type {
         case .StartUp:
             self = .startup(.init())
+        case .CloseDown:
+            self = .closedown(.init())
         case .Recruit:
             self = .recruit(.init())
         case .Infrast:
@@ -75,6 +81,8 @@ extension MAATask {
         switch self {
         case .startup:
             return .StartUp
+        case .closedown:
+            return .CloseDown
         case .recruit:
             return .Recruit
         case .infrast:
@@ -98,6 +106,8 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
         switch self {
         case .StartUp:
             return NSLocalizedString("开始唤醒", comment: "")
+        case .CloseDown:
+            return NSLocalizedString("关闭游戏", comment: "")
         case .Recruit:
             return NSLocalizedString("自动公招", comment: "")
         case .Infrast:
@@ -128,7 +138,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 
     static var daily: [MAATask.TypeName] {
-        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm]
+        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm, .CloseDown]
     }
 }
 
@@ -139,6 +149,8 @@ extension MAATask {
         get {
             switch self {
             case .startup(let config):
+                return config.enable
+            case .closedown(let config):
                 return config.enable
             case .recruit(let config):
                 return config.enable
@@ -161,6 +173,9 @@ extension MAATask {
             case .startup(var config):
                 config.enable = newValue
                 self = .startup(config)
+            case .closedown(var config):
+                config.enable = newValue
+                self = .closedown(config)
             case .recruit(var config):
                 config.enable = newValue
                 self = .recruit(config)
@@ -191,6 +206,8 @@ extension MAATask {
     var overview: Overview {
         switch self {
         case .startup(let config):
+            return (config.title, config.subtitle, config.summary)
+        case .closedown(let config):
             return (config.title, config.subtitle, config.summary)
         case .recruit(let config):
             return (config.title, config.subtitle, config.summary)

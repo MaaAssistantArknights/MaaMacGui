@@ -487,7 +487,7 @@ extension MAAViewModel {
             RoguelikeSettingsView(id: id)
         case .reclamation:
             ReclamationSettingsView(id: id)
-        case .none:
+        case .closedown(_), .none:
             EmptyView()
         }
     }

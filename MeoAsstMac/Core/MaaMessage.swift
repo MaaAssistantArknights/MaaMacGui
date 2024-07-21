@@ -102,7 +102,9 @@ extension MAAViewModel {
         }
 
         if taskChain == "CloseDown" {
-            return
+            Task {
+                try await stop()
+            }
         }
 
         if taskChain == "Recruit" {

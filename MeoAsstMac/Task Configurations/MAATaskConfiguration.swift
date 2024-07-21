@@ -32,6 +32,8 @@ extension MAATask {
         switch self {
         case .startup(let config):
           return config.jsonStringIfEnabled()
+        case .closedown(let config):
+          return config.jsonStringIfEnabled()
         case .recruit(let config):
           return config.jsonStringIfEnabled()
         case .infrast(let config):
@@ -57,6 +59,8 @@ extension MAATask {
         switch self {
         case .startup(let config):
             return config as? T ?? .init()
+        case .closedown(let config):
+            return config as? T ?? .init()
         case .recruit(let config):
             return config as? T ?? .init()
         case .infrast(let config):
@@ -77,6 +81,8 @@ extension MAATask {
     init<T: MAATaskConfiguration>(config: T) {
         if let newConfig = config as? StartupConfiguration {
             self = .startup(newConfig)
+        } else if let newConfig = config as? ClosedownConfiguration {
+            self = .closedown(newConfig)
         } else if let newConfig = config as? RecruitConfiguration {
             self = .recruit(newConfig)
         } else if let newConfig = config as? InfrastConfiguration {
