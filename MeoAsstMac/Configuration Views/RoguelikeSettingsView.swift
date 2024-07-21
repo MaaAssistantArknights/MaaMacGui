@@ -23,6 +23,8 @@ struct RoguelikeSettingsView: View {
             Divider()
             squadSettings()
         }
+        .animation(.default, value: config.use_support.wrappedValue)
+        .animation(.default, value: config.start_with_elite_two.wrappedValue)
         .padding()
     }
 
@@ -70,8 +72,16 @@ struct RoguelikeSettingsView: View {
         }
 
         TextField("开局干员（单个）：", text: config.core_char)
+
         Toggle("“开局干员”使用助战", isOn: config.use_support)
-        Toggle("可以使用非好友助战", isOn: config.use_nonfriend_support)
+        if config.use_support.wrappedValue {
+            Toggle("可以使用非好友助战", isOn: config.use_nonfriend_support)
+        }
+
+        Toggle("凹开局干员精二直升", isOn: config.start_with_elite_two)
+        if config.start_with_elite_two.wrappedValue {
+            Toggle("只凹直升不作战", isOn: config.only_start_with_elite_two)
+        }
     }
 }
 
