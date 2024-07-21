@@ -171,6 +171,7 @@
 		8368855029BD851F00C5B999 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
+		83885C112C4D5D1500B02663 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		838FF82129FBB9E3000566A0 /* GameSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsView.swift; sourceTree = "<group>"; };
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
 		838FF82829FDE1FA000566A0 /* MAAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAError.swift; sourceTree = "<group>"; };
@@ -312,6 +313,7 @@
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
 				83661E2529F628DA007793CA /* Resources */,
 				8368855029BD851F00C5B999 /* Version.xcconfig */,
+				83885C112C4D5D1500B02663 /* README.md */,
 				833786CC28F188D800D39D6F /* Products */,
 				83245A0128F467C300ED6D4C /* Frameworks */,
 			);

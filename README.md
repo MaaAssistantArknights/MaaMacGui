@@ -16,9 +16,10 @@ MAA 的意思是 MAA Assistant Arknights
 > 为方便使用，现已将编译过程写成一键脚本。在版本迭代过程中，脚本可能无法及时更新。这时请以 workflow 定义中与 macOS 相关的内容为准
 
 1. 安装依赖 `brew install ninja`
-2. 运行位于主仓库的脚本 `./tools/build_macos_universal.zsh`
+2. 运行位于主仓库的脚本 `MAA_DEBUG=1 ./tools/build_macos_universal.zsh`
 
 🎉 打开 Xcode 可以尝试 build 了
+🔔 如果要编译 release 版本，请去掉第 2 步中的 `MAA_DEBUG=1`
 
 ### Q&A
 
