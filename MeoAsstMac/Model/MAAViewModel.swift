@@ -122,12 +122,8 @@ import SwiftUI
         }
     }
 
-    @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete: ActionsAfterComplete = .doNothing
-
-    enum ActionsAfterComplete: String, CaseIterable {
-        case doNothing = "无动作"
-        case closeGame = "退出PlayCover客户端"
-    }
+    /// Deprecated: use CloseDown task instead
+    @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete = ""
 
     // MARK: - System Settings
 
@@ -197,23 +193,6 @@ extension MAAViewModel {
 
         try await handle?.stop()
         status = .idle
-    }
-
-    func actionAfterComplete() {
-        // get startup configs
-        print(actionsAfterComplete)
-        if actionsAfterComplete == .closeGame {
-            for (_, task) in tasks.items {
-                guard case let .startup(config) = task else {
-                    continue
-                }
-
-                if touchMode == .MacPlayTools, config.enable {
-                    Task { try? await stopGame() }
-                }
-            }
-        }
-        logTrace("AllTasksComplete")
     }
 
     func resetStatus() {
@@ -309,6 +288,11 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
+
+        if actionsAfterComplete == "退出PlayCover客户端" {
+            logWarn("“完成后退出PlayCover客户端”已弃用")
+            logInfo("请添加“关闭游戏”任务")
+        }
 
         for (id, task) in tasks.items {
             guard let params = task.params else { continue }

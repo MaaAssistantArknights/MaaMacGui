@@ -161,7 +161,7 @@ extension MAAViewModel {
             break
 
         case .AllTasksCompleted:
-            actionAfterComplete()
+            logTrace("AllTasksComplete")
             resetStatus()
             
         default:
