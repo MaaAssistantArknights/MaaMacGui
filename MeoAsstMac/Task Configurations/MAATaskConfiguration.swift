@@ -79,26 +79,27 @@ extension MAATask {
     }
 
     init<T: MAATaskConfiguration>(config: T) {
-        if let newConfig = config as? StartupConfiguration {
+        switch config {
+        case let newConfig as StartupConfiguration:
             self = .startup(newConfig)
-        } else if let newConfig = config as? ClosedownConfiguration {
+        case let newConfig as ClosedownConfiguration:
             self = .closedown(newConfig)
-        } else if let newConfig = config as? RecruitConfiguration {
+        case let newConfig as RecruitConfiguration:
             self = .recruit(newConfig)
-        } else if let newConfig = config as? InfrastConfiguration {
+        case let newConfig as InfrastConfiguration:
             self = .infrast(newConfig)
-        } else if let newConfig = config as? FightConfiguration {
+        case let newConfig as FightConfiguration:
             self = .fight(newConfig)
-        } else if let newConfig = config as? MallConfiguration {
+        case let newConfig as MallConfiguration:
             self = .mall(newConfig)
-        } else if let newConfig = config as? AwardConfiguration {
+        case let newConfig as AwardConfiguration:
             self = .award(newConfig)
-        } else if let newConfig = config as? RoguelikeConfiguration {
+        case let newConfig as RoguelikeConfiguration:
             self = .roguelike(newConfig)
-        } else if let newConfig = config as? ReclamationConfiguration {
+        case let newConfig as ReclamationConfiguration:
             self = .reclamation(newConfig)
-        } else {
-            self = .award(.init())
+        default:
+            self = .closedown(.init())
         }
     }
 }
