@@ -51,7 +51,10 @@ struct CopilotView: View {
             } set: { newValue in
                 viewModel.copilot = .regular(newValue)
             }
-            Toggle("自动编队", isOn: binding.formation)
+            HStack {
+                Toggle("自动编队", isOn: binding.formation)
+                Toggle("信赖干员", isOn: binding.add_trust)
+            }
 
         case .sss(let innerConfig):
             let binding = Binding<SSSCopilotConfiguration> {

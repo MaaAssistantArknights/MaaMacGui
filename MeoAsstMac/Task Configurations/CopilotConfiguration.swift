@@ -11,6 +11,7 @@ struct RegularCopilotConfiguration: Codable {
     var enable = true
     var filename: String
     var formation = false
+    var add_trust = false
 }
 
 struct SSSCopilotConfiguration: Codable {
