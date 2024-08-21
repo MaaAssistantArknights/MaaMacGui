@@ -29,11 +29,15 @@ struct ReclamationSettingsView: View {
                 }
             }
 
-            if config.wrappedValue.productEnabled {
-                TextField("物品：", text: config.product)
+            if config.wrappedValue.toolToCraftEnabled {
+                TextField("支援道具：", text: config.tool_to_craft)
+            }
+
+            if config.wrappedValue.toolToCraftEnabled {
+                TextField("组装批次数：", value: config.num_craft_batches, format: .number)
             }
         }
-        .animation(.default, value: config.wrappedValue.productEnabled)
+        .animation(.default, value: config.wrappedValue.toolToCraftEnabled)
         .padding()
     }
 }
