@@ -30,7 +30,7 @@ enum MAATask: Codable, Equatable {
         case Copilot
         case SSSCopilot
         case Depot
-        case ReclamationAlgorithm
+        case Reclamation
         case VideoRecognition
         case OperBox
         case Custom
@@ -66,7 +66,7 @@ enum MAATask: Codable, Equatable {
             self = .award(.init())
         case .Roguelike:
             self = .roguelike(.init())
-        case .ReclamationAlgorithm:
+        case .Reclamation:
             self = .reclamation(.init())
         default:
             self = .award(.init())
@@ -96,7 +96,7 @@ extension MAATask {
         case .roguelike:
             return .Roguelike
         case .reclamation:
-            return .ReclamationAlgorithm
+            return .Reclamation
         }
     }
 }
@@ -126,7 +126,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
             return NSLocalizedString("自动抄保全作业", comment: "")
         case .Depot:
             return NSLocalizedString("仓库识别", comment: "")
-        case .ReclamationAlgorithm:
+        case .Reclamation:
             return NSLocalizedString("生息演算", comment: "")
         case .VideoRecognition:
             return NSLocalizedString("视频识别", comment: "")
@@ -138,7 +138,7 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 
     static var daily: [MAATask.TypeName] {
-        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .ReclamationAlgorithm, .CloseDown]
+        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .Reclamation, .CloseDown]
     }
 }
 

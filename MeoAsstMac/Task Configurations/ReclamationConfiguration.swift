@@ -11,7 +11,8 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     var enable = false
     var theme = ReclamationTheme.tales
     var mode = 0
-    var product = "荧光棒"
+    var tool_to_craft = "荧光棒"
+    var num_craft_batches = 16
 
     var modes: [Int: String] {
         switch theme {
@@ -22,18 +23,18 @@ struct ReclamationConfiguration: MAATaskConfiguration {
             ]
         case .tales:
             return [
-                0: NSLocalizedString("刷分与建造点", comment: ""),
-                1: NSLocalizedString("制造物品并读档循环", comment: ""),
+                0: NSLocalizedString("无存档，通过进出关卡刷生息点数", comment: ""),
+                1: NSLocalizedString("有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档", comment: ""),
             ]
         }
     }
 
-    var productEnabled: Bool {
+    var toolToCraftEnabled: Bool {
         theme == .tales && mode == 1
     }
 
     var title: String {
-        MAATask.TypeName.ReclamationAlgorithm.description
+        MAATask.TypeName.Reclamation.description
     }
 
     var subtitle: String {
@@ -45,9 +46,9 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     }
 }
 
-enum ReclamationTheme: Int, CaseIterable, Codable, CustomStringConvertible {
-    case fire = 0
-    case tales = 1
+enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {
+    case fire = "Fire"
+    case tales = "Tales"
 
     var description: String {
         switch self {
