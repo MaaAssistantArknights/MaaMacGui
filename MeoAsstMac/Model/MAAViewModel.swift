@@ -275,16 +275,28 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        for (_, task) in tasks.items {
-            guard case let .startup(config) = task else {
+        for (id, task) in tasks.items {
+            guard case var .startup(config) = task else {
                 continue
             }
+
+            config.client_type = clientChannel
+            tasks[id] = .startup(config)
 
             if touchMode == .MacPlayTools, config.enable, config.start_game_enabled {
                 guard await startGame(client: config.client_type) else {
                     throw MAAError.gameStartFailed
                 }
             }
+        }
+
+        for (id, task) in tasks.items {
+            guard case var .closedown(config) = task else {
+                continue
+            }
+
+            config.client_type = clientChannel
+            tasks[id] = .closedown(config)
         }
 
         try await ensureHandle()

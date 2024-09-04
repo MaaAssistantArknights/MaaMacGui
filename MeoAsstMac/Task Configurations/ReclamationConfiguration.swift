@@ -29,7 +29,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
             ]
         }
     }
-    
+
     var increment_modes: [Int: String] {
         return [
             0: NSLocalizedString("点击加号按钮", comment: ""),
