@@ -31,10 +31,12 @@ struct ReclamationSettingsView: View {
 
             if config.wrappedValue.toolToCraftEnabled {
                 TextField("支援道具：", text: config.tool_to_craft)
-            }
-
-            if config.wrappedValue.toolToCraftEnabled {
                 TextField("组装批次数：", value: config.num_craft_batches, format: .number)
+                Picker("组装数量增加模式：", selection: config.increment_mode) {
+                    ForEach(config.wrappedValue.increment_modes.sorted(by: <), id: \.key) { increment_mode, desc in
+                        Text(desc).tag(increment_mode)
+                    }
+                }
             }
         }
         .animation(.default, value: config.wrappedValue.toolToCraftEnabled)
