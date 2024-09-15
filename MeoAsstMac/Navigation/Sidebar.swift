@@ -19,7 +19,7 @@ struct Sidebar: View {
             Spacer()
 
             SettingsLink {
-                Label("设置", systemImage: "gear")
+                Label(NSLocalizedString("设置", comment: ""), systemImage: "gear")
             }
             .buttonStyle(.borderless)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -30,9 +30,9 @@ struct Sidebar: View {
                 Button {
                     toggleSideBar()
                 } label: {
-                    Label("显示/隐藏边栏", systemImage: "sidebar.left")
+                    Label(NSLocalizedString(NSLocalizedString("显示/隐藏边栏", comment: ""), comment: ""), systemImage: "sidebar.left")
                 }
-                .help("显示/隐藏边栏")
+                .help(NSLocalizedString(NSLocalizedString("显示/隐藏边栏", comment: ""), comment: ""))
             }
         }
         .frame(minWidth: 150)

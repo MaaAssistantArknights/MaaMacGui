@@ -11,7 +11,7 @@ struct TaskCommands: Commands {
     @ObservedObject var viewModel: MAAViewModel
 
     var body: some Commands {
-        CommandMenu("任务") {
+        CommandMenu(NSLocalizedString("任务", comment: "")) {
             TaskButtons(viewModel: viewModel)
         }
     }

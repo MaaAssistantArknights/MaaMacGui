@@ -30,14 +30,14 @@ struct UtilityContent: View {
                 .disabled(true)
             case .busy:
                 Button(action: stop) {
-                    Label("停止", systemImage: "stop.fill")
+                    Label(NSLocalizedString(NSLocalizedString("停止", comment: ""), comment: ""), systemImage: "stop.fill")
                 }
-                .help("停止")
+                .help(NSLocalizedString(NSLocalizedString("停止", comment: ""), comment: ""))
             case .idle:
                 Button(action: start) {
-                    Label("开始", systemImage: "play.fill")
+                    Label(NSLocalizedString(NSLocalizedString("开始", comment: ""), comment: ""), systemImage: "play.fill")
                 }
-                .help("开始")
+                .help(NSLocalizedString(NSLocalizedString("开始", comment: ""), comment: ""))
             }
         }
     }

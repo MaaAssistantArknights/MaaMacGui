@@ -41,7 +41,7 @@ struct InfrastSettingsView: View {
                     config.facility.wrappedValue.move(fromOffsets: source, toOffset: destination)
                 }
             } header: {
-                Text("已启用")
+                Text(NSLocalizedString("已启用", comment: ""))
             }
 
             Section {
@@ -49,7 +49,7 @@ struct InfrastSettingsView: View {
                     Toggle(facility.description, isOn: facilityBinding(for: facility))
                 }
             } header: {
-                Text("未启用")
+                Text(NSLocalizedString("未启用", comment: ""))
             }
         }
         .animation(.default, value: config.facility.wrappedValue)
@@ -59,7 +59,7 @@ struct InfrastSettingsView: View {
     @ViewBuilder private var preferenceForm: some View {
         Form {
             Section {
-                Text("无人机用途：")
+                Text(NSLocalizedString("无人机用途：", comment: ""))
                 Picker("", selection: config.drones) {
                     ForEach(MAAInfrastDroneUsage.allCases, id: \.self) { usage in
                         Text(usage.description).tag(usage)

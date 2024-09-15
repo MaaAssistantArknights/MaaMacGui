@@ -11,7 +11,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     var enable = false
     var theme = ReclamationTheme.tales
     var mode = 0
-    var tool_to_craft = "荧光棒"
+    var tool_to_craft = NSLocalizedString("荧光棒", comment: "")
     var num_craft_batches = 16
     var increment_mode = 0
 

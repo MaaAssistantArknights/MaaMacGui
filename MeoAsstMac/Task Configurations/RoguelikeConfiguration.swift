@@ -15,8 +15,8 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
-    var squad = "指挥分队"
-    var roles = "取长补短"
+    var squad = NSLocalizedString("指挥分队", comment: "")
+    var roles = NSLocalizedString("取长补短", comment: "")
     var core_char = ""
     var start_with_elite_two = false
     var only_start_with_elite_two = false

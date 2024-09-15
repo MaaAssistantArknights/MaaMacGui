@@ -9,7 +9,7 @@ import SwiftUI
 
 struct OpenLogFileView: View {
     var body: some View {
-        Button("打开日志文件夹…") {
+        Button(NSLocalizedString("打开日志文件夹…", comment: "")) {
             guard let userDirectory else {
                 return
             }
@@ -23,7 +23,7 @@ struct OpenLogFileView: View {
             }
         }
 
-        Button("PlayCover 链接…") {
+        Button(NSLocalizedString("PlayCover 链接…", comment: "")) {
             NSWorkspace.shared.open(URL(string: "https://github.com/hguandl/PlayCover/releases")!)
         }
     }

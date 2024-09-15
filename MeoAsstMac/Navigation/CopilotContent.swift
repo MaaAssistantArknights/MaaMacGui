@@ -21,7 +21,7 @@ struct CopilotContent: View {
                     Text(url.lastPathComponent)
                 }
             } header: {
-                Text("内置作业")
+                Text(NSLocalizedString("内置作业", comment: ""))
             }
 
             Section {
@@ -30,7 +30,7 @@ struct CopilotContent: View {
                 }
             } header: {
                 HStack {
-                    Text("外部作业（可拖入文件）")
+                    Text(NSLocalizedString("外部作业（可拖入文件）", comment: ""))
                     if downloading {
                         Spacer()
                         ProgressView().controlSize(.small)
@@ -57,9 +57,9 @@ struct CopilotContent: View {
     @ToolbarContentBuilder private func listToolbar() -> some ToolbarContent {
         ToolbarItemGroup {
             Button(action: deleteSelectedCopilot) {
-                Label("移除", systemImage: "trash")
+                Label(NSLocalizedString("移除", comment: ""), systemImage: "trash")
             }
-            .help("移除作业")
+            .help(NSLocalizedString("移除作业", comment: ""))
             .disabled(shouldDisableDeletion)
         }
 
@@ -72,14 +72,14 @@ struct CopilotContent: View {
                 .disabled(true)
             case .busy:
                 Button(action: stop) {
-                    Label("停止", systemImage: "stop.fill")
+                    Label(NSLocalizedString(NSLocalizedString("停止", comment: ""), comment: ""), systemImage: "stop.fill")
                 }
-                .help("停止")
+                .help(NSLocalizedString(NSLocalizedString("停止", comment: ""), comment: ""))
             case .idle:
                 Button(action: start) {
-                    Label("开始", systemImage: "play.fill")
+                    Label(NSLocalizedString(NSLocalizedString("开始", comment: ""), comment: ""), systemImage: "play.fill")
                 }
-                .help("开始")
+                .help(NSLocalizedString(NSLocalizedString("开始", comment: ""), comment: ""))
             }
         }
     }

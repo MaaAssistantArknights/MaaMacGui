@@ -17,9 +17,9 @@ struct RecruitSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Toggle("自动刷新3星Tags", isOn: config.refresh)
+            Toggle(NSLocalizedString("自动刷新3星Tags", comment: ""), isOn: config.refresh)
 
-            Toggle("自动使用加急许可", isOn: config.expedite)
+            Toggle(NSLocalizedString("自动使用加急许可", comment: ""), isOn: config.expedite)
 
             Toggle("3星设置7:40而非9:00", isOn: level3UseShortTime)
 

@@ -46,17 +46,17 @@ struct OperBoxView: View {
     }
 
     private let excludedOperNames = [
-        "预备干员-近战",
-        "预备干员-术师",
-        "预备干员-后勤",
-        "预备干员-狙击",
-        "预备干员-重装",
-        "郁金香",
+        NSLocalizedString("预备干员-近战", comment: ""),
+        NSLocalizedString("预备干员-术师", comment: ""),
+        NSLocalizedString("预备干员-后勤", comment: ""),
+        NSLocalizedString("预备干员-狙击", comment: ""),
+        NSLocalizedString("预备干员-重装", comment: ""),
+        NSLocalizedString("郁金香", comment: ""),
         "Stormeye",
         "Touch",
         "Pith",
         "Sharp",
-        "阿米娅-WARRIOR",
+        NSLocalizedString("阿米娅-WARRIOR", comment: ""),
     ]
 }
 

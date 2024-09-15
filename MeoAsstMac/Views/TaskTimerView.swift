@@ -9,7 +9,7 @@ struct TaskTimerView: View {
             Button(action: {
                 viewModel.appendNewTaskTimer()
             }) {
-                Label("新增定时", systemImage: "plus")
+                Label(NSLocalizedString("新增定时", comment: ""), systemImage: "plus")
             }
             .padding()
             Spacer()
@@ -25,13 +25,13 @@ struct TaskTimerView: View {
                 )
             }
         }
-        .alert("允许阻止系统睡眠",
+        .alert(NSLocalizedString("允许阻止系统睡眠", comment: ""),
                isPresented: $showingAlertForPreventingSleep,
                actions: {
-                   Button("允许") {
+                   Button(NSLocalizedString("允许", comment: "")) {
                        viewModel.preventSystemSleeping = true
                    }
-                   Button("取消", role: .cancel) {}
+                   Button(NSLocalizedString("取消", comment: ""), role: .cancel) {}
                }, message: {
                    Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
                })
@@ -63,14 +63,14 @@ struct TaskTimerItem: View {
 
             Spacer()
 
-            Picker(selection: $taskTimer.hour, label: Text("时")) {
+            Picker(selection: $taskTimer.hour, label: Text(NSLocalizedString("时", comment: ""))) {
                 ForEach(hours, id: \.self) { hour in
                     Text("\(hour)")
                 }
             }
             .frame(width: 100)
 
-            Picker(selection: $taskTimer.minute, label: Text("分")) {
+            Picker(selection: $taskTimer.minute, label: Text(NSLocalizedString("分", comment: ""))) {
                 ForEach(minutes, id: \.self) { minute in
                     Text(String(format: "%02d", minute))
                 }
@@ -80,7 +80,7 @@ struct TaskTimerItem: View {
             Spacer()
 
             Toggle(isOn: $taskTimer.isEnabled, label: {
-                Text("开启")
+                Text(NSLocalizedString("开启", comment: ""))
             })
             .toggleStyle(.switch)
             .onChange(of: taskTimer.isEnabled) {

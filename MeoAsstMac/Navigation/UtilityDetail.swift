@@ -24,7 +24,7 @@ struct UtilityDetail: View {
                 case .gacha:
                     GachaView()
                 case .none:
-                    Text("请选择识别项目")
+                    Text(NSLocalizedString("请选择识别项目", comment: ""))
             }
         }
         .padding()
