@@ -24,14 +24,14 @@ struct UpdaterSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle("接收开发版更新", isOn: $useBetaChannel)
+            Toggle(NSLocalizedString("接收开发版更新", comment: ""), isOn: $useBetaChannel)
 
-            Toggle("自动检查更新", isOn: $automaticallyChecksForUpdates)
+            Toggle(NSLocalizedString("自动检查更新", comment: ""), isOn: $automaticallyChecksForUpdates)
                 .onChange(of: automaticallyChecksForUpdates) { newValue in
                     updater.automaticallyChecksForUpdates = newValue
                 }
 
-            Toggle("自动下载更新", isOn: $automaticallyDownloadsUpdates)
+            Toggle(NSLocalizedString("自动下载更新", comment: ""), isOn: $automaticallyDownloadsUpdates)
                 .disabled(!automaticallyChecksForUpdates)
                 .onChange(of: automaticallyDownloadsUpdates) { newValue in
                     updater.automaticallyDownloadsUpdates = newValue

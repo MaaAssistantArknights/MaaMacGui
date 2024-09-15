@@ -20,15 +20,15 @@ struct MallSettingsView: View {
         VStack(spacing: 30) {
             HStack(spacing: 10) {
                 Spacer()
-                Toggle("信用购物", isOn: config.shopping)
-                Toggle("信用溢出时无视黑名单", isOn: config.force_shopping_if_credit_full)
-                Toggle("借助战赚信用", isOn: .constant(false))
+                Toggle(NSLocalizedString("信用购物", comment: ""), isOn: config.shopping)
+                Toggle(NSLocalizedString("信用溢出时无视黑名单", comment: ""), isOn: config.force_shopping_if_credit_full)
+                Toggle(NSLocalizedString("借助战赚信用", comment: ""), isOn: .constant(false))
                 Spacer()
             }
 
             HStack(spacing: 20) {
-                EditableTextList(title: "优先购买", texts: config.buy_first)
-                EditableTextList(title: "黑名单", texts: config.blacklist)
+                EditableTextList(title: NSLocalizedString("优先购买", comment: ""), texts: config.buy_first)
+                EditableTextList(title: NSLocalizedString("黑名单", comment: ""), texts: config.blacklist)
             }
             .frame(height: 12 * rowHeight)
         }
@@ -46,7 +46,7 @@ struct MallSettingsView_Previews: PreviewProvider {
 // MARK: - EditableTextList
 
 private struct EditableTextList: View {
-    let title: LocalizedStringKey
+    let title: String
     @Binding var texts: [String]
 
     private struct TextEntry: Equatable, Identifiable {

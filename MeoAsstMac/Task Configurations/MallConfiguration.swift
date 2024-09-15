@@ -10,8 +10,8 @@ import Foundation
 struct MallConfiguration: MAATaskConfiguration {
     var enable = true
     var shopping = true
-    var buy_first = ["招聘许可", "龙门币"]
-    var blacklist = ["加急许可", "家具零件"]
+    var buy_first = [NSLocalizedString("招聘许可", comment: ""), NSLocalizedString("龙门币", comment: "")]
+    var blacklist = [NSLocalizedString("加急许可", comment: ""), NSLocalizedString("家具零件", comment: "")]
     var force_shopping_if_credit_full = true
 
     var title: String {

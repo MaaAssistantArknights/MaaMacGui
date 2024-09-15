@@ -23,10 +23,10 @@ struct FightSettingsView: View {
             Section {
                 HStack(spacing: 20) {
                     if useCustomStage || stageNotListed {
-                        TextField("关卡名", text: config.stage)
+                        TextField(NSLocalizedString("关卡名", comment: ""), text: config.stage)
                     } else {
-                        Picker("关卡选择", selection: config.stage) {
-                            Text("当前/上次").tag("")
+                        Picker(NSLocalizedString("关卡选择", comment: ""), selection: config.stage) {
+                            Text(NSLocalizedString("当前/上次", comment: "")).tag("")
                             Text("1-7").tag("1-7")
                             Text("CE-6").tag("CE-6")
                             Text("AP-5").tag("AP-5")

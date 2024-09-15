@@ -17,22 +17,22 @@ struct ReclamationSettingsView: View {
 
     var body: some View {
         Form {
-            Picker("主题：", selection: config.theme) {
+            Picker(NSLocalizedString("主题：", comment: ""), selection: config.theme) {
                 ForEach(ReclamationTheme.allCases, id: \.rawValue) { theme in
                     Text("\(theme.description)").tag(theme)
                 }
             }
 
-            Picker("策略：", selection: config.mode) {
+            Picker(NSLocalizedString("策略：", comment: ""), selection: config.mode) {
                 ForEach(config.wrappedValue.modes.sorted(by: <), id: \.key) { mode, desc in
                     Text(desc).tag(mode)
                 }
             }
 
             if config.wrappedValue.toolToCraftEnabled {
-                TextField("支援道具：", text: config.tool_to_craft)
-                TextField("组装批次数：", value: config.num_craft_batches, format: .number)
-                Picker("组装数量增加模式：", selection: config.increment_mode) {
+                TextField(NSLocalizedString("支援道具：", comment: ""), text: config.tool_to_craft)
+                TextField(NSLocalizedString("组装批次数：", comment: ""), value: config.num_craft_batches, format: .number)
+                Picker(NSLocalizedString("组装数量增加模式：", comment: ""), selection: config.increment_mode) {
                     ForEach(config.wrappedValue.increment_modes.sorted(by: <), id: \.key) { increment_mode, desc in
                         Text(desc).tag(increment_mode)
                     }

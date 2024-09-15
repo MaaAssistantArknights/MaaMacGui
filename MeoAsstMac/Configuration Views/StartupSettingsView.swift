@@ -19,13 +19,13 @@ struct StartupSettingsView: View {
         Form {
             VStack(alignment: .leading, spacing: 3) {
                 Text("客户端类型：\(config.client_type.wrappedValue.description)")
-                Text("请在“设置” > “游戏设置” 中选择客户端类型。")
+                Text(NSLocalizedString("请在“设置” > “游戏设置” 中选择客户端类型。", comment: ""))
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             .padding(.bottom)
 
-            Toggle("自动启动客户端", isOn: config.start_game_enabled)
+            Toggle(NSLocalizedString("自动启动客户端", comment: ""), isOn: config.start_game_enabled)
                 .disabled(config.client_type.wrappedValue == .default)
         }
         .padding()

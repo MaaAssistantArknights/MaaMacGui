@@ -27,7 +27,7 @@ struct CheckForUpdatesView: View {
     }
 
     var body: some View {
-        Button("检查更新…", action: updater.checkForUpdates)
+        Button(NSLocalizedString("检查更新…", comment: ""), action: updater.checkForUpdates)
             .disabled(!viewModel.canCheckForUpdates)
     }
 }

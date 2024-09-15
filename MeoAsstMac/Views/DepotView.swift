@@ -18,13 +18,13 @@ struct DepotView: View {
             .animation(.default, value: viewModel.depot?.contents)
 
             HStack(spacing: 20) {
-                Text("复制结果JSON至剪贴板：")
+                Text(NSLocalizedString("复制结果JSON至剪贴板：", comment: ""))
 
-                Button("企鹅物流") {
+                Button(NSLocalizedString("企鹅物流", comment: "")) {
                     copyToPasteboard(text: viewModel.depot?.arkplanner.data)
                     NSWorkspace.shared.open(URL(string: "https://penguin-stats.cn/planner")!)
                 }
-                Button("明日方舟工具箱") {
+                Button(NSLocalizedString("明日方舟工具箱", comment: "")) {
                     copyToPasteboard(text: viewModel.depot?.lolicon.data)
                     NSWorkspace.shared.open(URL(string: "https://arkntools.app/#/material")!)
                 }

@@ -24,7 +24,7 @@ struct CopilotView: View {
             }
             .task(id: url) { updateCopilot() }
         } else {
-            Text("文件格式错误")
+            Text(NSLocalizedString("文件格式错误", comment: ""))
         }
     }
 
@@ -52,8 +52,8 @@ struct CopilotView: View {
                 viewModel.copilot = .regular(newValue)
             }
             HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
+                Toggle(NSLocalizedString("自动编队", comment: ""), isOn: binding.formation)
+                Toggle(NSLocalizedString("信赖干员", comment: ""), isOn: binding.add_trust)
             }
 
         case .sss(let innerConfig):
@@ -63,7 +63,7 @@ struct CopilotView: View {
                 viewModel.copilot = .sss(newValue)
             }
             HStack {
-                Text("循环次数")
+                Text(NSLocalizedString("循环次数", comment: ""))
                 TextField("1", value: binding.loop_times, format: .number)
             }
             .frame(maxWidth: 130)
@@ -84,7 +84,7 @@ struct CopilotView: View {
         }
 
         if let equipments = pilot.equipment {
-            Text("装备：") + Text(equipments.joined(separator: ", "))
+            Text(NSLocalizedString("装备：", comment: "")) + Text(equipments.joined(separator: ", "))
         }
 
         if let strategy = pilot.strategy {
@@ -118,7 +118,7 @@ struct CopilotView_Previews: PreviewProvider {
     static let url = Bundle.main.resourceURL!
         .appendingPathComponent("resource")
         .appendingPathComponent("copilot")
-        .appendingPathComponent("SSS_约翰老妈新建地块")
+        .appendingPathComponent(NSLocalizedString("SSS_约翰老妈新建地块", comment: ""))
         .appendingPathExtension("json")
 
     static var previews: some View {

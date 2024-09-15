@@ -21,7 +21,7 @@ struct MAAContent: View {
                 case .utility:
                     UtilityContent(selection: $selection.utility)
                 case .none:
-                    Text("请从边栏选择功能")
+                    Text(NSLocalizedString("请从边栏选择功能", comment: ""))
             }
         }
         .frame(minWidth: 260)

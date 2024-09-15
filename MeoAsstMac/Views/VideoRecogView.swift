@@ -10,7 +10,7 @@ import SwiftUI
 struct VideoRecogView: View {
     var body: some View {
         VStack(spacing: 20) {
-            Text("请打开“自动战斗”页，将攻略视频文件拖入外部作业列表即可。")
+            Text(NSLocalizedString("请打开“自动战斗”页，将攻略视频文件拖入外部作业列表即可。", comment: ""))
             Text("需要视频分辨率为 16:9，且无黑边、模拟器边框、异形屏矫正等干扰因素。")
         }
     }

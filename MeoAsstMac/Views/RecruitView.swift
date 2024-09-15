@@ -33,17 +33,17 @@ struct RecruitView: View {
     @ViewBuilder private func configView() -> some View {
         HStack(spacing: 20) {
             VStack(alignment: .leading) {
-                Toggle("自动设置时间", isOn: $viewModel.recruitConfig.set_time)
-                Text("自动选择 Tags：")
+                Toggle(NSLocalizedString("自动设置时间", comment: ""), isOn: $viewModel.recruitConfig.set_time)
+                Text(NSLocalizedString("自动选择 Tags：", comment: ""))
             }
 
             VStack(alignment: .leading) {
                 Toggle("3星设置7:40而非9:00", isOn: $lv3ShortTime)
                 HStack {
-                    Toggle("3星", isOn: autoSelect(level: 3))
-                    Toggle("4星", isOn: autoSelect(level: 4))
-                    Toggle("5星", isOn: autoSelect(level: 5))
-                    Toggle("6星", isOn: autoSelect(level: 6))
+                    Toggle(NSLocalizedString("3星", comment: ""), isOn: autoSelect(level: 3))
+                    Toggle(NSLocalizedString("4星", comment: ""), isOn: autoSelect(level: 4))
+                    Toggle(NSLocalizedString("5星", comment: ""), isOn: autoSelect(level: 5))
+                    Toggle(NSLocalizedString("6星", comment: ""), isOn: autoSelect(level: 6))
                 }
             }
         }

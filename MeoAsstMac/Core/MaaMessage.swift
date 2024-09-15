@@ -87,7 +87,7 @@ extension MAAViewModel {
             logError("TouchModeNotAvaiable")
 
         case "UnsupportedPlayTools":
-            logError("不支持此版本 PlayCover")
+            logError(NSLocalizedString("不支持此版本 PlayCover", comment: ""))
 
         default:
             break

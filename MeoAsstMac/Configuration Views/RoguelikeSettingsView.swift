@@ -29,13 +29,13 @@ struct RoguelikeSettingsView: View {
     }
 
     @ViewBuilder private func generalSettings() -> some View {
-        Picker("肉鸽主题：", selection: config.theme) {
+        Picker(NSLocalizedString("肉鸽主题：", comment: ""), selection: config.theme) {
             ForEach(RoguelikeTheme.allCases, id: \.rawValue) { theme in
                 Text("\(theme.description)").tag(theme)
             }
         }
 
-        Picker("策略：", selection: config.mode) {
+        Picker(NSLocalizedString("策略：", comment: ""), selection: config.mode) {
             ForEach(roguelikeModes[nil] ?? [], id: \.0) { pair in
                 Text(pair.1).tag(pair.0)
             }
@@ -44,19 +44,19 @@ struct RoguelikeSettingsView: View {
             }
         }
 
-        TextField("最多探索次数：", value: config.starts_count, format: .number)
+        TextField(NSLocalizedString("最多探索次数：", comment: ""), value: config.starts_count, format: .number)
     }
 
     @ViewBuilder private func goldSettings() -> some View {
-        Toggle("投资源石锭", isOn: config.investment_enabled)
-        Toggle("刷新商店（指路鳞）", isOn: config.refresh_trader_with_dice)
-        Toggle("储备源石锭达到上限时停止", isOn: config.stop_when_investment_full)
+        Toggle(NSLocalizedString("投资源石锭", comment: ""), isOn: config.investment_enabled)
+        Toggle(NSLocalizedString("刷新商店（指路鳞）", comment: ""), isOn: config.refresh_trader_with_dice)
+        Toggle(NSLocalizedString("储备源石锭达到上限时停止", comment: ""), isOn: config.stop_when_investment_full)
 
-        TextField("最多投资源石锭数量：", value: config.investments_count, format: .number)
+        TextField(NSLocalizedString("最多投资源石锭数量：", comment: ""), value: config.investments_count, format: .number)
     }
 
     @ViewBuilder private func squadSettings() -> some View {
-        Picker("开局分队：", selection: config.squad) {
+        Picker(NSLocalizedString("开局分队：", comment: ""), selection: config.squad) {
             ForEach(roguelikeSquads[config.theme.wrappedValue] ?? [], id: \.self) { squad in
                 Text(squad).tag(squad)
             }
