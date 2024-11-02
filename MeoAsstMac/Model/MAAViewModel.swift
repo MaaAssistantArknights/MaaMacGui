@@ -25,11 +25,6 @@ import SwiftUI
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
 
-    // MARK: - Resource Version
-
-    @Published private(set) var resourceActivity = ""
-    @Published private(set) var resourceLastUpdated = ""
-
     // MARK: - Core Callback
 
     @Published var logs = [MAALog]()
@@ -182,9 +177,6 @@ extension MAAViewModel {
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
-        logInfo("资源版本：\(resourceActivity)")
-        logInfo("更新时间：\(resourceLastUpdated)")
-
         guard requireConnect else { return }
 
         logTrace("ConnectingToEmulator")
@@ -223,43 +215,48 @@ extension MAAViewModel {
         return try decoder.decode(MAAResourceVersion.self, from: data)
     }
 
-    private func checkResource() throws -> (URL, MAAResourceVersion) {
-        let bundledResourceURL = Bundle.main.resourceURL!
-        let bundledResourceVersion = try resourceVersion(of: bundledResourceURL)
+    private func loadResource(url: URL, channel: MAAClientChannel) async throws {
+        try await MAAProvider.shared.loadResource(path: url.path)
 
-        guard let userResourceVersion = try? resourceVersion(of: userDirectory) else {
-            return (bundledResourceURL, bundledResourceVersion)
+        if channel.isGlobal {
+            let extraResource = url.appendingPathComponent("resource")
+                .appendingPathComponent("global")
+                .appendingPathComponent(channel.rawValue)
+            if FileManager.default.fileExists(atPath: extraResource.path) {
+                try await MAAProvider.shared.loadResource(path: extraResource.path)
+            }
         }
 
-        if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
-            return (userDirectory, userResourceVersion)
-        } else {
-            return (bundledResourceURL, bundledResourceVersion)
+        if touchMode == .MacPlayTools {
+            let platformResource = url.appendingPathComponent("resource")
+                .appendingPathComponent("platform_diff")
+                .appendingPathComponent("iOS")
+            if FileManager.default.fileExists(atPath: platformResource.path) {
+                try await MAAProvider.shared.loadResource(path: platformResource.path)
+            }
         }
     }
 
     private func loadResource(channel: MAAClientChannel) async throws {
-        let (resourceURL, resourceVersion) = try checkResource()
-        try await MAAProvider.shared.loadResource(path: resourceURL.path)
-        resourceActivity = resourceVersion.activity.name
-        resourceLastUpdated = resourceVersion.last_updated
+        let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
+        try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
+        logTrace([
+            "内置资源版本：\(bundledResourceVersion.activity.name)",
+            "更新时间：\(bundledResourceVersion.last_updated)",
+        ])
 
-        if channel.isGlobal {
-            let extraResource =
-                resourceURL
-                .appendingPathComponent("resource")
-                .appendingPathComponent("global")
-                .appendingPathComponent(channel.rawValue)
-            try await MAAProvider.shared.loadResource(path: extraResource.path)
-        }
-
-        if touchMode == .MacPlayTools {
-            let platformResource =
-                resourceURL
-                .appendingPathComponent("resource")
-                .appendingPathComponent("platform_diff")
-                .appendingPathComponent("iOS")
-            try await MAAProvider.shared.loadResource(path: platformResource.path)
+        if let userResourceVersion = try? resourceVersion(of: userDirectory) {
+            if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
+                try await loadResource(url: userDirectory, channel: channel)
+                logTrace([
+                    "外部资源版本：\(userResourceVersion.activity.name)",
+                    "更新时间：\(userResourceVersion.last_updated)",
+                ])
+            } else {
+                logInfo("无需使用外部更新资源")
+            }
+        } else {
+            logInfo("未找到外部更新资源")
         }
     }
 
