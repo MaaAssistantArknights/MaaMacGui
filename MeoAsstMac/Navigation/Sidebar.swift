@@ -10,20 +10,27 @@ import SwiftUI
 struct Sidebar: View {
     @Binding var selection: SidebarEntry?
 
+    @Environment(\.defaultMinListRowHeight) var rowHeight
+
     var body: some View {
         VStack {
             List(SidebarEntry.allCases, selection: $selection) { entry in
                 entry.label
             }
 
-            Spacer()
+            List {
+                Button {
+                    OpenLogFileView.revealLogInFinder()
+                } label: {
+                    Label("查找日志…", systemImage: "doc.text.magnifyingglass")
+                }
 
-            SettingsLink {
-                Label("设置", systemImage: "gear")
+                SettingsLink {
+                    Label("设置", systemImage: "gear")
+                }
             }
             .buttonStyle(.borderless)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
+            .frame(maxHeight: rowHeight * 3)
         }
         .toolbar {
             ToolbarItemGroup {
@@ -99,7 +106,7 @@ private struct SettingsLink<Label: View>: View {
     }
 
     var body: some View {
-#if swift(>=5.9)
+        #if swift(>=5.9)
         if #available(macOS 14.0, *) {
             SwiftUI.SettingsLink {
                 label
@@ -107,9 +114,9 @@ private struct SettingsLink<Label: View>: View {
         } else {
             oldBody
         }
-#else
+        #else
         oldBody
-#endif
+        #endif
     }
 
     @ViewBuilder private var oldBody: some View {

@@ -9,18 +9,8 @@ import SwiftUI
 
 struct OpenLogFileView: View {
     var body: some View {
-        Button("打开日志文件夹…") {
-            guard let userDirectory else {
-                return
-            }
-
-            let url = userDirectory.appendingPathComponent("asst.log")
-
-            if FileManager.default.fileExists(atPath: url.path) {
-                NSWorkspace.shared.activateFileViewerSelecting([url])
-            } else {
-                NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: userDirectory.path)
-            }
+        Button("查找日志…") {
+            OpenLogFileView.revealLogInFinder()
         }
 
         Button("PlayCover 链接…") {
@@ -28,7 +18,21 @@ struct OpenLogFileView: View {
         }
     }
 
-    private var userDirectory: URL? {
+    static func revealLogInFinder() {
+        guard let userDirectory else {
+            return
+        }
+
+        let url = userDirectory.appendingPathComponent("asst.log")
+
+        if FileManager.default.fileExists(atPath: url.path) {
+            NSWorkspace.shared.activateFileViewerSelecting([url])
+        } else {
+            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: userDirectory.path)
+        }
+    }
+
+    private static var userDirectory: URL? {
         FileManager
             .default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
