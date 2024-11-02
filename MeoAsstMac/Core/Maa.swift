@@ -160,3 +160,19 @@ extension JSON {
 private extension AsstBool {
     var isTrue: Bool { self != 0 }
 }
+
+struct MAAResourceVersion: Codable {
+    let activity: MAAResourceActivity
+    let gacha: MAAResourceGacha
+    let last_updated: String
+}
+
+struct MAAResourceActivity: Codable {
+    let name: String
+    let time: Date
+}
+
+struct MAAResourceGacha: Codable {
+    let pool: String
+    let time: Date
+}

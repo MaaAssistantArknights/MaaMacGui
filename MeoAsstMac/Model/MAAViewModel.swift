@@ -25,6 +25,11 @@ import SwiftUI
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
 
+    // MARK: - Resource Version
+
+    @Published private(set) var resourceActivity = ""
+    @Published private(set) var resourceLastUpdated = ""
+
     // MARK: - Core Callback
 
     @Published var logs = [MAALog]()
@@ -177,6 +182,9 @@ extension MAAViewModel {
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
+        logInfo("资源版本：\(resourceActivity)")
+        logInfo("更新时间：\(resourceLastUpdated)")
+
         guard requireConnect else { return }
 
         logTrace("ConnectingToEmulator")
@@ -207,11 +215,38 @@ extension MAAViewModel {
         return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
     }
 
+    private func resourceVersion(of url: URL) throws -> MAAResourceVersion {
+        let versionURL = url.appendingPathComponent("resource").appendingPathComponent("version.json")
+        let data = try Data(contentsOf: versionURL)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        return try decoder.decode(MAAResourceVersion.self, from: data)
+    }
+
+    private func checkResource() throws -> (URL, MAAResourceVersion) {
+        let bundledResourceURL = Bundle.main.resourceURL!
+        let bundledResourceVersion = try resourceVersion(of: bundledResourceURL)
+
+        guard let userResourceVersion = try? resourceVersion(of: userDirectory) else {
+            return (bundledResourceURL, bundledResourceVersion)
+        }
+
+        if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
+            return (userDirectory, userResourceVersion)
+        } else {
+            return (bundledResourceURL, bundledResourceVersion)
+        }
+    }
+
     private func loadResource(channel: MAAClientChannel) async throws {
-        try await MAAProvider.shared.loadResource(path: Bundle.main.resourcePath!)
+        let (resourceURL, resourceVersion) = try checkResource()
+        try await MAAProvider.shared.loadResource(path: resourceURL.path)
+        resourceActivity = resourceVersion.activity.name
+        resourceLastUpdated = resourceVersion.last_updated
 
         if channel.isGlobal {
-            let extraResource = Bundle.main.resourceURL!
+            let extraResource =
+                resourceURL
                 .appendingPathComponent("resource")
                 .appendingPathComponent("global")
                 .appendingPathComponent(channel.rawValue)
@@ -219,7 +254,8 @@ extension MAAViewModel {
         }
 
         if touchMode == .MacPlayTools {
-            let platformResource = Bundle.main.resourceURL!
+            let platformResource =
+                resourceURL
                 .appendingPathComponent("resource")
                 .appendingPathComponent("platform_diff")
                 .appendingPathComponent("iOS")
@@ -360,7 +396,7 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         guard let copilot,
-              let params = copilot.params
+            let params = copilot.params
         else {
             return
         }
@@ -368,10 +404,10 @@ extension MAAViewModel {
         try await ensureHandle()
 
         switch copilot {
-        case .regular:
-            _ = try await handle?.appendTask(type: .Copilot, params: params)
-        case .sss:
-            _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
+            case .regular:
+                _ = try await handle?.appendTask(type: .Copilot, params: params)
+            case .sss:
+                _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
         }
 
         try await handle?.start()
@@ -467,24 +503,24 @@ extension MAAViewModel {
 
     @ViewBuilder func taskConfigView(id: UUID) -> some View {
         switch tasks[id] {
-        case .startup:
-            StartupSettingsView(id: id)
-        case .recruit:
-            RecruitSettingsView(id: id)
-        case .infrast:
-            InfrastSettingsView(id: id)
-        case .fight:
-            FightSettingsView(id: id)
-        case .mall:
-            MallSettingsView(id: id)
-        case .award:
-            AwardSettingsView(id: id)
-        case .roguelike:
-            RoguelikeSettingsView(id: id)
-        case .reclamation:
-            ReclamationSettingsView(id: id)
-        case .closedown(_), .none:
-            EmptyView()
+            case .startup:
+                StartupSettingsView(id: id)
+            case .recruit:
+                RecruitSettingsView(id: id)
+            case .infrast:
+                InfrastSettingsView(id: id)
+            case .fight:
+                FightSettingsView(id: id)
+            case .mall:
+                MallSettingsView(id: id)
+            case .award:
+                AwardSettingsView(id: id)
+            case .roguelike:
+                RoguelikeSettingsView(id: id)
+            case .reclamation:
+                ReclamationSettingsView(id: id)
+            case .closedown(_), .none:
+                EmptyView()
         }
     }
 }
@@ -494,11 +530,11 @@ extension MAAViewModel {
 extension MAAViewModel {
     func switchAwakeGuard(_ newValue: Status) {
         switch newValue {
-        case .busy, .pending:
-            wakeupSystem()
-            enableAwake()
-        case .idle:
-            disableAwake()
+            case .busy, .pending:
+                wakeupSystem()
+                enableAwake()
+            case .idle:
+                disableAwake()
         }
     }
 
@@ -518,9 +554,12 @@ extension MAAViewModel {
         guard awakeAssertionID == nil else { return }
         var assertionID: IOPMAssertionID = 0
         let name = "MAA is running; sleep is diabled."
-        let properties = [kIOPMAssertionTypeKey: kIOPMAssertionTypeNoDisplaySleep as CFString,
-                          kIOPMAssertionNameKey: name as CFString,
-                          kIOPMAssertionLevelKey: UInt32(kIOPMAssertionLevelOn)] as [String: Any]
+        let properties =
+            [
+                kIOPMAssertionTypeKey: kIOPMAssertionTypeNoDisplaySleep as CFString,
+                kIOPMAssertionNameKey: name as CFString,
+                kIOPMAssertionLevelKey: UInt32(kIOPMAssertionLevelOn),
+            ] as [String: Any]
         let result = IOPMAssertionCreateWithProperties(properties as CFDictionary, &assertionID)
         if result == kIOReturnSuccess {
             awakeAssertionID = assertionID
@@ -558,8 +597,10 @@ extension MAAViewModel {
             let nsError = error as NSError
             if nsError.domain == NSCocoaErrorDomain, nsError.code == 260 {
                 await logError("无法找到游戏文件。")
-                await logTrace(["PlayCover的版本须为3.0.0.maa.5及以上，",
-                                "请在“连接设置”内检查“游戏包名”选项。"])
+                await logTrace([
+                    "PlayCover的版本须为3.0.0.maa.5及以上，",
+                    "请在“连接设置”内检查“游戏包名”选项。",
+                ])
             }
             return false
         }

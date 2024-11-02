@@ -20,6 +20,12 @@ struct Sidebar: View {
 
             List {
                 Button {
+                    OpenLogFileView.revealResourceInFinder()
+                } label: {
+                    Label("查找资源…", systemImage: "arrow.up.circle")
+                }
+
+                Button {
                     OpenLogFileView.revealLogInFinder()
                 } label: {
                     Label("查找日志…", systemImage: "doc.text.magnifyingglass")
@@ -30,7 +36,7 @@ struct Sidebar: View {
                 }
             }
             .buttonStyle(.borderless)
-            .frame(maxHeight: rowHeight * 3)
+            .frame(maxHeight: rowHeight * 4.2)
         }
         .toolbar {
             ToolbarItemGroup {
@@ -72,23 +78,23 @@ enum SidebarEntry: Int, CaseIterable, Identifiable {
 extension SidebarEntry: CustomStringConvertible {
     var description: String {
         switch self {
-        case .daily:
-            return NSLocalizedString("一键长草", comment: "")
-        case .copilot:
-            return NSLocalizedString("自动战斗", comment: "")
-        case .utility:
-            return NSLocalizedString("实用工具", comment: "")
+            case .daily:
+                return NSLocalizedString("一键长草", comment: "")
+            case .copilot:
+                return NSLocalizedString("自动战斗", comment: "")
+            case .utility:
+                return NSLocalizedString("实用工具", comment: "")
         }
     }
 
     var iconImage: String {
         switch self {
-        case .daily:
-            return "cup.and.saucer"
-        case .copilot:
-            return "play.rectangle"
-        case .utility:
-            return "wrench.and.screwdriver"
+            case .daily:
+                return "cup.and.saucer"
+            case .copilot:
+                return "play.rectangle"
+            case .utility:
+                return "wrench.and.screwdriver"
         }
     }
 
