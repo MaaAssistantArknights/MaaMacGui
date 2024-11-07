@@ -35,12 +35,15 @@ struct RoguelikeSettingsView: View {
             }
         }
 
-        Picker("策略：", selection: config.mode) {
-            ForEach(roguelikeModes[nil] ?? [], id: \.0) { pair in
-                Text(pair.1).tag(pair.0)
+        Picker("肉鸽难度：", selection: config.difficulty) {
+            ForEach(config.theme.wrappedValue.difficulties) {
+                Text($0.description).tag($0.id)
             }
-            ForEach(roguelikeModes[config.theme.wrappedValue] ?? [], id: \.0) { pair in
-                Text(pair.1).tag(pair.0)
+        }
+
+        Picker("策略：", selection: config.mode) {
+            ForEach(config.theme.wrappedValue.modes) {
+                Text($0.description).tag($0.id)
             }
         }
 
@@ -57,16 +60,13 @@ struct RoguelikeSettingsView: View {
 
     @ViewBuilder private func squadSettings() -> some View {
         Picker("开局分队：", selection: config.squad) {
-            ForEach(roguelikeSquads[config.theme.wrappedValue] ?? [], id: \.self) { squad in
+            ForEach(config.theme.wrappedValue.squads, id: \.self) { squad in
                 Text(squad).tag(squad)
             }
         }
-        .onChange(of: config.wrappedValue.theme) { newValue in
-            config.wrappedValue.squad = roguelikeSquads[newValue]?.first ?? ""
-        }
 
         Picker("开局职业组：", selection: config.roles) {
-            ForEach(roguelikeRoles, id: \.self) { role in
+            ForEach(config.wrappedValue.theme.roles, id: \.self) { role in
                 Text(role).tag(role)
             }
         }
@@ -114,34 +114,111 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
     }
 }
 
-private let roguelikeModes: [RoguelikeTheme?: [(Int, String)]] = [
-    nil: [
-        (0, "刷蜡烛，尽可能稳定地打更多层数"),
-        (1, "刷源石锭，第一层投资完就退出"),
-        (4, "刷开局，到达第三层后直接退出")
-    ],
-    .Phantom: [],
-    .Mizuki: [],
-    .Sami: [
-        (5, "刷坍缩范式，尽可能地积累坍缩值")
-    ]
-]
+struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
+    let id: Int
 
-private let roguelikeSquads: [RoguelikeTheme: [String]] = [
-    .Phantom: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
-               "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-               "研究分队", "高规格分队"],
-    .Mizuki: ["心胜于物分队", "物尽其用分队", "以人为本分队",
-              "指挥分队", "集群分队", "后勤分队", "矛头分队",
-              "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-              "研究分队", "高规格分队"],
-    .Sami: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
-            "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-            "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队"],
-    .Sarkaz: ["魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
-              "指挥分队", "集群分队", "后勤分队", "矛头分队",
-              "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-              "高规格分队", "因地制宜分队"]
-]
+    var description: String {
+        switch id {
+        case Int.max:
+            return NSLocalizedString("最高难度", comment: "")
+        case -1:
+            return NSLocalizedString("当前难度", comment: "")
+        default:
+            return "\(id)"
+        }
+    }
 
-private let roguelikeRoles = ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
+    static let max = RoguelikeDifficulty(id: Int.max)
+    static let current = RoguelikeDifficulty(id: -1)
+
+    static func upto(maximum: Int) -> [RoguelikeDifficulty] {
+        [.max] + (0...maximum).reversed().map { RoguelikeDifficulty(id: $0) }
+    }
+}
+
+struct RoguelikeMode: CustomStringConvertible, Equatable, Identifiable {
+    let id: Int
+
+    var description: String {
+        switch id {
+        case 0: NSLocalizedString("刷等级，尽可能稳定地打更多层数", comment: "")
+        case 1: NSLocalizedString("刷源石锭，第一层投资完就退出", comment: "")
+        case 4: NSLocalizedString("刷开局，到达第三层后直接退出", comment: "")
+        case 5: NSLocalizedString("刷坍缩范式，尽可能地积累坍缩值", comment: "")
+        default: NSLocalizedString("未知策略 \(self.id)", comment: "")
+        }
+    }
+
+    var shortDescription: String {
+        switch id {
+        case 0: NSLocalizedString("优先层数", comment: "")
+        case 1: NSLocalizedString("优先投资", comment: "")
+        case 4: NSLocalizedString("烧开水", comment: "")
+        case 5: NSLocalizedString("刷坍缩", comment: "")
+        default: NSLocalizedString("未知策略 \(self.id)", comment: "")
+        }
+    }
+
+    static let commons = [0, 1, 4].map { RoguelikeMode(id: $0) }
+}
+
+extension RoguelikeTheme {
+    var difficulties: [RoguelikeDifficulty] {
+        switch self {
+        case .Phantom:
+            return [.current]
+        case .Mizuki:
+            return RoguelikeDifficulty.upto(maximum: 15) + [.current]
+        case .Sami:
+            return RoguelikeDifficulty.upto(maximum: 15) + [.current]
+        case .Sarkaz:
+            return RoguelikeDifficulty.upto(maximum: 18) + [.current]
+        }
+    }
+
+    var modes: [RoguelikeMode] {
+        switch self {
+        case .Sami:
+            return RoguelikeMode.commons + [RoguelikeMode(id: 5)]
+        default:
+            return RoguelikeMode.commons
+        }
+    }
+
+    var squads: [String] {
+        switch self {
+        case .Phantom:
+            [
+                "指挥分队", "集群分队", "后勤分队", "矛头分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "研究分队", "高规格分队",
+            ]
+        case .Mizuki:
+            [
+                "心胜于物分队", "物尽其用分队", "以人为本分队",
+                "指挥分队", "集群分队", "后勤分队", "矛头分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "研究分队", "高规格分队",
+            ]
+        case .Sami:
+            [
+                "指挥分队", "集群分队", "后勤分队", "矛头分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "高规格分队", "特训分队",
+                "科学主义分队", "生活至上分队", "永恒狩猎分队",
+            ]
+        case .Sarkaz:
+            [
+                "魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
+                "指挥分队", "集群分队", "后勤分队", "矛头分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "高规格分队", "因地制宜分队",
+                "点刺成锭分队", "拟态学者分队", "异想天开分队",
+            ]
+        }
+    }
+
+    var roles: [String] {
+        ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
+    }
+}
