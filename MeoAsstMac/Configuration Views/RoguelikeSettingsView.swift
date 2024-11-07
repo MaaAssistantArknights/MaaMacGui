@@ -34,6 +34,17 @@ struct RoguelikeSettingsView: View {
                 Text("\(theme.description)").tag(theme)
             }
         }
+        
+        if config.theme.wrappedValue != RoguelikeTheme.Phantom {
+            Picker("肉鸽难度：", selection: config.difficulty) {
+                ForEach(roguelikeDifficulties[config.theme.wrappedValue] ?? [], id: \.0) { pair in
+                    Text(pair.1).tag(pair.0)
+                }
+                ForEach(roguelikeDifficulties[nil] ?? [], id: \.0) { pair in
+                    Text(pair.1).tag(pair.0)
+                }
+            }
+        }
 
         Picker("策略：", selection: config.mode) {
             ForEach(roguelikeModes[nil] ?? [], id: \.0) { pair in
@@ -113,6 +124,14 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
         }
     }
 }
+
+private let roguelikeDifficulties: [RoguelikeTheme?: [(Int, String)]] = [
+    .Phantom: [],
+    .Mizuki: [(Int.max, "MAX")] + (0...15).map { ($0, "\($0)") },
+    .Sami:   [(Int.max, "MAX")] + (0...15).map { ($0, "\($0)") },
+    .Sarkaz: [(Int.max, "MAX")] + (0...18).map { ($0, "\($0)") },
+    nil:     [(-1, "Current")]
+]
 
 private let roguelikeModes: [RoguelikeTheme?: [(Int, String)]] = [
     nil: [
