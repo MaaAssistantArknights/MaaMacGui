@@ -34,7 +34,7 @@ struct RoguelikeSettingsView: View {
                 Text("\(theme.description)").tag(theme)
             }
         }
-        
+
         if config.theme.wrappedValue != RoguelikeTheme.Phantom {
             Picker("肉鸽难度：", selection: config.difficulty) {
                 ForEach(roguelikeDifficulties[config.theme.wrappedValue] ?? [], id: \.0) { pair in
@@ -128,40 +128,48 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
 private let roguelikeDifficulties: [RoguelikeTheme?: [(Int, String)]] = [
     .Phantom: [],
     .Mizuki: [(Int.max, "MAX")] + (0...15).map { ($0, "\($0)") },
-    .Sami:   [(Int.max, "MAX")] + (0...15).map { ($0, "\($0)") },
+    .Sami: [(Int.max, "MAX")] + (0...15).map { ($0, "\($0)") },
     .Sarkaz: [(Int.max, "MAX")] + (0...18).map { ($0, "\($0)") },
-    nil:     [(-1, "Current")]
+    nil: [(-1, "Current")],
 ]
 
 private let roguelikeModes: [RoguelikeTheme?: [(Int, String)]] = [
     nil: [
         (0, "刷蜡烛，尽可能稳定地打更多层数"),
         (1, "刷源石锭，第一层投资完就退出"),
-        (4, "刷开局，到达第三层后直接退出")
+        (4, "刷开局，到达第三层后直接退出"),
     ],
     .Phantom: [],
     .Mizuki: [],
     .Sami: [
         (5, "刷坍缩范式，尽可能地积累坍缩值")
-    ]
+    ],
 ]
 
 private let roguelikeSquads: [RoguelikeTheme: [String]] = [
-    .Phantom: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
-               "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-               "研究分队", "高规格分队"],
-    .Mizuki: ["心胜于物分队", "物尽其用分队", "以人为本分队",
-              "指挥分队", "集群分队", "后勤分队", "矛头分队",
-              "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-              "研究分队", "高规格分队"],
-    .Sami: ["指挥分队", "集群分队", "后勤分队", "矛头分队",
-            "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-            "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队"],
-    .Sarkaz: ["魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
-              "指挥分队", "集群分队", "后勤分队", "矛头分队",
-              "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
-              "高规格分队", "因地制宜分队", "点刺成锭分队", "拟态学者分队",
-              "异想天开分队"]
+    .Phantom: [
+        "指挥分队", "集群分队", "后勤分队", "矛头分队",
+        "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+        "研究分队", "高规格分队",
+    ],
+    .Mizuki: [
+        "心胜于物分队", "物尽其用分队", "以人为本分队",
+        "指挥分队", "集群分队", "后勤分队", "矛头分队",
+        "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+        "研究分队", "高规格分队",
+    ],
+    .Sami: [
+        "指挥分队", "集群分队", "后勤分队", "矛头分队",
+        "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+        "高规格分队", "特训分队", "科学主义分队", "生活至上分队", "永恒狩猎分队",
+    ],
+    .Sarkaz: [
+        "魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
+        "指挥分队", "集群分队", "后勤分队", "矛头分队",
+        "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+        "高规格分队", "因地制宜分队", "点刺成锭分队", "拟态学者分队",
+        "异想天开分队",
+    ],
 ]
 
 private let roguelikeRoles = ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]

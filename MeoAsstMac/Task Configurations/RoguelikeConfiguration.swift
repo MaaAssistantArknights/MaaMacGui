@@ -12,7 +12,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var theme = RoguelikeTheme.Phantom
     var difficulty = Int.max
     var mode = 0
-    var starts_count = 9999999
+    var starts_count = 9_999_999
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
