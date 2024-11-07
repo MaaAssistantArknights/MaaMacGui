@@ -34,10 +34,6 @@ struct RoguelikeSettingsView: View {
                 Text("\(theme.description)").tag(theme)
             }
         }
-        .onChange(of: config.wrappedValue.theme) { newValue in
-            config.wrappedValue.mode = 0
-            config.wrappedValue.squad = newValue.squads.first ?? ""
-        }
 
         Picker("肉鸽难度：", selection: config.difficulty) {
             ForEach(config.theme.wrappedValue.difficulties) {

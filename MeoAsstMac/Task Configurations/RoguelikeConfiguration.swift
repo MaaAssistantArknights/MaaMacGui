@@ -9,7 +9,19 @@ import Foundation
 
 struct RoguelikeConfiguration: MAATaskConfiguration {
     var enable = false
-    var theme = RoguelikeTheme.Phantom
+    var theme = RoguelikeTheme.Phantom {
+        didSet {
+            if !theme.difficulties.contains(where: { $0.id == difficulty }) {
+                difficulty = theme.difficulties.first!.id
+            }
+            if !theme.modes.contains(where: { $0.id == mode }) {
+                mode = theme.modes.first!.id
+            }
+            if !theme.squads.contains(squad) {
+                squad = theme.squads.first!
+            }
+        }
+    }
     var difficulty = Int.max
     var mode = 0
     var starts_count = 9_999_999
