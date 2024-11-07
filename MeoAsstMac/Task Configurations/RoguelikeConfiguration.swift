@@ -43,7 +43,6 @@ extension RoguelikeConfiguration {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.enable = try container.decode(Bool.self, forKey: .enable)
         self.theme = try container.decode(RoguelikeTheme.self, forKey: .theme)
-        self.difficulty = try container.decode(Int.self, forKey: .difficulty)
         self.mode = try container.decode(Int.self, forKey: .mode)
         self.starts_count = try container.decode(Int.self, forKey: .starts_count)
         self.investment_enabled = try container.decode(Bool.self, forKey: .investment_enabled)
