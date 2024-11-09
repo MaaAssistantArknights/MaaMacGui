@@ -78,23 +78,23 @@ enum SidebarEntry: Int, CaseIterable, Identifiable {
 extension SidebarEntry: CustomStringConvertible {
     var description: String {
         switch self {
-            case .daily:
-                return NSLocalizedString("一键长草", comment: "")
-            case .copilot:
-                return NSLocalizedString("自动战斗", comment: "")
-            case .utility:
-                return NSLocalizedString("实用工具", comment: "")
+        case .daily:
+            return NSLocalizedString("一键长草", comment: "")
+        case .copilot:
+            return NSLocalizedString("自动战斗", comment: "")
+        case .utility:
+            return NSLocalizedString("实用工具", comment: "")
         }
     }
 
     var iconImage: String {
         switch self {
-            case .daily:
-                return "cup.and.saucer"
-            case .copilot:
-                return "play.rectangle"
-            case .utility:
-                return "wrench.and.screwdriver"
+        case .daily:
+            return "cup.and.saucer"
+        case .copilot:
+            return "play.rectangle"
+        case .utility:
+            return "wrench.and.screwdriver"
         }
     }
 

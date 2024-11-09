@@ -401,10 +401,10 @@ extension MAAViewModel {
         try await ensureHandle()
 
         switch copilot {
-            case .regular:
-                _ = try await handle?.appendTask(type: .Copilot, params: params)
-            case .sss:
-                _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
+        case .regular:
+            _ = try await handle?.appendTask(type: .Copilot, params: params)
+        case .sss:
+            _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
         }
 
         try await handle?.start()
@@ -500,24 +500,24 @@ extension MAAViewModel {
 
     @ViewBuilder func taskConfigView(id: UUID) -> some View {
         switch tasks[id] {
-            case .startup:
-                StartupSettingsView(id: id)
-            case .recruit:
-                RecruitSettingsView(id: id)
-            case .infrast:
-                InfrastSettingsView(id: id)
-            case .fight:
-                FightSettingsView(id: id)
-            case .mall:
-                MallSettingsView(id: id)
-            case .award:
-                AwardSettingsView(id: id)
-            case .roguelike:
-                RoguelikeSettingsView(id: id)
-            case .reclamation:
-                ReclamationSettingsView(id: id)
-            case .closedown(_), .none:
-                EmptyView()
+        case .startup:
+            StartupSettingsView(id: id)
+        case .recruit:
+            RecruitSettingsView(id: id)
+        case .infrast:
+            InfrastSettingsView(id: id)
+        case .fight:
+            FightSettingsView(id: id)
+        case .mall:
+            MallSettingsView(id: id)
+        case .award:
+            AwardSettingsView(id: id)
+        case .roguelike:
+            RoguelikeSettingsView(id: id)
+        case .reclamation:
+            ReclamationSettingsView(id: id)
+        case .closedown(_), .none:
+            EmptyView()
         }
     }
 }
@@ -527,11 +527,11 @@ extension MAAViewModel {
 extension MAAViewModel {
     func switchAwakeGuard(_ newValue: Status) {
         switch newValue {
-            case .busy, .pending:
-                wakeupSystem()
-                enableAwake()
-            case .idle:
-                disableAwake()
+        case .busy, .pending:
+            wakeupSystem()
+            enableAwake()
+        case .idle:
+            disableAwake()
         }
     }
 
