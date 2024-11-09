@@ -246,9 +246,11 @@ extension MAAViewModel {
         ])
 
         let currentResourceVersion: MAAResourceVersion
-        if let userResourceVersion = try? resourceVersion(of: userDirectory) {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        if let userResourceVersion = try? resourceVersion(of: documentsDirectory) {
             if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
-                try await loadResource(url: userDirectory, channel: channel)
+                try await loadResource(url: documentsDirectory, channel: channel)
+                try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
                 currentResourceVersion = userResourceVersion
                 logTrace([
                     "外部资源版本：\(userResourceVersion.activity.name)",

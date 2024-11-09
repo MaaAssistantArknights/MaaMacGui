@@ -50,6 +50,10 @@
 		8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195C29EC719B00044F45 /* CopilotContent.swift */; };
 		83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB129FEA12300A5FF99 /* TaskCommands.swift */; };
 		83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB329FEA7A500A5FF99 /* TaskButtons.swift */; };
+		8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */; };
+		8347B5AB2CDF89CC00AEB627 /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */; };
+		8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */; };
+		8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */; };
 		834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */; };
 		83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D5E29F00F0A008A5DF8 /* CopilotView.swift */; };
 		83531D6129F026E8008A5DF8 /* OrderedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6029F026E8008A5DF8 /* OrderedStore.swift */; };
@@ -159,6 +163,9 @@
 		8341195C29EC719B00044F45 /* CopilotContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotContent.swift; sourceTree = "<group>"; };
 		83477CB129FEA12300A5FF99 /* TaskCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCommands.swift; sourceTree = "<group>"; };
 		83477CB329FEA7A500A5FF99 /* TaskButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskButtons.swift; sourceTree = "<group>"; };
+		8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceUpdateView.swift; sourceTree = "<group>"; };
+		8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+unzipProgress.swift"; sourceTree = "<group>"; };
+		8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+downloadProgress.swift"; sourceTree = "<group>"; };
 		834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedownConfiguration.swift; sourceTree = "<group>"; };
 		83531D5E29F00F0A008A5DF8 /* CopilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotView.swift; sourceTree = "<group>"; };
 		83531D6029F026E8008A5DF8 /* OrderedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedStore.swift; sourceTree = "<group>"; };
@@ -205,6 +212,7 @@
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
 				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
+				8347B5AB2CDF89CC00AEB627 /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -278,6 +286,7 @@
 				83661E2B29F77CFF007793CA /* VideoRecogView.swift */,
 				838FF82629FDD0F9000566A0 /* GachaView.swift */,
 				92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */,
+				8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -420,6 +429,8 @@
 			children = (
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
+				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
+				8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -445,6 +456,7 @@
 			packageProductDependencies = (
 				830C3D1B29BC7D8600B13A9F /* Sparkle */,
 				8329859429EDB9EB009F7ED5 /* SwiftyJSON */,
+				8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -478,6 +490,7 @@
 			packageReferences = (
 				830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8329859329EDB9EB009F7ED5 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
+				8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -524,6 +537,7 @@
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
+				8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
@@ -560,9 +574,11 @@
 				8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */,
 				832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
+				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
+				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
 				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
@@ -807,6 +823,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.19;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -819,6 +843,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8329859329EDB9EB009F7ED5 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
 			productName = SwiftyJSON;
+		};
+		8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
