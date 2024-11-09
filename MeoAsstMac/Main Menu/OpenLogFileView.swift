@@ -9,6 +9,10 @@ import SwiftUI
 
 struct OpenLogFileView: View {
     var body: some View {
+        Button("查找资源…") {
+            OpenLogFileView.revealResourceInFinder()
+        }
+
         Button("查找日志…") {
             OpenLogFileView.revealLogInFinder()
         }
@@ -33,10 +37,25 @@ struct OpenLogFileView: View {
         }
     }
 
+    static func revealResourceInFinder() {
+        guard let documentsDirectory else {
+            return
+        }
+
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: documentsDirectory.path)
+    }
+
     private static var userDirectory: URL? {
         FileManager
             .default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first
+    }
+
+    private static var documentsDirectory: URL? {
+        FileManager
+            .default
+            .urls(for: .documentDirectory, in: .userDomainMask)
             .first
     }
 }
