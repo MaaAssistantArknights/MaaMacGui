@@ -19,6 +19,8 @@ struct ResourceUpdateView: View {
             if let progress {
                 if let error {
                     Text("更新失败：\(error.localizedDescription)")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
                 } else {
                     ProgressView(progress.0, value: progress.1)
                 }
@@ -27,12 +29,15 @@ struct ResourceUpdateView: View {
                 }
             } else {
                 Text("更新完成，请重新启动应用")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
                 Button("退出") {
                     dismiss()
                     NSApplication.shared.terminate(nil)
                 }
             }
         }
+        .animation(.smooth, value: progress?.0)
         .padding()
         .task {
             do {
