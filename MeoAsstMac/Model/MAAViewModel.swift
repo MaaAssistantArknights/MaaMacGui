@@ -245,18 +245,44 @@ extension MAAViewModel {
             "更新时间：\(bundledResourceVersion.last_updated)",
         ])
 
+        let currentResourceVersion: MAAResourceVersion
         if let userResourceVersion = try? resourceVersion(of: userDirectory) {
             if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
                 try await loadResource(url: userDirectory, channel: channel)
+                currentResourceVersion = userResourceVersion
                 logTrace([
                     "外部资源版本：\(userResourceVersion.activity.name)",
                     "更新时间：\(userResourceVersion.last_updated)",
                 ])
             } else {
+                currentResourceVersion = bundledResourceVersion
                 logInfo("无需使用外部更新资源")
             }
         } else {
+            currentResourceVersion = bundledResourceVersion
             logInfo("未找到外部更新资源")
+        }
+
+        Task.detached {
+            let resmoteResourceVersionURL = URL(
+                string: "https://github.com/MaaAssistantArknights/MaaResource/raw/refs/heads/main/resource/version.json"
+            )!
+
+            do {
+                let (data, _) = try await URLSession.shared.data(from: resmoteResourceVersionURL)
+
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .secondsSince1970
+                let remoteResourceVersion = try decoder.decode(MAAResourceVersion.self, from: data)
+
+                if remoteResourceVersion.last_updated > currentResourceVersion.last_updated {
+                    await self.logInfo("发现新资源版本：\(remoteResourceVersion.last_updated)")
+                } else {
+                    await self.logInfo("资源已是最新版本")
+                }
+            } catch {
+                await self.logError("无法检查资源更新: \(error.localizedDescription)")
+            }
         }
     }
 
