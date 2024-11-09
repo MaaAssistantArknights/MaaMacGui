@@ -9,8 +9,10 @@ import Foundation
 import ZIPFoundation
 
 extension FileManager {
-    func unzipProgress(
-        for sourceURL: URL, to destinationURL: URL,
+    /// Unzips the contents at the specified source URL and tracks the progress to the destination URL.
+    /// - Returns: An [AsyncThrowingStream](/documentation/swift/asyncthrowingstream) of [Progress](/documentation/foundation/progress).
+    func unzipItemAt(
+        _ sourceURL: URL, to destinationURL: URL,
         skipCRC32: Bool = false, allowUncontainedSymlinks: Bool = false,
         pathEncoding: String.Encoding? = nil
     ) -> AsyncThrowingStream<Progress, Error> {

@@ -8,16 +8,19 @@
 import Foundation
 
 extension URLSession {
-    enum DownloadProgress {
-        case progress(Progress)
-        case completion(URL)
-    }
-
-    func downloadProgress(for request: URLRequest, delegate: (any URLSessionTaskDelegate)? = nil)
-        -> AsyncThrowingStream<DownloadProgress, Error>
+    /// Retrieves the contents of a URL based on the specified URL request and tracks the progress of saving file to the destination URL.
+    /// - Returns: An [AsyncThrowingStream](/documentation/swift/asyncthrowingstream) of [Progress](/documentation/foundation/progress).
+    func downloadTo(_ destination: URL, for request: URLRequest, delegate: (any URLSessionTaskDelegate)? = nil)
+        -> AsyncThrowingStream<Progress, Error>
     {
         AsyncThrowingStream { continuation in
             let task = downloadTask(with: request) { url, response, error in
+                defer {
+                    if let url {
+                        try? FileManager.default.removeItem(at: url)
+                    }
+                }
+
                 if let error {
                     continuation.finish(throwing: error)
                     return
@@ -28,14 +31,20 @@ extension URLSession {
                     return
                 }
 
-                continuation.yield(.completion(url))
+                do {
+                    try FileManager.default.moveItem(at: url, to: destination)
+                } catch {
+                    continuation.finish(throwing: error)
+                    return
+                }
+
                 continuation.finish()
             }
 
             task.delegate = delegate
 
             let observation = task.progress.observe(\.fractionCompleted) { progress, _ in
-                continuation.yield(.progress(progress))
+                continuation.yield(progress)
             }
 
             continuation.onTermination = { termination in
@@ -45,14 +54,16 @@ extension URLSession {
                 }
             }
 
-            continuation.yield(.progress(task.progress))
+            continuation.yield(task.progress)
             task.resume()
         }
     }
 
-    func downloadProgress(from url: URL, delegate: (any URLSessionTaskDelegate)? = nil)
-        -> AsyncThrowingStream<DownloadProgress, Error>
+    /// Retrieves the contents of a URL and tracks the progress of saving file to the destination URL.
+    /// - Returns: An [AsyncThrowingStream](/documentation/swift/asyncthrowingstream) of [Progress](/documentation/foundation/progress).
+    func downloadTo(_ destination: URL, from url: URL, delegate: (any URLSessionTaskDelegate)? = nil)
+        -> AsyncThrowingStream<Progress, Error>
     {
-        downloadProgress(for: URLRequest(url: url), delegate: delegate)
+        downloadTo(destination, for: URLRequest(url: url), delegate: delegate)
     }
 }

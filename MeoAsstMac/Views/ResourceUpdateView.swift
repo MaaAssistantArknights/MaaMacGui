@@ -36,33 +36,32 @@ struct ResourceUpdateView: View {
         .padding()
         .task {
             do {
-                let url = try await downloadResource()
-                try await extractResource(at: url)
+                try await downloadResource()
+                try await extractResource()
                 try await copyResource()
                 progress = nil
             } catch {
                 self.error = error
             }
+            try? FileManager.default.removeItem(at: localURL)
+            try? FileManager.default.removeItem(at: extractURL)
         }
     }
 
-    private func downloadResource() async throws -> URL {
-        for try await status in URLSession.shared.downloadProgress(from: remoteURL) {
-            switch status {
-            case .progress(let progress):
-                self.progress = (NSLocalizedString("正在下载…", comment: ""), progress.fractionCompleted)
-            case .completion(let url):
-                return url
-            }
+    private func downloadResource() async throws {
+        try? FileManager.default.removeItem(at: localURL)
+        for try await progress in URLSession.shared.downloadTo(localURL, from: remoteURL) {
+            self.progress = (NSLocalizedString("正在下载…", comment: ""), progress.fractionCompleted)
         }
-        throw CancellationError()
+        try Task.checkCancellation()
     }
 
-    private func extractResource(at url: URL) async throws {
+    private func extractResource() async throws {
         try? FileManager.default.removeItem(at: extractURL)
-        for try await progress in FileManager.default.unzipProgress(for: url, to: documentsURL) {
+        for try await progress in FileManager.default.unzipItemAt(localURL, to: tmpURL) {
             self.progress = (NSLocalizedString("正在解压…", comment: ""), progress.fractionCompleted)
         }
+        try Task.checkCancellation()
     }
 
     private func copyResource() async throws {
@@ -71,13 +70,16 @@ struct ResourceUpdateView: View {
             let destination = documentsURL.appendingPathComponent(subDirectory)
             _ = try FileManager.default.replaceItemAt(destination, withItemAt: source)
         }
-        try FileManager.default.removeItem(at: extractURL)
     }
 }
 
 private let remoteURL = URL(string: "https://github.com/MaaAssistantArknights/MaaResource/archive/refs/heads/main.zip")!
+
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-private let extractURL = documentsURL.appendingPathComponent("MaaResource-main")
+private let tmpURL = FileManager.default.temporaryDirectory
+
+private let localURL = tmpURL.appendingPathComponent("MaaResource.zip")
+private let extractURL = tmpURL.appendingPathComponent("MaaResource-main")
 
 #Preview {
     ResourceUpdateView()
