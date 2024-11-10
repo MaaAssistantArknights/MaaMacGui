@@ -54,26 +54,33 @@ struct ResourceUpdateView: View {
     }
 
     private func downloadResource() async throws {
+        try Task.checkCancellation()
         try? FileManager.default.removeItem(at: localURL)
         for try await progress in URLSession.shared.downloadTo(localURL, from: remoteURL) {
             self.progress = (NSLocalizedString("正在下载…", comment: ""), progress.fractionCompleted)
         }
-        try Task.checkCancellation()
     }
 
     private func extractResource() async throws {
+        try Task.checkCancellation()
         try? FileManager.default.removeItem(at: extractURL)
         for try await progress in FileManager.default.unzipItemAt(localURL, to: tmpURL) {
             self.progress = (NSLocalizedString("正在解压…", comment: ""), progress.fractionCompleted)
         }
-        try Task.checkCancellation()
     }
 
     private func copyResource() async throws {
-        for subDirectory in ["cache", "resource"] {
-            let source = extractURL.appendingPathComponent(subDirectory)
-            let destination = documentsURL.appendingPathComponent(subDirectory)
-            _ = try FileManager.default.replaceItemAt(destination, withItemAt: source)
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for subDirectory in ["cache", "resource"] {
+                try Task.checkCancellation()
+                let source = extractURL.appendingPathComponent(subDirectory)
+                let destination = documentsURL.appendingPathComponent(subDirectory)
+
+                group.addTask(priority: .userInitiated) {
+                    _ = try FileManager.default.replaceItemAt(destination, withItemAt: source)
+                }
+            }
+            try await group.waitForAll()
         }
     }
 }
