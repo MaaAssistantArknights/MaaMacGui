@@ -38,23 +38,24 @@ struct OpenLogFileView: View {
     }
 
     static func revealResourceInFinder() {
-        guard let userDirectory else {
+        guard let documentsDirectory else {
             return
         }
 
-        let url = userDirectory.appendingPathComponent("resource")
-
-        if FileManager.default.fileExists(atPath: url.path) {
-            NSWorkspace.shared.activateFileViewerSelecting([url])
-        } else {
-            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: userDirectory.path)
-        }
+        NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: documentsDirectory.path)
     }
 
     private static var userDirectory: URL? {
         FileManager
             .default
             .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+            .first
+    }
+
+    private static var documentsDirectory: URL? {
+        FileManager
+            .default
+            .urls(for: .documentDirectory, in: .userDomainMask)
             .first
     }
 }

@@ -10,6 +10,8 @@ import SwiftUI
 struct Sidebar: View {
     @Binding var selection: SidebarEntry?
 
+    @State private var showUpdate = false
+
     @Environment(\.defaultMinListRowHeight) var rowHeight
 
     var body: some View {
@@ -20,9 +22,9 @@ struct Sidebar: View {
 
             List {
                 Button {
-                    OpenLogFileView.revealResourceInFinder()
+                    showUpdate.toggle()
                 } label: {
-                    Label("查找资源…", systemImage: "arrow.up.circle")
+                    Label("资源更新…", systemImage: "arrow.up.circle")
                 }
 
                 Button {
@@ -47,6 +49,9 @@ struct Sidebar: View {
                 }
                 .help("显示/隐藏边栏")
             }
+        }
+        .sheet(isPresented: $showUpdate) {
+            ResourceUpdateView()
         }
         .frame(minWidth: 150)
     }
