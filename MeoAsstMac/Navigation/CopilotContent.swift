@@ -46,10 +46,11 @@ struct CopilotContent: View {
         .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
         .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
         .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
-        .fileImporter(isPresented: $viewModel.showImportCopilot,
-                      allowedContentTypes: [.json],
-                      allowsMultipleSelection: true,
-                      onCompletion: addCopilots)
+        .fileImporter(
+            isPresented: $viewModel.showImportCopilot,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: true,
+            onCompletion: addCopilots)
     }
 
     // MARK: - Toolbar
@@ -61,6 +62,7 @@ struct CopilotContent: View {
             }
             .help("移除作业")
             .disabled(shouldDisableDeletion)
+            .keyboardShortcut(.delete, modifiers: [.command])
         }
 
         ToolbarItemGroup {
@@ -132,7 +134,8 @@ struct CopilotContent: View {
     private func downloadCopilot(id: String?) {
         guard let id else { return }
 
-        let file = externalDirectory
+        let file =
+            externalDirectory
             .appendingPathComponent(id)
             .appendingPathExtension("json")
 
@@ -152,11 +155,22 @@ struct CopilotContent: View {
         }
     }
 
+    private func deleteCopilot(url: URL) {
+        guard canDelete(url) else { return }
+        copilots.remove(url)
+        try? FileManager.default.removeItem(at: url)
+    }
+
     private func deleteSelectedCopilot() {
-        guard let selection else { return }
-        copilots.remove(selection)
-        if canDelete(selection) {
-            try? FileManager.default.removeItem(at: selection)
+        guard let selection, let index = copilots.urls.firstIndex(of: selection) else { return }
+
+        deleteCopilot(url: selection)
+
+        let urls = copilots.urls
+        if index < urls.count {
+            self.selection = urls[index]
+        } else {
+            self.selection = urls.last
         }
     }
 
@@ -232,12 +246,13 @@ struct CopilotContent_Previews: PreviewProvider {
 
 // MARK: - Value Extensions
 
-private extension URL {
-    var copilots: [URL] {
-        guard let urls = try? FileManager.default.contentsOfDirectory(
-            at: self,
-            includingPropertiesForKeys: [.contentTypeKey],
-            options: .skipsHiddenFiles)
+extension URL {
+    fileprivate var copilots: [URL] {
+        guard
+            let urls = try? FileManager.default.contentsOfDirectory(
+                at: self,
+                includingPropertiesForKeys: [.contentTypeKey],
+                options: .skipsHiddenFiles)
         else { return [] }
 
         return urls.filter { url in
@@ -247,8 +262,8 @@ private extension URL {
     }
 }
 
-private extension Set where Element == URL {
-    var urls: [URL] { sorted { $0.lastPathComponent < $1.lastPathComponent } }
+extension Set where Element == URL {
+    fileprivate var urls: [URL] { sorted { $0.lastPathComponent < $1.lastPathComponent } }
 }
 
 // MARK: - Download Model
@@ -263,8 +278,8 @@ private struct CopilotResponse: Codable {
 
 // MARK: - Convenience Methods
 
-private extension NSItemProvider {
-    @MainActor func loadURL() async throws -> URL {
+extension NSItemProvider {
+    @MainActor fileprivate func loadURL() async throws -> URL {
         let handle = ProgressActor()
 
         return try await withTaskCancellationHandler {
