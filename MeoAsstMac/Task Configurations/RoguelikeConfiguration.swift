@@ -73,3 +73,56 @@ extension RoguelikeConfiguration {
         self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? -1
     }
 }
+
+extension RoguelikeConfiguration {
+    enum CodingKeys: String, CodingKey {
+        case enable
+        case theme
+        case mode
+        case squad
+        case roles
+        case core_char
+        case use_support
+        case use_nonfriend_support
+        case starts_count
+        case difficulty
+        case investment_enabled
+        case investments_count
+        case stop_when_investment_full
+        case start_with_elite_two
+        case only_start_with_elite_two
+        case refresh_trader_with_dice
+    }
+    
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        
+        try container.encode(enable, forKey: .enable)
+        try container.encode(theme, forKey: .theme)
+        try container.encode(mode, forKey: .mode)
+        try container.encode(squad, forKey: .squad)
+        try container.encode(roles, forKey: .roles)
+        try container.encode(core_char, forKey: .core_char)
+        try container.encode(use_support, forKey: .use_support)
+        if use_support {
+            try container.encode(use_nonfriend_support, forKey: .use_nonfriend_support)
+        }
+        try container.encode(starts_count, forKey: .starts_count)
+        
+        if theme != .Phantom {
+            try container.encode(difficulty, forKey: .difficulty)
+        }
+        try container.encode(investment_enabled, forKey: .investment_enabled)
+        try container.encode(investments_count, forKey: .investments_count)
+        try container.encode(stop_when_investment_full, forKey: .stop_when_investment_full)
+        if mode == 4 {
+            try container.encode(start_with_elite_two, forKey: .start_with_elite_two)
+            if start_with_elite_two {
+                try container.encode(only_start_with_elite_two, forKey: .only_start_with_elite_two)
+            }
+        }
+        if theme == .Mizuki {
+            try container.encode(refresh_trader_with_dice, forKey: .refresh_trader_with_dice)
+        }
+    }
+}
