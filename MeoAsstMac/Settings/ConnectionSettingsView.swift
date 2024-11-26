@@ -11,16 +11,17 @@ struct ConnectionSettingsView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
     private let gzipInfo = """
-    使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。
-    """
+        使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。
+        """
 
     private let adbLiteInfo = """
-    实验性功能，理论性能更好。
-    """
+        实验性功能，理论性能更好。
+        """
 
-    private let playToolsInfo = try! AttributedString(markdown: """
-    PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。
-    """)
+    private let playToolsInfo = try! AttributedString(
+        markdown: """
+            PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。
+            """)
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -41,27 +42,17 @@ struct ConnectionSettingsView: View {
 
             Divider()
 
-            if viewModel.touchMode == .MacPlayTools {
-                HStack {
-                    Text("游戏包名")
-                    TextField("", text: $viewModel.gamePackageName)
+            Toggle(isOn: allowGzip) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("允许使用 Gzip")
+                    Text(gzipInfo).font(.caption).foregroundColor(.secondary)
                 }
-                Text("请在PlayCover中右键点击游戏，选择“在访达中查看”，然后输入显示的文件名。")
-                    .font(.caption).foregroundColor(.secondary)
+            }
 
-            } else {
-                Toggle(isOn: allowGzip) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("允许使用 Gzip")
-                        Text(gzipInfo).font(.caption).foregroundColor(.secondary)
-                    }
-                }
-
-                Toggle(isOn: $viewModel.useAdbLite) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("使用 adb-lite 连接")
-                        Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
-                    }
+            Toggle(isOn: $viewModel.useAdbLite) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("使用 adb-lite 连接")
+                    Text(adbLiteInfo).font(.caption).foregroundColor(.secondary)
                 }
             }
         }

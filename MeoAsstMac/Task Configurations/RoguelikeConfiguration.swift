@@ -93,10 +93,10 @@ extension RoguelikeConfiguration {
         case only_start_with_elite_two
         case refresh_trader_with_dice
     }
-    
+
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         try container.encode(enable, forKey: .enable)
         try container.encode(theme, forKey: .theme)
         try container.encode(mode, forKey: .mode)
@@ -108,7 +108,7 @@ extension RoguelikeConfiguration {
             try container.encode(use_nonfriend_support, forKey: .use_nonfriend_support)
         }
         try container.encode(starts_count, forKey: .starts_count)
-        
+
         if theme != .Phantom {
             try container.encode(difficulty, forKey: .difficulty)
         }

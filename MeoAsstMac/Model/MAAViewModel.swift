@@ -112,8 +112,6 @@ import SwiftUI
         }
     }
 
-    @AppStorage("ArknightsIdentifier") var gamePackageName = "com.hypergryph.arknights"
-
     // MARK: - Game Settings
 
     @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.default {
@@ -604,14 +602,14 @@ extension MAAViewModel {
 // MARK: - MaaTools Client
 
 extension MAAViewModel {
-    nonisolated func startGame(client _: MAAClientChannel) async -> Bool {
-        let appBundle = await URL(fileURLWithPath: "/Users")
+    nonisolated func startGame(client: MAAClientChannel) async -> Bool {
+        let appBundle = URL(fileURLWithPath: "/Users")
             .appendingPathComponent(NSUserName())
             .appendingPathComponent("Library")
             .appendingPathComponent("Containers")
             .appendingPathComponent("io.playcover.PlayCover")
             .appendingPathComponent("Applications")
-            .appendingPathComponent(gamePackageName)
+            .appendingPathComponent(client.appBundleID)
             .appendingPathExtension("app")
 
         do {

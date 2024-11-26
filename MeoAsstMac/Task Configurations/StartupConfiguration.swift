@@ -73,4 +73,19 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
             return "명일방주.app"
         }
     }
+
+    var appBundleID: String {
+        switch self {
+        case .Official, .Bilibili, .default:
+            return "com.hypergryph.arknights"
+        case .YoStarEN:
+            return "com.YoStarEN.Arknights"
+        case .YoStarJP:
+            return "com.YoStarJP.Arknights"
+        case .YoStarKR:
+            return "com.YoStarKR.Arknights"
+        case .txwy:
+            return "tw.txwy.ios.arknights"
+        }
+    }
 }
