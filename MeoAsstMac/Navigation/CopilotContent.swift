@@ -16,12 +16,10 @@ struct CopilotContent: View {
 
     var body: some View {
         List(selection: $selection) {
-            Section {
+            DisclosureGroup("内置作业") {
                 ForEach(bundledCopilots, id: \.self) { url in
                     Text(url.lastPathComponent)
                 }
-            } header: {
-                Text("内置作业")
             }
 
             Section {
@@ -258,6 +256,9 @@ extension URL {
         return urls.filter { url in
             let value = try? url.resourceValues(forKeys: [.contentTypeKey])
             return value?.contentType == .json
+        }
+        .sorted { lhs, rhs in
+            lhs.lastPathComponent < rhs.lastPathComponent
         }
     }
 }
