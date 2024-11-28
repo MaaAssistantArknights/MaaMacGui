@@ -13,13 +13,26 @@ struct CopilotContent: View {
 
     @State private var copilots = Set<URL>()
     @State private var downloading = false
+    @State private var expanded = false
 
     var body: some View {
         List(selection: $selection) {
-            DisclosureGroup("内置作业") {
+            DisclosureGroup(isExpanded: $expanded) {
                 ForEach(bundledCopilots, id: \.self) { url in
                     Text(url.lastPathComponent)
                 }
+            } label: {
+                Text("内置作业")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation {
+                            expanded.toggle()
+                        }
+                    }
             }
 
             Section {
