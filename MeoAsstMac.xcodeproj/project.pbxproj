@@ -74,6 +74,7 @@
 		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
+		83D061F62CF81519008F0140 /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D061F52CF81519008F0140 /* FileLogger.swift */; };
 		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
 		83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283228F2F1BE00018D10 /* MallSettingsView.swift */; };
 		83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */; };
@@ -187,6 +188,7 @@
 		8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolClient.swift; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
+		83D061F52CF81519008F0140 /* FileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
 		83D3283228F2F1BE00018D10 /* MallSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallSettingsView.swift; sourceTree = "<group>"; };
 		83D3283628F2FA5B00018D10 /* InfrastSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastSettingsView.swift; sourceTree = "<group>"; };
@@ -431,6 +433,7 @@
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
 				8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */,
+				83D061F52CF81519008F0140 /* FileLogger.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -577,6 +580,7 @@
 				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
+				83D061F62CF81519008F0140 /* FileLogger.swift in Sources */,
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
 				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
 				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,

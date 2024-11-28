@@ -29,6 +29,7 @@ import SwiftUI
 
     @Published var logs = [MAALog]()
     @Published var trackTail = false
+    let fileLogger: FileLogger?
 
     // MARK: - Daily Tasks
 
@@ -141,6 +142,15 @@ import SwiftUI
             tasks = .init(MAATask.defaults)
         }
 
+        do {
+            fileLogger = try FileLogger(
+                url: Self.userDirectory.appendingPathComponent("debug", isDirectory: true)
+                    .appendingPathComponent("gui.log", isDirectory: false))
+        } catch {
+            fileLogger = nil
+            logError("日志文件出错: %@", error.localizedDescription)
+        }
+
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
@@ -158,7 +168,7 @@ import SwiftUI
 
 extension MAAViewModel {
     func initialize() async throws {
-        try await MAAProvider.shared.setUserDirectory(path: userDirectory.path)
+        try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
         try await loadResource(channel: clientChannel)
     }
 
@@ -311,7 +321,7 @@ extension MAAViewModel {
         }
     }
 
-    private var userDirectory: URL {
+    private static var userDirectory: URL {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     }
 

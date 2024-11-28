@@ -81,8 +81,7 @@ struct FightSettingsView: View {
                 do {
                     try FightConfiguration.initDropItems("zh-cn")
                 } catch let err {
-                    let msg = "Read item_index.json failed: \(err)"
-                    viewModel.logs.append(MAALog(date: Date(), content: msg, color: .error))
+                    viewModel.logError("Read item_index.json failed: %@", err.localizedDescription)
                 }
                 dropItemList = FightConfiguration.dropItems.map {
                     (name: $0.item.name, id: $0.id)
@@ -149,11 +148,12 @@ struct FightSettingsView: View {
     @State private var dropItem: (String, Int)? = nil {
         didSet {
             if dropItemToggle.wrappedValue {
-                config.drops.wrappedValue = if let dropItem {
-                    [dropItem.0: dropItem.1]
-                } else {
-                    nil
-                }
+                config.drops.wrappedValue =
+                    if let dropItem {
+                        [dropItem.0: dropItem.1]
+                    } else {
+                        nil
+                    }
             }
         }
     }
@@ -163,11 +163,12 @@ struct FightSettingsView: View {
             guard let id = dropItem?.0 else { return nil }
             return FightConfiguration.id2index[id]
         } set: {
-            dropItem = if let idx = $0 {
-                (dropItemList[idx].id, dropItemCount.wrappedValue)
-            } else {
-                nil
-            }
+            dropItem =
+                if let idx = $0 {
+                    (dropItemList[idx].id, dropItemCount.wrappedValue)
+                } else {
+                    nil
+                }
         }
     }
 
@@ -184,11 +185,12 @@ struct FightSettingsView: View {
         Binding {
             config.drops.wrappedValue != nil
         } set: {
-            config.drops.wrappedValue = if $0 {
-                if let dropItem { [dropItem.0: dropItem.1] } else { nil }
-            } else {
-                nil
-            }
+            config.drops.wrappedValue =
+                if $0 {
+                    if let dropItem { [dropItem.0: dropItem.1] } else { nil }
+                } else {
+                    nil
+                }
         }
     }
 
