@@ -40,26 +40,11 @@ struct Sidebar: View {
             .buttonStyle(.borderless)
             .frame(maxHeight: rowHeight * 4.2)
         }
-        .toolbar {
-            ToolbarItemGroup {
-                Button {
-                    toggleSideBar()
-                } label: {
-                    Label("显示/隐藏边栏", systemImage: "sidebar.left")
-                }
-                .help("显示/隐藏边栏")
-            }
-        }
+        .withSidebarButton()
         .sheet(isPresented: $showUpdate) {
             ResourceUpdateView()
         }
         .frame(minWidth: 150)
-    }
-
-    // MARK: - Actions
-
-    private func toggleSideBar() {
-        NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar(_:)), to: nil, from: nil)
     }
 }
 
@@ -117,24 +102,16 @@ private struct SettingsLink<Label: View>: View {
     }
 
     var body: some View {
-        #if swift(>=5.9)
         if #available(macOS 14.0, *) {
             SwiftUI.SettingsLink {
                 label
             }
         } else {
-            oldBody
-        }
-        #else
-        oldBody
-        #endif
-    }
-
-    @ViewBuilder private var oldBody: some View {
-        Button {
-            showSettings()
-        } label: {
-            label
+            Button {
+                showSettings()
+            } label: {
+                label
+            }
         }
     }
 
@@ -144,5 +121,32 @@ private struct SettingsLink<Label: View>: View {
         } else {
             NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
         }
+    }
+}
+
+@available(macOS, introduced: 10.15, obsoleted: 13)
+private struct SidebarButtonModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 16, macOS 13, tvOS 16, watchOS 9, visionOS 1, *) {
+            content
+        } else {
+            content.toolbar {
+                ToolbarItemGroup {
+                    Button {
+                        NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar), to: nil, from: nil)
+                    } label: {
+                        Label("显示/隐藏边栏", systemImage: "sidebar.left")
+                    }
+                    .help("显示/隐藏边栏")
+                }
+            }
+        }
+    }
+}
+
+extension View {
+    @available(macOS, introduced: 10.15, obsoleted: 13)
+    fileprivate func withSidebarButton() -> some View {
+        modifier(SidebarButtonModifier())
     }
 }
