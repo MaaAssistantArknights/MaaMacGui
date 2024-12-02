@@ -45,6 +45,7 @@ struct OperBoxView: View {
             ?? []
     }
 
+    // TODO: use charId
     private let excludedOperNames = [
         "预备干员-近战",
         "预备干员-术师",

@@ -41,19 +41,19 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     var description: String {
         switch self {
         case .default:
-            return "不选择"
+            return NSLocalizedString("不选择", comment: "")
         case .Official:
-            return "官服"
+            return NSLocalizedString("官服", comment: "")
         case .Bilibili:
-            return "Bilibili服"
+            return NSLocalizedString("Bilibili服", comment: "")
         case .YoStarEN:
-            return "国际服（YoStarEN）"
+            return NSLocalizedString("国际服（YoStarEN）", comment: "")
         case .YoStarJP:
-            return "日服（YoStarJP）"
+            return NSLocalizedString("日服（YoStarJP）", comment: "")
         case .YoStarKR:
-            return "韩服（YoStarKR）"
+            return NSLocalizedString("韩服（YoStarKR）", comment: "")
         case .txwy:
-            return "繁中服（txwy）"
+            return NSLocalizedString("繁中服（txwy）", comment: "")
         }
     }
 
