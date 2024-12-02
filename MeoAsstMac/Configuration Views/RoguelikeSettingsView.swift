@@ -117,19 +117,19 @@ enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
 struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
     let id: Int
 
+    static let max = RoguelikeDifficulty(id: 999)
+    static let current = RoguelikeDifficulty(id: -1)
+    
     var description: String {
         switch id {
-        case 999:
+        case RoguelikeDifficulty.max.id:
             return NSLocalizedString("最高难度", comment: "")
-        case -1:
+        case RoguelikeDifficulty.current.id:
             return NSLocalizedString("当前难度", comment: "")
         default:
             return "\(id)"
         }
     }
-
-    static let max = RoguelikeDifficulty(id: 999)
-    static let current = RoguelikeDifficulty(id: -1)
 
     static func upto(maximum: Int) -> [RoguelikeDifficulty] {
         [.max] + (0...maximum).reversed().map { RoguelikeDifficulty(id: $0) }

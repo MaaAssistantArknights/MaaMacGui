@@ -22,7 +22,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
             }
         }
     }
-    var difficulty = 999
+    var difficulty = RoguelikeDifficulty.max.id
     var mode = 0
     var starts_count = 9_999_999
     var investment_enabled = true
