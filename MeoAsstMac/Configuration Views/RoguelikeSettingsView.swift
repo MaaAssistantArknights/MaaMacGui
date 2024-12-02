@@ -119,7 +119,7 @@ struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
 
     var description: String {
         switch id {
-        case Int.max:
+        case 999:
             return NSLocalizedString("最高难度", comment: "")
         case -1:
             return NSLocalizedString("当前难度", comment: "")
@@ -128,7 +128,7 @@ struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
         }
     }
 
-    static let max = RoguelikeDifficulty(id: Int.max)
+    static let max = RoguelikeDifficulty(id: 999)
     static let current = RoguelikeDifficulty(id: -1)
 
     static func upto(maximum: Int) -> [RoguelikeDifficulty] {
