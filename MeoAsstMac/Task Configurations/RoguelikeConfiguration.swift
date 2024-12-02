@@ -70,7 +70,7 @@ extension RoguelikeConfiguration {
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
-        self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? -1
+        self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? RoguelikeDifficulty.current.id
     }
 }
 
