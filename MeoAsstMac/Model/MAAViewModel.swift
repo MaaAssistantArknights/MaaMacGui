@@ -29,7 +29,7 @@ import SwiftUI
 
     @Published var logs = [MAALog]()
     @Published var trackTail = false
-    let fileLogger: OptionalFileLogger
+    let fileLogger: FileLogger
 
     // MARK: - Daily Tasks
 
@@ -143,11 +143,11 @@ import SwiftUI
         }
 
         do {
-            fileLogger = try OptionalFileLogger(
+            fileLogger = try FileLogger(
                 url: Self.userDirectory.appendingPathComponent("debug", isDirectory: true)
                     .appendingPathComponent("gui.log", isDirectory: false))
         } catch {
-            fileLogger = .none
+            fileLogger = FileLogger()
             logError("日志文件出错: %@", error.localizedDescription)
         }
 
