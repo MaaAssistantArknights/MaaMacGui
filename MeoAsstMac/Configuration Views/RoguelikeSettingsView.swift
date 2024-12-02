@@ -119,9 +119,9 @@ struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
 
     var description: String {
         switch id {
-        case 999:
+        case RoguelikeDifficulty.max.id:
             return NSLocalizedString("最高难度", comment: "")
-        case -1:
+        case RoguelikeDifficulty.current.id:
             return NSLocalizedString("当前难度", comment: "")
         default:
             return "\(id)"

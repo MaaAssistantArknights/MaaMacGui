@@ -22,7 +22,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
             }
         }
     }
-    var difficulty = 999
+    var difficulty = RoguelikeDifficulty.max.id
     var mode = 0
     var starts_count = 9_999_999
     var investment_enabled = true
@@ -70,7 +70,7 @@ extension RoguelikeConfiguration {
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
-        self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? -1
+        self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? RoguelikeDifficulty.current.id
     }
 }
 
