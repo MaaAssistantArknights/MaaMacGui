@@ -156,7 +156,14 @@
       }
     },
     "AP-5" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "红票-5"
+          }
+        }
+      }
     },
     "BattleFormation: %@" : {
       "localizations" : {
@@ -207,7 +214,14 @@
       }
     },
     "CA-5" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "技能-5"
+          }
+        }
+      }
     },
     "CambatDps" : {
       "localizations" : {
@@ -226,7 +240,14 @@
       }
     },
     "CE-6" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "龙门币-6/5"
+          }
+        }
+      }
     },
     "CheckSettings" : {
       "localizations" : {
@@ -911,7 +932,14 @@
       }
     },
     "LS-6" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "经验-6/5"
+          }
+        }
+      }
     },
     "maa://" : {
       "shouldTranslate" : false
@@ -1010,7 +1038,14 @@
 
     },
     "Please select one task to config" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未选择任务"
+          }
+        }
+      }
     },
     "ProductIncorrect" : {
       "localizations" : {
@@ -1029,7 +1064,14 @@
       }
     },
     "Read item_index.json failed: %@" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取道具列表失败：%@"
+          }
+        }
+      }
     },
     "ReconnectFailed" : {
       "localizations" : {
@@ -1762,14 +1804,7 @@
 
     },
     "内置资源版本：%@\n更新时间：%@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "内置资源版本：%1$@\n更新时间：%2$@"
-          }
-        }
-      }
+
     },
     "最多投资源石锭数量：" : {
       "localizations" : {
@@ -1965,14 +2000,7 @@
       }
     },
     "外部资源版本：%@\n更新时间：%@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "外部资源版本：%1$@\n更新时间：%2$@"
-          }
-        }
-      }
+
     },
     "如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本" : {
 
