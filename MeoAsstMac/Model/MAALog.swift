@@ -18,7 +18,7 @@ struct MAALog: Identifiable, Hashable {
 
     let id = UUID()
 
-    let date: Date?
+    let date: Date
     let content: String
     let color: LogColor
 }

@@ -19,6 +19,7 @@ struct LogView: View {
                     Text(log.content)
                         .textSelection(.enabled)
                         .foregroundColor(log.color.textColor)
+                        .lineLimit(nil)
                 }
                 .width(min: 100, ideal: 300)
             }
@@ -52,9 +53,8 @@ struct LogView: View {
     }
 }
 
-private extension Date? {
-    var maaFormat: String {
-        guard let self else { return "" }
+extension Date {
+    fileprivate var maaFormat: String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM-dd HH:mm:ss"
         return dateFormatter.string(from: self)

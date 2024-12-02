@@ -61,7 +61,7 @@ struct TasksContent: View {
     private func start() {
         Task {
             viewModel.dailyTasksDetailMode = .log
-            try await viewModel.startTasks()
+            await viewModel.tryStartTasks()
         }
     }
 

@@ -102,7 +102,7 @@ struct CopilotView: View {
         if let groups = pilot.groups {
             VStack {
                 ForEach(groups, id: \.name) { group in
-                    Text(group.name) + Text("：")
+                    Text(group.name) + Text(verbatim: ": ")
                         + Text(group.opers.map(\.description).joined(separator: " / "))
                 }
             }

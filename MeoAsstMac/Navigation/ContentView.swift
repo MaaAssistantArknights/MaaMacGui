@@ -25,7 +25,7 @@ struct ContentView: View {
             do {
                 try await viewModel.initialize()
             } catch {
-                viewModel.logError("初始化失败: %@", error.localizedDescription)
+                viewModel.logError("初始化失败: \(error.localizedDescription)")
             }
         }
     }

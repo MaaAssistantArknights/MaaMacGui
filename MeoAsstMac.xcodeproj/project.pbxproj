@@ -12,6 +12,7 @@
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8320E6642CFE004D00F4BC95 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */; };
 		83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */; };
 		83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A2829EBEBB00074E33A /* MAATaskConfiguration.swift */; };
 		83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A2A29EBED780074E33A /* StartupConfiguration.swift */; };
@@ -62,7 +63,6 @@
 		8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AF29E8722E005D5A1C /* TaskCell.swift */; };
 		8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B329E918A2005D5A1C /* TasksContent.swift */; };
 		8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7B729E9E2B2005D5A1C /* Sidebar.swift */; };
-		83661E2929F62984007793CA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 832985A629EE0D6F009F7ED5 /* Localizable.strings */; };
 		83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83661E2B29F77CFF007793CA /* VideoRecogView.swift */; };
 		8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0029F2F26100F715E8 /* OperBoxView.swift */; };
 		8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0229F2F34100F715E8 /* MAAOperBox.swift */; };
@@ -124,6 +124,7 @@
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
+		8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReclamationSettingsView.swift; sourceTree = "<group>"; };
 		83264A2829EBEBB00074E33A /* MAATaskConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATaskConfiguration.swift; sourceTree = "<group>"; };
 		83264A2A29EBED780074E33A /* StartupConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupConfiguration.swift; sourceTree = "<group>"; };
@@ -136,7 +137,6 @@
 		83264A3D29EC22DE0074E33A /* MAAViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAViewModel.swift; sourceTree = "<group>"; };
 		8329858929ED121A009F7ED5 /* CopilotDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotDetail.swift; sourceTree = "<group>"; };
 		8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLogFileView.swift; sourceTree = "<group>"; };
-		832985A529EE0D6F009F7ED5 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		832985A929EE9958009F7ED5 /* RecruitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitView.swift; sourceTree = "<group>"; };
 		832985AB29EE9977009F7ED5 /* DepotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DepotView.swift; sourceTree = "<group>"; };
 		832985AD29EEE672009F7ED5 /* UtilityContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UtilityContent.swift; sourceTree = "<group>"; };
@@ -410,7 +410,7 @@
 		83661E2529F628DA007793CA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				832985A629EE0D6F009F7ED5 /* Localizable.strings */,
+				8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -486,8 +486,8 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
-				Base,
 				"zh-Hans",
+				ko,
 			);
 			mainGroup = 833786C228F188D800D39D6F;
 			packageReferences = (
@@ -509,7 +509,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83661E2929F62984007793CA /* Localizable.strings in Resources */,
+				8320E6642CFE004D00F4BC95 /* Localizable.xcstrings in Resources */,
 				83FF5A9C2978FE27000AE831 /* resource in Resources */,
 				833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */,
 				833786D328F188D900D39D6F /* Assets.xcassets in Resources */,
@@ -594,17 +594,6 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
-/* Begin PBXVariantGroup section */
-		832985A629EE0D6F009F7ED5 /* Localizable.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				832985A529EE0D6F009F7ED5 /* zh-Hans */,
-			);
-			name = Localizable.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		833786D828F188D900D39D6F /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -659,12 +648,14 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -746,11 +737,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
 			name = Release;

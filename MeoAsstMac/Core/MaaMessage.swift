@@ -62,29 +62,37 @@ extension MAAViewModel {
 
         case "Reconnecting":
             let times = message.details["times"].int ?? 0 + 1
-            logError("TryToReconnect %d", times)
+            logError("TryToReconnect (\(times))")
 
         case "Reconnected":
             logTrace("ReconnectSuccess")
 
         case "Disconnect":
-            // connected = false
             logError("ReconnectFailed")
             if status == .idle {
                 break
             }
-
             Task {
                 try await stop()
             }
-
-        // If retryOnDisconnection, try to start emulator
+        // TODO: If retryOnDisconnection, try to start emulator
 
         case "ScreencapFailed":
             logError("ScreencapFailed")
 
         case "TouchModeNotAvailable":
             logError("TouchModeNotAvaiable")
+
+        case "FastestWayToScreencap":
+            let cost = message.details["details"]["cost"].string ?? "???"
+            let method = message.details["details"]["method"].string ?? "???"
+            logInfo("FastestWayToScreencap: \(cost)ms (\(method))")
+
+        case "ScreencapCost":
+            let minCost = message.details["details"]["min"].string ?? "???"
+            let avgCost = message.details["details"]["avg"].string ?? "???"
+            let maxCost = message.details["details"]["max"].string ?? "???"
+            logInfo("ScreencapCost: \(minCost) / \(avgCost) / \(maxCost)")
 
         case "UnsupportedPlayTools":
             logError("不支持此版本 PlayCover")
@@ -101,6 +109,8 @@ extension MAAViewModel {
             return
         }
 
+        let isCopilot = ["Copilot", "VideoRecognition"].contains(taskChain)
+
         if taskChain == "CloseDown" {
             Task {
                 try await stop()
@@ -109,7 +119,8 @@ extension MAAViewModel {
 
         if taskChain == "Recruit" {
             if message.code == .TaskChainError {
-                // Alert "IdentifyTheMistakes"
+                logError("IdentifyTheMistakes")
+                // TODO: Alert "IdentifyTheMistakes"
             }
         }
 
@@ -125,13 +136,16 @@ extension MAAViewModel {
             if let id = taskID(taskDetails: message.details) {
                 taskStatus[id] = .failure
             }
-            logError("TaskError %@", taskChain)
+            logError("TaskError \(taskChain)")
+            if isCopilot {
+                logError("CombatError")
+            }
 
         case .TaskChainStart:
             if let id = taskID(taskDetails: message.details) {
                 taskStatus[id] = .running
             }
-            logTrace("StartTask %@", taskChain)
+            logTrace("StartTask \(taskChain)")
 
         case .TaskChainCompleted:
             if taskChain == "Infrast" {
@@ -155,7 +169,11 @@ extension MAAViewModel {
                 taskStatus[id] = .success
             }
 
-            logTrace("CompleteTask %@", taskChain)
+            logTrace("CompleteTask \(taskChain)")
+
+            if isCopilot {
+                logInfo("CompleteCombat")
+            }
 
         case .TaskChainExtraInfo:
             break
@@ -200,15 +218,15 @@ extension MAAViewModel {
             logError("FailedToOpenClient")
 
         case "AutoRecruitTask":
-            let why = details["why"].string ?? "ErrorOccurred"
-            logError("%@ HasReturned", why)
+            let why = details["why"].string ?? String(localized: "ErrorOccurred")
+            logError("\(why) HasReturned")
 
         case "RecognizeDrops":
             logError("DropRecognitionError")
 
         case "ReportToPenguinStats":
-            let why = details["why"].string ?? "ErrorOccurred"
-            logError("%@ GiveUpUploadingPenguins", why)
+            let why = details["why"].string ?? String(localized: "ErrorOccurred")
+            logError("\(why) GiveUpUploadingPenguins")
 
         case "CheckStageValid":
             logError("TheEX")
@@ -233,13 +251,13 @@ extension MAAViewModel {
 
             switch taskName {
             case "StartButton2", "AnnihilationConfirm":
-                logInfo("MissionStart %d UnitTime", execTimes)
+                logInfo("MissionStart \(execTimes) UnitTime")
 
             case "MedicineConfirm":
-                logInfo("MedicineUsed %d UnitTime", execTimes)
+                logInfo("MedicineUsed \(execTimes) UnitTime")
 
             case "StoneConfirm":
-                logInfo("StoneUsed %d UnitTime", execTimes)
+                logInfo("StoneUsed \(execTimes) UnitTime")
 
             case "AbandonAction":
                 logError("ActingCommandError")
@@ -255,10 +273,10 @@ extension MAAViewModel {
 
             /// Tag: - 肉鸽相关
             case "StartExplore":
-                logInfo("BegunToExplore %d UnitTime", execTimes)
+                logInfo("BegunToExplore \(execTimes) UnitTime")
 
             case "StageTraderInvestConfirm":
-                logInfo("HasInvested %d UnitTime", execTimes)
+                logInfo("HasInvested \(execTimes) UnitTime")
 
             case "ExitThenAbandon":
                 logTrace("ExplorationAbandoned")
@@ -295,7 +313,7 @@ extension MAAViewModel {
 
             case "OfflineConfirm":
                 // TODO: Auto-restart
-                break
+                logWarn("GameDrop")
 
             case "GamePass":
                 logRare("RoguelikeGamePass")
@@ -312,7 +330,7 @@ extension MAAViewModel {
 
         case "CombatRecordRecognitionTask":
             if let what = details["what"].string {
-                logTrace(what)
+                logTrace("\(what)")
             }
 
         default:
@@ -374,7 +392,7 @@ extension MAAViewModel {
             if allDrops.count == 0 {
                 allDrops.append(NSLocalizedString("NoDrop", comment: ""))
             }
-            logTrace(heading: "TotalDrop", allDrops)
+            logTrace("TotalDrop\n\(allDrops.joined(separator: "\n"))")
 
         case "EnterFacility":
             guard let facility = subTaskDetails["facility"].string,
@@ -382,7 +400,7 @@ extension MAAViewModel {
             else {
                 break
             }
-            logTrace("ThisFacility %@ %d", facility, index)
+            logTrace("ThisFacility \(facility) \(index)")
 
         case "ProductIncorrect":
             logError("ProductIncorrect")
@@ -392,7 +410,7 @@ extension MAAViewModel {
                 break
             }
             let tagNames = tags.compactMap(\.string)
-            logTrace(heading: "RecruitingResults", tagNames)
+            logTrace("RecruitingResults: \(tagNames.joined(separator: ", "))")
 
         case "RecruitSpecialTag":
             if let special = subTaskDetails["tag"].string {
@@ -424,14 +442,14 @@ extension MAAViewModel {
             }
             let selectedTags = selected.compactMap(\.string)
             if selectedTags.count > 0 {
-                logTrace(heading: "Choose Tags", selectedTags)
+                logTrace("Choose Tags: \(selectedTags.joined(separator: ", "))")
             }
 
         case "RecruitTagsRefreshed":
             guard let count = subTaskDetails["count"].int else {
                 break
             }
-            logTrace("Refreshed %d UnitTime", count)
+            logTrace("Refreshed \(count) UnitTime")
 
         case "NotEnoughStaff":
             logError("NotEnoughStaff")
@@ -441,7 +459,7 @@ extension MAAViewModel {
             guard let name = subTaskDetails["name"].string else {
                 break
             }
-            logTrace("StartCombat %@", name)
+            logTrace("StartCombat \(name)")
 
         case "StageInfoError":
             logError("StageInfoError")
@@ -454,12 +472,12 @@ extension MAAViewModel {
 
         case "BattleFormation":
             if let formation = subTaskDetails["formation"].rawString() {
-                logTrace(["BattleFormation", formation])
+                logTrace("BattleFormation: \(formation)")
             }
 
         case "BattleFormationSelected":
             if let selected = subTaskDetails["selected"].string {
-                logTrace("BattleFormationSelected %@", selected)
+                logTrace("BattleFormationSelected \(selected)")
             }
 
         case "CopilotAction":
@@ -468,12 +486,12 @@ extension MAAViewModel {
 
         case "SSSStage":
             if let stage = subTaskDetails["stage"].string {
-                logInfo("CurrentStage %@", stage)
+                logInfo("CurrentStage \(stage)")
             }
 
         case "SSSSettlement":
             if let why = details["why"].string {
-                logInfo(why)
+                logInfo("\(why)")
             }
 
         case "SSSGamePass":
@@ -485,7 +503,7 @@ extension MAAViewModel {
         case "CustomInfrastRoomOperators":
             if let names = subTaskDetails["names"].array {
                 let contents = names.compactMap(\.string).joined(separator: ", ")
-                logTrace(contents)
+                logTrace("\(contents)")
             }
 
         case "ReclamationReport":
@@ -494,12 +512,12 @@ extension MAAViewModel {
 
         case "ReclamationProcedureStart":
             if let count = subTaskDetails["times"].int {
-                logInfo("MissionStart %d UnitTime", count)
+                logInfo("MissionStart \(count) UnitTime")
             }
 
         case "ReclamationSmeltGold":
             if let count = subTaskDetails["times"].int {
-                logInfo("AlgorithmDoneSmeltGold %d UnitTime", count)
+                logInfo("AlgorithmDoneSmeltGold \(count) UnitTime")
             }
 
         case "RoguelikeCollapsalParadigms":
@@ -507,7 +525,7 @@ extension MAAViewModel {
                 let deepen_or_weaken = subTaskDetails["deepen_or_weaken"].int,
                 deepen_or_weaken == 1
             {
-                logInfo("GainParadigm %@", cur)
+                logInfo("GainParadigm \(cur)")
             }
 
         default:
@@ -548,7 +566,7 @@ extension MAAViewModel {
         case "Finished":
             let filename = details["details"]["filename"].string ?? "No output"
             videoRecoginition = URL(fileURLWithPath: filename)
-            logInfo("Save to %@", filename)
+            logInfo("Save to \(filename)")
 
         default:
             break
@@ -602,50 +620,31 @@ extension Int {
 // MARK: - Convenience Methods
 
 extension MAAViewModel {
-    func logTrace(_ key: String, comment: String = "", _ arguments: CVarArg...) {
-        let content = localize(key, comment: comment, arguments)
-        writeLog(MAALog(date: Date(), content: content, color: .trace))
+    func logTrace(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(color: .trace, key, comment: comment)
     }
 
-    func logTrace<S>(heading: String, _ contents: S) where S: Sequence, S.Element == String {
-        let subs = contents.map { MAALog(date: nil, content: $0, color: .trace) }
-        writeLog(MAALog(date: Date(), content: localize(heading), color: .trace))
-        subs.forEach(writeLog)
+    func logInfo(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(color: .info, key, comment: comment)
     }
 
-    func logTrace(_ contents: [String]) {
-        guard contents.count > 1 else { return }
-        logTrace(heading: contents[0], contents.dropFirst())
+    func logWarn(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(color: .warning, key, comment: comment)
     }
 
-    func logInfo(_ key: String, comment: String = "", _ arguments: CVarArg...) {
-        let content = localize(key, comment: comment, arguments)
-        writeLog(MAALog(date: Date(), content: content, color: .info))
+    func logRare(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(color: .rare, key, comment: comment)
     }
 
-    func logWarn(_ key: String, comment: String = "", _ arguments: CVarArg...) {
-        let content = localize(key, comment: comment, arguments)
-        writeLog(MAALog(date: Date(), content: content, color: .warning))
+    func logError(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(color: .error, key, comment: comment)
     }
 
-    func logRare(_ key: String, comment: String = "", _ arguments: CVarArg...) {
-        let content = localize(key, comment: comment, arguments)
-        writeLog(MAALog(date: Date(), content: content, color: .rare))
-    }
-
-    func logError(_ key: String, comment: String = "", _ arguments: CVarArg...) {
-        let content = localize(key, comment: comment, arguments)
-        writeLog(MAALog(date: Date(), content: content, color: .error))
-    }
-
-    private func writeLog(_ log: MAALog) {
-        logs.append(log)
-        fileLogger.write(log)
-    }
-
-    private func localize(_ key: String, comment: String = "", _ arguments: CVarArg...) -> String {
-        let format = NSLocalizedString(key, comment: comment)
-        return String(format: format, arguments)
+    private func writeLog(color: MAALog.LogColor, _ key: String.LocalizationValue, comment: StaticString?) {
+        let content = String(localized: key, comment: comment)
+        let entry = MAALog(date: Date(), content: content, color: color)
+        logs.append(entry)
+        fileLogger.write(entry)
     }
 
     func taskID(taskDetails: JSON) -> UUID? {

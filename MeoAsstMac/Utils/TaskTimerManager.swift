@@ -140,7 +140,7 @@ final class TaskTimerManager {
                 return
             }
 
-            try await viewModel.startTasks()
+            await viewModel.tryStartTasks()
             print("Started daily task by shcedmed timer (\(config.uniqueKey)")
         }
     }

@@ -121,9 +121,6 @@ import SwiftUI
         }
     }
 
-    /// Deprecated: use CloseDown task instead
-    @AppStorage("MAAActionsAfterComplete") var actionsAfterComplete = ""
-
     // MARK: - System Settings
 
     @AppStorage("MAAPreventSystemSleeping") var preventSystemSleeping = false {
@@ -148,7 +145,7 @@ import SwiftUI
                     .appendingPathComponent("gui.log", isDirectory: false))
         } catch {
             fileLogger = FileLogger()
-            logError("日志文件出错: %@", error.localizedDescription)
+            logError("日志文件出错: \(error.localizedDescription)")
         }
 
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
@@ -189,7 +186,7 @@ extension MAAViewModel {
 
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
-            logTrace(["如果长时间连接不上或出错，请尝试下载使用", "“文件” > “PlayCover链接…” 中的最新版本"])
+            logTrace("如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本")
         }
         try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
@@ -248,10 +245,11 @@ extension MAAViewModel {
     private func loadResource(channel: MAAClientChannel) async throws {
         let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
-        logTrace([
-            "内置资源版本：\(bundledResourceVersion.activity.name)",
-            "更新时间：\(bundledResourceVersion.last_updated)",
-        ])
+        logTrace(
+            """
+            内置资源版本：\(bundledResourceVersion.activity.name)
+            更新时间：\(bundledResourceVersion.last_updated)
+            """)
 
         let currentResourceVersion: MAAResourceVersion
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -260,10 +258,11 @@ extension MAAViewModel {
                 try await loadResource(url: documentsDirectory, channel: channel)
                 try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
                 currentResourceVersion = userResourceVersion
-                logTrace([
-                    "外部资源版本：\(userResourceVersion.activity.name)",
-                    "更新时间：\(userResourceVersion.last_updated)",
-                ])
+                logTrace(
+                    """
+                    外部资源版本：\(userResourceVersion.activity.name)
+                    更新时间：\(userResourceVersion.last_updated)
+                    """)
             } else {
                 currentResourceVersion = bundledResourceVersion
                 logInfo("无需使用外部更新资源")
@@ -340,7 +339,16 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
-    func startTasks() async throws {
+    func tryStartTasks() async {
+        do {
+            try await startTasks()
+        } catch {
+            logError("ConnectFailed")
+            logInfo("CheckSettings")
+        }
+    }
+
+    private func startTasks() async throws {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -369,11 +377,6 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
-
-        if actionsAfterComplete == "退出PlayCover客户端" {
-            logWarn("“完成后退出PlayCover客户端”已弃用")
-            logInfo("请添加“关闭游戏”任务")
-        }
 
         for (id, task) in tasks.items {
             guard let params = task.params else { continue }
@@ -629,11 +632,7 @@ extension MAAViewModel {
         } catch {
             let nsError = error as NSError
             if nsError.domain == NSCocoaErrorDomain, nsError.code == 260 {
-                await logError("无法找到游戏文件。")
-                await logTrace([
-                    "PlayCover的版本须为3.0.0.maa.5及以上，",
-                    "请在“连接设置”内检查“游戏包名”选项。",
-                ])
+                await logError("无法找到游戏文件: \(client.appBundleID)")
             }
             return false
         }

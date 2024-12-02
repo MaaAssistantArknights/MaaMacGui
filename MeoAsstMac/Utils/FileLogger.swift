@@ -26,7 +26,7 @@ struct FileLogger: ~Copyable {
     }
 
     func write(_ log: MAALog) {
-        let line = "[\(log.date?.description ?? "")][\(log.color)]\(log.content)\n"
+        let line = "[\(log.date)][\(log.color)]\(log.content.replacingOccurrences(of: "\n", with: " "))\n"
         if let data = line.data(using: .utf8) {
             fileHandle?.write(data)
         }

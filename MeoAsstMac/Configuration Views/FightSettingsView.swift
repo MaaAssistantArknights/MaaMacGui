@@ -81,7 +81,7 @@ struct FightSettingsView: View {
                 do {
                     try FightConfiguration.initDropItems("zh-cn")
                 } catch let err {
-                    viewModel.logError("Read item_index.json failed: %@", err.localizedDescription)
+                    viewModel.logError("Read item_index.json failed: \(err.localizedDescription)")
                 }
                 dropItemList = FightConfiguration.dropItems.map {
                     (name: $0.item.name, id: $0.id)

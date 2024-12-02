@@ -1,0 +1,1523 @@
+{
+  "sourceLanguage" : "zh-Hans",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "“开局干员”使用助战" : {
+
+    },
+    "%@" : {
+      "shouldTranslate" : false
+    },
+    "%@ GiveUpUploadingPenguins" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@，放弃上传企鹅物流"
+          }
+        }
+      }
+    },
+    "%@ HasReturned" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@，已返回"
+          }
+        }
+      }
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "%lld ★ Tags" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld★词条"
+          }
+        }
+      }
+    },
+    "%lld★ %@" : {
+      "shouldTranslate" : false
+    },
+    "1" : {
+      "shouldTranslate" : false
+    },
+    "1-7" : {
+      "shouldTranslate" : false
+    },
+    "3星" : {
+
+    },
+    "3星设置7:40而非9:00" : {
+
+    },
+    "4星" : {
+
+    },
+    "5星" : {
+
+    },
+    "6星" : {
+
+    },
+    "ActingCommandError" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代理指挥失误"
+          }
+        }
+      }
+    },
+    "AlgorithmDoneSmeltGold %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "锻造赤金%lld次"
+          }
+        }
+      }
+    },
+    "AllTasksComplete" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务已全部完成！"
+          }
+        }
+      }
+    },
+    "AP-5" : {
+
+    },
+    "BattleFormation: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始编队：%@"
+          }
+        }
+      }
+    },
+    "BattleFormationSelected %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择干员：%@"
+          }
+        }
+      }
+    },
+    "BegunToExplore %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开始探索%lld次"
+          }
+        }
+      }
+    },
+    "CA-5" : {
+
+    },
+    "CambatDps" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：普通作战"
+          }
+        }
+      }
+    },
+    "CE-6" : {
+
+    },
+    "CheckSettings" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请「检查连接设置」或「尝试重启模拟器与 ADB」或「重启电脑」"
+          }
+        }
+      }
+    },
+    "Choose Tags: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择 Tags：%@"
+          }
+        }
+      }
+    },
+    "CombatError" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "战斗出错"
+          }
+        }
+      }
+    },
+    "CompleteCombat" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成战斗"
+          }
+        }
+      }
+    },
+    "CompleteTask %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成任务：%@"
+          }
+        }
+      }
+    },
+    "ConnectFailed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接失败"
+          }
+        }
+      }
+    },
+    "ConnectingToEmulator" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在连接……"
+          }
+        }
+      }
+    },
+    "CurrentStage %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前步骤：%@"
+          }
+        }
+      }
+    },
+    "DreadfulFoe" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：险路恶敌"
+          }
+        }
+      }
+    },
+    "DropRecognitionError" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掉落识别错误"
+          }
+        }
+      }
+    },
+    "EmergencyDps" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：紧急作战"
+          }
+        }
+      }
+    },
+    "Encounter" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：不期而遇"
+          }
+        }
+      }
+    },
+    "ErrorOccurred" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "出现错误"
+          }
+        }
+      }
+    },
+    "ExplorationAbandoned" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已放弃本次探索"
+          }
+        }
+      }
+    },
+    "FailedToOpenClient" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开客户端失败，请检查配置文件"
+          }
+        }
+      }
+    },
+    "FastestWayToScreencap: %@ms (%@)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最快截图耗时：%1$@ms (%2$@)"
+          }
+        }
+      }
+    },
+    "FightCompleted" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "战斗完成"
+          }
+        }
+      }
+    },
+    "FightFailed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "战斗失败"
+          }
+        }
+      }
+    },
+    "GainParadigm %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "坍缩范式加深：%@"
+          }
+        }
+      }
+    },
+    "GameCrash" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "游戏崩溃，重新启动"
+          }
+        }
+      }
+    },
+    "GameDrop" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "游戏掉线，重新连接"
+          }
+        }
+      }
+    },
+    "HasInvested %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已投资%lld次"
+          }
+        }
+      }
+    },
+    "IdentifyTheMistakes" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别错误"
+          }
+        }
+      }
+    },
+    "InfrastDormDoubleConfirmed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "干员冲突"
+          }
+        }
+      }
+    },
+    "LabelsRefreshed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已刷新标签"
+          }
+        }
+      }
+    },
+    "LS-6" : {
+
+    },
+    "maa://" : {
+      "shouldTranslate" : false
+    },
+    "MedicineUsed %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已使用理智药%lld次"
+          }
+        }
+      }
+    },
+    "MissionStart" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开始行动"
+          }
+        }
+      }
+    },
+    "MissionStart %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开始行动%lld次"
+          }
+        }
+      }
+    },
+    "NoDrop" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无"
+          }
+        }
+      }
+    },
+    "NotEnoughStaff" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可用干员不足"
+          }
+        }
+      }
+    },
+    "PlayCover 链接…" : {
+
+    },
+    "PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。" : {
+
+    },
+    "Please select one task to config" : {
+
+    },
+    "ProductIncorrect" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "产物与配置不相符"
+          }
+        }
+      }
+    },
+    "Read item_index.json failed: %@" : {
+
+    },
+    "ReconnectFailed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重连失败，连接断开！"
+          }
+        }
+      }
+    },
+    "ReconnectSuccess" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重连成功，继续任务"
+          }
+        }
+      }
+    },
+    "RecruitConfirm" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已确认招募"
+          }
+        }
+      }
+    },
+    "RecruitingResults: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公招识别结果：%@"
+          }
+        }
+      }
+    },
+    "RecruitmentRecognitionTip" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小提示：和主界面的自动公招是两个独立的功能，\n请手动打开游戏公招 Tags 界面后使用～"
+          }
+        }
+      }
+    },
+    "Refreshed %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前槽位已刷新 %lld 次"
+          }
+        }
+      }
+    },
+    "ResolutionAcquisitionFailure" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模拟器分辨率获取失败，建议重启模拟器与 ADB 或重启电脑，或更换模拟器后再次尝试"
+          }
+        }
+      }
+    },
+    "ResolutionNotSupported" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模拟器分辨率不支持，请设置为 720p 或更高，且为 16:9 比例"
+          }
+        }
+      }
+    },
+    "RoguelikeGamePass" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肉鸽通关啦！"
+          }
+        }
+      }
+    },
+    "RoguelikeSpecialItemBought" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "购买了特殊商品！"
+          }
+        }
+      }
+    },
+    "Running" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在运行中……"
+          }
+        }
+      }
+    },
+    "SafeHouse" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：安全的角落"
+          }
+        }
+      }
+    },
+    "Save to %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存至：%@"
+          }
+        }
+      }
+    },
+    "ScreencapCost: %@ / %@ / %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图耗时 min/avg/max(ms)： %1$@ / %2$@ / %3$@"
+          }
+        }
+      }
+    },
+    "ScreencapFailed" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图失败，如反复出现请尝试重启或更换模拟器！"
+          }
+        }
+      }
+    },
+    "SSSGamePass" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保全通关啦！"
+          }
+        }
+      }
+    },
+    "StageInfoError" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡识别错误"
+          }
+        }
+      }
+    },
+    "StartCombat %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始战斗：%@"
+          }
+        }
+      }
+    },
+    "StartTask %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始任务：%@"
+          }
+        }
+      }
+    },
+    "StoneUsed %lld UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已使用源石 %lld 次"
+          }
+        }
+      }
+    },
+    "Stopped" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已停止"
+          }
+        }
+      }
+    },
+    "TaskError %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务出错：%@"
+          }
+        }
+      }
+    },
+    "TheEX" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无奖励关卡，已停止"
+          }
+        }
+      }
+    },
+    "ThisFacility %@ %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前设施：%1$@ %2$lld"
+          }
+        }
+      }
+    },
+    "TotalDrop\n%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掉落统计：\n%@"
+          }
+        }
+      }
+    },
+    "TouchModeNotAvaiable" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "触控模式不可用。请进入 设置 - 连接设置 切换其他触控模式"
+          }
+        }
+      }
+    },
+    "Trader" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：诡意行商"
+          }
+        }
+      }
+    },
+    "TryToReconnect (%lld)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "模拟器断开，正在尝试重连 (%lld)"
+          }
+        }
+      }
+    },
+    "UnsupportedLevel" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不支持的关卡，请更新 MAA 软件版本！"
+          }
+        }
+      }
+    },
+    "UpperLimit" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "投资达到上限"
+          }
+        }
+      }
+    },
+    "一键长草" : {
+
+    },
+    "下载作业" : {
+
+    },
+    "不使用无人机" : {
+
+    },
+    "不加急" : {
+
+    },
+    "不将已进驻的干员放入宿舍" : {
+
+    },
+    "不支持此版本 PlayCover" : {
+
+    },
+    "不购物" : {
+
+    },
+    "专享月卡" : {
+
+    },
+    "主题：" : {
+
+    },
+    "仓库材料" : {
+
+    },
+    "仓库识别" : {
+
+    },
+    "任务" : {
+
+    },
+    "企鹅物流" : {
+
+    },
+    "企鹅物流汇报ID" : {
+
+    },
+    "优先层数" : {
+
+    },
+    "优先投资" : {
+
+    },
+    "优先购买" : {
+
+    },
+    "会客室" : {
+
+    },
+    "使用 adb-lite 连接" : {
+
+    },
+    "使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。" : {
+
+    },
+    "信息" : {
+
+    },
+    "信用溢出时无视黑名单" : {
+
+    },
+    "信用购物" : {
+
+    },
+    "信赖干员" : {
+
+    },
+    "借助战赚信用" : {
+
+    },
+    "停止" : {
+
+    },
+    "停止任务" : {
+
+    },
+    "傀影" : {
+
+    },
+    "储备源石锭达到上限时停止" : {
+
+    },
+    "允许" : {
+
+    },
+    "允许使用 Gzip" : {
+
+    },
+    "允许阻止系统睡眠" : {
+
+    },
+    "免费单抽" : {
+
+    },
+    "全部取消" : {
+
+    },
+    "全部启用" : {
+
+    },
+    "公招词条" : {
+
+    },
+    "关卡名" : {
+
+    },
+    "关卡选择" : {
+
+    },
+    "关闭游戏" : {
+
+    },
+    "内置作业" : {
+
+    },
+    "内置排班" : {
+
+    },
+    "内置资源版本：%@\n更新时间：%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内置资源版本：%1$@\n更新时间：%2$@"
+          }
+        }
+      }
+    },
+    "最多投资源石锭数量：" : {
+
+    },
+    "最多探索次数：" : {
+
+    },
+    "最高难度" : {
+
+    },
+    "凹开局干员精二直升" : {
+
+    },
+    "分" : {
+
+    },
+    "初始化失败: %@" : {
+
+    },
+    "删除" : {
+
+    },
+    "删除任务" : {
+
+    },
+    "制造站" : {
+
+    },
+    "制造站-源石碎片" : {
+
+    },
+    "制造站-经验书" : {
+
+    },
+    "制造站-芯片组" : {
+
+    },
+    "制造站-赤金" : {
+
+    },
+    "刷分与建造点" : {
+
+    },
+    "刷取数量" : {
+
+    },
+    "刷坍缩" : {
+
+    },
+    "刷坍缩范式，尽可能地积累坍缩值" : {
+
+    },
+    "刷开局，到达第三层后直接退出" : {
+
+    },
+    "刷新商店（指路鳞）" : {
+
+    },
+    "刷源石锭，第一层投资完就退出" : {
+
+    },
+    "刷理智" : {
+
+    },
+    "刷等级，尽可能稳定地打更多层数" : {
+
+    },
+    "刷赤金" : {
+
+    },
+    "剿灭模式" : {
+
+    },
+    "办公室" : {
+
+    },
+    "加急" : {
+
+    },
+    "单设施最优解" : {
+
+    },
+    "博朗台碎石模式" : {
+
+    },
+    "发现新资源版本：%@" : {
+
+    },
+    "发电站" : {
+
+    },
+    "取消" : {
+
+    },
+    "只凹直升不作战" : {
+
+    },
+    "可以使用非好友助战" : {
+
+    },
+    "吃源石" : {
+
+    },
+    "吃理智药" : {
+
+    },
+    "启用自定义基建配置(beta)" : {
+
+    },
+    "周常任务" : {
+
+    },
+    "基建工作心情阈值: %.0f%%" : {
+
+    },
+    "基建换班" : {
+
+    },
+    "复制结果JSON至剪贴板：" : {
+
+    },
+    "外部作业（可拖入文件）" : {
+
+    },
+    "外部资源版本：%@\n更新时间：%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "外部资源版本：%1$@\n更新时间：%2$@"
+          }
+        }
+      }
+    },
+    "如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本" : {
+
+    },
+    "实用工具" : {
+
+    },
+    "实验性功能，理论性能更好。" : {
+
+    },
+    "客户端类型：" : {
+
+    },
+    "客户端类型：%@" : {
+
+    },
+    "宿舍" : {
+
+    },
+    "宿舍空余位置蹭信赖" : {
+
+    },
+    "寻访一次" : {
+
+    },
+    "寻访十次" : {
+
+    },
+    "已启用" : {
+
+    },
+    "已拥有干员：%lld" : {
+
+    },
+    "干员列表" : {
+
+    },
+    "干员寻访" : {
+
+    },
+    "干员识别" : {
+
+    },
+    "幸运墙" : {
+
+    },
+    "开启" : {
+
+    },
+    "开始" : {
+
+    },
+    "开始任务" : {
+
+    },
+    "开始唤醒" : {
+
+    },
+    "开局分队：" : {
+
+    },
+    "开局干员（单个）：" : {
+
+    },
+    "开局职业组：" : {
+
+    },
+    "当前/上次" : {
+
+    },
+    "当前难度" : {
+
+    },
+    "循环次数" : {
+
+    },
+    "我已知晓，继续" : {
+
+    },
+    "手动确认1星" : {
+
+    },
+    "手动输入关卡名" : {
+
+    },
+    "打开自定义排班文件夹…" : {
+
+    },
+    "投资源石锭" : {
+
+    },
+    "指定材料" : {
+
+    },
+    "指定次数" : {
+
+    },
+    "按住加号按钮" : {
+
+    },
+    "接收开发版更新" : {
+
+    },
+    "控制中枢" : {
+
+    },
+    "支援道具：" : {
+
+    },
+    "收取信用及购物" : {
+
+    },
+    "文件格式错误" : {
+
+    },
+    "新增定时" : {
+
+    },
+    "方案：" : {
+
+    },
+    "无人机用途：" : {
+
+    },
+    "无存档，通过进出关卡刷生息点数" : {
+
+    },
+    "无效文件" : {
+
+    },
+    "无法找到游戏文件: %@" : {
+
+    },
+    "无法检查资源更新: %@" : {
+
+    },
+    "无法识别配置" : {
+
+    },
+    "无限吃48小时内过期的理智药" : {
+
+    },
+    "无需使用外部更新资源" : {
+
+    },
+    "日常任务" : {
+
+    },
+    "日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠" : {
+
+    },
+    "日志" : {
+
+    },
+    "日志文件出错: %@" : {
+
+    },
+    "时" : {
+
+    },
+    "时间" : {
+
+    },
+    "明日方舟工具箱" : {
+
+    },
+    "显示/隐藏边栏" : {
+
+    },
+    "更新失败：%@" : {
+
+    },
+    "更新完成，请重新启动应用" : {
+
+    },
+    "更新设置" : {
+
+    },
+    "有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档" : {
+
+    },
+    "未启用" : {
+
+    },
+    "未找到外部更新资源" : {
+
+    },
+    "未拥有干员：%lld" : {
+
+    },
+    "未知排班" : {
+
+    },
+    "查找日志…" : {
+
+    },
+    "查找资源…" : {
+
+    },
+    "检查更新…" : {
+
+    },
+    "次" : {
+
+    },
+    "正在下载…" : {
+
+    },
+    "正在解压…" : {
+
+    },
+    "每次执行时最大招募次数: " : {
+
+    },
+    "水月" : {
+
+    },
+    "沙中之火" : {
+
+    },
+    "沙洲遗闻" : {
+
+    },
+    "添加" : {
+
+    },
+    "添加任务" : {
+
+    },
+    "添加作业" : {
+
+    },
+    "游戏设置" : {
+
+    },
+    "源石" : {
+
+    },
+    "源石碎片自动补货" : {
+
+    },
+    "点击加号按钮" : {
+
+    },
+    "烧开水" : {
+
+    },
+    "现在" : {
+
+    },
+    "班次：" : {
+
+    },
+    "理智药" : {
+
+    },
+    "生息演算" : {
+
+    },
+    "视频作业" : {
+
+    },
+    "视频识别" : {
+
+    },
+    "神秘代码 [作业站链接](https://prts.plus)" : {
+
+    },
+    "移除" : {
+
+    },
+    "移除作业" : {
+
+    },
+    "策略：" : {
+
+    },
+    "精英%lld Lv%lld 潜能%lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "精英%1$lld 等级%2$lld 潜能%3$lld"
+          }
+        }
+      }
+    },
+    "系统设置" : {
+
+    },
+    "组装批次数：" : {
+
+    },
+    "组装数量增加模式：" : {
+
+    },
+    "肉鸽主题：" : {
+
+    },
+    "肉鸽难度：" : {
+
+    },
+    "自动下载更新" : {
+
+    },
+    "自动使用加急许可" : {
+
+    },
+    "自动公招" : {
+
+    },
+    "自动刷新3星Tags" : {
+
+    },
+    "自动启动" : {
+
+    },
+    "自动启动客户端" : {
+
+    },
+    "自动战斗" : {
+
+    },
+    "自动抄作业" : {
+
+    },
+    "自动抄保全作业" : {
+
+    },
+    "自动检查更新" : {
+
+    },
+    "自动滚动到底部" : {
+
+    },
+    "自动确认3星" : {
+
+    },
+    "自动确认4星" : {
+
+    },
+    "自动确认5星" : {
+
+    },
+    "自动确认6星" : {
+
+    },
+    "自动编队" : {
+
+    },
+    "自动肉鸽" : {
+
+    },
+    "自动设置时间" : {
+
+    },
+    "自动选择 Tags：" : {
+
+    },
+    "自定义" : {
+
+    },
+    "自定义排班" : {
+
+    },
+    "萨卡兹" : {
+
+    },
+    "萨米" : {
+
+    },
+    "装备：" : {
+
+    },
+    "触控模式" : {
+
+    },
+    "设置" : {
+
+    },
+    "请从边栏选择功能" : {
+
+    },
+    "请在“设置” > “游戏设置” 中选择客户端类型。" : {
+
+    },
+    "请打开“自动战斗”页，将攻略视频文件拖入外部作业列表即可。" : {
+
+    },
+    "请注意，这是真的抽卡！不是模拟！！！" : {
+
+    },
+    "请确保这是最后一个任务" : {
+
+    },
+    "请选择内容项目" : {
+
+    },
+    "请选择识别项目" : {
+
+    },
+    "购物" : {
+
+    },
+    "贸易站" : {
+
+    },
+    "贸易站-合成玉" : {
+
+    },
+    "贸易站-龙门币" : {
+
+    },
+    "资源已是最新版本" : {
+
+    },
+    "资源更新…" : {
+
+    },
+    "运行日志" : {
+
+    },
+    "进行每日免费单抽" : {
+
+    },
+    "连战次数" : {
+
+    },
+    "连接地址" : {
+
+    },
+    "连接设置" : {
+
+    },
+    "退出" : {
+
+    },
+    "选择本地文件…" : {
+
+    },
+    "邮件" : {
+
+    },
+    "重新加载文件" : {
+
+    },
+    "阻止系统睡眠" : {
+
+    },
+    "限时开采许可" : {
+
+    },
+    "需要视频分辨率为 16:9，且无黑边、模拟器边框、异形屏矫正等干扰因素。" : {
+
+    },
+    "领取五周年赠送月卡奖励" : {
+
+    },
+    "领取奖励" : {
+
+    },
+    "领取幸运墙合成玉奖励" : {
+
+    },
+    "领取所有邮件奖励" : {
+
+    },
+    "领取每日/每周任务奖励" : {
+
+    },
+    "领取限时开采许可合成玉奖励" : {
+
+    },
+    "黑名单" : {
+
+    },
+    "默认换班" : {
+
+    }
+  },
+  "version" : "1.0"
+}

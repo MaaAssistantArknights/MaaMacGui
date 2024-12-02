@@ -62,7 +62,7 @@ struct MeoAsstMacApp: App {
                     }
             }
             .environmentObject(appViewModel)
-            .frame(minWidth: 320, minHeight: 240)
+            .frame(maxWidth: 360, minHeight: 240)
         }
     }
 }

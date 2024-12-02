@@ -14,7 +14,7 @@ struct TaskButtons: View {
         Button("开始任务") {
             Task {
                 viewModel.dailyTasksDetailMode = .log
-                try await viewModel.startTasks()
+                await viewModel.tryStartTasks()
             }
         }
         .keyboardShortcut("R", modifiers: .command)
