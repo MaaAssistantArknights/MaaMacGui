@@ -640,7 +640,7 @@ extension MAAViewModel {
 
     private func writeLog(_ log: MAALog) {
         logs.append(log)
-        fileLogger?.write(log)
+        fileLogger.write(log)
     }
 
     private func localize(_ key: String, comment: String = "", _ arguments: CVarArg...) -> String {

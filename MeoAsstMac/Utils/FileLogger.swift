@@ -28,3 +28,22 @@ struct FileLogger: ~Copyable {
         }
     }
 }
+
+@available(swift, introduced: 5.9, deprecated: 6.0, message: "Use `Optional<FileLogger>` directly.")
+enum OptionalFileLogger: ~Copyable {
+    case some(FileLogger)
+    case none
+
+    init(url: URL) throws {
+        self = try .some(FileLogger(url: url))
+    }
+
+    func write(_ log: MAALog) {
+        switch self {
+        case .some(let fileLogger):
+            fileLogger.write(log)
+        case .none:
+            break
+        }
+    }
+}
