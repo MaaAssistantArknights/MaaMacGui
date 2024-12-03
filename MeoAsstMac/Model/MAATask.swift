@@ -230,7 +230,7 @@ extension MAATask {
 // MARK: Task Persistance
 
 extension MAAViewModel {
-    func writeBack(_ newValue: OrderedStore<MAATask>) {
+    func writeBack(_ newValue: [DailyTask]) {
         let data = try? PropertyListEncoder().encode(newValue)
         try? data?.write(to: tasksURL)
     }

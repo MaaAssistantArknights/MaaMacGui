@@ -87,7 +87,7 @@ struct TasksContent: View {
     }
 
     private func moveTask(from: IndexSet, to: Int) {
-        viewModel.tasks.keys.move(fromOffsets: from, toOffset: to)
+        viewModel.tasks.move(fromOffsets: from, toOffset: to)
     }
 
     private func deselectTask(_ viewMode: MAAViewModel.DailyTasksDetailMode) {

@@ -57,7 +57,6 @@
 		8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */; };
 		834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */; };
 		83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D5E29F00F0A008A5DF8 /* CopilotView.swift */; };
-		83531D6129F026E8008A5DF8 /* OrderedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6029F026E8008A5DF8 /* OrderedStore.swift */; };
 		83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6229F0A033008A5DF8 /* MAAInfrast.swift */; };
 		8355E7AE29E7F9DD005D5A1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AD29E7F9DD005D5A1C /* ContentView.swift */; };
 		8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AF29E8722E005D5A1C /* TaskCell.swift */; };
@@ -66,6 +65,8 @@
 		83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83661E2B29F77CFF007793CA /* VideoRecogView.swift */; };
 		8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0029F2F26100F715E8 /* OperBoxView.swift */; };
 		8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0229F2F34100F715E8 /* MAAOperBox.swift */; };
+		83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */; };
+		83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */ = {isa = PBXBuildFile; productRef = 83782A2C2CFFB00000A32BDD /* LegacyUserTasks */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
 		838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82129FBB9E3000566A0 /* GameSettingsView.swift */; };
@@ -169,7 +170,6 @@
 		8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+downloadProgress.swift"; sourceTree = "<group>"; };
 		834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedownConfiguration.swift; sourceTree = "<group>"; };
 		83531D5E29F00F0A008A5DF8 /* CopilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotView.swift; sourceTree = "<group>"; };
-		83531D6029F026E8008A5DF8 /* OrderedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderedStore.swift; sourceTree = "<group>"; };
 		83531D6229F0A033008A5DF8 /* MAAInfrast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAInfrast.swift; sourceTree = "<group>"; };
 		8355E7AD29E7F9DD005D5A1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; tabWidth = 2; };
 		8355E7AF29E8722E005D5A1C /* TaskCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCell.swift; sourceTree = "<group>"; };
@@ -179,6 +179,8 @@
 		8366DE0029F2F26100F715E8 /* OperBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OperBoxView.swift; sourceTree = "<group>"; };
 		8366DE0229F2F34100F715E8 /* MAAOperBox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAOperBox.swift; sourceTree = "<group>"; };
 		8368855029BD851F00C5B999 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
+		83782A282CFFA43200A32BDD /* LegacyUserTasks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LegacyUserTasks; sourceTree = "<group>"; };
+		83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyConfigurations.swift; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
 		83885C112C4D5D1500B02663 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -209,6 +211,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */,
+				83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
 				833F7B2A29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
@@ -246,6 +249,7 @@
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
 				8341195429EC55C600044F45 /* CopilotConfiguration.swift */,
 				832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */,
+				83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */,
 			);
 			path = "Task Configurations";
 			sourceTree = "<group>";
@@ -328,6 +332,7 @@
 				83661E2529F628DA007793CA /* Resources */,
 				8368855029BD851F00C5B999 /* Version.xcconfig */,
 				83885C112C4D5D1500B02663 /* README.md */,
+				83782A292CFFA43200A32BDD /* Packages */,
 				833786CC28F188D800D39D6F /* Products */,
 				83245A0128F467C300ED6D4C /* Frameworks */,
 			);
@@ -402,7 +407,6 @@
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
-				83531D6029F026E8008A5DF8 /* OrderedStore.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -413,6 +417,14 @@
 				8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		83782A292CFFA43200A32BDD /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				83782A282CFFA43200A32BDD /* LegacyUserTasks */,
+			);
+			path = Packages;
 			sourceTree = "<group>";
 		};
 		83FF5A98297855E5000AE831 /* Settings */ = {
@@ -460,6 +472,7 @@
 				830C3D1B29BC7D8600B13A9F /* Sparkle */,
 				8329859429EDB9EB009F7ED5 /* SwiftyJSON */,
 				8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */,
+				83782A2C2CFFB00000A32BDD /* LegacyUserTasks */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -585,10 +598,10 @@
 				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
 				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
+				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
 				83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */,
-				83531D6129F026E8008A5DF8 /* OrderedStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,6 +858,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
 			productName = ZIPFoundation;
+		};
+		83782A2C2CFFB00000A32BDD /* LegacyUserTasks */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = LegacyUserTasks;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -33,13 +33,20 @@ import SwiftUI
 
     // MARK: - Daily Tasks
 
+    @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default"
+
+    struct DailyTask: Codable, Equatable, Identifiable {
+        let id: UUID
+        let task: MAATask
+    }
+
     enum DailyTasksDetailMode: Hashable {
         case taskConfig
         case log
         case timerConfig
     }
 
-    @Published var tasks: OrderedStore<MAATask>
+    @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
     @Published var dailyTasksDetailMode: DailyTasksDetailMode = .log
@@ -53,11 +60,14 @@ import SwiftUI
 
     @Published var taskStatus: [UUID: TaskStatus] = [:]
 
-    let tasksURL = FileManager.default
-        .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-        .first!
-        .appendingPathComponent("UserTasks")
-        .appendingPathExtension("plist")
+    var tasksDirectory: URL {
+        Self.userDirectory.appendingPathComponent("DailyTasks", isDirectory: true)
+    }
+
+    var tasksURL: URL {
+        tasksDirectory.appendingPathComponent(dailyTaskProfile, isDirectory: false)
+            .appendingPathExtension("plist")
+    }
 
     @AppStorage("MAAScheduledDailyTaskTimer") var serializedScheduledDailyTaskTimers: String?
 
@@ -133,19 +143,37 @@ import SwiftUI
 
     init() {
         do {
-            let data = try Data(contentsOf: tasksURL)
-            tasks = try PropertyListDecoder().decode(OrderedStore<MAATask>.self, from: data)
-        } catch {
-            tasks = .init(MAATask.defaults)
-        }
-
-        do {
             fileLogger = try FileLogger(
                 url: Self.userDirectory.appendingPathComponent("debug", isDirectory: true)
                     .appendingPathComponent("gui.log", isDirectory: false))
         } catch {
             fileLogger = FileLogger()
             logError("日志文件出错: \(error.localizedDescription)")
+        }
+
+        do {
+            let data = try Data(contentsOf: tasksURL)
+            tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
+            print("Read from \(tasksURL.path)")
+        } catch {
+            var isDirectory: ObjCBool = false
+            let exists = FileManager.default.fileExists(atPath: tasksDirectory.path, isDirectory: &isDirectory)
+            switch (exists, isDirectory.boolValue) {
+            case (true, true):
+                break
+            case (true, false):
+                try? FileManager.default.removeItem(at: tasksDirectory)
+                try? FileManager.default.createDirectory(at: tasksDirectory, withIntermediateDirectories: true)
+            case (false, _):
+                try? FileManager.default.createDirectory(at: tasksDirectory, withIntermediateDirectories: true)
+            }
+
+            do {
+                tasks = try migrateLegacyConfigurations().map { .init($0) }
+                print("Migrated")
+            } catch {
+                tasks = MAATask.defaults.map { .init($0) }
+            }
         }
 
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
@@ -538,7 +566,7 @@ extension MAAViewModel {
     }
 
     @ViewBuilder func taskConfigView(id: UUID) -> some View {
-        switch tasks[id] {
+        switch tasks.first(where: { $0.id == id })?.task {
         case .startup(let config):
             StartupSettingsView(config: taskConfigBinding(id: id, config: config))
         case .recruit(let config):
@@ -641,5 +669,44 @@ extension MAAViewModel {
     func stopGame() async throws {
         guard let client = await MaaToolClient(address: connectionAddress) else { return }
         try await client.terminate()
+    }
+}
+
+extension MAAViewModel.DailyTask {
+    init(_ task: MAATask) {
+        self.init(id: UUID(), task: task)
+    }
+}
+
+extension Array where Element == MAAViewModel.DailyTask {
+    subscript(_ id: UUID) -> MAATask? {
+        get {
+            first { $0.id == id }?.task
+        }
+        set {
+            if let newValue, let index = firstIndex(where: { $0.id == id }) {
+                self[index] = .init(id: id, task: newValue)
+            }
+        }
+    }
+
+    var keys: [UUID] {
+        map(\.id)
+    }
+
+    var items: [(UUID, MAATask)] {
+        map { ($0.id, $0.task) }
+    }
+
+    func firstIndex(id: UUID) -> Int? {
+        firstIndex { $0.id == id }
+    }
+
+    mutating func append(_ task: MAATask) {
+        append(.init(task))
+    }
+
+    mutating func remove(id: UUID) {
+        removeAll { $0.id == id }
     }
 }
