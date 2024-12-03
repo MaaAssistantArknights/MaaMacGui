@@ -56,6 +56,12 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     var projectedTask: MAATask {
         .reclamation(self)
     }
+
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
 }
 
 enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {

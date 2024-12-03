@@ -29,6 +29,12 @@ struct ClosedownConfiguration: MAATaskConfiguration {
     var projectedTask: MAATask {
         .closedown(self)
     }
+
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
 }
 
 extension ClosedownConfiguration {

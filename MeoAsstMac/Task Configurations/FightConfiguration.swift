@@ -57,6 +57,12 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
+
     // 掉落物品列表
     static var dropItems: [(id: String, item: DropItem)] = []
     static var id2index: [String: Int] = [:] // (id -> idx of dropItems)

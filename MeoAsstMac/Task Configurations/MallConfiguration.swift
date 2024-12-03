@@ -33,4 +33,10 @@ struct MallConfiguration: MAATaskConfiguration {
     var projectedTask: MAATask {
         .mall(self)
     }
+
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
 }

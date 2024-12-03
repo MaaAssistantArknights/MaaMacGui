@@ -52,6 +52,12 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var projectedTask: MAATask {
         .roguelike(self)
     }
+
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
 }
 
 extension RoguelikeConfiguration {
