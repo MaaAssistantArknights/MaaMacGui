@@ -8,13 +8,9 @@
 import SwiftUI
 
 struct InfrastSettingsView: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
     @Environment(\.defaultMinListRowHeight) private var rowHeight
-    let id: UUID
 
-    private var config: Binding<InfrastConfiguration> {
-        viewModel.taskConfig(id: id)
-    }
+    @Binding var config: InfrastConfiguration
 
     var body: some View {
         VStack {
@@ -34,11 +30,11 @@ struct InfrastSettingsView: View {
     @ViewBuilder private var facilityList: some View {
         List {
             Section {
-                ForEach(config.facility.wrappedValue) { facility in
+                ForEach(config.facility) { facility in
                     Toggle(facility.description, isOn: facilityBinding(for: facility))
                 }
                 .onMove { source, destination in
-                    config.facility.wrappedValue.move(fromOffsets: source, toOffset: destination)
+                    config.facility.move(fromOffsets: source, toOffset: destination)
                 }
             } header: {
                 Text("已启用")
@@ -52,7 +48,7 @@ struct InfrastSettingsView: View {
                 Text("未启用")
             }
         }
-        .animation(.default, value: config.facility.wrappedValue)
+        .animation(.default, value: config.facility)
         .frame(height: 12 * rowHeight)
     }
 
@@ -60,7 +56,7 @@ struct InfrastSettingsView: View {
         Form {
             Section {
                 Text("无人机用途：")
-                Picker("", selection: config.drones) {
+                Picker("", selection: $config.drones) {
                     ForEach(MAAInfrastDroneUsage.allCases, id: \.self) { usage in
                         Text(usage.description).tag(usage)
                     }
@@ -70,16 +66,16 @@ struct InfrastSettingsView: View {
             Divider().padding(.top)
 
             Section {
-                Text("基建工作心情阈值: \(config.threshold.wrappedValue * 100, specifier: "%.0f")%")
-                Slider(value: config.threshold, in: 0 ... 1)
+                Text("基建工作心情阈值: \(config.threshold * 100, specifier: "%.0f")%")
+                Slider(value: $config.threshold, in: 0 ... 1)
             }
 
             Divider()
 
             Section {
-                Toggle("宿舍空余位置蹭信赖", isOn: config.dorm_trust_enabled)
-                Toggle("不将已进驻的干员放入宿舍", isOn: config.dorm_notstationed_enabled)
-                Toggle("源石碎片自动补货", isOn: config.replenish)
+                Toggle("宿舍空余位置蹭信赖", isOn: $config.dorm_trust_enabled)
+                Toggle("不将已进驻的干员放入宿舍", isOn: $config.dorm_notstationed_enabled)
+                Toggle("源石碎片自动补货", isOn: $config.replenish)
             }
 
             Divider()
@@ -108,8 +104,8 @@ struct InfrastSettingsView: View {
                 }
             }
 
-            Picker("班次：", selection: config.plan_index) {
-                try? MAAInfrast(path: config.filename.wrappedValue).planList
+            Picker("班次：", selection: $config.plan_index) {
+                try? MAAInfrast(path: config.filename).planList
             }
 
             HStack(spacing: 20) {
@@ -127,35 +123,35 @@ struct InfrastSettingsView: View {
 
     private var customPlan: Binding<String> {
         Binding {
-            config.filename.wrappedValue
+            config.filename
         } set: {
-            config.plan_index.wrappedValue = 0
-            config.filename.wrappedValue = $0
+            config.plan_index = 0
+            config.filename = $0
         }
     }
 
     private var useCustomPlan: Binding<Bool> {
         Binding {
-            config.mode.wrappedValue == 10000
+            config.mode == 10000
         } set: {
-            config.mode.wrappedValue = $0 ? 10000 : 0
+            config.mode = $0 ? 10000 : 0
         }
     }
 
     private var disabledFacilities: [MAAInfrastFacility] {
         MAAInfrastFacility.allCases.filter { facility in
-            !config.facility.wrappedValue.contains(facility)
+            !config.facility.contains(facility)
         }
     }
 
     private func facilityBinding(for facility: MAAInfrastFacility) -> Binding<Bool> {
         Binding {
-            config.facility.wrappedValue.contains(facility)
+            config.facility.contains(facility)
         } set: { newValue in
             if newValue {
-                config.facility.wrappedValue.append(facility)
+                config.facility.append(facility)
             } else {
-                config.facility.wrappedValue.removeAll { $0 == facility }
+                config.facility.removeAll { $0 == facility }
             }
         }
     }
@@ -229,7 +225,6 @@ private extension String {
 
 struct InfrastSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        InfrastSettingsView(id: UUID())
-            .environmentObject(MAAViewModel())
+        InfrastSettingsView(config: .constant(.init()))
     }
 }

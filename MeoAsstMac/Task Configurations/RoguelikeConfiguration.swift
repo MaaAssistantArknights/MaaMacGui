@@ -48,6 +48,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var summary: String {
         "\(RoguelikeDifficulty(id: difficulty).description) \(RoguelikeMode(id: mode).shortDescription) \(core_char)"
     }
+
+    var projectedTask: MAATask {
+        .roguelike(self)
+    }
 }
 
 extension RoguelikeConfiguration {

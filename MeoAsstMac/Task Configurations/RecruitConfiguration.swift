@@ -36,6 +36,10 @@ struct RecruitConfiguration: MAATaskConfiguration {
         return "★\(levelString)"
     }
 
+    var projectedTask: MAATask {
+        .recruit(self)
+    }
+
     static var recognition: RecruitConfiguration {
         .init(refresh: false, select: [4, 5, 6], confirm: [], times: 0)
     }

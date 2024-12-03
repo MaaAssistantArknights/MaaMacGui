@@ -27,6 +27,10 @@ struct StartupConfiguration: MAATaskConfiguration {
             return ""
         }
     }
+
+    var projectedTask: MAATask {
+        .startup(self)
+    }
 }
 
 enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {

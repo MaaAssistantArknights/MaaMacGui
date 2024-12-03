@@ -8,12 +8,7 @@
 import SwiftUI
 
 struct FightSettingsView: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
-    let id: UUID
-
-    private var config: Binding<FightConfiguration> {
-        viewModel.taskConfig(id: id)
-    }
+    @Binding var config: FightConfiguration
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
@@ -23,9 +18,9 @@ struct FightSettingsView: View {
             Section {
                 HStack(spacing: 20) {
                     if useCustomStage || stageNotListed {
-                        TextField("关卡名", text: config.stage)
+                        TextField("关卡名", text: $config.stage)
                     } else {
-                        Picker("关卡选择", selection: config.stage) {
+                        Picker("关卡选择", selection: $config.stage) {
                             Text("当前/上次").tag("")
                             Text("1-7").tag("1-7")
                             Text("CE-6").tag("CE-6")
@@ -37,26 +32,26 @@ struct FightSettingsView: View {
                     }
                     Toggle("手动输入关卡名", isOn: isUsingCustomStage)
                 }
-                .animation(.default, value: config.stage.wrappedValue)
+                .animation(.default, value: config.stage)
                 .animation(.default, value: useCustomStage)
             }
 
             Divider()
 
             Section {
-                TextField(value: config.medicine, format: .number) {
+                TextField(value: $config.medicine, format: .number) {
                     Toggle("吃理智药", isOn: useMedicine)
                 }
 
-                TextField(value: config.stone, format: .number) {
+                TextField(value: $config.stone, format: .number) {
                     Toggle("吃源石", isOn: useStone)
                 }
 
-                TextField(value: config.times, format: .number) {
+                TextField(value: $config.times, format: .number) {
                     Toggle("指定次数", isOn: limitBattles)
                 }
 
-                TextField(value: config.series, format: .number) {
+                TextField(value: $config.series, format: .number) {
                     Toggle("连战次数", isOn: seriesBattles)
                 }
             }
@@ -81,25 +76,25 @@ struct FightSettingsView: View {
                 do {
                     try FightConfiguration.initDropItems("zh-cn")
                 } catch let err {
-                    viewModel.logError("Read item_index.json failed: \(err.localizedDescription)")
+                    print(String(localized: "Read item_index.json failed: \(err.localizedDescription)"))
                 }
                 dropItemList = FightConfiguration.dropItems.map {
                     (name: $0.item.name, id: $0.id)
                 }
-                dropItem = config.drops.wrappedValue?.first
+                dropItem = config.drops?.first
             }
 
             Divider()
 
             Section {
-                Toggle("博朗台碎石模式", isOn: config.DrGrandet)
+                Toggle("博朗台碎石模式", isOn: $config.DrGrandet)
                 Toggle("无限吃48小时内过期的理智药", isOn: useExpiringMedicine)
             }
 
             Divider()
 
-            TextField(text: config.penguin_id) {
-                Toggle("企鹅物流汇报ID", isOn: config.report_to_penguin)
+            TextField(text: $config.penguin_id) {
+                Toggle("企鹅物流汇报ID", isOn: $config.report_to_penguin)
             }
         }
         .padding()
@@ -107,48 +102,48 @@ struct FightSettingsView: View {
 
     private var useExpiringMedicine: Binding<Bool> {
         Binding {
-            config.expiring_medicine.wrappedValue ?? 0 > 0
+            config.expiring_medicine ?? 0 > 0
         } set: {
-            config.expiring_medicine.wrappedValue = $0 ? 999 : nil
+            config.expiring_medicine = $0 ? 999 : nil
         }
     }
 
     private var useMedicine: Binding<Bool> {
         Binding {
-            config.medicine.wrappedValue != nil
+            config.medicine != nil
         } set: {
-            config.medicine.wrappedValue = $0 ? 999 : nil
+            config.medicine = $0 ? 999 : nil
         }
     }
 
     private var useStone: Binding<Bool> {
         Binding {
-            config.stone.wrappedValue != nil
+            config.stone != nil
         } set: {
-            config.stone.wrappedValue = $0 ? 0 : nil
+            config.stone = $0 ? 0 : nil
         }
     }
 
     private var limitBattles: Binding<Bool> {
         Binding {
-            config.times.wrappedValue != nil
+            config.times != nil
         } set: {
-            config.times.wrappedValue = $0 ? 5 : nil
+            config.times = $0 ? 5 : nil
         }
     }
 
     private var seriesBattles: Binding<Bool> {
         Binding {
-            config.series.wrappedValue != nil
+            config.series != nil
         } set: {
-            config.series.wrappedValue = $0 ? 1 : nil
+            config.series = $0 ? 1 : nil
         }
     }
 
     @State private var dropItem: (String, Int)? = nil {
         didSet {
             if dropItemToggle.wrappedValue {
-                config.drops.wrappedValue =
+                config.drops =
                     if let dropItem {
                         [dropItem.0: dropItem.1]
                     } else {
@@ -183,9 +178,9 @@ struct FightSettingsView: View {
 
     private var dropItemToggle: Binding<Bool> {
         Binding {
-            config.drops.wrappedValue != nil
+            config.drops != nil
         } set: {
-            config.drops.wrappedValue =
+            config.drops =
                 if $0 {
                     if let dropItem { [dropItem.0: dropItem.1] } else { nil }
                 } else {
@@ -199,19 +194,18 @@ struct FightSettingsView: View {
             useCustomStage || stageNotListed
         } set: { newValue in
             if !newValue {
-                config.stage.wrappedValue = ""
+                config.stage = ""
             }
             useCustomStage = newValue
         }
     }
 
-    private var stageNotListed: Bool { !listedStages.contains(config.stage.wrappedValue) }
+    private var stageNotListed: Bool { !listedStages.contains(config.stage) }
     private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        FightSettingsView(id: UUID())
-            .environmentObject(MAAViewModel())
+        FightSettingsView(config: .constant(.init()))
     }
 }

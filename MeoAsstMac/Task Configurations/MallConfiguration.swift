@@ -29,4 +29,8 @@ struct MallConfiguration: MAATaskConfiguration {
     var summary: String {
         buy_first.joined(separator: ";")
     }
+
+    var projectedTask: MAATask {
+        .mall(self)
+    }
 }

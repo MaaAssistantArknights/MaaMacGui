@@ -8,25 +8,20 @@
 import SwiftUI
 
 struct StartupSettingsView: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
-    let id: UUID
-
-    private var config: Binding<StartupConfiguration> {
-        viewModel.taskConfig(id: id)
-    }
+    @Binding var config: StartupConfiguration
 
     var body: some View {
         Form {
             VStack(alignment: .leading, spacing: 3) {
-                Text("客户端类型：\(config.client_type.wrappedValue.description)")
+                Text("客户端类型：\(config.client_type.description)")
                 Text("请在“设置” > “游戏设置” 中选择客户端类型。")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
             .padding(.bottom)
 
-            Toggle("自动启动客户端", isOn: config.start_game_enabled)
-                .disabled(config.client_type.wrappedValue == .default)
+            Toggle("自动启动客户端", isOn: $config.start_game_enabled)
+                .disabled(config.client_type == .default)
         }
         .padding()
     }
@@ -34,7 +29,6 @@ struct StartupSettingsView: View {
 
 struct StartupSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        StartupSettingsView(id: UUID())
-            .environmentObject(MAAViewModel())
+        StartupSettingsView(config: .constant(.init()))
     }
 }
