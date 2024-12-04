@@ -45,6 +45,10 @@ struct AwardConfiguration: MAATaskConfiguration {
     }
 
     var summary: String { "" }
+
+    var projectedTask: MAATask {
+        .award(self)
+    }
 }
 
 extension AwardConfiguration {

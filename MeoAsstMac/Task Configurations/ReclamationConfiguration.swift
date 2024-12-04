@@ -52,6 +52,10 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     var summary: String {
         modes[mode] ?? ""
     }
+
+    var projectedTask: MAATask {
+        .reclamation(self)
+    }
 }
 
 enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {

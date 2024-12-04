@@ -529,32 +529,32 @@ extension MAAViewModel {
 // MARK: Task Configuration
 
 extension MAAViewModel {
-    func taskConfig<T: MAATaskConfiguration>(id: UUID) -> Binding<T> {
+    private func taskConfigBinding<T: MAATaskConfiguration>(id: UUID, config: T) -> Binding<T> {
         Binding {
-            self.tasks[id]?.unwrapConfig() ?? .init()
+            config
         } set: {
-            self.tasks[id] = .init(config: $0)
+            self.tasks[id] = $0.projectedTask
         }
     }
 
     @ViewBuilder func taskConfigView(id: UUID) -> some View {
         switch tasks[id] {
-        case .startup:
-            StartupSettingsView(id: id)
-        case .recruit:
-            RecruitSettingsView(id: id)
-        case .infrast:
-            InfrastSettingsView(id: id)
-        case .fight:
-            FightSettingsView(id: id)
-        case .mall:
-            MallSettingsView(id: id)
-        case .award:
-            AwardSettingsView(id: id)
-        case .roguelike:
-            RoguelikeSettingsView(id: id)
-        case .reclamation:
-            ReclamationSettingsView(id: id)
+        case .startup(let config):
+            StartupSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .recruit(let config):
+            RecruitSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .infrast(let config):
+            InfrastSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .fight(let config):
+            FightSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .mall(let config):
+            MallSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .award(let config):
+            AwardSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .roguelike(let config):
+            RoguelikeSettingsView(config: taskConfigBinding(id: id, config: config))
+        case .reclamation(let config):
+            ReclamationSettingsView(config: taskConfigBinding(id: id, config: config))
         case .closedown(_), .none:
             EmptyView()
         }

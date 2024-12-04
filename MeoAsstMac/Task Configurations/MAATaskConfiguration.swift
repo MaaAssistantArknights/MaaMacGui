@@ -14,7 +14,7 @@ protocol MAATaskConfiguration: Codable & Hashable {
     var subtitle: String { get }
     var summary: String { get }
 
-    init()
+    var projectedTask: MAATask { get }
 }
 
 extension MAATaskConfiguration {
@@ -48,58 +48,6 @@ extension MAATask {
             return config.jsonStringIfEnabled()
         case .reclamation(let config):
             return config.jsonStringIfEnabled()
-        }
-    }
-}
-
-// MARK: Type-erased TaskConfig
-
-extension MAATask {
-    func unwrapConfig<T: MAATaskConfiguration>() -> T {
-        switch self {
-        case .startup(let config):
-            return config as? T ?? .init()
-        case .closedown(let config):
-            return config as? T ?? .init()
-        case .recruit(let config):
-            return config as? T ?? .init()
-        case .infrast(let config):
-            return config as? T ?? .init()
-        case .fight(let config):
-            return config as? T ?? .init()
-        case .mall(let config):
-            return config as? T ?? .init()
-        case .award(let config):
-            return config as? T ?? .init()
-        case .roguelike(let config):
-            return config as? T ?? .init()
-        case .reclamation(let config):
-            return config as? T ?? .init()
-        }
-    }
-
-    init<T: MAATaskConfiguration>(config: T) {
-        switch config {
-        case let newConfig as StartupConfiguration:
-            self = .startup(newConfig)
-        case let newConfig as ClosedownConfiguration:
-            self = .closedown(newConfig)
-        case let newConfig as RecruitConfiguration:
-            self = .recruit(newConfig)
-        case let newConfig as InfrastConfiguration:
-            self = .infrast(newConfig)
-        case let newConfig as FightConfiguration:
-            self = .fight(newConfig)
-        case let newConfig as MallConfiguration:
-            self = .mall(newConfig)
-        case let newConfig as AwardConfiguration:
-            self = .award(newConfig)
-        case let newConfig as RoguelikeConfiguration:
-            self = .roguelike(newConfig)
-        case let newConfig as ReclamationConfiguration:
-            self = .reclamation(newConfig)
-        default:
-            self = .closedown(.init())
         }
     }
 }

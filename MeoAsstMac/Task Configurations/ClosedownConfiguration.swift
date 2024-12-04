@@ -25,6 +25,10 @@ struct ClosedownConfiguration: MAATaskConfiguration {
     var summary: String {
         ""
     }
+
+    var projectedTask: MAATask {
+        .closedown(self)
+    }
 }
 
 extension ClosedownConfiguration {
