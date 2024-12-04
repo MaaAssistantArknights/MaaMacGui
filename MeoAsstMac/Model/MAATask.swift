@@ -142,92 +142,49 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
     }
 }
 
-// MARK: - Task Overview
+// MARK: Task Persistance
 
-extension MAATask {
-    var enabled: Bool {
-        get {
-            switch self {
-            case .startup(let config):
-                return config.enable
-            case .closedown(let config):
-                return config.enable
-            case .recruit(let config):
-                return config.enable
-            case .infrast(let config):
-                return config.enable
-            case .fight(let config):
-                return config.enable
-            case .mall(let config):
-                return config.enable
-            case .award(let config):
-                return config.enable
-            case .roguelike(let config):
-                return config.enable
-            case .reclamation(let config):
-                return config.enable
-            }
-        }
-        set {
-            switch self {
-            case .startup(var config):
-                config.enable = newValue
-                self = .startup(config)
-            case .closedown(var config):
-                config.enable = newValue
-                self = .closedown(config)
-            case .recruit(var config):
-                config.enable = newValue
-                self = .recruit(config)
-            case .infrast(var config):
-                config.enable = newValue
-                self = .infrast(config)
-            case .fight(var config):
-                config.enable = newValue
-                self = .fight(config)
-            case .mall(var config):
-                config.enable = newValue
-                self = .mall(config)
-            case .award(var config):
-                config.enable = newValue
-                self = .award(config)
-            case .roguelike(var config):
-                config.enable = newValue
-                self = .roguelike(config)
-            case .reclamation(var config):
-                config.enable = newValue
-                self = .reclamation(config)
-            }
-        }
-    }
+struct DailyTask: Codable, Equatable, Identifiable {
+    let id: UUID
+    let task: MAATask
+    var enabled: Bool
+}
 
-    typealias Overview = (title: String, subtitle: String, summary: String)
-
-    var overview: Overview {
-        switch self {
-        case .startup(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .closedown(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .recruit(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .infrast(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .fight(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .mall(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .award(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .roguelike(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .reclamation(let config):
-            return (config.title, config.subtitle, config.summary)
+extension DailyTask {
+    init(_ task: MAATask) {
+        switch task {
+        case .roguelike, .reclamation:
+            self.init(id: UUID(), task: task, enabled: false)
+        default:
+            self.init(id: UUID(), task: task, enabled: true)
         }
     }
 }
 
-// MARK: Task Persistance
+extension Array where Element == DailyTask {
+    subscript(_ id: UUID) -> MAATask? {
+        get {
+            first { $0.id == id }?.task
+        }
+        set {
+            if let newValue, let index = firstIndex(where: { $0.id == id }) {
+                self[index] = .init(id: id, task: newValue, enabled: self[index].enabled)
+            }
+        }
+    }
+
+    func firstIndex(id: UUID) -> Int? {
+        firstIndex { $0.id == id }
+    }
+
+    mutating func append(_ task: MAATask) {
+        append(.init(task))
+    }
+
+    mutating func remove(id: UUID) {
+        removeAll { $0.id == id }
+    }
+}
 
 extension MAAViewModel {
     func writeBack(_ newValue: [DailyTask]) {

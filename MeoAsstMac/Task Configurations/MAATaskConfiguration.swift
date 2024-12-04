@@ -8,8 +8,6 @@
 import SwiftUI
 
 protocol MAATaskConfiguration: Codable & Hashable {
-    var enable: Bool { get set }
-
     var title: String { get }
     var subtitle: String { get }
     var summary: String { get }
@@ -20,37 +18,30 @@ protocol MAATaskConfiguration: Codable & Hashable {
     var params: Params { get }
 }
 
-extension MAATaskConfiguration {
-    func jsonStringIfEnabled() -> String? {
-        guard enable else { return nil }
-
-        return try? params.jsonString()
-    }
-}
-
 // MARK: JSON TaskParams
 
-extension MAATask {
+extension DailyTask {
     var params: String? {
-        switch self {
+        guard enabled else { return nil }
+        switch task {
         case .startup(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .closedown(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .recruit(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .infrast(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .fight(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .mall(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .award(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .roguelike(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         case .reclamation(let config):
-            return config.jsonStringIfEnabled()
+            return try? config.params.jsonString()
         }
     }
 }

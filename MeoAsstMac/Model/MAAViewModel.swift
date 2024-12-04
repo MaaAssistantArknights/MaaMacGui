@@ -35,11 +35,6 @@ import SwiftUI
 
     @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default"
 
-    struct DailyTask: Codable, Equatable, Identifiable {
-        let id: UUID
-        let task: MAATask
-    }
-
     enum DailyTasksDetailMode: Hashable {
         case taskConfig
         case log
@@ -169,7 +164,7 @@ import SwiftUI
             }
 
             do {
-                tasks = try migrateLegacyConfigurations().map { .init($0) }
+                tasks = try migrateLegacyConfigurations()
                 print("Migrated")
             } catch {
                 tasks = MAATask.defaults.map { .init($0) }
@@ -324,8 +319,8 @@ extension MAAViewModel {
     }
 
     private func updateChannel(channel: MAAClientChannel) {
-        for (id, task) in tasks.items {
-            guard case var .startup(config) = task else {
+        for (index, task) in tasks.enumerated() {
+            guard case var .startup(config) = task.task else {
                 continue
             }
 
@@ -334,7 +329,7 @@ extension MAAViewModel {
                 config.start_game_enabled = false
             }
 
-            tasks[id] = .startup(config)
+            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
         }
 
         Task {
@@ -380,37 +375,37 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        for (id, task) in tasks.items {
-            guard case var .startup(config) = task else {
+        for (index, task) in tasks.enumerated() {
+            guard case var .startup(config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[id] = .startup(config)
+            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
-            if touchMode == .MacPlayTools, config.enable, config.start_game_enabled {
+            if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled {
                 guard await startGame(client: config.client_type) else {
                     throw MAAError.gameStartFailed
                 }
             }
         }
 
-        for (id, task) in tasks.items {
-            guard case var .closedown(config) = task else {
+        for (index, task) in tasks.enumerated() {
+            guard case var .closedown(config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[id] = .closedown(config)
+            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
         try await ensureHandle()
 
-        for (id, task) in tasks.items {
+        for task in tasks {
             guard let params = task.params else { continue }
 
-            if let coreID = try await handle?.appendTask(type: task.typeName, params: params) {
-                taskIDMap[coreID] = id
+            if let coreID = try await handle?.appendTask(type: task.task.typeName, params: params) {
+                taskIDMap[coreID] = task.id
             }
         }
 
@@ -487,7 +482,7 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        guard let params = MAATask.recruit(recruitConfig).params else {
+        guard let params = try? recruitConfig.params.jsonString() else {
             return
         }
 
@@ -551,41 +546,6 @@ extension MAAViewModel {
         try await handle?.start()
 
         status = .busy
-    }
-}
-
-// MARK: Task Configuration
-
-extension MAAViewModel {
-    private func taskConfigBinding<T: MAATaskConfiguration>(id: UUID, config: T) -> Binding<T> {
-        Binding {
-            config
-        } set: {
-            self.tasks[id] = $0.projectedTask
-        }
-    }
-
-    @ViewBuilder func taskConfigView(id: UUID) -> some View {
-        switch tasks.first(where: { $0.id == id })?.task {
-        case .startup(let config):
-            StartupSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .recruit(let config):
-            RecruitSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .infrast(let config):
-            InfrastSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .fight(let config):
-            FightSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .mall(let config):
-            MallSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .award(let config):
-            AwardSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .roguelike(let config):
-            RoguelikeSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .reclamation(let config):
-            ReclamationSettingsView(config: taskConfigBinding(id: id, config: config))
-        case .closedown(_), .none:
-            EmptyView()
-        }
     }
 }
 
@@ -669,44 +629,5 @@ extension MAAViewModel {
     func stopGame() async throws {
         guard let client = await MaaToolClient(address: connectionAddress) else { return }
         try await client.terminate()
-    }
-}
-
-extension MAAViewModel.DailyTask {
-    init(_ task: MAATask) {
-        self.init(id: UUID(), task: task)
-    }
-}
-
-extension Array where Element == MAAViewModel.DailyTask {
-    subscript(_ id: UUID) -> MAATask? {
-        get {
-            first { $0.id == id }?.task
-        }
-        set {
-            if let newValue, let index = firstIndex(where: { $0.id == id }) {
-                self[index] = .init(id: id, task: newValue)
-            }
-        }
-    }
-
-    var keys: [UUID] {
-        map(\.id)
-    }
-
-    var items: [(UUID, MAATask)] {
-        map { ($0.id, $0.task) }
-    }
-
-    func firstIndex(id: UUID) -> Int? {
-        firstIndex { $0.id == id }
-    }
-
-    mutating func append(_ task: MAATask) {
-        append(.init(task))
-    }
-
-    mutating func remove(id: UUID) {
-        removeAll { $0.id == id }
     }
 }

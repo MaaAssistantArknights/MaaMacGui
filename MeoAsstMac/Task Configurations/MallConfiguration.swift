@@ -8,7 +8,6 @@
 import Foundation
 
 struct MallConfiguration: MAATaskConfiguration {
-    var enable = true
     var shopping = true
     var buy_first = ["招聘许可", "龙门币"]
     var blacklist = ["加急许可", "家具零件"]

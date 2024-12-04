@@ -7,36 +7,44 @@
 
 import SwiftUI
 
-struct TaskCell: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
+struct TaskCell<Config: MAATaskConfiguration>: View {
     let id: UUID
+    let config: Config
+
+    @Binding var enabled: Bool
 
     var body: some View {
         HStack {
-            Toggle("", isOn: enabled)
+            Toggle("", isOn: $enabled)
             VStack(alignment: .leading, spacing: 4) {
-                Text(overview.title)
+                Text(config.title)
                     .font(.headline)
 
                 HStack {
-                    Text(overview.subtitle)
+                    Text(config.subtitle)
                         .font(.subheadline)
 
-                    Text(overview.summary)
+                    Text(config.summary)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
                 .lineLimit(1)
             }
             Spacer()
-            indicator
+            TaskIndicator(id: id)
         }
         .padding(.vertical, 6)
-        .animation(.default, value: viewModel.taskStatus[id])
-        .contextMenu(menuItems: menuItems)
+        .contextMenu {
+            TaskButtons()
+        }
     }
+}
 
-    @ViewBuilder private var indicator: some View {
+private struct TaskIndicator: View {
+    @EnvironmentObject private var viewModel: MAAViewModel
+    let id: UUID
+
+    var body: some View {
         switch viewModel.taskStatus[id] {
         case .cancel:
             Image(systemName: "slash.circle").foregroundColor(.secondary)
@@ -50,28 +58,11 @@ struct TaskCell: View {
             EmptyView()
         }
     }
-
-    @ViewBuilder private func menuItems() -> some View {
-        TaskButtons(viewModel: viewModel)
-    }
-
-    private var enabled: Binding<Bool> {
-        Binding {
-            viewModel.tasks[id]?.enabled ?? false
-        } set: { newValue in
-            viewModel.tasks[id]?.enabled = newValue
-        }
-    }
-
-    private var overview: MAATask.Overview {
-        viewModel.tasks[id]?.overview ?? ("", "", "")
-    }
 }
 
 struct MAATaskCell_Previews: PreviewProvider {
-    static var viewModel = MAAViewModel()
     static var previews: some View {
-        TaskCell(id: UUID())
-            .environmentObject(viewModel)
+        TaskCell(id: UUID(), config: StartupConfiguration(), enabled: .constant(true))
+            .environmentObject(MAAViewModel())
     }
 }

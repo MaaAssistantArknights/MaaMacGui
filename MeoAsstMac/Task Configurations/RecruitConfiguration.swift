@@ -8,8 +8,6 @@
 import Foundation
 
 struct RecruitConfiguration: MAATaskConfiguration {
-    var enable = true
-
     var refresh = true
     var select = [4, 5]
     var confirm = [3, 4, 5]

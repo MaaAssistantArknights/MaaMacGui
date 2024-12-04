@@ -12,7 +12,7 @@ struct TaskCommands: Commands {
 
     var body: some Commands {
         CommandMenu("任务") {
-            TaskButtons(viewModel: viewModel)
+            TaskButtons().environmentObject(viewModel)
         }
     }
 }

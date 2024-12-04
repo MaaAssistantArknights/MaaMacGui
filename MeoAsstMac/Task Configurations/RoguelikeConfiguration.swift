@@ -8,7 +8,6 @@
 import Foundation
 
 struct RoguelikeConfiguration: MAATaskConfiguration {
-    var enable = false
     var theme = RoguelikeTheme.Phantom {
         didSet {
             if !theme.difficulties.contains(where: { $0.id == difficulty }) {
@@ -63,7 +62,6 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
 extension RoguelikeConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.enable = try container.decode(Bool.self, forKey: .enable)
         self.theme = try container.decode(RoguelikeTheme.self, forKey: .theme)
         self.mode = try container.decode(Int.self, forKey: .mode)
         self.starts_count = try container.decode(Int.self, forKey: .starts_count)
@@ -107,7 +105,6 @@ extension RoguelikeConfiguration {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        try container.encode(enable, forKey: .enable)
         try container.encode(theme, forKey: .theme)
         try container.encode(mode, forKey: .mode)
         try container.encode(squad, forKey: .squad)

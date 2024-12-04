@@ -8,7 +8,6 @@
 import Foundation
 
 struct ReclamationConfiguration: MAATaskConfiguration {
-    var enable = false
     var theme = ReclamationTheme.tales
     var mode = 0
     var tool_to_craft = "荧光棒"

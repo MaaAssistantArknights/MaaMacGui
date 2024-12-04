@@ -8,7 +8,6 @@
 import Foundation
 
 struct FightConfiguration: MAATaskConfiguration {
-    var enable = true
     var stage = ""
     var medicine: Int?
     var expiring_medicine: Int?

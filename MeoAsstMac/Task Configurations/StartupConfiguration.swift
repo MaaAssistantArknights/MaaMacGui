@@ -8,7 +8,6 @@
 import Foundation
 
 struct StartupConfiguration: MAATaskConfiguration {
-    var enable = true
     var client_type = MAAClientChannel.default
     var start_game_enabled = false
 

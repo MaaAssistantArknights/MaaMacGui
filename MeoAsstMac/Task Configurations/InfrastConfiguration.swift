@@ -8,7 +8,6 @@
 import Foundation
 
 struct InfrastConfiguration: MAATaskConfiguration {
-    var enable = true
     var mode = 0
 
     var facility = MAAInfrastFacility.allCases

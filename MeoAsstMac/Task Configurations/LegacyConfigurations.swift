@@ -5,36 +5,45 @@
 //  Created by hguandl on 2024/12/4.
 //
 
+import Foundation
 import LegacyUserTasks
 
-func migrateLegacyConfigurations() throws -> [MAATask] {
+func migrateLegacyConfigurations() throws -> [DailyTask] {
     try legacyTasks().map { task in
         switch task {
         case .startup(let config):
-            MAATask.startup(.init(migrating: config))
+            let task = MAATask.startup(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .closedown(let config):
-            MAATask.closedown(.init(migrating: config))
+            let task = MAATask.closedown(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .recruit(let config):
-            MAATask.recruit(.init(migrating: config))
+            let task = MAATask.recruit(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .infrast(let config):
-            MAATask.infrast(.init(migrating: config))
+            let task = MAATask.infrast(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .fight(let config):
-            MAATask.fight(.init(migrating: config))
+            let task = MAATask.fight(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .mall(let config):
-            MAATask.mall(.init(migrating: config))
+            let task = MAATask.mall(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .award(let config):
-            MAATask.award(.init(migrating: config))
+            let task = MAATask.award(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .roguelike(let config):
-            MAATask.roguelike(.init(migrating: config))
+            let task = MAATask.roguelike(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         case .reclamation(let config):
-            MAATask.reclamation(.init(migrating: config))
+            let task = MAATask.reclamation(.init(migrating: config))
+            return .init(id: UUID(), task: task, enabled: config.enable)
         }
     }
 }
 
 extension StartupConfiguration {
     fileprivate init(migrating config: LegacyStartupConfiguration) {
-        self.enable = config.enable
         self.start_game_enabled = config.start_game_enabled
         self.client_type = .init(rawValue: config.client_type.rawValue) ?? .default
     }
@@ -42,14 +51,12 @@ extension StartupConfiguration {
 
 extension ClosedownConfiguration {
     fileprivate init(migrating config: LegacyClosedownConfiguration) {
-        self.enable = config.enable
         self.client_type = .init(rawValue: config.client_type.rawValue) ?? .default
     }
 }
 
 extension RecruitConfiguration {
     fileprivate init(migrating config: LegacyRecruitConfiguration) {
-        self.enable = config.enable
         self.refresh = config.refresh
         self.select = config.select
         self.confirm = config.confirm
@@ -63,7 +70,6 @@ extension RecruitConfiguration {
 
 extension InfrastConfiguration {
     fileprivate init(migrating config: LegacyInfrastConfiguration) {
-        self.enable = config.enable
         self.mode = config.mode
         self.facility = config.facility.compactMap { .init(rawValue: $0.rawValue) }
         self.drones = .init(rawValue: config.drones.rawValue) ?? .NotUse
@@ -78,7 +84,6 @@ extension InfrastConfiguration {
 
 extension FightConfiguration {
     fileprivate init(migrating config: LegacyFightConfiguration) {
-        self.enable = config.enable
         self.stage = config.stage
         self.medicine = config.medicine
         self.expiring_medicine = config.expiring_medicine
@@ -96,7 +101,6 @@ extension FightConfiguration {
 
 extension MallConfiguration {
     fileprivate init(migrating config: LegacyMallConfiguration) {
-        self.enable = config.enable
         self.shopping = config.shopping
         self.buy_first = config.buy_first
         self.blacklist = config.blacklist
@@ -106,7 +110,6 @@ extension MallConfiguration {
 
 extension AwardConfiguration {
     fileprivate init(migrating config: LegacyAwardConfiguration) {
-        self.enable = config.enable
         self.award = config.award
         self.mail = config.mail
         self.recruit = config.recruit
@@ -118,7 +121,6 @@ extension AwardConfiguration {
 
 extension RoguelikeConfiguration {
     fileprivate init(migrating config: LegacyRoguelikeConfiguration) {
-        self.enable = config.enable
         self.theme = .init(rawValue: config.theme.rawValue) ?? .Phantom
         self.difficulty = config.difficulty
         self.mode = config.mode
@@ -138,7 +140,6 @@ extension RoguelikeConfiguration {
 
 extension ReclamationConfiguration {
     fileprivate init(migrating config: LegacyReclamationConfiguration) {
-        self.enable = config.enable
         self.theme = .init(rawValue: config.theme.rawValue) ?? .tales
         self.mode = config.mode
         self.tool_to_craft = config.tool_to_craft

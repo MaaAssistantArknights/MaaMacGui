@@ -8,7 +8,6 @@
 import Foundation
 
 struct AwardConfiguration: MAATaskConfiguration {
-    var enable = true
     var award = true
     var mail = true
     var recruit = false
@@ -60,7 +59,6 @@ struct AwardConfiguration: MAATaskConfiguration {
 extension AwardConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.enable = try container.decode(Bool.self, forKey: .enable)
 
         // Migration
         self.award = try container.decodeIfPresent(Bool.self, forKey: .award) ?? false

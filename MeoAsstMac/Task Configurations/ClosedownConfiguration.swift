@@ -8,10 +8,6 @@
 import Foundation
 
 struct ClosedownConfiguration: MAATaskConfiguration {
-    var enable = true
-
-    // Requires migration, see `init(from:)`.
-
     var client_type = MAAClientChannel.default
 
     var title: String {
@@ -40,10 +36,6 @@ struct ClosedownConfiguration: MAATaskConfiguration {
 extension ClosedownConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.enable = try container.decode(Bool.self, forKey: .enable)
-
-        // Migration
-
         self.client_type = (try? container.decode(MAAClientChannel.self, forKey: .client_type)) ?? .default
     }
 }

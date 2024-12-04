@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TaskButtons: View {
-    @ObservedObject var viewModel: MAAViewModel
+    @EnvironmentObject var viewModel: MAAViewModel
 
     var body: some View {
         Button("开始任务") {
@@ -27,20 +27,20 @@ struct TaskButtons: View {
         .keyboardShortcut(".", modifiers: .command)
 
         Button("全部启用") {
-            for id in viewModel.tasks.keys {
-                switch viewModel.tasks[id]?.typeName {
+            for (index, task) in viewModel.tasks.enumerated() {
+                switch task.task.typeName {
                 case .Roguelike, .Reclamation:
                     continue
                 default:
-                    viewModel.tasks[id]?.enabled = true
+                    viewModel.tasks[index].enabled = true
                 }
             }
         }
         .keyboardShortcut("E", modifiers: [.command, .shift])
 
         Button("全部取消") {
-            for id in viewModel.tasks.keys {
-                viewModel.tasks[id]?.enabled = false
+            for (index, _) in viewModel.tasks.enumerated() {
+                viewModel.tasks[index].enabled = false
             }
         }
         .keyboardShortcut("D", modifiers: [.command, .shift])
@@ -49,6 +49,6 @@ struct TaskButtons: View {
 
 struct TaskButtons_Previews: PreviewProvider {
     static var previews: some View {
-        TaskButtons(viewModel: MAAViewModel())
+        TaskButtons().environmentObject(MAAViewModel())
     }
 }
