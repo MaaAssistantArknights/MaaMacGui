@@ -62,9 +62,9 @@ struct TaskDetail: View {
     @ToolbarContentBuilder private func detailToolbar() -> some ToolbarContent {
         ToolbarItemGroup {
             Menu {
-                ForEach(MAATask.TypeName.daily, id: \.self) { name in
-                    Button(name.description) {
-                        addTask(MAATask(type: name))
+                ForEach(defaultTaskConfigurations.dropFirst(), id: \.type) { config in
+                    Button(config.title) {
+                        addTask(config: config)
                     }
                 }
             } label: {
@@ -87,8 +87,8 @@ struct TaskDetail: View {
 
     // MARK: - Actions
 
-    private func addTask(_ task: MAATask) {
-        viewModel.tasks.append(task)
+    private func addTask<T: MAATaskConfiguration>(config: T) {
+        viewModel.tasks.append(config: config)
         viewModel.newTaskAdded = true
     }
 }

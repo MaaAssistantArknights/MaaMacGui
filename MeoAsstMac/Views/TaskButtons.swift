@@ -28,8 +28,8 @@ struct TaskButtons: View {
 
         Button("全部启用") {
             for (index, task) in viewModel.tasks.enumerated() {
-                switch task.task.typeName {
-                case .Roguelike, .Reclamation:
+                switch task.task {
+                case .roguelike, .reclamation:
                     continue
                 default:
                     viewModel.tasks[index].enabled = true

@@ -8,6 +8,8 @@
 import Foundation
 
 struct AwardConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Award }
+
     var award = true
     var mail = true
     var recruit = false
@@ -16,7 +18,7 @@ struct AwardConfiguration: MAATaskConfiguration {
     var specialaccess = false
 
     var title: String {
-        MAATask.TypeName.Award.description
+        type.description
     }
 
     var subtitle: String {

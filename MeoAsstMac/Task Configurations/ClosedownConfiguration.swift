@@ -8,10 +8,12 @@
 import Foundation
 
 struct ClosedownConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .CloseDown }
+
     var client_type = MAAClientChannel.default
 
     var title: String {
-        MAATask.TypeName.CloseDown.description
+        type.description
     }
 
     var subtitle: String {

@@ -8,6 +8,8 @@
 import Foundation
 
 struct FightConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Fight }
+
     var stage = ""
     var medicine: Int?
     var expiring_medicine: Int?
@@ -23,7 +25,7 @@ struct FightConfiguration: MAATaskConfiguration {
     var DrGrandet = false
 
     var title: String {
-        MAATask.TypeName.Fight.description
+        type.description
     }
 
     var subtitle: String {

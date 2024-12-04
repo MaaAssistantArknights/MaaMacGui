@@ -8,6 +8,8 @@
 import SwiftUI
 
 protocol MAATaskConfiguration: Codable & Hashable {
+    var type: MAATaskType { get }
+
     var title: String { get }
     var subtitle: String { get }
     var summary: String { get }
@@ -20,28 +22,31 @@ protocol MAATaskConfiguration: Codable & Hashable {
 
 // MARK: JSON TaskParams
 
-extension DailyTask {
-    var params: String? {
-        guard enabled else { return nil }
+extension MAAHandle {
+    func appendTask(_ task: MAATask) throws -> Int32 {
         switch task {
         case .startup(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .closedown(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .recruit(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .infrast(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .fight(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .mall(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .award(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .roguelike(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         case .reclamation(let config):
-            return try? config.params.jsonString()
+            return try appendTask(config: config)
         }
+    }
+
+    fileprivate func appendTask<T: MAATaskConfiguration>(config: T) throws -> Int32 {
+        try appendTask(type: config.type, params: config.params.jsonString())
     }
 }

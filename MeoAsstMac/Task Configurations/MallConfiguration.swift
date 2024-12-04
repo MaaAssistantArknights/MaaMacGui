@@ -8,13 +8,15 @@
 import Foundation
 
 struct MallConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Mall }
+
     var shopping = true
     var buy_first = ["招聘许可", "龙门币"]
     var blacklist = ["加急许可", "家具零件"]
     var force_shopping_if_credit_full = true
 
     var title: String {
-        MAATask.TypeName.Mall.description
+        type.description
     }
 
     var subtitle: String {

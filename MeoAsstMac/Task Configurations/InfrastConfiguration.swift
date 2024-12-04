@@ -8,6 +8,8 @@
 import Foundation
 
 struct InfrastConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Infrast }
+
     var mode = 0
 
     var facility = MAAInfrastFacility.allCases
@@ -22,7 +24,7 @@ struct InfrastConfiguration: MAATaskConfiguration {
     var plan_index = 0
 
     var title: String {
-        MAATask.TypeName.Infrast.description
+        type.description
     }
 
     var subtitle: String {

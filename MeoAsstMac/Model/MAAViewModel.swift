@@ -167,7 +167,7 @@ import SwiftUI
                 tasks = try migrateLegacyConfigurations()
                 print("Migrated")
             } catch {
-                tasks = MAATask.defaults.map { .init($0) }
+                tasks = defaultTaskConfigurations.map { .init(config: $0) }
             }
         }
 
@@ -402,9 +402,9 @@ extension MAAViewModel {
         try await ensureHandle()
 
         for task in tasks {
-            guard let params = task.params else { continue }
+            guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(type: task.task.typeName, params: params) {
+            if let coreID = try await handle?.appendTask(task.task) {
                 taskIDMap[coreID] = task.id
             }
         }

@@ -8,6 +8,8 @@
 import Foundation
 
 struct ReclamationConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Reclamation }
+
     var theme = ReclamationTheme.tales
     var mode = 0
     var tool_to_craft = "荧光棒"
@@ -41,7 +43,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     }
 
     var title: String {
-        MAATask.TypeName.Reclamation.description
+        type.description
     }
 
     var subtitle: String {

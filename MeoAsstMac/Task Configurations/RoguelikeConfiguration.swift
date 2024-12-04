@@ -8,6 +8,8 @@
 import Foundation
 
 struct RoguelikeConfiguration: MAATaskConfiguration {
+    var type: MAATaskType { .Roguelike }
+
     var theme = RoguelikeTheme.Phantom {
         didSet {
             if !theme.difficulties.contains(where: { $0.id == difficulty }) {
@@ -37,7 +39,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var refresh_trader_with_dice = false
 
     var title: String {
-        MAATask.TypeName.Roguelike.description
+        type.description
     }
 
     var subtitle: String {
