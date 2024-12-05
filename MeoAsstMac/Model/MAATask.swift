@@ -93,7 +93,7 @@ extension Array where Element == DailyTask {
             first { $0.id == id }?.task
         }
         set {
-            if let newValue, let index = firstIndex(where: { $0.id == id }) {
+            if let newValue, let index = firstIndex(id: id) {
                 self[index] = .init(id: id, task: newValue, enabled: self[index].enabled)
             }
         }

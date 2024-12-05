@@ -149,7 +149,6 @@ import SwiftUI
         do {
             let data = try Data(contentsOf: tasksURL)
             tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
-            print("Read from \(tasksURL.path)")
         } catch {
             var isDirectory: ObjCBool = false
             let exists = FileManager.default.fileExists(atPath: tasksDirectory.path, isDirectory: &isDirectory)
@@ -165,7 +164,6 @@ import SwiftUI
 
             do {
                 tasks = try migrateLegacyConfigurations()
-                print("Migrated")
             } catch {
                 tasks = defaultTaskConfigurations.map { .init(config: $0) }
             }
