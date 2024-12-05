@@ -15,13 +15,16 @@ protocol MAATaskConfiguration: Codable & Hashable {
     var summary: String { get }
 
     var projectedTask: MAATask { get }
+
+    associatedtype Params: Encodable
+    var params: Params { get }
 }
 
 extension MAATaskConfiguration {
     func jsonStringIfEnabled() -> String? {
         guard enable else { return nil }
 
-        return try? jsonString()
+        return try? params.jsonString()
     }
 }
 

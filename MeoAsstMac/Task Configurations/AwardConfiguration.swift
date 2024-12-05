@@ -49,6 +49,12 @@ struct AwardConfiguration: MAATaskConfiguration {
     var projectedTask: MAATask {
         .award(self)
     }
+
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
 }
 
 extension AwardConfiguration {

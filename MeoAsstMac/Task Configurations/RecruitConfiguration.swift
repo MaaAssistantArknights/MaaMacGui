@@ -40,6 +40,12 @@ struct RecruitConfiguration: MAATaskConfiguration {
         .recruit(self)
     }
 
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
+
     static var recognition: RecruitConfiguration {
         .init(refresh: false, select: [4, 5, 6], confirm: [], times: 0)
     }

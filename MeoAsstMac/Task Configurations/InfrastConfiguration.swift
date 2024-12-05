@@ -54,6 +54,12 @@ struct InfrastConfiguration: MAATaskConfiguration {
         .infrast(self)
     }
 
+    typealias Params = Self
+
+    var params: Self {
+        self
+    }
+
     private var customPlan: MAAInfrast? {
         guard mode == 10000 else { return nil }
         return try? MAAInfrast(path: filename)
