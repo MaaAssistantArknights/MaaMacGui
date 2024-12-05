@@ -13,8 +13,27 @@ struct TasksContent: View {
 
     var body: some View {
         List(selection: $selection) {
-            ForEach(viewModel.tasks.keys, id: \.self) { id in
-                TaskCell(id: id)
+            ForEach($viewModel.tasks, id: \.id) { $task in
+                switch task.task {
+                case .startup(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .closedown(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .recruit(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .infrast(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .fight(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .mall(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .award(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .roguelike(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .reclamation(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                }
             }
             .onMove(perform: moveTask)
         }
@@ -73,21 +92,21 @@ struct TasksContent: View {
 
     private func deleteSelectedTask() {
         guard viewModel.tasks.count > 1,
-              let selection,
-              let index = viewModel.tasks.firstIndex(id: selection)
+            let selection,
+            let index = viewModel.tasks.firstIndex(id: selection)
         else {
             return
         }
         viewModel.tasks.remove(id: selection)
-        if index >= viewModel.tasks.keys.count {
-            self.selection = viewModel.tasks.keys.last
+        if index >= viewModel.tasks.count {
+            self.selection = viewModel.tasks.last?.id
         } else {
-            self.selection = viewModel.tasks.keys[index]
+            self.selection = viewModel.tasks[index].id
         }
     }
 
     private func moveTask(from: IndexSet, to: Int) {
-        viewModel.tasks.keys.move(fromOffsets: from, toOffset: to)
+        viewModel.tasks.move(fromOffsets: from, toOffset: to)
     }
 
     private func deselectTask(_ viewMode: MAAViewModel.DailyTasksDetailMode) {
@@ -98,7 +117,7 @@ struct TasksContent: View {
 
     private func selectLastTask(_ shouldSelect: Bool) {
         if shouldSelect {
-            selection = viewModel.tasks.keys.last
+            selection = viewModel.tasks.last?.id
         }
     }
 

@@ -15,8 +15,27 @@ struct TaskDetail: View {
         VStack {
             switch viewModel.dailyTasksDetailMode {
             case .taskConfig:
-                if let id {
-                    viewModel.taskConfigView(id: id)
+                if let id, let task = viewModel.tasks[id] {
+                    switch task {
+                    case .startup(let config):
+                        StartupSettingsView(config: taskConfigBinding(config, id: id))
+                    case .recruit(let config):
+                        RecruitSettingsView(config: taskConfigBinding(config, id: id))
+                    case .infrast(let config):
+                        InfrastSettingsView(config: taskConfigBinding(config, id: id))
+                    case .fight(let config):
+                        FightSettingsView(config: taskConfigBinding(config, id: id))
+                    case .mall(let config):
+                        MallSettingsView(config: taskConfigBinding(config, id: id))
+                    case .award(let config):
+                        AwardSettingsView(config: taskConfigBinding(config, id: id))
+                    case .roguelike(let config):
+                        RoguelikeSettingsView(config: taskConfigBinding(config, id: id))
+                    case .reclamation(let config):
+                        ReclamationSettingsView(config: taskConfigBinding(config, id: id))
+                    case .closedown(_):
+                        EmptyView()
+                    }
                 } else {
                     Text("Please select one task to config")
                 }
@@ -30,14 +49,22 @@ struct TaskDetail: View {
         .toolbar(content: detailToolbar)
     }
 
+    private func taskConfigBinding<T: MAATaskConfiguration>(_ value: T, id: UUID) -> Binding<T> {
+        Binding {
+            value
+        } set: {
+            viewModel.tasks[id] = $0.projectedTask
+        }
+    }
+
     // MARK: - Toolbar
 
     @ToolbarContentBuilder private func detailToolbar() -> some ToolbarContent {
         ToolbarItemGroup {
             Menu {
-                ForEach(MAATask.TypeName.daily, id: \.self) { name in
-                    Button(name.description) {
-                        addTask(MAATask(type: name))
+                ForEach(defaultTaskConfigurations.dropFirst(), id: \.type) { config in
+                    Button(config.title) {
+                        addTask(config: config)
                     }
                 }
             } label: {
@@ -52,15 +79,16 @@ struct TaskDetail: View {
 
                 ViewDetaiTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
                 ViewDetaiTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
+                ViewDetaiTabButton(
+                    mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
             }
         }
     }
 
     // MARK: - Actions
 
-    private func addTask(_ task: MAATask) {
-        viewModel.tasks.append(task)
+    private func addTask<T: MAATaskConfiguration>(config: T) {
+        viewModel.tasks.append(config: config)
         viewModel.newTaskAdded = true
     }
 }

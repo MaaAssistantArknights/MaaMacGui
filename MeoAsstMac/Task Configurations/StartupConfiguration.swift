@@ -8,12 +8,13 @@
 import Foundation
 
 struct StartupConfiguration: MAATaskConfiguration {
-    var enable = true
+    var type: MAATaskType { .StartUp }
+
     var client_type = MAAClientChannel.default
     var start_game_enabled = false
 
     var title: String {
-        MAATask.TypeName.StartUp.description
+        type.description
     }
 
     var subtitle: String {

@@ -8,7 +8,7 @@
 import Foundation
 
 struct RecruitConfiguration: MAATaskConfiguration {
-    var enable = true
+    var type: MAATaskType { .Recruit }
 
     var refresh = true
     var select = [4, 5]
@@ -20,7 +20,7 @@ struct RecruitConfiguration: MAATaskConfiguration {
     var recruitment_time = ["3": 540, "4": 540, "5": 540, "6": 540]
 
     var title: String {
-        MAATask.TypeName.Recruit.description
+        type.description
     }
 
     var subtitle: String {

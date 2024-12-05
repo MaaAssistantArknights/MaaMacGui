@@ -17,91 +17,21 @@ enum MAATask: Codable, Equatable {
     case award(AwardConfiguration)
     case roguelike(RoguelikeConfiguration)
     case reclamation(ReclamationConfiguration)
-
-    enum TypeName: String {
-        case StartUp
-        case CloseDown
-        case Recruit
-        case Infrast
-        case Fight
-        case Mall
-        case Award
-        case Roguelike
-        case Copilot
-        case SSSCopilot
-        case Depot
-        case Reclamation
-        case VideoRecognition
-        case OperBox
-        case Custom
-    }
-
-    static let defaults: [MAATask] = [
-        .startup(.init()),
-        .recruit(.init()),
-        .infrast(.init()),
-        .fight(.init()),
-        .mall(.init()),
-        .award(.init()),
-        .roguelike(.init()),
-        .reclamation(.init()),
-        .closedown(.init()),
-    ]
-
-    init(type: TypeName) {
-        switch type {
-        case .StartUp:
-            self = .startup(.init())
-        case .CloseDown:
-            self = .closedown(.init())
-        case .Recruit:
-            self = .recruit(.init())
-        case .Infrast:
-            self = .infrast(.init())
-        case .Fight:
-            self = .fight(.init())
-        case .Mall:
-            self = .mall(.init())
-        case .Award:
-            self = .award(.init())
-        case .Roguelike:
-            self = .roguelike(.init())
-        case .Reclamation:
-            self = .reclamation(.init())
-        default:
-            self = .award(.init())
-        }
-    }
 }
 
-// MARK: Task Type
+let defaultTaskConfigurations: [any MAATaskConfiguration] = [
+    StartupConfiguration(),
+    RecruitConfiguration(),
+    InfrastConfiguration(),
+    FightConfiguration(),
+    MallConfiguration(),
+    AwardConfiguration(),
+    RoguelikeConfiguration(),
+    ReclamationConfiguration(),
+    ClosedownConfiguration(),
+]
 
-extension MAATask {
-    var typeName: TypeName {
-        switch self {
-        case .startup:
-            return .StartUp
-        case .closedown:
-            return .CloseDown
-        case .recruit:
-            return .Recruit
-        case .infrast:
-            return .Infrast
-        case .fight:
-            return .Fight
-        case .mall:
-            return .Mall
-        case .award:
-            return .Award
-        case .roguelike:
-            return .Roguelike
-        case .reclamation:
-            return .Reclamation
-        }
-    }
-}
-
-extension MAATask.TypeName: Codable, CustomStringConvertible {
+extension MAATaskType: Codable, CustomStringConvertible {
     var description: String {
         switch self {
         case .StartUp:
@@ -136,101 +66,54 @@ extension MAATask.TypeName: Codable, CustomStringConvertible {
             return NSLocalizedString("自定义", comment: "")
         }
     }
-
-    static var daily: [MAATask.TypeName] {
-        [.Recruit, .Infrast, .Fight, .Mall, .Award, .Roguelike, .Reclamation, .CloseDown]
-    }
-}
-
-// MARK: - Task Overview
-
-extension MAATask {
-    var enabled: Bool {
-        get {
-            switch self {
-            case .startup(let config):
-                return config.enable
-            case .closedown(let config):
-                return config.enable
-            case .recruit(let config):
-                return config.enable
-            case .infrast(let config):
-                return config.enable
-            case .fight(let config):
-                return config.enable
-            case .mall(let config):
-                return config.enable
-            case .award(let config):
-                return config.enable
-            case .roguelike(let config):
-                return config.enable
-            case .reclamation(let config):
-                return config.enable
-            }
-        }
-        set {
-            switch self {
-            case .startup(var config):
-                config.enable = newValue
-                self = .startup(config)
-            case .closedown(var config):
-                config.enable = newValue
-                self = .closedown(config)
-            case .recruit(var config):
-                config.enable = newValue
-                self = .recruit(config)
-            case .infrast(var config):
-                config.enable = newValue
-                self = .infrast(config)
-            case .fight(var config):
-                config.enable = newValue
-                self = .fight(config)
-            case .mall(var config):
-                config.enable = newValue
-                self = .mall(config)
-            case .award(var config):
-                config.enable = newValue
-                self = .award(config)
-            case .roguelike(var config):
-                config.enable = newValue
-                self = .roguelike(config)
-            case .reclamation(var config):
-                config.enable = newValue
-                self = .reclamation(config)
-            }
-        }
-    }
-
-    typealias Overview = (title: String, subtitle: String, summary: String)
-
-    var overview: Overview {
-        switch self {
-        case .startup(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .closedown(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .recruit(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .infrast(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .fight(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .mall(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .award(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .roguelike(let config):
-            return (config.title, config.subtitle, config.summary)
-        case .reclamation(let config):
-            return (config.title, config.subtitle, config.summary)
-        }
-    }
 }
 
 // MARK: Task Persistance
 
+struct DailyTask: Codable, Equatable, Identifiable {
+    let id: UUID
+    let task: MAATask
+    var enabled: Bool
+}
+
+extension DailyTask {
+    init<T: MAATaskConfiguration>(config: T) {
+        switch config.type {
+        case .Roguelike, .Reclamation:
+            self.init(id: UUID(), task: config.projectedTask, enabled: false)
+        default:
+            self.init(id: UUID(), task: config.projectedTask, enabled: true)
+        }
+    }
+}
+
+extension Array where Element == DailyTask {
+    subscript(_ id: UUID) -> MAATask? {
+        get {
+            first { $0.id == id }?.task
+        }
+        set {
+            if let newValue, let index = firstIndex(id: id) {
+                self[index] = .init(id: id, task: newValue, enabled: self[index].enabled)
+            }
+        }
+    }
+
+    func firstIndex(id: UUID) -> Int? {
+        firstIndex { $0.id == id }
+    }
+
+    mutating func append<T: MAATaskConfiguration>(config: T) {
+        append(.init(config: config))
+    }
+
+    mutating func remove(id: UUID) {
+        removeAll { $0.id == id }
+    }
+}
+
 extension MAAViewModel {
-    func writeBack(_ newValue: OrderedStore<MAATask>) {
+    func writeBack(_ newValue: [DailyTask]) {
         let data = try? PropertyListEncoder().encode(newValue)
         try? data?.write(to: tasksURL)
     }

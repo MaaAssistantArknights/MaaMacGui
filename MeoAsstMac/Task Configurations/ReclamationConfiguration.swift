@@ -8,7 +8,8 @@
 import Foundation
 
 struct ReclamationConfiguration: MAATaskConfiguration {
-    var enable = false
+    var type: MAATaskType { .Reclamation }
+
     var theme = ReclamationTheme.tales
     var mode = 0
     var tool_to_craft = "荧光棒"
@@ -20,12 +21,12 @@ struct ReclamationConfiguration: MAATaskConfiguration {
         case .fire:
             return [
                 0: NSLocalizedString("刷分与建造点", comment: ""),
-                1: NSLocalizedString("刷赤金", comment: "")
+                1: NSLocalizedString("刷赤金", comment: ""),
             ]
         case .tales:
             return [
                 0: NSLocalizedString("无存档，通过进出关卡刷生息点数", comment: ""),
-                1: NSLocalizedString("有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档", comment: "")
+                1: NSLocalizedString("有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档", comment: ""),
             ]
         }
     }
@@ -33,7 +34,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     var increment_modes: [Int: String] {
         return [
             0: NSLocalizedString("点击加号按钮", comment: ""),
-            1: NSLocalizedString("按住加号按钮", comment: "")
+            1: NSLocalizedString("按住加号按钮", comment: ""),
         ]
     }
 
@@ -42,7 +43,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     }
 
     var title: String {
-        MAATask.TypeName.Reclamation.description
+        type.description
     }
 
     var subtitle: String {

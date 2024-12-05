@@ -65,7 +65,7 @@ actor MAAHandle {
         uuidPointer.deallocate()
     }
 
-    func appendTask(type: MAATask.TypeName, params: String) throws -> Int32 {
+    func appendTask(type: MAATaskType, params: String) throws -> Int32 {
         let taskID = AsstAppendTask(handle, type.rawValue, params)
         if taskID == 0 {
             throw MaaCoreError.appendTaskFailed
@@ -119,6 +119,24 @@ actor MAAHandle {
     var running: Bool {
         AsstRunning(handle).isTrue
     }
+}
+
+enum MAATaskType: String {
+    case StartUp
+    case CloseDown
+    case Recruit
+    case Infrast
+    case Fight
+    case Mall
+    case Award
+    case Roguelike
+    case Copilot
+    case SSSCopilot
+    case Depot
+    case Reclamation
+    case VideoRecognition
+    case OperBox
+    case Custom
 }
 
 enum MaaCoreError: Error {
