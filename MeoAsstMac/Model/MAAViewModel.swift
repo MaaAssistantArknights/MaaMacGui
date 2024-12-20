@@ -241,17 +241,27 @@ extension MAAViewModel {
         return try decoder.decode(MAAResourceVersion.self, from: data)
     }
 
+    /// Load base resources and channel-specific resources.
+    ///
+    /// Should be called by `loadResource(channel:)`.
     private func loadResource(url: URL, channel: MAAClientChannel) async throws {
-        try await MAAProvider.shared.loadResource(path: url.path)
+        try await loadResource(url: url)
 
         if channel.isGlobal {
             let extraResource = url.appendingPathComponent("resource")
                 .appendingPathComponent("global")
                 .appendingPathComponent(channel.rawValue)
             if FileManager.default.fileExists(atPath: extraResource.path) {
-                try await MAAProvider.shared.loadResource(path: extraResource.path)
+                try await loadResource(url: extraResource)
             }
         }
+    }
+
+    /// Core process to load resources at url.
+    ///
+    /// Should be called by `loadResource(url:channel:)`.
+    private func loadResource(url: URL) async throws {
+        try await MAAProvider.shared.loadResource(path: url.path)
 
         if touchMode == .MacPlayTools {
             let platformResource = url.appendingPathComponent("resource")
@@ -263,6 +273,9 @@ extension MAAViewModel {
         }
     }
 
+    /// Load resources from bundled, user, and remote resources.
+    ///
+    /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
         let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
