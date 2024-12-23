@@ -142,7 +142,7 @@ extension ReclamationConfiguration {
     fileprivate init(migrating config: LegacyReclamationConfiguration) {
         self.theme = .init(rawValue: config.theme.rawValue) ?? .tales
         self.mode = config.mode
-        self.tool_to_craft = config.tool_to_craft
+        self.tools_to_craft = [config.tool_to_craft]
         self.num_craft_batches = config.num_craft_batches
         self.increment_mode = config.increment_mode
     }

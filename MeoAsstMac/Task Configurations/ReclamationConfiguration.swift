@@ -12,7 +12,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
 
     var theme = ReclamationTheme.tales
     var mode = 0
-    var tool_to_craft = "荧光棒"
+    var tools_to_craft = ["荧光棒"]
     var num_craft_batches = 16
     var increment_mode = 0
 
@@ -38,7 +38,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
         ]
     }
 
-    var toolToCraftEnabled: Bool {
+    var toolsToCraftEnabled: Bool {
         theme == .tales && mode == 1
     }
 

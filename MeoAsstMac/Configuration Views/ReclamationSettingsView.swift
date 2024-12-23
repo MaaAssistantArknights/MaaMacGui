@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ReclamationSettingsView: View {
     @Binding var config: ReclamationConfiguration
+    @State private var toolsToCraft: String = ""
 
     var body: some View {
         Form {
@@ -24,8 +25,16 @@ struct ReclamationSettingsView: View {
                 }
             }
 
-            if config.toolToCraftEnabled {
-                TextField("支援道具：", text: $config.tool_to_craft)
+            if config.toolsToCraftEnabled {
+                TextField("支援道具：", text: $toolsToCraft)
+                    .onChange(of: toolsToCraft) { newValue in
+                        config.tools_to_craft = newValue.split(separator: ";").map {
+                            $0.trimmingCharacters(in: .whitespaces)
+                        }
+                    }
+                    .onAppear {
+                        toolsToCraft = config.tools_to_craft.joined(separator: "; ")
+                    }
                 TextField("组装批次数：", value: $config.num_craft_batches, format: .number)
                 Picker("组装数量增加模式：", selection: $config.increment_mode) {
                     ForEach(config.increment_modes.sorted(by: <), id: \.key) { increment_mode, desc in
@@ -34,7 +43,7 @@ struct ReclamationSettingsView: View {
                 }
             }
         }
-        .animation(.default, value: config.toolToCraftEnabled)
+        .animation(.default, value: config.toolsToCraftEnabled)
         .padding()
     }
 }
