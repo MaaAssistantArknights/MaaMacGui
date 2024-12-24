@@ -27,7 +27,7 @@ public func legacyTasks() throws -> [MAALegacyTask] {
         .appendingPathExtension("plist")
 
     if !FileManager.default.fileExists(atPath: legacyTasksURL.path) {
-        return []
+        throw POSIXError(.ENOENT)
     }
 
     let data = try Data(contentsOf: legacyTasksURL)
