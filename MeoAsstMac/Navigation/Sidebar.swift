@@ -37,7 +37,7 @@ struct Sidebar: View {
                     Label("设置", systemImage: "gear")
                 }
             }
-            .buttonStyle(.borderless)
+            .buttonStyle(.plain)
             .frame(maxHeight: rowHeight * 4.2)
         }
         .withSidebarButton()
