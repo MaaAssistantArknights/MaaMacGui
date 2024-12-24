@@ -65,6 +65,39 @@ struct ReclamationConfiguration: MAATaskConfiguration {
     }
 }
 
+extension ReclamationConfiguration {
+    enum CodingKeys: String, CodingKey {
+        case theme
+        case mode
+        case tool_to_craft
+        case tools_to_craft
+        case num_craft_batches
+        case increment_mode
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.theme = try container.decode(ReclamationTheme.self, forKey: .theme)
+        self.mode = try container.decode(Int.self, forKey: .mode)
+        self.num_craft_batches = try container.decode(Int.self, forKey: .num_craft_batches)
+        self.increment_mode = try container.decode(Int.self, forKey: .increment_mode)
+        do {
+            self.tools_to_craft = try container.decode([String].self, forKey: .tools_to_craft)
+        } catch {
+            self.tools_to_craft = [try container.decode(String.self, forKey: .tool_to_craft)]
+        }
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(theme, forKey: .theme)
+        try container.encode(mode, forKey: .mode)
+        try container.encode(tools_to_craft, forKey: .tools_to_craft)
+        try container.encode(num_craft_batches, forKey: .num_craft_batches)
+        try container.encode(increment_mode, forKey: .increment_mode)
+    }
+}
+
 enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {
     case fire = "Fire"
     case tales = "Tales"
