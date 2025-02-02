@@ -253,9 +253,6 @@ extension MAAViewModel {
             case "StartButton2", "AnnihilationConfirm":
                 logInfo("MissionStart \(execTimes) UnitTime")
 
-            case "MedicineConfirm":
-                logInfo("MedicineUsed \(execTimes) UnitTime")
-
             case "StoneConfirm":
                 logInfo("StoneUsed \(execTimes) UnitTime")
 
@@ -526,6 +523,19 @@ extension MAAViewModel {
                 deepen_or_weaken == 1
             {
                 logInfo("GainParadigm \(cur)")
+            }
+
+        case "UseMedicine":
+            if let isExpiringMedicine = subTaskDetails["is_expiring"].bool,
+                let medicineCount = subTaskDetails["count"].int
+            {
+                if (!isExpiringMedicine) {
+                    MedicineUsedTimes += medicineCount
+                    logInfo("MedicineUsed \(MedicineUsedTimes)(+\(medicineCount)) UnitTime")
+                } else {
+                    ExpiringMedicineUsedTimes += medicineCount
+                    logInfo("ExpiringMedicineUsed \(ExpiringMedicineUsedTimes)(+\(medicineCount)) UnitTime")
+                }
             }
 
         default:

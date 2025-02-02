@@ -460,6 +460,16 @@
         }
       }
     },
+    "ExpiringMedicineUsed %lld(+%lld) UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已使用 48 小时内过期的理智药 %1$lld(+%2$lld) 次"
+          }
+        }
+      }
+    },
     "ExplorationAbandoned" : {
       "localizations" : {
         "ko" : {
@@ -959,6 +969,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已使用理智药%lld次"
+          }
+        }
+      }
+    },
+    "MedicineUsed %lld(+%lld) UnitTime" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已使用理智药 %1$lld(+%2$lld) 次"
           }
         }
       }
