@@ -957,22 +957,6 @@
     "maa://" : {
       "shouldTranslate" : false
     },
-    "MedicineUsed %lld UnitTime" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "약물 사용 %lld회"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已使用理智药%lld次"
-          }
-        }
-      }
-    },
     "MedicineUsed %lld(+%lld) UnitTime" : {
       "localizations" : {
         "zh-Hans" : {

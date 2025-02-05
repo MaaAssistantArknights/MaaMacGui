@@ -18,9 +18,9 @@ import SwiftUI
         case pending
     }
 
-    var MedicineUsedTimes = 0
-    var ExpiringMedicineUsedTimes = 0
-    
+    var medicineUsedTimes = 0
+    var expiringMedicineUsedTimes = 0
+
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
@@ -226,8 +226,8 @@ extension MAAViewModel {
 
     func resetStatus() {
         status = .idle
-        MedicineUsedTimes = 0
-        ExpiringMedicineUsedTimes = 0
+        medicineUsedTimes = 0
+        expiringMedicineUsedTimes = 0
     }
 
     func screenshot() async throws -> NSImage {

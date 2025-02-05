@@ -529,12 +529,12 @@ extension MAAViewModel {
             if let isExpiringMedicine = subTaskDetails["is_expiring"].bool,
                 let medicineCount = subTaskDetails["count"].int
             {
-                if (!isExpiringMedicine) {
-                    MedicineUsedTimes += medicineCount
-                    logInfo("MedicineUsed \(MedicineUsedTimes)(+\(medicineCount)) UnitTime")
+                if !isExpiringMedicine {
+                    medicineUsedTimes += medicineCount
+                    logInfo("MedicineUsed \(medicineUsedTimes)(+\(medicineCount)) UnitTime")
                 } else {
-                    ExpiringMedicineUsedTimes += medicineCount
-                    logInfo("ExpiringMedicineUsed \(ExpiringMedicineUsedTimes)(+\(medicineCount)) UnitTime")
+                    expiringMedicineUsedTimes += medicineCount
+                    logInfo("ExpiringMedicineUsed \(expiringMedicineUsedTimes)(+\(medicineCount)) UnitTime")
                 }
             }
 
