@@ -11,12 +11,21 @@ import ZIPFoundation
 struct ResourceUpdateView: View {
     @State private var progress: (String, Double)? = ("", 0)
     @State private var error: Error?
+    @State private var shouldUpdate = true
 
     @Environment(\.dismiss) private var dismiss
+    @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
 
     var body: some View {
         VStack {
-            if let progress {
+            if !shouldUpdate {
+                Text("无需更新资源")
+                    .font(.headline)
+                    .frame(maxWidth: .infinity)
+                Button("好") {
+                    dismiss()
+                }
+            } else if let progress {
                 if let error {
                     Text("更新失败：\(error.localizedDescription)")
                         .font(.headline)
@@ -41,10 +50,13 @@ struct ResourceUpdateView: View {
         .padding()
         .task {
             do {
-                try await downloadResource()
+                let url = try await resourceChannel.latestURL()
+                try await downloadResource(from: url)
                 try await extractResource()
                 try await copyResource()
                 progress = nil
+            } catch MAAResourceChannel.Error.noNeedUpdate {
+                self.shouldUpdate = false
             } catch {
                 self.error = error
             }
@@ -53,7 +65,7 @@ struct ResourceUpdateView: View {
         }
     }
 
-    private func downloadResource() async throws {
+    private func downloadResource(from remoteURL: URL) async throws {
         try Task.checkCancellation()
         try? FileManager.default.removeItem(at: localURL)
         for try await progress in URLSession.shared.downloadTo(localURL, from: remoteURL) {
@@ -84,8 +96,6 @@ struct ResourceUpdateView: View {
         }
     }
 }
-
-private let remoteURL = URL(string: "https://github.com/MaaAssistantArknights/MaaResource/archive/refs/heads/main.zip")!
 
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 private let tmpURL = FileManager.default.temporaryDirectory

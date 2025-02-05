@@ -2,7 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>destination</key>
+	<string>export</string>
 	<key>method</key>
 	<string>developer-id</string>
+	<key>provisioningProfiles</key>
+	<dict>
+		<key>com.hguandl.MeoAsstMac</key>
+		<string>MAA CI Workflow</string>
+	</dict>
+	<key>signingCertificate</key>
+	<string>Developer ID Application</string>
+	<key>signingStyle</key>
+	<string>manual</string>
+	<key>teamID</key>
+	<string>29V29Y67P2</string>
 </dict>
 </plist>

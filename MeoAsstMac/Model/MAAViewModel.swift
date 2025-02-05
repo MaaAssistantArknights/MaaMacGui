@@ -129,6 +129,10 @@ import SwiftUI
         }
     }
 
+    // MARK: - Update Settings
+
+    @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
+
     // MARK: - System Settings
 
     @AppStorage("MAAPreventSystemSleeping") var preventSystemSleeping = false {
@@ -238,14 +242,6 @@ extension MAAViewModel {
         return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
     }
 
-    private func resourceVersion(of url: URL) throws -> MAAResourceVersion {
-        let versionURL = url.appendingPathComponent("resource").appendingPathComponent("version.json")
-        let data = try Data(contentsOf: versionURL)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        return try decoder.decode(MAAResourceVersion.self, from: data)
-    }
-
     /// Load base resources and channel-specific resources.
     ///
     /// Should be called by `loadResource(channel:)`.
@@ -282,49 +278,31 @@ extension MAAViewModel {
     ///
     /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
-        let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
+        let (preferUser, currentResourceVersion) = try resourceChannel.version()
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
-        logTrace(
-            """
-            内置资源版本：\(bundledResourceVersion.activity.name)
-            更新时间：\(bundledResourceVersion.last_updated)
-            """)
 
-        let currentResourceVersion: MAAResourceVersion
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        if let userResourceVersion = try? resourceVersion(of: documentsDirectory) {
-            if userResourceVersion.last_updated > bundledResourceVersion.last_updated {
-                try await loadResource(url: documentsDirectory, channel: channel)
-                try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
-                currentResourceVersion = userResourceVersion
-                logTrace(
-                    """
-                    外部资源版本：\(userResourceVersion.activity.name)
-                    更新时间：\(userResourceVersion.last_updated)
-                    """)
-            } else {
-                currentResourceVersion = bundledResourceVersion
-                logInfo("无需使用外部更新资源")
-            }
+        if preferUser {
+            try await loadResource(url: documentsDirectory, channel: channel)
+            try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
+            logTrace(
+                """
+                外部资源版本：\(currentResourceVersion.activity.name)
+                更新时间：\(currentResourceVersion.last_updated)
+                """)
         } else {
-            currentResourceVersion = bundledResourceVersion
-            logInfo("未找到外部更新资源")
+            logTrace(
+                """
+                内置资源版本：\(currentResourceVersion.activity.name)
+                更新时间：\(currentResourceVersion.last_updated)
+                """)
         }
 
         Task.detached {
-            let resmoteResourceVersionURL = URL(
-                string: "https://github.com/MaaAssistantArknights/MaaResource/raw/refs/heads/main/resource/version.json"
-            )!
-
             do {
-                let (data, _) = try await URLSession.shared.data(from: resmoteResourceVersionURL)
-
-                let decoder = JSONDecoder()
-                decoder.dateDecodingStrategy = .secondsSince1970
-                let remoteResourceVersion = try decoder.decode(MAAResourceVersion.self, from: data)
-
-                if remoteResourceVersion.last_updated > currentResourceVersion.last_updated {
-                    await self.logInfo("发现新资源版本：\(remoteResourceVersion.last_updated)")
+                let version = try await self.resourceChannel.latestVersion()
+                if version > currentResourceVersion.last_updated {
+                    await self.logInfo("发现新资源版本：\(version)")
                 } else {
                     await self.logInfo("资源已是最新版本")
                 }

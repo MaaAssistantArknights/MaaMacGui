@@ -15,6 +15,7 @@ struct UpdaterSettingsView: View {
     @State private var automaticallyDownloadsUpdates: Bool
 
     @AppStorage("MaaUseBetaChannel") private var useBetaChannel = false
+    @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
 
     init(updater: SPUUpdater) {
         self.updater = updater
@@ -36,13 +37,36 @@ struct UpdaterSettingsView: View {
                 .onChange(of: automaticallyDownloadsUpdates) { newValue in
                     updater.automaticallyDownloadsUpdates = newValue
                 }
+
+            Divider()
+
+            Picker("资源更新来源", selection: $resourceChannel) {
+                ForEach(MAAResourceChannel.allCases, id: \.hashValue) { channel in
+                    Text(channel.description).tag(channel)
+                }
+            }
+
+            if resourceChannel == .mirrorChyan {
+                SecureField("CDK", text: mirrorChyanCDK)
+            }
+
+            Text("重新打开应用后生效。")
+                .font(.caption).foregroundColor(.secondary)
         }
+        .animation(.default, value: resourceChannel)
         .padding()
     }
 }
 
+private let mirrorChyanCDK = Binding {
+    MirrorChyan.getCDK() ?? ""
+} set: {
+    _ = MirrorChyan.setCDK($0)
+}
+
 struct UpdaterSettingsView_Previews: PreviewProvider {
-    private static let updateController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    private static let updateController = SPUStandardUpdaterController(
+        startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
     static var previews: some View {
         UpdaterSettingsView(updater: updateController.updater)

@@ -56,6 +56,9 @@
 		8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */; };
 		8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */; };
 		834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */; };
+		8352529F2D533F9000C6D6D3 /* MirrorChyan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8352529E2D533F9000C6D6D3 /* MirrorChyan.swift */; };
+		835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835252A02D534A9E00C6D6D3 /* GitHub.swift */; };
+		835252A32D53567D00C6D6D3 /* ResourceUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 835252A22D53567D00C6D6D3 /* ResourceUpdater.swift */; };
 		83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D5E29F00F0A008A5DF8 /* CopilotView.swift */; };
 		83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83531D6229F0A033008A5DF8 /* MAAInfrast.swift */; };
 		8355E7AE29E7F9DD005D5A1C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8355E7AD29E7F9DD005D5A1C /* ContentView.swift */; };
@@ -169,6 +172,9 @@
 		8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+unzipProgress.swift"; sourceTree = "<group>"; };
 		8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession+downloadProgress.swift"; sourceTree = "<group>"; };
 		834DEC112C4D94BD0073B5D4 /* ClosedownConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedownConfiguration.swift; sourceTree = "<group>"; };
+		8352529E2D533F9000C6D6D3 /* MirrorChyan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirrorChyan.swift; sourceTree = "<group>"; };
+		835252A02D534A9E00C6D6D3 /* GitHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHub.swift; sourceTree = "<group>"; };
+		835252A22D53567D00C6D6D3 /* ResourceUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceUpdater.swift; sourceTree = "<group>"; };
 		83531D5E29F00F0A008A5DF8 /* CopilotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotView.swift; sourceTree = "<group>"; };
 		83531D6229F0A033008A5DF8 /* MAAInfrast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAInfrast.swift; sourceTree = "<group>"; };
 		8355E7AD29E7F9DD005D5A1C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; tabWidth = 2; };
@@ -446,6 +452,9 @@
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
 				8347B5AC2CDF8B2800AEB627 /* FileManager+unzipProgress.swift */,
 				83D061F52CF81519008F0140 /* FileLogger.swift */,
+				835252A22D53567D00C6D6D3 /* ResourceUpdater.swift */,
+				8352529E2D533F9000C6D6D3 /* MirrorChyan.swift */,
+				835252A02D534A9E00C6D6D3 /* GitHub.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -589,6 +598,8 @@
 				83264A2D29EBEDD80074E33A /* FightConfiguration.swift in Sources */,
 				8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */,
 				832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */,
+				8352529F2D533F9000C6D6D3 /* MirrorChyan.swift in Sources */,
+				835252A32D53567D00C6D6D3 /* ResourceUpdater.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
 				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
@@ -597,6 +608,7 @@
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
 				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
 				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,
+				835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
@@ -768,14 +780,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Developer ID Application";
+				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=macosx*]" = 29V29Y67P2;
+				DEVELOPMENT_TEAM = 29V29Y67P2;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -787,7 +797,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "MAA CI Workflow";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
