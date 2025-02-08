@@ -11,16 +11,15 @@ import Security
 public struct MirrorChyan: Sendable {
     private let rid: String
     private let cdk: String?
-    private let userAgent: String?
+    private let userAgent = "com.hguandl.MeoAsstMac"
 
-    public init(rid: String, cdk: String?, userAgent: String? = nil) {
+    public init(rid: String, cdk: String?) {
         self.rid = rid
         self.cdk = cdk
-        self.userAgent = userAgent
     }
 
-    public init(rid: String, userAgent: String? = nil) {
-        self.init(rid: rid, cdk: Self.getCDK(), userAgent: userAgent)
+    public init(rid: String) {
+        self.init(rid: rid, cdk: Self.getCDK())
     }
 
     public struct Error: Swift.Error {
@@ -50,15 +49,12 @@ private struct MirrorChyanResponse<T: Decodable>: Decodable {
 
 extension MirrorChyan {
     public func query(currentVersion: String? = nil) async throws -> Version {
-        var queryItems = [URLQueryItem]()
+        var queryItems = [URLQueryItem(name: "user_agent", value: userAgent)]
         if let currentVersion {
             queryItems.append(URLQueryItem(name: "current_version", value: currentVersion))
         }
         if let cdk {
             queryItems.append(URLQueryItem(name: "cdk", value: cdk))
-        }
-        if let userAgent {
-            queryItems.append(URLQueryItem(name: "user_agent", value: userAgent))
         }
 
         var urlComps = URLComponents(string: "https://mirrorc.top/api/resources/\(rid)/latest")!
