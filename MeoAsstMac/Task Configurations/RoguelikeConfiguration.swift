@@ -38,6 +38,17 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let id: Int
     }
 
+    struct StartCollectibles: Codable, Hashable {
+        var hot_water = false
+        var shield = false
+        var ingot = false
+        var hope = false
+        var random = false
+        var key = false
+        var dice = false
+        var ideas = false
+    }
+
     var theme = Theme.Phantom {
         didSet {
             if !theme.difficulties.contains(difficulty) {
@@ -94,6 +105,50 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     ///
     /// 仅在主题为 `Sami` 模式为 `collectible` 且使用 "生活至上分队" 时有效；
     var start_foldartal_list = [String]()
+    /// 是否凹 2 构想开局，可选，默认值 `false`
+    ///
+    /// 仅在主题为 `Sarkaz` 且模式为 `collectible` 时有效
+    var start_with_two_ideas = false
+    /// 是否使用密文板，模式 `clpPds` 下默认值 `false`，其他模式下默认值 `true`
+    ///
+    /// 仅适用于 `Sami` 主题
+    var use_foldartal = true
+    /// 是否检测获取的坍缩范式，模式 `clpPds` 下默认值 `true`，其他模式下默认值 `false`
+    ///
+    /// 仅适用于 `Sami` 主题
+    var check_collapsal_paradigms = false
+    /// 是否执行坍缩范式检测防漏措施，模式 `clpPds` 下默认值 true，其他模式下默认值 `false`
+    ///
+    /// 仅在主题为 `Sami` 且 `check_collapsal_paradigms` 为 `true` 时有效
+    var double_check_collapsal_paradigms = false
+    /// 希望触发的坍缩范式，默认值为稀有坍缩
+    ///
+    /// 仅在主题为 `Sami` 且模式为 `clpPds` 时有效
+    var expected_collapsal_paradigms = ["目空一些", "睁眼瞎", "图像损坏", "一抹黑"]
+    /// 是否启动月度小队自动切换
+    ///
+    /// 仅在模式为 `squad` 时有效
+    var monthlySquadAutoIterate = false
+    /// 是否将月度小队通信也作为切换依据
+    ///
+    /// 仅在模式为 `squad` 且 `monthlySquadAutoIterate` 为 `true` 时有效
+    var monthlySquadCheckComms = false
+    /// 是否启动深入调查自动切换
+    ///
+    /// 仅在模式为 `exploration` 时有效
+    var deepExplorationAutoIterate = false
+    /// 烧水是否启用购物, 默认值 `false`
+    ///
+    /// 仅在模式为 `collectible` 时有效
+    var collectible_mode_shopping = false
+    /// 烧水时使用的分队, 默认与 `squad` 同步
+    ///
+    /// 仅在模式为 `collectible` 时有效
+    var collectible_mode_squad = "指挥分队"
+    /// 烧水期望奖励, 默认全 `false`
+    ///
+    /// 仅在模式为 `collectible` 时有效
+    var collectible_mode_start_list = StartCollectibles()
 
     var title: String {
         type.description
@@ -187,6 +242,26 @@ extension RoguelikeConfiguration {
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
         self.first_floor_foldartal = try container.decodeIfPresent(String.self, forKey: .first_floor_foldartal) ?? ""
         self.start_foldartal_list = try container.decodeIfPresent([String].self, forKey: .start_foldartal_list) ?? []
+        self.start_with_two_ideas = try container.decodeIfPresent(Bool.self, forKey: .start_with_two_ideas) ?? false
+        self.use_foldartal = try container.decodeIfPresent(Bool.self, forKey: .use_foldartal) ?? true
+        self.check_collapsal_paradigms =
+            try container.decodeIfPresent(Bool.self, forKey: .check_collapsal_paradigms) ?? false
+        self.double_check_collapsal_paradigms =
+            try container.decodeIfPresent(Bool.self, forKey: .double_check_collapsal_paradigms) ?? false
+        self.expected_collapsal_paradigms =
+            try container.decodeIfPresent([String].self, forKey: .expected_collapsal_paradigms) ?? [
+                "目空一些", "睁眼瞎", "图像损坏", "一抹黑",
+            ]
+        self.monthlySquadCheckComms = try container.decodeIfPresent(Bool.self, forKey: .monthlySquadCheckComms) ?? false
+        self.deepExplorationAutoIterate =
+            try container.decodeIfPresent(Bool.self, forKey: .deepExplorationAutoIterate) ?? false
+        self.collectible_mode_shopping =
+            try container.decodeIfPresent(Bool.self, forKey: .collectible_mode_shopping) ?? false
+        self.collectible_mode_squad =
+            try container.decodeIfPresent(String.self, forKey: .collectible_mode_squad) ?? "指挥分队"
+        self.collectible_mode_start_list =
+            try container.decodeIfPresent(StartCollectibles.self, forKey: .collectible_mode_start_list)
+            ?? StartCollectibles()
     }
 }
 
@@ -243,6 +318,17 @@ extension RoguelikeConfiguration {
         case refresh_trader_with_dice
         case first_floor_foldartal
         case start_foldartal_list
+        case start_with_two_ideas
+        case use_foldartal
+        case check_collapsal_paradigms
+        case double_check_collapsal_paradigms
+        case expected_collapsal_paradigms
+        case monthlySquadAutoIterate
+        case monthlySquadCheckComms
+        case deepExplorationAutoIterate
+        case collectible_mode_shopping
+        case collectible_mode_squad
+        case collectible_mode_start_list
     }
 
     func encode(to encoder: Encoder) throws {
@@ -283,6 +369,32 @@ extension RoguelikeConfiguration {
             if mode == .collectible, squad == "生活至上分队" {
                 try container.encode(start_foldartal_list, forKey: .start_foldartal_list)
             }
+        }
+        if theme == .Sarkaz, mode == .collectible {
+            try container.encode(start_with_two_ideas, forKey: .start_with_two_ideas)
+        }
+        if theme == .Sami {
+            try container.encode(check_collapsal_paradigms, forKey: .check_collapsal_paradigms)
+            if check_collapsal_paradigms {
+                try container.encode(double_check_collapsal_paradigms, forKey: .double_check_collapsal_paradigms)
+            }
+            if mode == .clpPds {
+                try container.encode(expected_collapsal_paradigms, forKey: .expected_collapsal_paradigms)
+            }
+        }
+        if mode == .squad {
+            try container.encode(monthlySquadAutoIterate, forKey: .monthlySquadAutoIterate)
+            if monthlySquadAutoIterate {
+                try container.encode(monthlySquadCheckComms, forKey: .monthlySquadCheckComms)
+            }
+        }
+        if mode == .exploration {
+            try container.encode(deepExplorationAutoIterate, forKey: .deepExplorationAutoIterate)
+        }
+        if mode == .collectible {
+            try container.encode(collectible_mode_shopping, forKey: .collectible_mode_shopping)
+            try container.encode(collectible_mode_squad, forKey: .collectible_mode_squad)
+            try container.encode(collectible_mode_start_list, forKey: .collectible_mode_start_list)
         }
     }
 }

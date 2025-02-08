@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+// FIXME: start_with_two_ideas
+// FIXME: use_foldartal
+// FIXME: check_collapsal_paradigms
+// FIXME: double_check_collapsal_paradigms
+// FIXME: expected_collapsal_paradigms
+// FIXME: monthlySquadAutoIterate
+// FIXME: monthlySquadCheckComms
+// FIXME: deepExplorationAutoIterate
+// FIXME: collectible_mode_shopping
+// FIXME: collectible_mode_squad
+// FIXME: collectible_mode_start_list
+
 struct RoguelikeSettingsView: View {
     @Binding var config: RoguelikeConfiguration
 
