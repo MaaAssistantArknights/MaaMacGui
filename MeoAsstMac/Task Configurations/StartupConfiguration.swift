@@ -13,6 +13,8 @@ struct StartupConfiguration: MAATaskConfiguration {
     var client_type = MAAClientChannel.default
     var start_game_enabled = false
 
+    var account_name = ""
+
     var title: String {
         type.description
     }
@@ -22,11 +24,8 @@ struct StartupConfiguration: MAATaskConfiguration {
     }
 
     var summary: String {
-        if start_game_enabled {
-            return NSLocalizedString("自动启动", comment: "")
-        } else {
-            return ""
-        }
+        let startGame = start_game_enabled ? NSLocalizedString("自动启动", comment: "") : ""
+        return "\(account_name) \(startGame)"
     }
 
     var projectedTask: MAATask {
@@ -37,6 +36,17 @@ struct StartupConfiguration: MAATaskConfiguration {
 
     var params: Self {
         self
+    }
+}
+
+extension StartupConfiguration {
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.client_type = try container.decode(MAAClientChannel.self, forKey: .client_type)
+        self.start_game_enabled = try container.decode(Bool.self, forKey: .start_game_enabled)
+
+        // Migration
+        self.account_name = try container.decodeIfPresent(String.self, forKey: .account_name) ?? ""
     }
 }
 
