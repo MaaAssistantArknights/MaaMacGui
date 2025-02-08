@@ -62,6 +62,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     ///
     /// 仅适用于**除 `Phantom` 以外**的主题
     var difficulty = Difficulty(id: 0)
+    /// 是否在第 5 层险路恶敌节点前停止任务，可选，默认值 `false`
+    ///
+    /// 仅适用于**除 `Phantom` 以外**的主题
+    var stop_at_final_boss = false
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
@@ -161,6 +165,7 @@ extension RoguelikeConfiguration {
         self.use_support = (try? container.decode(Bool.self, forKey: .use_support)) ?? false
         self.use_nonfriend_support = (try? container.decode(Bool.self, forKey: .use_nonfriend_support)) ?? false
         self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
+        self.stop_at_final_boss = try container.decodeIfPresent(Bool.self, forKey: .stop_at_final_boss) ?? false
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
@@ -211,6 +216,7 @@ extension RoguelikeConfiguration {
         case difficulty
         case investment_enabled
         case investments_count
+        case stop_at_final_boss
         case stop_when_investment_full
         case start_with_elite_two
         case only_start_with_elite_two
@@ -232,6 +238,7 @@ extension RoguelikeConfiguration {
         try container.encode(starts_count, forKey: .starts_count)
         if theme != .Phantom {
             try container.encode(difficulty, forKey: .difficulty)
+            try container.encode(stop_at_final_boss, forKey: .stop_at_final_boss)
         }
         try container.encode(investment_enabled, forKey: .investment_enabled)
         try container.encode(investments_count, forKey: .investments_count)
