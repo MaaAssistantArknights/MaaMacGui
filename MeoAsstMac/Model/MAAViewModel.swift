@@ -131,7 +131,11 @@ import SwiftUI
 
     // MARK: - Update Settings
 
+    @AppStorage("AutoResourceUpdate") var autoResourceUpdate = false
+
     @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
+
+    @Published var showResourceUpdate = false
 
     // MARK: - System Settings
 
@@ -298,16 +302,19 @@ extension MAAViewModel {
                 """)
         }
 
-        Task.detached {
+        Task {
             do {
                 let version = try await self.resourceChannel.latestVersion()
                 if version > currentResourceVersion.last_updated {
-                    await self.logInfo("发现新资源版本：\(version)")
+                    logInfo("发现新资源版本：\(version)")
+                    if autoResourceUpdate {
+                        showResourceUpdate = true
+                    }
                 } else {
-                    await self.logInfo("资源已是最新版本")
+                    logInfo("资源已是最新版本")
                 }
             } catch {
-                await self.logError("无法检查资源更新: \(error.localizedDescription)")
+                logError("无法检查资源更新: \(error.localizedDescription)")
             }
         }
     }

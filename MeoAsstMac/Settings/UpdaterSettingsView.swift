@@ -15,6 +15,7 @@ struct UpdaterSettingsView: View {
     @State private var automaticallyDownloadsUpdates: Bool
 
     @AppStorage("MaaUseBetaChannel") private var useBetaChannel = false
+    @AppStorage("AutoResourceUpdate") var autoResourceUpdate = false
     @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
 
     init(updater: SPUUpdater) {
@@ -48,7 +49,12 @@ struct UpdaterSettingsView: View {
 
             if resourceChannel == .mirrorChyan {
                 SecureField("CDK", text: mirrorChyanCDK)
+            } else if resourceChannel == .github {
+                Text("可能需要设置系统代理。")
+                    .font(.caption).foregroundColor(.secondary)
             }
+
+            Toggle("自动资源更新", isOn: $autoResourceUpdate)
 
             Text("重新打开应用后生效。")
                 .font(.caption).foregroundColor(.secondary)

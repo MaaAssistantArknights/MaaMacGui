@@ -15,7 +15,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitViewWrapper {
-            Sidebar(selection: $selectedSidebar)
+            Sidebar(selection: $selectedSidebar, showUpdate: $viewModel.showResourceUpdate)
         } content: {
             MAAContent(sidebar: $selectedSidebar, selection: $selectedContent)
         } detail: {

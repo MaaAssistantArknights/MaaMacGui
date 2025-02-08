@@ -10,7 +10,7 @@ import SwiftUI
 struct Sidebar: View {
     @Binding var selection: SidebarEntry?
 
-    @State private var showUpdate = false
+    @Binding var showUpdate: Bool
 
     @Environment(\.defaultMinListRowHeight) var rowHeight
 
@@ -51,7 +51,7 @@ struct Sidebar: View {
 struct SidebarView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            Sidebar(selection: .constant(.daily))
+            Sidebar(selection: .constant(.daily), showUpdate: .constant(false))
         }
     }
 }
