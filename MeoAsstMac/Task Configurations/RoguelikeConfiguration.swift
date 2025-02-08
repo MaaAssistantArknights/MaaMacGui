@@ -70,6 +70,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
+    /// 是否在投资后尝试购物，可选，默认值 `false`
+    ///
+    /// 仅适用于模式 `investment`
+    var investment_with_more_score = false
     /// 是否在凹开局的同时凹干员精二直升，可选，默认值 `false`
     ///
     /// 仅适用于模式 `collectible`
@@ -168,6 +172,8 @@ extension RoguelikeConfiguration {
         self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
         self.stop_at_final_boss = try container.decodeIfPresent(Bool.self, forKey: .stop_at_final_boss) ?? false
         self.stop_at_max_level = try container.decodeIfPresent(Bool.self, forKey: .stop_at_max_level) ?? false
+        self.investment_with_more_score =
+            try container.decodeIfPresent(Bool.self, forKey: .investment_with_more_score) ?? false
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
@@ -192,7 +198,7 @@ extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
         case .current:
             return NSLocalizedString("当前难度", comment: "")
         default:
-            return "\(id)"
+            return "难度\(id)"
         }
     }
 
@@ -221,6 +227,7 @@ extension RoguelikeConfiguration {
         case stop_at_final_boss
         case stop_at_max_level
         case stop_when_investment_full
+        case investment_with_more_score
         case start_with_elite_two
         case only_start_with_elite_two
         case refresh_trader_with_dice
@@ -247,6 +254,9 @@ extension RoguelikeConfiguration {
         try container.encode(investment_enabled, forKey: .investment_enabled)
         try container.encode(investments_count, forKey: .investments_count)
         try container.encode(stop_when_investment_full, forKey: .stop_when_investment_full)
+        if mode == .investment {
+            try container.encode(investment_with_more_score, forKey: .investment_with_more_score)
+        }
         if mode == .collectible {
             try container.encode(start_with_elite_two, forKey: .start_with_elite_two)
             if start_with_elite_two {

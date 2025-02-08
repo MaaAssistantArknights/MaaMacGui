@@ -49,6 +49,7 @@ struct RoguelikeSettingsView: View {
         Toggle("投资源石锭", isOn: $config.investment_enabled)
         Toggle("刷新商店（指路鳞）", isOn: $config.refresh_trader_with_dice)
         Toggle("储备源石锭达到上限时停止", isOn: $config.stop_when_investment_full)
+        Toggle("投资模式启用购物、招募、进二层", isOn: $config.investment_with_more_score)
 
         TextField("最多投资源石锭数量：", value: $config.investments_count, format: .number)
 
