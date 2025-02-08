@@ -47,23 +47,23 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
                 mode = theme.modes.first ?? .exp
             }
             if !theme.squads.contains(squad) {
-                squad = theme.squads.first ?? ""
+                squad = theme.squads.first ?? "指挥分队"
             }
         }
     }
-    var difficulty = Difficulty.max
     var mode = Mode.exp
-    var starts_count = 9_999_999
-    var investment_enabled = true
-    var investments_count = 999
-    var stop_when_investment_full = false
     var squad = "指挥分队"
     var roles = "取长补短"
     var core_char = ""
-    var start_with_elite_two = false
-    var only_start_with_elite_two = false
     var use_support = false
     var use_nonfriend_support = false
+    var starts_count = 9_999_999
+    var difficulty = Difficulty.max
+    var investment_enabled = true
+    var investments_count = 999
+    var stop_when_investment_full = false
+    var start_with_elite_two = false
+    var only_start_with_elite_two = false
     var refresh_trader_with_dice = false
 
     var title: String {
