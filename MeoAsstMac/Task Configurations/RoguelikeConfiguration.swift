@@ -65,7 +65,13 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
+    /// 是否在凹开局的同时凹干员精二直升，可选，默认值 `false`
+    ///
+    /// 仅适用于模式 `collectible`
     var start_with_elite_two = false
+    /// 是否只凹开局干员精二直升而忽视其他开局条件，可选，默认值 `false`
+    ///
+    /// 仅在模式为 `collectible` 且 `start_with_elite_two` 为 `true` 时有效
     var only_start_with_elite_two = false
     /// 是否用骰子刷新商店购买特殊商品，可选，默认值 `false`
     ///
@@ -143,21 +149,21 @@ extension RoguelikeConfiguration {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.theme = try container.decode(Theme.self, forKey: .theme)
         self.mode = try container.decode(Mode.self, forKey: .mode)
+        self.squad = try container.decode(String.self, forKey: .squad)
+        self.roles = try container.decode(String.self, forKey: .roles)
+        self.core_char = try container.decode(String.self, forKey: .core_char)
         self.starts_count = try container.decode(Int.self, forKey: .starts_count)
         self.investment_enabled = try container.decode(Bool.self, forKey: .investment_enabled)
         self.investments_count = try container.decode(Int.self, forKey: .investments_count)
         self.stop_when_investment_full = try container.decode(Bool.self, forKey: .stop_when_investment_full)
-        self.squad = try container.decode(String.self, forKey: .squad)
-        self.roles = try container.decode(String.self, forKey: .roles)
-        self.core_char = try container.decode(String.self, forKey: .core_char)
 
         // Migration
         self.use_support = (try? container.decode(Bool.self, forKey: .use_support)) ?? false
         self.use_nonfriend_support = (try? container.decode(Bool.self, forKey: .use_nonfriend_support)) ?? false
-        self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
+        self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
-        self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
+        self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
     }
 }
 
@@ -224,7 +230,6 @@ extension RoguelikeConfiguration {
             try container.encode(use_nonfriend_support, forKey: .use_nonfriend_support)
         }
         try container.encode(starts_count, forKey: .starts_count)
-
         if theme != .Phantom {
             try container.encode(difficulty, forKey: .difficulty)
         }
