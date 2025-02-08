@@ -41,7 +41,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var theme = Theme.Phantom {
         didSet {
             if !theme.difficulties.contains(difficulty) {
-                difficulty = theme.difficulties.first ?? .max
+                difficulty = theme.difficulties.first ?? .init(id: 0)
             }
             if !theme.modes.contains(mode) {
                 mode = theme.modes.first ?? .exp
@@ -58,12 +58,18 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var use_support = false
     var use_nonfriend_support = false
     var starts_count = 9_999_999
-    var difficulty = Difficulty.max
+    /// 指定难度等级，可选，默认值 `0`
+    ///
+    /// 仅适用于**除 `Phantom` 以外**的主题
+    var difficulty = Difficulty(id: 0)
     var investment_enabled = true
     var investments_count = 999
     var stop_when_investment_full = false
     var start_with_elite_two = false
     var only_start_with_elite_two = false
+    /// 是否用骰子刷新商店购买特殊商品，可选，默认值 `false`
+    ///
+    /// 仅适用于 `Mizuki` 主题，用于刷指路鳞
     var refresh_trader_with_dice = false
 
     var title: String {
