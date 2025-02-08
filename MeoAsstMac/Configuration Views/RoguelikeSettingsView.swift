@@ -53,6 +53,9 @@ struct RoguelikeSettingsView: View {
         TextField("最多投资源石锭数量：", value: $config.investments_count, format: .number)
 
         Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
+            .disabled(config.theme == .Phantom)
+
+        Toggle("满级后自动停止", isOn: $config.stop_at_max_level)
     }
 
     @ViewBuilder private func squadSettings() -> some View {
