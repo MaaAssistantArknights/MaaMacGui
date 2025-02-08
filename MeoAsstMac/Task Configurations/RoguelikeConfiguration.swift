@@ -10,21 +10,49 @@ import Foundation
 struct RoguelikeConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Roguelike }
 
-    var theme = RoguelikeTheme.Phantom {
+    enum Mode: Int, CaseIterable, Codable {
+        /// 刷经验，尽可能稳定地打更多层数，不期而遇采用激进策略
+        case exp = 0
+        /// 刷源石锭，第一层投资完就退出，不期而遇采用保守策略
+        case investment = 1
+        /// 刷开局，以获得热水壶或者演讲稿开局或只凹直升，不期而遇采用保守策略
+        case collectible = 4
+        /// 刷隐藏坍缩范式，以增加坍缩值为最优先目标
+        ///
+        /// 萨米主题专用模式
+        case clpPds = 5
+        /// 月度小队，尽可能稳定抵达五层，不期而遇采用激进策略
+        case squad = 6
+        /// 深入调查，尽可能稳定地打更多层数，不期而遇采用激进策略
+        case exploration = 7
+    }
+
+    enum Theme: String, CaseIterable, Codable {
+        case Phantom
+        case Mizuki
+        case Sami
+        case Sarkaz
+    }
+
+    struct Difficulty: Hashable, Identifiable {
+        let id: Int
+    }
+
+    var theme = Theme.Phantom {
         didSet {
-            if !theme.difficulties.contains(where: { $0.id == difficulty }) {
-                difficulty = theme.difficulties.first!.id
+            if !theme.difficulties.contains(difficulty) {
+                difficulty = theme.difficulties.first ?? .max
             }
-            if !theme.modes.contains(where: { $0.id == mode }) {
-                mode = theme.modes.first!.id
+            if !theme.modes.contains(mode) {
+                mode = theme.modes.first ?? .exp
             }
             if !theme.squads.contains(squad) {
-                squad = theme.squads.first!
+                squad = theme.squads.first ?? ""
             }
         }
     }
-    var difficulty = RoguelikeDifficulty.max.id
-    var mode = 0
+    var difficulty = Difficulty.max
+    var mode = Mode.exp
     var starts_count = 9_999_999
     var investment_enabled = true
     var investments_count = 999
@@ -43,11 +71,11 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
-        return theme.description
+        return theme.shortDescription
     }
 
     var summary: String {
-        "\(RoguelikeDifficulty(id: difficulty).description) \(RoguelikeMode(id: mode).shortDescription) \(core_char)"
+        "\(difficulty.description) \(mode.shortDescription) \(core_char)"
     }
 
     var projectedTask: MAATask {
@@ -61,11 +89,54 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     }
 }
 
+extension RoguelikeConfiguration.Theme {
+    var shortDescription: String {
+        switch self {
+        case .Phantom:
+            return NSLocalizedString("傀影", comment: "")
+        case .Mizuki:
+            return NSLocalizedString("水月", comment: "")
+        case .Sami:
+            return NSLocalizedString("萨米", comment: "")
+        case .Sarkaz:
+            return NSLocalizedString("萨卡兹", comment: "")
+        }
+    }
+
+    var modes: [RoguelikeConfiguration.Mode] {
+        let commonModes = [RoguelikeConfiguration.Mode.exp, .investment, .collectible, .squad, .exploration]
+        if self == .Sami {
+            return commonModes + [.clpPds]
+        } else {
+            return commonModes
+        }
+    }
+}
+
+extension RoguelikeConfiguration.Mode {
+    var shortDescription: String {
+        switch self {
+        case .exp:
+            NSLocalizedString("优先层数", comment: "")
+        case .investment:
+            NSLocalizedString("优先投资", comment: "")
+        case .collectible:
+            NSLocalizedString("凹开局", comment: "")
+        case .clpPds:
+            NSLocalizedString("刷坍缩", comment: "")
+        case .squad:
+            NSLocalizedString("月度小队", comment: "")
+        case .exploration:
+            NSLocalizedString("深入调查", comment: "")
+        }
+    }
+}
+
 extension RoguelikeConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.theme = try container.decode(RoguelikeTheme.self, forKey: .theme)
-        self.mode = try container.decode(Int.self, forKey: .mode)
+        self.theme = try container.decode(Theme.self, forKey: .theme)
+        self.mode = try container.decode(Mode.self, forKey: .mode)
         self.starts_count = try container.decode(Int.self, forKey: .starts_count)
         self.investment_enabled = try container.decode(Bool.self, forKey: .investment_enabled)
         self.investments_count = try container.decode(Int.self, forKey: .investments_count)
@@ -80,7 +151,37 @@ extension RoguelikeConfiguration {
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
-        self.difficulty = (try? container.decode(Int.self, forKey: .difficulty)) ?? RoguelikeDifficulty.current.id
+        self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
+    }
+}
+
+extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.id = try container.decode(Int.self)
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(id)
+    }
+
+    var description: String {
+        switch self {
+        case .max:
+            return NSLocalizedString("最高难度", comment: "")
+        case .current:
+            return NSLocalizedString("当前难度", comment: "")
+        default:
+            return "\(id)"
+        }
+    }
+
+    static let max = Self(id: 999)
+    static let current = Self(id: -1)
+
+    static func upto(maximum: Int) -> [Self] {
+        [.current, .max] + (0...maximum).reversed().map { Self(id: $0) }
     }
 }
 
@@ -124,7 +225,7 @@ extension RoguelikeConfiguration {
         try container.encode(investment_enabled, forKey: .investment_enabled)
         try container.encode(investments_count, forKey: .investments_count)
         try container.encode(stop_when_investment_full, forKey: .stop_when_investment_full)
-        if mode == 4 {
+        if mode == .collectible {
             try container.encode(start_with_elite_two, forKey: .start_with_elite_two)
             if start_with_elite_two {
                 try container.encode(only_start_with_elite_two, forKey: .only_start_with_elite_two)

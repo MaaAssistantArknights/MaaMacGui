@@ -25,20 +25,20 @@ struct RoguelikeSettingsView: View {
 
     @ViewBuilder private func generalSettings() -> some View {
         Picker("肉鸽主题：", selection: $config.theme) {
-            ForEach(RoguelikeTheme.allCases, id: \.rawValue) { theme in
-                Text("\(theme.description)").tag(theme)
+            ForEach(RoguelikeConfiguration.Theme.allCases, id: \.self) {
+                Text($0.description).tag($0)
             }
         }
 
         Picker("肉鸽难度：", selection: $config.difficulty) {
             ForEach(config.theme.difficulties) {
-                Text($0.description).tag($0.id)
+                Text($0.description).tag($0)
             }
         }
 
         Picker("策略：", selection: $config.mode) {
-            ForEach(config.theme.modes) {
-                Text($0.description).tag($0.id)
+            ForEach(config.theme.modes, id: \.self) {
+                Text($0.description).tag($0)
             }
         }
 
@@ -88,94 +88,49 @@ struct RoguelikeSettingsView_Previews: PreviewProvider {
 
 // MARK: - Constants
 
-enum RoguelikeTheme: String, CaseIterable, Codable, CustomStringConvertible {
-    case Phantom
-    case Mizuki
-    case Sami
-    case Sarkaz
+extension RoguelikeConfiguration.Mode {
+    var description: String {
+        switch self {
+        case .exp:
+            NSLocalizedString("刷分/奖励点数，尽可能稳定地打更多层数", comment: "")
+        case .investment:
+            NSLocalizedString("刷源石锭，第一层投资完就退出", comment: "")
+        case .collectible:
+            NSLocalizedString("凹开局，然后凹开局奖励", comment: "")
+        case .clpPds:
+            NSLocalizedString("刷坍缩范式，尽可能地积累坍缩值", comment: "")
+        case .squad:
+            NSLocalizedString("刷月度小队，尽可能稳定地打更多层数", comment: "")
+        case .exploration:
+            NSLocalizedString("刷深入调查，尽可能稳定地打更多层数", comment: "")
+        }
+    }
+}
 
+extension RoguelikeConfiguration.Theme: CustomStringConvertible {
     var description: String {
         switch self {
         case .Phantom:
-            return NSLocalizedString("傀影", comment: "")
+            return NSLocalizedString("傀影与猩红血钻", comment: "")
         case .Mizuki:
-            return NSLocalizedString("水月", comment: "")
+            return NSLocalizedString("水月与深蓝之树", comment: "")
         case .Sami:
-            return NSLocalizedString("萨米", comment: "")
+            return NSLocalizedString("探索者的银凇止境", comment: "")
         case .Sarkaz:
-            return NSLocalizedString("萨卡兹", comment: "")
-        }
-    }
-}
-
-struct RoguelikeDifficulty: CustomStringConvertible, Equatable, Identifiable {
-    let id: Int
-
-    var description: String {
-        switch id {
-        case RoguelikeDifficulty.max.id:
-            return NSLocalizedString("最高难度", comment: "")
-        case RoguelikeDifficulty.current.id:
-            return NSLocalizedString("当前难度", comment: "")
-        default:
-            return "\(id)"
+            return NSLocalizedString("萨卡兹的无终奇语", comment: "")
         }
     }
 
-    static let max = RoguelikeDifficulty(id: 999)
-    static let current = RoguelikeDifficulty(id: -1)
-
-    static func upto(maximum: Int) -> [RoguelikeDifficulty] {
-        [.max] + (0...maximum).reversed().map { RoguelikeDifficulty(id: $0) }
-    }
-}
-
-struct RoguelikeMode: CustomStringConvertible, Equatable, Identifiable {
-    let id: Int
-
-    var description: String {
-        switch id {
-        case 0: NSLocalizedString("刷等级，尽可能稳定地打更多层数", comment: "")
-        case 1: NSLocalizedString("刷源石锭，第一层投资完就退出", comment: "")
-        case 4: NSLocalizedString("刷开局，到达第三层后直接退出", comment: "")
-        case 5: NSLocalizedString("刷坍缩范式，尽可能地积累坍缩值", comment: "")
-        default: NSLocalizedString("未知策略 \(self.id)", comment: "")
-        }
-    }
-
-    var shortDescription: String {
-        switch id {
-        case 0: NSLocalizedString("优先层数", comment: "")
-        case 1: NSLocalizedString("优先投资", comment: "")
-        case 4: NSLocalizedString("烧开水", comment: "")
-        case 5: NSLocalizedString("刷坍缩", comment: "")
-        default: NSLocalizedString("未知策略 \(self.id)", comment: "")
-        }
-    }
-
-    static let commons = [0, 1, 4].map { RoguelikeMode(id: $0) }
-}
-
-extension RoguelikeTheme {
-    var difficulties: [RoguelikeDifficulty] {
+    var difficulties: [RoguelikeConfiguration.Difficulty] {
         switch self {
         case .Phantom:
-            return [.current]
+            return []
         case .Mizuki:
-            return RoguelikeDifficulty.upto(maximum: 15) + [.current]
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         case .Sami:
-            return RoguelikeDifficulty.upto(maximum: 15) + [.current]
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         case .Sarkaz:
-            return RoguelikeDifficulty.upto(maximum: 18) + [.current]
-        }
-    }
-
-    var modes: [RoguelikeMode] {
-        switch self {
-        case .Sami:
-            return RoguelikeMode.commons + [RoguelikeMode(id: 5)]
-        default:
-            return RoguelikeMode.commons
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
         }
     }
 
