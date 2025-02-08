@@ -52,6 +52,7 @@ struct RoguelikeSettingsView: View {
         Toggle("投资模式启用购物、招募、进二层", isOn: $config.investment_with_more_score)
 
         TextField("最多投资源石锭数量：", value: $config.investments_count, format: .number)
+        TextField("一层远见密文板", text: $config.first_floor_foldartal)
 
         Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
             .disabled(config.theme == .Phantom)

@@ -86,6 +86,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     ///
     /// 仅适用于 `Mizuki` 主题，用于刷指路鳞
     var refresh_trader_with_dice = false
+    /// 希望在第一层远见阶段得到的密文版，若成功凹到则停止任务，可选
+    ///
+    /// 仅适用于 `Sami` 主题
+    var first_floor_foldartal = ""
 
     var title: String {
         type.description
@@ -177,6 +181,7 @@ extension RoguelikeConfiguration {
         self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
+        self.first_floor_foldartal = try container.decodeIfPresent(String.self, forKey: .first_floor_foldartal) ?? ""
     }
 }
 
@@ -231,6 +236,7 @@ extension RoguelikeConfiguration {
         case start_with_elite_two
         case only_start_with_elite_two
         case refresh_trader_with_dice
+        case first_floor_foldartal
     }
 
     func encode(to encoder: Encoder) throws {
@@ -265,6 +271,9 @@ extension RoguelikeConfiguration {
         }
         if theme == .Mizuki {
             try container.encode(refresh_trader_with_dice, forKey: .refresh_trader_with_dice)
+        }
+        if theme == .Sami {
+            try container.encodeIfPresent(first_floor_foldartal, forKey: .first_floor_foldartal)
         }
     }
 }
