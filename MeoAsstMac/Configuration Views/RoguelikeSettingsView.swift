@@ -53,6 +53,7 @@ struct RoguelikeSettingsView: View {
 
         TextField("最多投资源石锭数量：", value: $config.investments_count, format: .number)
         TextField("一层远见密文板", text: $config.first_floor_foldartal)
+        // FIXME: 凹生活至上分队开局密文板
 
         Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
             .disabled(config.theme == .Phantom)

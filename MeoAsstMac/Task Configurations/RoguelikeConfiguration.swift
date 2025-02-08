@@ -90,6 +90,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     ///
     /// 仅适用于 `Sami` 主题
     var first_floor_foldartal = ""
+    /// 凹开局时希望在开局奖励阶段得到的密文板，可选，默认值 `[]`
+    ///
+    /// 仅在主题为 `Sami` 模式为 `collectible` 且使用 "生活至上分队" 时有效；
+    var start_foldartal_list = [String]()
 
     var title: String {
         type.description
@@ -182,6 +186,7 @@ extension RoguelikeConfiguration {
         self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
         self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
         self.first_floor_foldartal = try container.decodeIfPresent(String.self, forKey: .first_floor_foldartal) ?? ""
+        self.start_foldartal_list = try container.decodeIfPresent([String].self, forKey: .start_foldartal_list) ?? []
     }
 }
 
@@ -237,6 +242,7 @@ extension RoguelikeConfiguration {
         case only_start_with_elite_two
         case refresh_trader_with_dice
         case first_floor_foldartal
+        case start_foldartal_list
     }
 
     func encode(to encoder: Encoder) throws {
@@ -273,7 +279,10 @@ extension RoguelikeConfiguration {
             try container.encode(refresh_trader_with_dice, forKey: .refresh_trader_with_dice)
         }
         if theme == .Sami {
-            try container.encodeIfPresent(first_floor_foldartal, forKey: .first_floor_foldartal)
+            try container.encode(first_floor_foldartal, forKey: .first_floor_foldartal)
+            if mode == .collectible, squad == "生活至上分队" {
+                try container.encode(start_foldartal_list, forKey: .start_foldartal_list)
+            }
         }
     }
 }
