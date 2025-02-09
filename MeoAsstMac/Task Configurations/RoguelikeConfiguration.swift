@@ -336,10 +336,10 @@ extension RoguelikeConfiguration {
         self.squad = try container.decodeIfPresent(String.self, forKey: .squad) ?? "指挥分队"
         self.roles = try container.decodeIfPresent(String.self, forKey: .roles) ?? "取长补短"
         self.core_char = try container.decodeIfPresent(String.self, forKey: .core_char) ?? ""
-        self.use_support = (try? container.decode(Bool.self, forKey: .use_support)) ?? false
-        self.use_nonfriend_support = (try? container.decode(Bool.self, forKey: .use_nonfriend_support)) ?? false
+        self.use_support = try container.decodeIfPresent(Bool.self, forKey: .use_support) ?? false
+        self.use_nonfriend_support = try container.decodeIfPresent(Bool.self, forKey: .use_nonfriend_support) ?? false
         self.starts_count = try container.decodeIfPresent(Int.self, forKey: .starts_count) ?? 9_999_999
-        self.difficulty = (try? container.decode(Difficulty.self, forKey: .difficulty)) ?? .max
+        self.difficulty = try container.decodeIfPresent(Difficulty.self, forKey: .difficulty) ?? .max
         self.stop_at_final_boss = try container.decodeIfPresent(Bool.self, forKey: .stop_at_final_boss) ?? false
         self.stop_at_max_level = try container.decodeIfPresent(Bool.self, forKey: .stop_at_max_level) ?? false
         self.investment_enabled = try container.decodeIfPresent(Bool.self, forKey: .investment_enabled) ?? true
@@ -348,9 +348,11 @@ extension RoguelikeConfiguration {
             try container.decodeIfPresent(Bool.self, forKey: .stop_when_investment_full) ?? false
         self.investment_with_more_score =
             try container.decodeIfPresent(Bool.self, forKey: .investment_with_more_score) ?? false
-        self.start_with_elite_two = (try? container.decode(Bool.self, forKey: .start_with_elite_two)) ?? false
-        self.only_start_with_elite_two = (try? container.decode(Bool.self, forKey: .only_start_with_elite_two)) ?? false
-        self.refresh_trader_with_dice = (try? container.decode(Bool.self, forKey: .refresh_trader_with_dice)) ?? false
+        self.start_with_elite_two = try container.decodeIfPresent(Bool.self, forKey: .start_with_elite_two) ?? false
+        self.only_start_with_elite_two =
+            try container.decodeIfPresent(Bool.self, forKey: .only_start_with_elite_two) ?? false
+        self.refresh_trader_with_dice =
+            try container.decodeIfPresent(Bool.self, forKey: .refresh_trader_with_dice) ?? false
         self.first_floor_foldartal = try container.decodeIfPresent(String.self, forKey: .first_floor_foldartal) ?? ""
         self.start_foldartal_list = try container.decodeIfPresent([String].self, forKey: .start_foldartal_list) ?? []
         self.start_with_two_ideas = try container.decodeIfPresent(Bool.self, forKey: .start_with_two_ideas) ?? false

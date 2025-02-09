@@ -57,7 +57,7 @@ struct InfrastSettingsView: View {
             Section {
                 Text("无人机用途：")
                 Picker("", selection: $config.drones) {
-                    ForEach(MAAInfrastDroneUsage.allCases, id: \.self) { usage in
+                    ForEach(InfrastConfiguration.DroneUsage.allCases, id: \.self) { usage in
                         Text(usage.description).tag(usage)
                     }
                 }
@@ -67,7 +67,7 @@ struct InfrastSettingsView: View {
 
             Section {
                 Text("基建工作心情阈值: \(config.threshold * 100, specifier: "%.0f")%")
-                Slider(value: $config.threshold, in: 0 ... 1)
+                Slider(value: $config.threshold, in: 0...1)
             }
 
             Divider()
@@ -132,19 +132,19 @@ struct InfrastSettingsView: View {
 
     private var useCustomPlan: Binding<Bool> {
         Binding {
-            config.mode == 10000
+            config.mode == .custom
         } set: {
-            config.mode = $0 ? 10000 : 0
+            config.mode = $0 ? .custom : .default
         }
     }
 
-    private var disabledFacilities: [MAAInfrastFacility] {
-        MAAInfrastFacility.allCases.filter { facility in
+    private var disabledFacilities: [InfrastConfiguration.Facility] {
+        InfrastConfiguration.Facility.allCases.filter { facility in
             !config.facility.contains(facility)
         }
     }
 
-    private func facilityBinding(for facility: MAAInfrastFacility) -> Binding<Bool> {
+    private func facilityBinding(for facility: InfrastConfiguration.Facility) -> Binding<Bool> {
         Binding {
             config.facility.contains(facility)
         } set: { newValue in
@@ -161,16 +161,18 @@ struct InfrastSettingsView: View {
     @State private var refreshCustomPlans = false
 
     private var customInfrastPaths: [String] {
-        guard let urls = try? FileManager.default.contentsOfDirectory(
-            at: customInfrastDirectory,
-            includingPropertiesForKeys: [.contentTypeKey],
-            options: .skipsHiddenFiles)
+        guard
+            let urls = try? FileManager.default.contentsOfDirectory(
+                at: customInfrastDirectory,
+                includingPropertiesForKeys: [.contentTypeKey],
+                options: .skipsHiddenFiles)
         else { return [] }
 
         // Dummy state to force refreshing files
         _ = refreshCustomPlans
 
-        return urls
+        return
+            urls
             .filter { url in
                 let value = try? url.resourceValues(forKeys: [.contentTypeKey])
                 return value?.contentType == .json
@@ -195,8 +197,8 @@ struct InfrastSettingsView: View {
 
 // MARK: - Infrast Plan
 
-private extension String {
-    var label: some View {
+extension String {
+    fileprivate var label: some View {
         if let plan = try? MAAInfrast(path: self) {
             return Text(plan.title ?? self).tag(self)
         } else {
@@ -204,15 +206,15 @@ private extension String {
         }
     }
 
-    static let bundledPlans = [
-        plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3
+    fileprivate static let bundledPlans = [
+        plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3,
     ]
 
-    static let plan_153_3 = bundledPath(for: "153_layout_3_times_a_day.json")
-    static let plan_243_3 = bundledPath(for: "243_layout_3_times_a_day.json")
-    static let plan_243_4 = bundledPath(for: "243_layout_4_times_a_day.json")
-    static let plan_252_3 = bundledPath(for: "252_layout_3_times_a_day.json")
-    static let plan_333_3 = bundledPath(for: "333_layout_for_Orundum_3_times_a_day.json")
+    fileprivate static let plan_153_3 = bundledPath(for: "153_layout_3_times_a_day.json")
+    fileprivate static let plan_243_3 = bundledPath(for: "243_layout_3_times_a_day.json")
+    fileprivate static let plan_243_4 = bundledPath(for: "243_layout_4_times_a_day.json")
+    fileprivate static let plan_252_3 = bundledPath(for: "252_layout_3_times_a_day.json")
+    fileprivate static let plan_333_3 = bundledPath(for: "333_layout_for_Orundum_3_times_a_day.json")
 
     private static func bundledPath(for name: String) -> String {
         Bundle.main.resourceURL?

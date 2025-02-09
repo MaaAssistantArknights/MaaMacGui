@@ -10,10 +10,9 @@ import Foundation
 struct StartupConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .StartUp }
 
-    var client_type = MAAClientChannel.default
-    var start_game_enabled = false
-
-    var account_name = ""
+    var client_type: MAAClientChannel
+    var start_game_enabled: Bool
+    var account_name: String
 
     var title: String {
         type.description
@@ -42,10 +41,8 @@ struct StartupConfiguration: MAATaskConfiguration {
 extension StartupConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.client_type = try container.decode(MAAClientChannel.self, forKey: .client_type)
-        self.start_game_enabled = try container.decode(Bool.self, forKey: .start_game_enabled)
-
-        // Migration
+        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .default
+        self.start_game_enabled = try container.decodeIfPresent(Bool.self, forKey: .start_game_enabled) ?? false
         self.account_name = try container.decodeIfPresent(String.self, forKey: .account_name) ?? ""
     }
 }

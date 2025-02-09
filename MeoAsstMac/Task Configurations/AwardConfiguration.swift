@@ -10,12 +10,12 @@ import Foundation
 struct AwardConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Award }
 
-    var award = true
-    var mail = true
-    var recruit = false
-    var orundum = false
-    var mining = false
-    var specialaccess = false
+    var award: Bool
+    var mail: Bool
+    var recruit: Bool
+    var orundum: Bool
+    var mining: Bool
+    var specialaccess: Bool
 
     var title: String {
         type.description
@@ -61,9 +61,7 @@ struct AwardConfiguration: MAATaskConfiguration {
 extension AwardConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-
-        // Migration
-        self.award = try container.decodeIfPresent(Bool.self, forKey: .award) ?? false
+        self.award = try container.decodeIfPresent(Bool.self, forKey: .award) ?? true
         self.mail = try container.decodeIfPresent(Bool.self, forKey: .mail) ?? false
         self.recruit = try container.decodeIfPresent(Bool.self, forKey: .recruit) ?? false
         self.orundum = try container.decodeIfPresent(Bool.self, forKey: .orundum) ?? false

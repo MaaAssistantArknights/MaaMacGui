@@ -10,7 +10,7 @@ import Foundation
 struct ClosedownConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .CloseDown }
 
-    var client_type = MAAClientChannel.default
+    var client_type: MAAClientChannel
 
     var title: String {
         type.description
@@ -38,6 +38,6 @@ struct ClosedownConfiguration: MAATaskConfiguration {
 extension ClosedownConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.client_type = (try? container.decode(MAAClientChannel.self, forKey: .client_type)) ?? .default
+        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .default
     }
 }
