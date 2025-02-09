@@ -121,6 +121,7 @@ extension AwardConfiguration {
 
 extension RoguelikeConfiguration {
     fileprivate init(migrating config: LegacyRoguelikeConfiguration) {
+        self.init()
         self.theme = .init(rawValue: config.theme.rawValue) ?? .Phantom
         self.difficulty = .init(id: config.difficulty)
         self.mode = .init(rawValue: config.mode) ?? .exp
