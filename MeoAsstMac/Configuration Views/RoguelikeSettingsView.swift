@@ -7,103 +7,196 @@
 
 import SwiftUI
 
-// FIXME: start_with_two_ideas
-// FIXME: use_foldartal
-// FIXME: check_collapsal_paradigms
-// FIXME: double_check_collapsal_paradigms
-// FIXME: expected_collapsal_paradigms
-// FIXME: monthlySquadAutoIterate
-// FIXME: monthlySquadCheckComms
-// FIXME: deepExplorationAutoIterate
-// FIXME: collectible_mode_shopping
-// FIXME: collectible_mode_squad
-// FIXME: collectible_mode_start_list
-
 struct RoguelikeSettingsView: View {
     @Binding var config: RoguelikeConfiguration
 
-    var body: some View {
-        Form {
-            generalSettings()
-            Divider()
-            goldSettings()
-            Divider()
-            squadSettings()
+    private var startFoldartalList: Binding<String> {
+        Binding {
+            config.start_foldartal_list.joined(separator: "; ")
+        } set: { newValue in
+            config.start_foldartal_list = newValue.split(separator: ";").map {
+                String($0).trimmingCharacters(in: .whitespaces)
+            }
         }
-        .animation(.default, value: config.use_support)
-        .animation(.default, value: config.start_with_elite_two)
-        .padding()
+    }
+
+    private var expectedCollapsalParadigms: Binding<String> {
+        Binding {
+            config.expected_collapsal_paradigms.joined(separator: "; ")
+        } set: { newValue in
+            config.expected_collapsal_paradigms = newValue.split(separator: ";").map {
+                String($0).trimmingCharacters(in: .whitespaces)
+            }
+        }
+    }
+
+    var body: some View {
+        ScrollView {
+            Form {
+                generalSettings()
+                Divider()
+                goldSettings()
+                Divider()
+                squadSettings()
+                Divider()
+                strategySettings()
+            }
+            .animation(.default, value: config)
+            .padding()
+        }
     }
 
     @ViewBuilder private func generalSettings() -> some View {
-        Picker("肉鸽主题：", selection: $config.theme) {
+        Picker("主题", selection: $config.theme) {
             ForEach(RoguelikeConfiguration.Theme.allCases, id: \.self) {
                 Text($0.description).tag($0)
             }
         }
 
-        Picker("肉鸽难度：", selection: $config.difficulty) {
-            ForEach(config.theme.difficulties) {
-                Text($0.description).tag($0)
+        if config.theme != .Phantom {
+            Picker("难度", selection: $config.difficulty) {
+                ForEach(config.theme.difficulties) {
+                    Text($0.description).tag($0)
+                }
             }
         }
 
-        Picker("策略：", selection: $config.mode) {
-            ForEach(config.theme.modes, id: \.self) {
-                Text($0.description).tag($0)
-            }
-        }
-
-        TextField("最多探索次数：", value: $config.starts_count, format: .number)
+        TextField("最多探索次数", value: $config.starts_count, format: .number)
     }
 
     @ViewBuilder private func goldSettings() -> some View {
-        Toggle("投资源石锭", isOn: $config.investment_enabled)
-        Toggle("刷新商店（指路鳞）", isOn: $config.refresh_trader_with_dice)
-        Toggle("储备源石锭达到上限时停止", isOn: $config.stop_when_investment_full)
-        Toggle("投资模式启用购物、招募、进二层", isOn: $config.investment_with_more_score)
-
-        TextField("最多投资源石锭数量：", value: $config.investments_count, format: .number)
-        TextField("一层远见密文板", text: $config.first_floor_foldartal)
-        // FIXME: 凹生活至上分队开局密文板
-
-        Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
-            .disabled(config.theme == .Phantom)
-
-        Toggle("满级后自动停止", isOn: $config.stop_at_max_level)
+        HStack {
+            Toggle("投资源石锭", isOn: $config.investment_enabled)
+            if config.investment_enabled {
+                Toggle("储备源石锭达到上限时停止", isOn: $config.stop_when_investment_full)
+            }
+        }
+        if config.investment_enabled {
+            TextField("最多投资数量", value: $config.investments_count, format: .number)
+        }
     }
 
     @ViewBuilder private func squadSettings() -> some View {
-        Picker("开局分队：", selection: $config.squad) {
+        Picker("开局分队", selection: $config.squad) {
             ForEach(config.theme.squads, id: \.self) { squad in
                 Text(squad).tag(squad)
             }
         }
 
-        Picker("开局职业组：", selection: $config.roles) {
+        Picker("开局职业组", selection: $config.roles) {
             ForEach(config.theme.roles, id: \.self) { role in
                 Text(role).tag(role)
             }
         }
 
-        TextField("开局干员（单个）：", text: $config.core_char)
+        TextField("开局干员（单个）", text: $config.core_char)
 
-        Toggle("“开局干员”使用助战", isOn: $config.use_support)
-        if config.use_support {
-            Toggle("可以使用非好友助战", isOn: $config.use_nonfriend_support)
+        HStack {
+            Toggle("“开局干员”使用助战", isOn: $config.use_support)
+            if config.use_support {
+                Toggle("可以使用非好友助战", isOn: $config.use_nonfriend_support)
+            }
         }
 
-        Toggle("凹开局干员精二直升", isOn: $config.start_with_elite_two)
-        if config.start_with_elite_two {
-            Toggle("只凹直升不作战", isOn: $config.only_start_with_elite_two)
+    }
+
+    @ViewBuilder private func strategySettings() -> some View {
+        Picker("策略", selection: $config.mode) {
+            ForEach(config.theme.modes, id: \.self) {
+                Text($0.description).tag($0)
+            }
+        }
+
+        if config.mode == .collectible {
+            Picker("烧水分队", selection: $config.collectible_mode_squad) {
+                ForEach(config.theme.squads, id: \.self) {
+                    Text($0).tag($0)
+                }
+            }
+            HStack {
+                Text("烧水奖励")
+                Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
+                Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
+                Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
+                Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
+                Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
+            }
+            .offset(x: -60)
+            HStack {
+                Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
+                Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
+                Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            }
+            Divider()
+        }
+
+        HStack {
+            Toggle("满级后自动停止", isOn: $config.stop_at_max_level)
+            if config.theme != .Phantom {
+                Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
+            }
+            if config.mode == .investment {
+                Toggle("投资后进二层", isOn: $config.investment_with_more_score)
+            }
+            if config.mode == .collectible {
+                Toggle("刷开局启用购物", isOn: $config.collectible_mode_shopping)
+            }
+        }
+
+        if config.mode == .collectible {
+            HStack {
+                Toggle("凹开局干员精二直升", isOn: $config.start_with_elite_two)
+                if config.start_with_elite_two {
+                    Toggle("只凹直升不凹其他", isOn: $config.only_start_with_elite_two)
+                }
+            }
+        }
+
+        if config.theme == .Mizuki {
+            Toggle("刷新商店（指路鳞）", isOn: $config.refresh_trader_with_dice)
+        }
+
+        if config.theme == .Sami {
+            HStack {
+                Toggle("使用密文板", isOn: $config.use_foldartal)
+                Toggle("检测获取的坍缩范式", isOn: $config.check_collapsal_paradigms)
+            }
+            TextField("一层远见密文板", text: $config.first_floor_foldartal)
+            if config.mode == .collectible, config.squad == "生活至上分队" {
+                TextField("分队开局密文板", text: startFoldartalList, prompt: Text("英文分号隔开"))
+            }
+            if config.mode == .clpPds {
+                TextField("待刷坍缩范式", text: expectedCollapsalParadigms, prompt: Text("英文分号隔开"))
+            }
+        }
+
+        if config.theme == .Sarkaz, config.mode == .collectible {
+            Toggle("凹2构想开局", isOn: $config.start_with_two_ideas)
+        }
+
+        if config.mode == .squad {
+            HStack {
+                Toggle("月度小队自动切换", isOn: $config.monthlySquadAutoIterate)
+                if config.monthlySquadAutoIterate {
+                    Toggle("月度小队通讯", isOn: $config.monthlySquadCheckComms)
+                }
+            }
+        }
+
+        if config.mode == .exploration {
+            Toggle("深度调查自动切换", isOn: $config.deepExplorationAutoIterate)
         }
     }
 }
 
-struct RoguelikeSettingsView_Previews: PreviewProvider {
-    static var previews: some View {
-        RoguelikeSettingsView(config: .constant(.init()))
+#Preview {
+    struct Preview: View {
+        @State var config = RoguelikeConfiguration()
+        var body: some View {
+            RoguelikeSettingsView(config: $config)
+        }
     }
+    return Preview()
 }
 
 // MARK: - Constants
@@ -114,13 +207,13 @@ extension RoguelikeConfiguration.Mode {
         case .exp:
             NSLocalizedString("刷分/奖励点数，尽可能稳定地打更多层数", comment: "")
         case .investment:
-            NSLocalizedString("刷源石锭，第一层投资完就退出", comment: "")
+            NSLocalizedString("刷源石锭，到达第二层后直接退出", comment: "")
         case .collectible:
-            NSLocalizedString("凹开局，然后凹开局奖励", comment: "")
+            NSLocalizedString("刷开局，刷取热水壶或精二干员开局", comment: "")
         case .clpPds:
-            NSLocalizedString("刷坍缩范式，尽可能地积累坍缩值", comment: "")
+            NSLocalizedString("刷坍缩范式，遇到非稀有坍缩范式后重开", comment: "")
         case .squad:
-            NSLocalizedString("刷月度小队，尽可能稳定地打更多层数", comment: "")
+            NSLocalizedString("刷月度小队，到达第五层后直接退出", comment: "")
         case .exploration:
             NSLocalizedString("刷深入调查，尽可能稳定地打更多层数", comment: "")
         }

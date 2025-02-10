@@ -66,7 +66,6 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         didSet {
             use_foldartal = mode != .clpPds
             check_collapsal_paradigms = mode == .clpPds
-            double_check_collapsal_paradigms = mode == .clpPds
         }
     }
     var squad: String
@@ -123,10 +122,6 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     ///
     /// 仅适用于 `Sami` 主题
     var check_collapsal_paradigms: Bool
-    /// 是否执行坍缩范式检测防漏措施，模式 `clpPds` 下默认值 true，其他模式下默认值 `false`
-    ///
-    /// 仅在主题为 `Sami` 且 `check_collapsal_paradigms` 为 `true` 时有效
-    var double_check_collapsal_paradigms: Bool
     /// 希望触发的坍缩范式，默认值为稀有坍缩
     ///
     /// 仅在主题为 `Sami` 且模式为 `clpPds` 时有效
@@ -196,7 +191,6 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let start_with_two_ideas: Bool?
         let use_foldartal: Bool?
         let check_collapsal_paradigms: Bool?
-        let double_check_collapsal_paradigms: Bool?
         let expected_collapsal_paradigms: [String]?
         let monthlySquadAutoIterate: Bool?
         let monthlySquadCheckComms: Bool?
@@ -313,9 +307,6 @@ extension RoguelikeConfiguration.Params {
             config.theme == .Sarkaz && config.mode == .collectible ? config.start_with_two_ideas : nil
         self.use_foldartal = config.theme == .Sami ? config.use_foldartal : nil
         self.check_collapsal_paradigms = config.theme == .Sami ? config.check_collapsal_paradigms : nil
-        self.double_check_collapsal_paradigms =
-            config.theme == .Sami && config.check_collapsal_paradigms
-            ? config.double_check_collapsal_paradigms : nil
         self.expected_collapsal_paradigms =
             config.theme == .Sami && config.mode == .clpPds ? config.expected_collapsal_paradigms : nil
         self.monthlySquadAutoIterate = config.mode == .squad ? config.monthlySquadAutoIterate : nil
@@ -359,8 +350,6 @@ extension RoguelikeConfiguration {
         self.use_foldartal = try container.decodeIfPresent(Bool.self, forKey: .use_foldartal) ?? true
         self.check_collapsal_paradigms =
             try container.decodeIfPresent(Bool.self, forKey: .check_collapsal_paradigms) ?? false
-        self.double_check_collapsal_paradigms =
-            try container.decodeIfPresent(Bool.self, forKey: .double_check_collapsal_paradigms) ?? false
         self.expected_collapsal_paradigms =
             try container.decodeIfPresent([String].self, forKey: .expected_collapsal_paradigms) ?? [
                 "目空一些", "睁眼瞎", "图像损坏", "一抹黑",
