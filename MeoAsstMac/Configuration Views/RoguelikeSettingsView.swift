@@ -89,9 +89,13 @@ struct RoguelikeSettingsView: View {
             Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
             Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
             Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
-            Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
-            Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
-            Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            if config.theme == .Mizuki {
+                Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
+                Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
+            }
+            if config.theme == .Sarkaz {
+                Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            }
         }
     }
 
@@ -165,15 +169,15 @@ struct RoguelikeSettingsView: View {
 
         if config.mode == .squad {
             HStack {
-                Toggle("月度小队自动切换", isOn: $config.monthlySquadAutoIterate)
-                if config.monthlySquadAutoIterate {
-                    Toggle("月度小队通讯", isOn: $config.monthlySquadCheckComms)
+                Toggle("月度小队自动切换", isOn: $config.monthly_squad_auto_iterate)
+                if config.monthly_squad_auto_iterate {
+                    Toggle("月度小队通讯", isOn: $config.monthly_squad_check_comms)
                 }
             }
         }
 
         if config.mode == .exploration {
-            Toggle("深度调查自动切换", isOn: $config.deepExplorationAutoIterate)
+            Toggle("深度调查自动切换", isOn: $config.deep_exploration_auto_iterate)
         }
     }
 }
