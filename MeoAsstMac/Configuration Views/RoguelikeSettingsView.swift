@@ -10,25 +10,7 @@ import SwiftUI
 struct RoguelikeSettingsView: View {
     @Binding var config: RoguelikeConfiguration
 
-    private var startFoldartalList: Binding<String> {
-        Binding {
-            config.start_foldartal_list.joined(separator: "; ")
-        } set: { newValue in
-            config.start_foldartal_list = newValue.split(separator: ";").map {
-                String($0).trimmingCharacters(in: .whitespaces)
-            }
-        }
-    }
-
-    private var expectedCollapsalParadigms: Binding<String> {
-        Binding {
-            config.expected_collapsal_paradigms.joined(separator: "; ")
-        } set: { newValue in
-            config.expected_collapsal_paradigms = newValue.split(separator: ";").map {
-                String($0).trimmingCharacters(in: .whitespaces)
-            }
-        }
-    }
+    @Environment(\.defaultMinListRowHeight) private var rowHeight
 
     var body: some View {
         ScrollView {
@@ -100,6 +82,19 @@ struct RoguelikeSettingsView: View {
 
     }
 
+    @ViewBuilder private func startCollectibles() -> some View {
+        LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 5), alignment: .leading) {
+            Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
+            Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
+            Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
+            Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
+            Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
+            Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
+            Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
+            Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+        }
+    }
+
     @ViewBuilder private func strategySettings() -> some View {
         Picker("策略", selection: $config.mode) {
             ForEach(config.theme.modes, id: \.self) {
@@ -113,19 +108,13 @@ struct RoguelikeSettingsView: View {
                     Text($0).tag($0)
                 }
             }
-            HStack {
+            if #available(macOS 13.0, *) {
+                LabeledContent("烧水奖励", value: "").padding(.top, 1)
+                startCollectibles().padding(.top, -rowHeight)
+            } else {
+                Divider()
                 Text("烧水奖励")
-                Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
-                Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
-                Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
-                Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
-                Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
-            }
-            .offset(x: -60)
-            HStack {
-                Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
-                Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
-                Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+                startCollectibles()
             }
             Divider()
         }
@@ -163,10 +152,10 @@ struct RoguelikeSettingsView: View {
             }
             TextField("一层远见密文板", text: $config.first_floor_foldartal)
             if config.mode == .collectible, config.squad == "生活至上分队" {
-                TextField("分队开局密文板", text: startFoldartalList, prompt: Text("英文分号隔开"))
+                TextField("分队开局密文板", text: $config.semicolonString(for: \.start_foldartal_list))
             }
             if config.mode == .clpPds {
-                TextField("待刷坍缩范式", text: expectedCollapsalParadigms, prompt: Text("英文分号隔开"))
+                TextField("待刷坍缩范式", text: $config.semicolonString(for: \.expected_collapsal_paradigms))
             }
         }
 

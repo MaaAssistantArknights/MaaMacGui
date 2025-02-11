@@ -70,6 +70,7 @@
 		8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8366DE0229F2F34100F715E8 /* MAAOperBox.swift */; };
 		83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */; };
 		83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */ = {isa = PBXBuildFile; productRef = 83782A2C2CFFB00000A32BDD /* LegacyUserTasks */; };
+		83812ED22D5B0B8100CB39D6 /* Binding+semicolonString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83812ED12D5B0B8100CB39D6 /* Binding+semicolonString.swift */; };
 		8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */; };
 		8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */; };
 		838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82129FBB9E3000566A0 /* GameSettingsView.swift */; };
@@ -187,6 +188,7 @@
 		8368855029BD851F00C5B999 /* Version.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Version.xcconfig; sourceTree = "<group>"; };
 		83782A282CFFA43200A32BDD /* LegacyUserTasks */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = LegacyUserTasks; sourceTree = "<group>"; };
 		83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyConfigurations.swift; sourceTree = "<group>"; };
+		83812ED12D5B0B8100CB39D6 /* Binding+semicolonString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+semicolonString.swift"; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
 		83885C112C4D5D1500B02663 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -455,6 +457,7 @@
 				835252A22D53567D00C6D6D3 /* ResourceUpdater.swift */,
 				8352529E2D533F9000C6D6D3 /* MirrorChyan.swift */,
 				835252A02D534A9E00C6D6D3 /* GitHub.swift */,
+				83812ED12D5B0B8100CB39D6 /* Binding+semicolonString.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -549,6 +552,7 @@
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,
 				83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */,
+				83812ED22D5B0B8100CB39D6 /* Binding+semicolonString.swift in Sources */,
 				8341195329EC25A900044F45 /* MAALog.swift in Sources */,
 				83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */,
 				832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */,
