@@ -82,16 +82,20 @@ struct RoguelikeSettingsView: View {
 
     }
 
-    @ViewBuilder private func startCollectibles() -> some View {
+    @ViewBuilder private func startCollectibles(theme: RoguelikeConfiguration.Theme) -> some View {
         LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4), alignment: .leading) {
             Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
             Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
             Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
             Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
             Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
-            Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
-            Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
-            Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            if theme == .Mizuki {
+                Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
+                Toggle("骰子", isOn: $config.collectible_mode_start_list.dice)
+            }
+            if theme == .Sarkaz {
+                Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            }
         }
     }
 
@@ -110,11 +114,11 @@ struct RoguelikeSettingsView: View {
             }
             if #available(macOS 13.0, *) {
                 LabeledContent("烧水奖励", value: "").padding(.top, 1)
-                startCollectibles().padding(.top, -rowHeight)
+                startCollectibles(theme: config.theme).padding(.top, -rowHeight)
             } else {
                 Divider()
                 Text("烧水奖励")
-                startCollectibles()
+                startCollectibles(theme: config.theme)
             }
             Divider()
         }
