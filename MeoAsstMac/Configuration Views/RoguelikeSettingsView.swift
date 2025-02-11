@@ -169,15 +169,15 @@ struct RoguelikeSettingsView: View {
 
         if config.mode == .squad {
             HStack {
-                Toggle("月度小队自动切换", isOn: $config.monthlySquadAutoIterate)
-                if config.monthlySquadAutoIterate {
-                    Toggle("月度小队通讯", isOn: $config.monthlySquadCheckComms)
+                Toggle("月度小队自动切换", isOn: $config.monthly_squad_auto_iterate)
+                if config.monthly_squad_auto_iterate {
+                    Toggle("月度小队通讯", isOn: $config.monthly_squad_check_comms)
                 }
             }
         }
 
         if config.mode == .exploration {
-            Toggle("深度调查自动切换", isOn: $config.deepExplorationAutoIterate)
+            Toggle("深度调查自动切换", isOn: $config.deep_exploration_auto_iterate)
         }
     }
 }

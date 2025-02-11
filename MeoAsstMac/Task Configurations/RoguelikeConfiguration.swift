@@ -129,15 +129,15 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     /// 是否启动月度小队自动切换
     ///
     /// 仅在模式为 `squad` 时有效
-    var monthlySquadAutoIterate: Bool
+    var monthly_squad_auto_iterate: Bool
     /// 是否将月度小队通信也作为切换依据
     ///
     /// 仅在模式为 `squad` 且 `monthlySquadAutoIterate` 为 `true` 时有效
-    var monthlySquadCheckComms: Bool
+    var monthly_squad_check_comms: Bool
     /// 是否启动深入调查自动切换
     ///
     /// 仅在模式为 `exploration` 时有效
-    var deepExplorationAutoIterate: Bool
+    var deep_exploration_auto_iterate: Bool
     /// 烧水是否启用购物, 默认值 `false`
     ///
     /// 仅在模式为 `collectible` 时有效
@@ -192,9 +192,9 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let use_foldartal: Bool?
         let check_collapsal_paradigms: Bool?
         let expected_collapsal_paradigms: [String]?
-        let monthlySquadAutoIterate: Bool?
-        let monthlySquadCheckComms: Bool?
-        let deepExplorationAutoIterate: Bool?
+        let monthly_squad_auto_iterate: Bool?
+        let monthly_squad_check_comms: Bool?
+        let deep_exploration_auto_iterate: Bool?
         let collectible_mode_shopping: Bool?
         let collectible_mode_squad: String?
         let collectible_mode_start_list: StartCollectibles?
@@ -309,10 +309,10 @@ extension RoguelikeConfiguration.Params {
         self.check_collapsal_paradigms = config.theme == .Sami ? config.check_collapsal_paradigms : nil
         self.expected_collapsal_paradigms =
             config.theme == .Sami && config.mode == .clpPds ? config.expected_collapsal_paradigms : nil
-        self.monthlySquadAutoIterate = config.mode == .squad ? config.monthlySquadAutoIterate : nil
-        self.monthlySquadCheckComms =
-            config.mode == .squad && config.monthlySquadAutoIterate ? config.monthlySquadCheckComms : nil
-        self.deepExplorationAutoIterate = config.mode == .exploration ? config.deepExplorationAutoIterate : nil
+        self.monthly_squad_auto_iterate = config.mode == .squad ? config.monthly_squad_auto_iterate : nil
+        self.monthly_squad_check_comms =
+            config.mode == .squad && config.monthly_squad_auto_iterate ? config.monthly_squad_check_comms : nil
+        self.deep_exploration_auto_iterate = config.mode == .exploration ? config.deep_exploration_auto_iterate : nil
         self.collectible_mode_shopping = config.mode == .collectible ? config.collectible_mode_shopping : nil
         self.collectible_mode_squad = config.mode == .collectible ? config.collectible_mode_squad : nil
         self.collectible_mode_start_list = config.mode == .collectible ? config.collectible_mode_start_list : nil
@@ -354,11 +354,12 @@ extension RoguelikeConfiguration {
             try container.decodeIfPresent([String].self, forKey: .expected_collapsal_paradigms) ?? [
                 "目空一些", "睁眼瞎", "图像损坏", "一抹黑",
             ]
-        self.monthlySquadAutoIterate =
-            try container.decodeIfPresent(Bool.self, forKey: .monthlySquadCheckComms) ?? false
-        self.monthlySquadCheckComms = try container.decodeIfPresent(Bool.self, forKey: .monthlySquadCheckComms) ?? false
-        self.deepExplorationAutoIterate =
-            try container.decodeIfPresent(Bool.self, forKey: .deepExplorationAutoIterate) ?? false
+        self.monthly_squad_auto_iterate =
+            try container.decodeIfPresent(Bool.self, forKey: .monthly_squad_auto_iterate) ?? false
+        self.monthly_squad_check_comms =
+            try container.decodeIfPresent(Bool.self, forKey: .monthly_squad_check_comms) ?? false
+        self.deep_exploration_auto_iterate =
+            try container.decodeIfPresent(Bool.self, forKey: .deep_exploration_auto_iterate) ?? false
         self.collectible_mode_shopping =
             try container.decodeIfPresent(Bool.self, forKey: .collectible_mode_shopping) ?? false
         self.collectible_mode_squad =
