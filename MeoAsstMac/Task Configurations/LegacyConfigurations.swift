@@ -44,6 +44,7 @@ func migrateLegacyConfigurations() throws -> [DailyTask] {
 
 extension StartupConfiguration {
     fileprivate init(migrating config: LegacyStartupConfiguration) {
+        self.init()
         self.start_game_enabled = config.start_game_enabled
         self.client_type = .init(rawValue: config.client_type.rawValue) ?? .default
     }
@@ -57,6 +58,7 @@ extension ClosedownConfiguration {
 
 extension RecruitConfiguration {
     fileprivate init(migrating config: LegacyRecruitConfiguration) {
+        self.init()
         self.refresh = config.refresh
         self.select = config.select
         self.confirm = config.confirm
@@ -70,7 +72,7 @@ extension RecruitConfiguration {
 
 extension InfrastConfiguration {
     fileprivate init(migrating config: LegacyInfrastConfiguration) {
-        self.mode = config.mode
+        self.mode = .init(rawValue: config.mode) ?? .default
         self.facility = config.facility.compactMap { .init(rawValue: $0.rawValue) }
         self.drones = .init(rawValue: config.drones.rawValue) ?? .NotUse
         self.threshold = config.threshold
@@ -101,6 +103,7 @@ extension FightConfiguration {
 
 extension MallConfiguration {
     fileprivate init(migrating config: LegacyMallConfiguration) {
+        self.init()
         self.shopping = config.shopping
         self.buy_first = config.buy_first
         self.blacklist = config.blacklist
@@ -121,9 +124,10 @@ extension AwardConfiguration {
 
 extension RoguelikeConfiguration {
     fileprivate init(migrating config: LegacyRoguelikeConfiguration) {
+        self.init()
         self.theme = .init(rawValue: config.theme.rawValue) ?? .Phantom
-        self.difficulty = config.difficulty
-        self.mode = config.mode
+        self.difficulty = .init(id: config.difficulty)
+        self.mode = .init(rawValue: config.mode) ?? .exp
         self.starts_count = config.starts_count
         self.investment_enabled = config.investment_enabled
         self.investments_count = config.investments_count

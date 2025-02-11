@@ -45,7 +45,7 @@ private struct EditableTextList: View {
     @Binding var texts: [String]
 
     private struct TextEntry: Equatable, Identifiable {
-        var id: Int
+        let id: Int
         var element: String
     }
 

@@ -20,6 +20,14 @@ protocol MAATaskConfiguration: Codable & Hashable {
     var params: Params { get }
 }
 
+extension MAATaskConfiguration {
+    init() {
+        let data = Data([0x7b, 0x7d])
+        let decoder = JSONDecoder()
+        self = try! decoder.decode(Self.self, from: data)
+    }
+}
+
 // MARK: JSON TaskParams
 
 extension MAAHandle {

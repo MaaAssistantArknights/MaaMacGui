@@ -10,7 +10,7 @@ import Foundation
 struct FightConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Fight }
 
-    var stage = ""
+    var stage: String
     var medicine: Int?
     var expiring_medicine: Int?
     var stone: Int?
@@ -18,11 +18,11 @@ struct FightConfiguration: MAATaskConfiguration {
     var series: Int?
     var drops: [String: Int]?
 
-    var report_to_penguin = false
-    var penguin_id = ""
-    var server = "CN"
-    var client_type = ""
-    var DrGrandet = false
+    var report_to_penguin: Bool
+    var penguin_id: String
+    var server: String
+    var client_type: String
+    var DrGrandet: Bool
 
     var title: String {
         type.description
@@ -124,4 +124,22 @@ struct DropItem: Codable, Equatable {
     let name: String
     let sortId: Int
     let usage: String?
+}
+
+extension FightConfiguration {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.stage = try container.decodeIfPresent(String.self, forKey: .stage) ?? ""
+        self.medicine = try container.decodeIfPresent(Int.self, forKey: .medicine)
+        self.expiring_medicine = try container.decodeIfPresent(Int.self, forKey: .expiring_medicine)
+        self.stone = try container.decodeIfPresent(Int.self, forKey: .stone)
+        self.times = try container.decodeIfPresent(Int.self, forKey: .times)
+        self.series = try container.decodeIfPresent(Int.self, forKey: .series)
+        self.drops = try container.decodeIfPresent([String: Int].self, forKey: .drops)
+        self.report_to_penguin = try container.decodeIfPresent(Bool.self, forKey: .report_to_penguin) ?? false
+        self.penguin_id = try container.decodeIfPresent(String.self, forKey: .penguin_id) ?? ""
+        self.server = try container.decodeIfPresent(String.self, forKey: .server) ?? "CN"
+        self.client_type = try container.decodeIfPresent(String.self, forKey: .client_type) ?? ""
+        self.DrGrandet = try container.decodeIfPresent(Bool.self, forKey: .DrGrandet) ?? false
+    }
 }

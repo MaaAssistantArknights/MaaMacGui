@@ -10,25 +10,52 @@ import Foundation
 struct InfrastConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Infrast }
 
-    var mode = 0
+    enum Mode: Int, Codable {
+        case `default` = 0
+        case custom = 10000
+    }
 
-    var facility = MAAInfrastFacility.allCases
-    var drones = MAAInfrastDroneUsage.NotUse
-    var threshold = 0.3
-    var replenish = false
+    enum Facility: String, CaseIterable, Codable {
+        case Mfg
+        case Trade
+        case Power
+        case Control
+        case Reception
+        case Office
+        case Dorm
+        case Processing
+        case Training
+    }
 
-    var dorm_notstationed_enabled = false
-    var dorm_trust_enabled = false
+    enum DroneUsage: String, CaseIterable, Codable {
+        case NotUse = "_NotUse"
+        case Money
+        case SyntheticJade
+        case CombatRecord
+        case PureGold
+        case OriginStone
+        case Chip
+    }
 
-    var filename = ""
-    var plan_index = 0
+    var mode: Mode
+
+    var facility: [Facility]
+    var drones: DroneUsage
+    var threshold: Double
+    var replenish: Bool
+
+    var dorm_notstationed_enabled: Bool
+    var dorm_trust_enabled: Bool
+
+    var filename: String
+    var plan_index: Int
 
     var title: String {
         type.description
     }
 
     var subtitle: String {
-        if mode != 10000 {
+        if mode != .custom {
             return NSLocalizedString("默认换班", comment: "")
         }
 
@@ -40,7 +67,7 @@ struct InfrastConfiguration: MAATaskConfiguration {
     }
 
     var summary: String {
-        if mode != 10000 {
+        if mode != .custom {
             return NSLocalizedString("单设施最优解", comment: "")
         }
 
@@ -62,20 +89,12 @@ struct InfrastConfiguration: MAATaskConfiguration {
     }
 
     private var customPlan: MAAInfrast? {
-        guard mode == 10000 else { return nil }
+        guard mode == .custom else { return nil }
         return try? MAAInfrast(path: filename)
     }
 }
 
-enum MAAInfrastFacility: String, CaseIterable, Codable, CustomStringConvertible, Identifiable {
-    case Mfg
-    case Trade
-    case Power
-    case Control
-    case Reception
-    case Office
-    case Dorm
-
+extension InfrastConfiguration.Facility: CustomStringConvertible, Identifiable {
     var id: String { rawValue }
 
     var description: String {
@@ -94,19 +113,15 @@ enum MAAInfrastFacility: String, CaseIterable, Codable, CustomStringConvertible,
             return NSLocalizedString("办公室", comment: "")
         case .Dorm:
             return NSLocalizedString("宿舍", comment: "")
+        case .Processing:
+            return NSLocalizedString("加工站", comment: "")
+        case .Training:
+            return NSLocalizedString("训练室", comment: "")
         }
     }
 }
 
-enum MAAInfrastDroneUsage: String, CaseIterable, Codable, CustomStringConvertible {
-    case NotUse = "_NotUse"
-    case Money
-    case SyntheticJade
-    case CombatRecord
-    case PureGold
-    case OriginStone
-    case Chip
-
+extension InfrastConfiguration.DroneUsage: CustomStringConvertible {
     var description: String {
         switch self {
         case .NotUse:
@@ -124,5 +139,24 @@ enum MAAInfrastDroneUsage: String, CaseIterable, Codable, CustomStringConvertibl
         case .Chip:
             return NSLocalizedString("制造站-芯片组", comment: "")
         }
+    }
+}
+
+extension InfrastConfiguration {
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.mode = try container.decodeIfPresent(InfrastConfiguration.Mode.self, forKey: .mode) ?? .default
+        self.facility =
+            try container.decodeIfPresent([InfrastConfiguration.Facility].self, forKey: .facility) ?? [
+                .Mfg, .Trade, .Control, .Power, .Reception, .Office, .Dorm, .Processing, .Training,
+            ]
+        self.drones = try container.decodeIfPresent(InfrastConfiguration.DroneUsage.self, forKey: .drones) ?? .NotUse
+        self.threshold = try container.decodeIfPresent(Double.self, forKey: .threshold) ?? 0.3
+        self.replenish = try container.decodeIfPresent(Bool.self, forKey: .replenish) ?? false
+        self.dorm_notstationed_enabled =
+            try container.decodeIfPresent(Bool.self, forKey: .dorm_notstationed_enabled) ?? false
+        self.dorm_trust_enabled = try container.decodeIfPresent(Bool.self, forKey: .dorm_trust_enabled) ?? false
+        self.filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
+        self.plan_index = try container.decodeIfPresent(Int.self, forKey: .plan_index) ?? 0
     }
 }
