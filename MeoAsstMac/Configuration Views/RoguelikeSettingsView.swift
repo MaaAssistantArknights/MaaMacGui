@@ -83,7 +83,7 @@ struct RoguelikeSettingsView: View {
     }
 
     @ViewBuilder private func startCollectibles() -> some View {
-        LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 5), alignment: .leading) {
+        LazyVGrid(columns: .init(repeating: .init(.flexible()), count: 4), alignment: .leading) {
             Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
             Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
             Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
