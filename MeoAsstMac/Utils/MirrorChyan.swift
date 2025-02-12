@@ -57,7 +57,7 @@ extension MirrorChyan {
             queryItems.append(URLQueryItem(name: "cdk", value: cdk))
         }
 
-        var urlComps = URLComponents(string: "https://mirrorc.top/api/resources/\(rid)/latest")!
+        var urlComps = URLComponents(string: "https://mirrorchyan.com/api/resources/\(rid)/latest")!
         if !queryItems.isEmpty {
             urlComps.queryItems = queryItems
         }
