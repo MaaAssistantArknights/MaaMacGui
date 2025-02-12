@@ -18,6 +18,19 @@ MAA 的意思是 MAA Assistant Arknights
 1. 安装依赖 `brew install ninja`
 2. 运行位于主仓库的脚本 `MAA_DEBUG=1 ./tools/build_macos_universal.zsh`
 
+### Development Profiles
+
+如果不在 Apple 的开发者计划（Developer Program）内，则需要在本地的测试环境下禁用 Keychain 功能，参考下图。
+
+![keychain](./keychain.png)
+
+或者打开 `MeoAsstMac/MeoAsstMac.entitlements`，删除如下内容：
+
+```xml
+    <key>keychain-access-groups</key>
+    <array/>
+```
+
 🎉 打开 Xcode 可以尝试 build 了
 🔔 如果要编译 release 版本，请去掉第 2 步中的 `MAA_DEBUG=1`
 
@@ -27,4 +40,5 @@ MAA 的意思是 MAA Assistant Arknights
     - 开发时可以在本地更换为个人开发者签名， 但是提交代码时请不要提交这部分修改
 2. 各种依赖下载失败/超时？
     - 科学上网
-
+3. 本地测试环境无法使用 Mirror 酱
+    - 此功能涉及到钥匙串访问，由于签名问题暂不支持非官方开发者身份使用。
