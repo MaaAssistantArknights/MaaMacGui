@@ -10,6 +10,8 @@ import SwiftUI
 struct StartupSettingsView: View {
     @Binding var config: StartupConfiguration
 
+    @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch
+
     @State private var accountInput = ""
 
     @State private var showAccountInput = false {
@@ -45,6 +47,12 @@ struct StartupSettingsView: View {
                 ForEach(accountNames.wrappedValue, id: \.hashValue) { account in
                     Text(account).tag(account)
                 }
+            }
+
+            if touchMode == .MacPlayTools {
+                Text("请将PlayCover的分辨率设置为1280x720、分辨率缩放设置为1.0。")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
 
             if !showAccountInput {
