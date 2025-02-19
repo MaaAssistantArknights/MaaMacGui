@@ -119,6 +119,7 @@ extension MirrorChyan {
     }
 
     private static func keychainQuery(merging other: [String: Any] = [:]) -> [String: Any] {
+        #if RELEASE
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: "MAA MirrorChyan CDK",
@@ -126,6 +127,13 @@ extension MirrorChyan {
             kSecAttrAccessGroup as String: "29V29Y67P2.com.hguandl.MeoAsstMac",
             kSecAttrSynchronizable as String: true,
         ]
+        #else
+        let query: [String: Any] = [
+            kSecClass as String: kSecClassGenericPassword,
+            kSecAttrService as String: "MAA MirrorChyan CDK",
+            kSecAttrAccount as String: "mirrorchyan",
+        ]
+        #endif
         return query.merging(other, uniquingKeysWith: { $1 })
     }
 }

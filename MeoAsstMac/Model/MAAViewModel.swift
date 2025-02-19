@@ -302,6 +302,10 @@ extension MAAViewModel {
                 """)
         }
 
+        #if DEBUG
+        guard false else { return }
+        #endif
+
         Task {
             do {
                 let version = try await self.resourceChannel.latestVersion()
