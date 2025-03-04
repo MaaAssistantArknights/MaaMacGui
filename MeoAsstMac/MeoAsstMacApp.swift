@@ -17,7 +17,12 @@ struct MeoAsstMacApp: App {
     private let updaterDelegate = MaaUpdaterDelegate()
 
     init() {
-        updaterController = .init(startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        #if RELEASE
+        let isRelease = true
+        #else
+        let isRelease = false
+        #endif
+        updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
     }
 
     var body: some Scene {

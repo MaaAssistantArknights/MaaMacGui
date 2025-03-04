@@ -191,6 +191,7 @@
 		83812ED12D5B0B8100CB39D6 /* Binding+semicolonString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+semicolonString.swift"; sourceTree = "<group>"; };
 		8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaMessage.swift; sourceTree = "<group>"; };
 		8383EA2E28F2C5BD007DAB9D /* FightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightSettingsView.swift; sourceTree = "<group>"; };
+		838433CC2D65BD0C00B0F78E /* MAADev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MAADev.entitlements; sourceTree = "<group>"; };
 		83885C112C4D5D1500B02663 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		838FF82129FBB9E3000566A0 /* GameSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSettingsView.swift; sourceTree = "<group>"; };
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
@@ -371,6 +372,7 @@
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				830C3D1F29BC86EE00B13A9F /* Info.plist */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
+				838433CC2D65BD0C00B0F78E /* MAADev.entitlements */,
 				833786D428F188D900D39D6F /* Preview Content */,
 			);
 			indentWidth = 4;
@@ -695,13 +697,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MAADev.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"MeoAsstMac/Preview Content\"";
-				DEVELOPMENT_TEAM = 29V29Y67P2;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

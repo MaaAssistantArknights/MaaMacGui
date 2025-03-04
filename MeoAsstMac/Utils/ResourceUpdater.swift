@@ -78,6 +78,11 @@ extension MAAResourceChannel {
 extension MAAResourceChannel {
     func version() throws -> (preferUser: Bool, MAAResourceVersion) {
         let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
+
+        #if DEBUG
+        guard false else { return (false, bundledResourceVersion) }
+        #endif
+
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         if let userResourceVersion = try? resourceVersion(of: documentsDirectory),
             userResourceVersion.last_updated > bundledResourceVersion.last_updated
