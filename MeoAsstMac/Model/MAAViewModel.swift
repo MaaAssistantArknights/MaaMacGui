@@ -380,6 +380,7 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
+        var firstStart = true
         for (index, task) in tasks.enumerated() {
             guard case var .startup(config) = task.task else {
                 continue
@@ -388,10 +389,11 @@ extension MAAViewModel {
             config.client_type = clientChannel
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
-            if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled {
+            if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
                     throw MAAError.gameStartFailed
                 }
+                firstStart = false
             }
         }
 

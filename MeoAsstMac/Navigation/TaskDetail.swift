@@ -62,7 +62,7 @@ struct TaskDetail: View {
     @ToolbarContentBuilder private func detailToolbar() -> some ToolbarContent {
         ToolbarItemGroup {
             Menu {
-                ForEach(defaultTaskConfigurations.dropFirst(), id: \.type) { config in
+                ForEach(defaultTaskConfigurations, id: \.type) { config in
                     Button(config.title) {
                         addTask(config: config)
                     }

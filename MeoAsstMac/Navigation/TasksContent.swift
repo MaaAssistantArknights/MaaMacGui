@@ -130,7 +130,15 @@ struct TasksContent: View {
 
     private var shouldDisableDeletion: Bool {
         if let selection, case .startup = viewModel.tasks[selection] {
-            return true
+            // 判断是否只剩一个 .startup
+            var startupCount = 0
+            for task in viewModel.tasks {  // 预期多账号也应在 1e2 以内
+                if case .startup(_) = task.task {
+                    startupCount += 1
+                    if startupCount > 1 { break }  // 发现第二个时立即终止遍历
+                }
+            }
+            return startupCount == 1
         } else {
             return selection == nil
         }
