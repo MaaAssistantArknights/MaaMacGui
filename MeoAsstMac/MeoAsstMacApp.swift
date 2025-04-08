@@ -17,10 +17,10 @@ struct MeoAsstMacApp: App {
     private let updaterDelegate = MaaUpdaterDelegate()
 
     init() {
-        #if RELEASE
-        let isRelease = true
-        #else
+        #if DEBUG
         let isRelease = false
+        #else
+        let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
     }
