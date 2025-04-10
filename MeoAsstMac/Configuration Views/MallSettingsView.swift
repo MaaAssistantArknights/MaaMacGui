@@ -67,13 +67,13 @@ private struct EditableTextList: View {
                     HStack {
                         TextField("", text: entry.element)
                             .focused($focusedField, equals: entry.id)
-                            //.textFieldStyle(.roundedBorder)
 
                         Button {
                             selection = entry.id
                             focusedField = entry.id
                         } label: {
                             Image(systemName: "pencil")
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
                     }
