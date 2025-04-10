@@ -58,12 +58,25 @@ private struct EditableTextList: View {
     }
 
     @State private var selection: Int?
+    @FocusState private var focusedField: Int?
 
     var body: some View {
         List(selection: $selection) {
             Section {
                 ForEach(entries) { entry in
-                    TextField("", text: entry.element)
+                    HStack {
+                        TextField("", text: entry.element)
+                            .focused($focusedField, equals: entry.id)
+
+                        Button {
+                            selection = entry.id
+                            focusedField = entry.id
+                        } label: {
+                            Image(systemName: "pencil")
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                    }
                 }
                 .onMove(perform: moveEntry)
             } header: {
