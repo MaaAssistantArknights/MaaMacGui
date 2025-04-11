@@ -23,9 +23,30 @@ struct FightSettingsView: View {
                         Picker("关卡选择", selection: $config.stage) {
                             Text("当前/上次").tag("")
                             Text("1-7").tag("1-7")
-                            Text("CE-6").tag("CE-6")
-                            Text("AP-5").tag("AP-5")
-                            Text("CA-5").tag("CA-5")
+                            
+                            // 根据星期几显示不同的关卡
+                            let weekday = Calendar.current.component(.weekday, from: Date()) // 1=周日, 2=周一...7=周六
+                            
+                            // CE-6: 周二、四、六、日 (2,4,6,1)
+                            if [1,2,4,6].contains(weekday) {
+                                Text("CE-6").tag("CE-6")
+                            }
+                            
+                            // AP-5: 周一、四、六、日 (2,5,7,1)
+                            if [1,2,5,7].contains(weekday) {
+                                Text("AP-5").tag("AP-5")
+                            }
+                            
+                            // 新增 SK-5: 周一、三、五、六 (2,4,6,7)
+                            if [2,4,6,7].contains(weekday) {
+                                Text("SK-5").tag("SK-5")
+                            }
+                            
+                            // CA-5: 周二、三、五、日 (3,5,7,1)
+                            if [1,3,5,7].contains(weekday) {
+                                Text("CA-5").tag("CA-5")
+                            }
+                            
                             Text("LS-6").tag("LS-6")
                             Text("剿灭模式").tag("Annihilation")
                         }
