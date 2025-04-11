@@ -222,7 +222,7 @@ struct FightSettingsView: View {
     }
 
     private var stageNotListed: Bool { !listedStages.contains(config.stage) }
-    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "SK-5", "Annihilation"]
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
