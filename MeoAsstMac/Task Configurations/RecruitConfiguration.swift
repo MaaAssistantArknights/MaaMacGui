@@ -56,7 +56,7 @@ struct RecruitConfiguration: MAATaskConfiguration {
 
     static var recognition: RecruitConfiguration {
         .init(
-            refresh: false, select: [4, 5, 6], confirm: [], first_tags: [],
+            refresh: false, select: [4, 5, 6], confirm: [-1], first_tags: [],
             extra_tags_mode: 0, times: 0, set_time: true, expedite: false,
             expedite_times: 0, skip_robot: true,
             recruitment_time: [
