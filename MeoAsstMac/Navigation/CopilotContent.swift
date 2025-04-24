@@ -179,6 +179,12 @@ struct CopilotContent: View {
                 let (data, _) = try await URLSession.shared.data(for: request)
                 let response = try JSONDecoder().decode(CopilotSetResult.self, from: data)
 
+                if response.data.copilot_ids.isEmpty {
+                    print("该作业集不包含任何作业")
+                    self.downloading = false
+                    return
+                }
+
                 for id in response.data.copilot_ids {
                     let file = externalDirectory.appendingPathComponent("\(id)").appendingPathExtension("json")
                     let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
