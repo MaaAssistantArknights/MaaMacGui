@@ -84,14 +84,14 @@ extension MAAViewModel {
             logError("TouchModeNotAvaiable")
 
         case "FastestWayToScreencap":
-            let cost = message.details["details"]["cost"].string ?? "???"
+            let cost = message.details["details"]["cost"].number?.stringValue ?? "???"
             let method = message.details["details"]["method"].string ?? "???"
             logInfo("FastestWayToScreencap: \(cost)ms (\(method))")
 
         case "ScreencapCost":
-            let minCost = message.details["details"]["min"].string ?? "???"
-            let avgCost = message.details["details"]["avg"].string ?? "???"
-            let maxCost = message.details["details"]["max"].string ?? "???"
+            let minCost = message.details["details"]["min"].number?.stringValue ?? "???"
+            let avgCost = message.details["details"]["avg"].number?.stringValue ?? "???"
+            let maxCost = message.details["details"]["max"].number?.stringValue ?? "???"
             logInfo("ScreencapCost: \(minCost) / \(avgCost) / \(maxCost)")
 
         case "UnsupportedPlayTools":
