@@ -56,6 +56,7 @@ struct CopilotContent: View {
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
         .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
         .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
+        .onReceive(viewModel.$downloadCopilotSet, perform: downloadCopilotSet)
         .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
         .fileImporter(
             isPresented: $viewModel.showImportCopilot,
@@ -159,6 +160,42 @@ struct CopilotContent: View {
                 try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
                 copilots.insert(file)
                 self.selection = file
+            } catch {
+                print(error)
+            }
+            self.downloading = false
+        }
+    }
+
+    private func downloadCopilotSet(id: String?) {
+        guard let id, let copilotID = Int(id) else { return }
+
+        let url = URL(string: "https://prts.maa.plus/set/get?id=\(copilotID)")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        print(request)
+        print(url)
+
+        Task {
+            self.downloading = true
+            do {
+                let (data, _) = try await URLSession.shared.data(for: request)
+                let response = try JSONDecoder().decode(CopilotSetResult.self, from: data)
+
+                for id in response.data.copilot_ids {
+                    let file = externalDirectory.appendingPathComponent("\(id)").appendingPathExtension("json")
+                    let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
+                    do {
+                        let data = try await URLSession.shared.data(from: url).0
+                        let response = try JSONDecoder().decode(CopilotResponse.self, from: data)
+                        try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
+                        copilots.insert(file)
+                    } catch {
+                        print("Failed to fetch copilot \(id):", error)
+                    }
+                }
+
+                self.selection = copilots.urls.last
             } catch {
                 print(error)
             }
@@ -288,6 +325,14 @@ private struct CopilotResponse: Codable {
     struct CopilotData: Codable {
         let content: String
     }
+}
+
+private struct CopilotSetResult: Codable {
+    let data: CopilotSetDetail
+}
+
+private struct CopilotSetDetail: Codable {
+    let copilot_ids: [Int]
 }
 
 // MARK: - Convenience Methods
