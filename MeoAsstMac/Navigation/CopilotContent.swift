@@ -173,9 +173,6 @@ struct CopilotContent: View {
         let url = URL(string: "https://prts.maa.plus/set/get?id=\(copilotID)")!
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
-        print(request)
-        print(url)
-
         Task {
             self.downloading = true
             do {
