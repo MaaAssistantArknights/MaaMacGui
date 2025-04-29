@@ -7,6 +7,7 @@
 
 import Sparkle
 import SwiftUI
+import Intents
 
 @main
 struct MeoAsstMacApp: App {
@@ -23,6 +24,7 @@ struct MeoAsstMacApp: App {
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        appDelegate.setViewModel(appViewModel)
     }
 
     var body: some Scene {
@@ -85,6 +87,7 @@ final class MaaUpdaterDelegate: NSObject, SPUUpdaterDelegate {
 }
 
 private class AppDelegate: NSObject, NSApplicationDelegate {
+    private var viewModel: MAAViewModel?
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSWindow.allowsAutomaticWindowTabbing = false
     }
@@ -92,4 +95,28 @@ private class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
         true
     }
+    
+    func application(_ application: NSApplication, handlerFor intent: INIntent) -> Any? {
+            //if intent is RunMAAIntent {
+            //    Task { @MainActor in
+            //        viewModel?.dailyTasksDetailMode = .log
+            //        await viewModel?.tryStartTasks()
+            //    }
+            //    return nil
+            //}else if intent is StopMAAIntent {
+            //    Task { @MainActor in
+            //        try await viewModel?.stop()                }
+            //    return nil
+            //}
+            if intent is RunMAAIntent {
+                return RunMAAIntentHandler(viewModel: viewModel)
+            } else if intent is StopMAAIntent {
+                return StopMAAIntentHandler(viewModel: viewModel)
+            }
+            return nil
+        }
+        
+        func setViewModel(_ model: MAAViewModel) {
+            viewModel = model
+        }
 }
