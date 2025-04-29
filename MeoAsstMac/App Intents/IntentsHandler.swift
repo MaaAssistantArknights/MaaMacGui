@@ -17,11 +17,12 @@ class RunMAAIntentHandler: NSObject, RunMAAIntentHandling {
     }
 
     func handle(intent: RunMAAIntent, completion: @escaping (RunMAAIntentResponse) -> Void) {
+        let respond = RunMAAIntentResponse(code: .success, userActivity: nil)
         Task { @MainActor in
             viewModel?.dailyTasksDetailMode = .log
             await viewModel?.tryStartTasks()
-            return RunMAAIntentResponseCode.success
         }
+        completion(respond)
     }
 }
 
@@ -33,9 +34,10 @@ class StopMAAIntentHandler: NSObject, StopMAAIntentHandling {
     }
 
     func handle(intent: StopMAAIntent, completion: @escaping (StopMAAIntentResponse) -> Void) {
+        let respond = StopMAAIntentResponse(code: .success, userActivity: nil)
         Task { @MainActor in
             try await viewModel?.stop()
-            return StopMAAIntentResponseCode.success
         }
+        completion(respond)
     }
 }
