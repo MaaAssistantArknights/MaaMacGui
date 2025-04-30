@@ -24,7 +24,6 @@ struct MeoAsstMacApp: App {
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
-        appDelegate.setViewModel(appViewModel)
     }
 
     var body: some Scene {
@@ -33,6 +32,7 @@ struct MeoAsstMacApp: App {
                 .environmentObject(appViewModel)
                 .onAppear {
                     TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
+                    appDelegate.setViewModel(appViewModel)
                 }
         }
         .commands {
@@ -97,26 +97,15 @@ private class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func application(_ application: NSApplication, handlerFor intent: INIntent) -> Any? {
-            //if intent is RunMAAIntent {
-            //    Task { @MainActor in
-            //        viewModel?.dailyTasksDetailMode = .log
-            //        await viewModel?.tryStartTasks()
-            //    }
-            //    return nil
-            //}else if intent is StopMAAIntent {
-            //    Task { @MainActor in
-            //        try await viewModel?.stop()                }
-            //    return nil
-            //}
-            if intent is RunMAAIntent {
-                return RunMAAIntentHandler(viewModel: viewModel)
-            } else if intent is StopMAAIntent {
-                return StopMAAIntentHandler(viewModel: viewModel)
-            }
-            return nil
+        if intent is RunMAAIntent {
+            return RunMAAIntentHandler(viewModel: viewModel)
+        } else if intent is StopMAAIntent {
+            return StopMAAIntentHandler(viewModel: viewModel)
         }
-        
-        func setViewModel(_ model: MAAViewModel) {
-            viewModel = model
-        }
+        return nil
+    }
+    
+    func setViewModel(_ model: MAAViewModel) {
+        viewModel = model
+    }
 }
