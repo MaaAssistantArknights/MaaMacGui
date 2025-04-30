@@ -14,6 +14,8 @@ public enum MAAResourceChannel: String, CaseIterable {
     public enum Error: Swift.Error {
         case emptyURL
         case noNeedUpdate
+        case forbidden
+        case rateExceeded
     }
 }
 
@@ -35,6 +37,10 @@ extension MAAResourceChannel.Error: LocalizedError {
             return NSLocalizedString("无下载链接，请检查CDK", comment: "")
         case .noNeedUpdate:
             return NSLocalizedString("无需更新", comment: "")
+        case .forbidden:
+            return NSLocalizedString("访问被禁止，请检查IP或CDK", comment: "")
+        case .rateExceeded:
+            return NSLocalizedString("IP请求频率过快，请稍后再试", comment: "")
         }
     }
 }

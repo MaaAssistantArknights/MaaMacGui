@@ -30,7 +30,14 @@ public struct GitHub: Sendable {
 extension GitHub {
     public func query() async throws -> Version {
         let url = rawURL(ref: "heads/main", path: "resource/version.json")!
-        let (data, _) = try await URLSession.shared.data(from: url)
+        let (data, resp) = try await URLSession.shared.data(from: url)
+        if let resp = resp as? HTTPURLResponse {
+            switch resp.statusCode {
+            case 403: throw MAAResourceChannel.Error.forbidden
+            case 429: throw MAAResourceChannel.Error.rateExceeded
+            default: break
+            }
+        }
         let version = try JSONDecoder().decode(Version.self, from: data)
         return version
     }
