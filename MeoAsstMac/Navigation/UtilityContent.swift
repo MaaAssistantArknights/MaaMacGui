@@ -59,6 +59,8 @@ struct UtilityContent: View {
                 try await viewModel.recognizeDepot()
             case .oper:
                 try await viewModel.recognizeOperBox()
+            case .minigame:
+                try await viewModel.miniGame(name: "GreenGrass@DuelChannel@Begin")
             case .video, .gacha:
                 break
             case .none:
@@ -85,6 +87,7 @@ enum UtilityEntry: Int, CaseIterable, Codable, Identifiable {
     case oper
     case video
     case gacha
+    case minigame
 }
 
 extension UtilityEntry: CustomStringConvertible {
@@ -100,6 +103,8 @@ extension UtilityEntry: CustomStringConvertible {
             return NSLocalizedString("视频作业", comment: "")
         case .gacha:
             return NSLocalizedString("干员寻访", comment: "")
+        case .minigame:
+            return NSLocalizedString("小游戏", comment: "")
         }
     }
 
@@ -115,6 +120,8 @@ extension UtilityEntry: CustomStringConvertible {
             return "video"
         case .gacha:
             return "person.fill.viewfinder"
+        case .minigame:
+            return "gamecontroller.fill"
         }
     }
 

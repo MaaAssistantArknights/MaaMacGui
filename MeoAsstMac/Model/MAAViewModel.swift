@@ -554,6 +554,22 @@ extension MAAViewModel {
 
         status = .busy
     }
+
+    func miniGame(name: String) async throws {
+        status = .pending
+        defer { handleEarlyReturn(backTo: .idle) }
+
+        try await ensureHandle()
+
+        let params = ["task_names": [name]]
+        let data = try JSONSerialization.data(withJSONObject: params)
+        let string = String(data: data, encoding: .utf8)
+
+        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
+        try await handle?.start()
+
+        status = .busy
+    }
 }
 
 // MARK: - Prevent Sleep
