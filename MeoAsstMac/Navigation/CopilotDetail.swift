@@ -50,20 +50,51 @@ struct CopilotDetail: View {
     }
 
     @ViewBuilder private func addPopover() -> some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 9) {
             Text("神秘代码 [作业站链接](https://prts.plus)")
-            TextField("maa://", text: $prtsCode)
-            Spacer(minLength: 10)
-
-            Button("下载作业") {
+                .font(.headline)
+            
+            HStack {
+                Image(systemName: "link")
+                    .foregroundColor(.secondary)
+                TextField("maa://", text: $prtsCode)
+                    .textFieldStyle(RoundedBorderTextFieldStyle())
+            }
+            
+            Divider()
+            
+            Button {
                 viewModel.downloadCopilot = prtsCode.parsedID
+                showAdd = false
+            } label: {
+                Label("下载作业", systemImage: "arrow.down.doc")
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.borderedProminent)
             .disabled(prtsCode.parsedID == nil)
-
-            Button("选择本地文件…") {
-                viewModel.showImportCopilot = true
+            
+            Button {
+                if let clipboardString = NSPasteboard.general.string(forType: .string),
+                   let parsedID = clipboardString.parsedID {
+                    prtsCode = clipboardString
+                    viewModel.downloadCopilot = parsedID
+                    showAdd = false
+                }
+            } label: {
+                Label("从剪贴板读取", systemImage: "doc.on.clipboard")
+                    .frame(maxWidth: .infinity)
             }
+            .buttonStyle(.bordered)
+            
+            Button {
+                viewModel.showImportCopilot = true
+            } label: {
+                Label("选择本地文件", systemImage: "folder")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
         }
+        .frame(width: 200)
         .padding()
     }
 }
