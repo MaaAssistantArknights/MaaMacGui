@@ -59,7 +59,11 @@ struct CopilotDetail: View {
                 viewModel.downloadCopilot = prtsCode.parsedID
             }
             .disabled(prtsCode.parsedID == nil)
-
+            
+            Button("下载作业集") {
+                viewModel.downloadCopilotSet = prtsCode.parsedID
+            }
+            .disabled(prtsCode.parsedID == nil)
             Button("选择本地文件…") {
                 viewModel.showImportCopilot = true
             }

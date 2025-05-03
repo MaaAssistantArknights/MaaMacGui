@@ -87,6 +87,7 @@ import SwiftUI
 
     @Published var copilot: CopilotConfiguration?
     @Published var downloadCopilot: String?
+    @Published var downloadCopilotSet: String?
     @Published var showImportCopilot = false
     @Published var copilotDetailMode: CopilotDetailMode = .log
 

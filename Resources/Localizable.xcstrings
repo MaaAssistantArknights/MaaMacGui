@@ -1582,6 +1582,22 @@
     "下载作业" : {
 
     },
+    "下载作业集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Download Copilot Set"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下载作业集"
+          }
+        }
+      }
+    },
     "不使用无人机" : {
 
     },
