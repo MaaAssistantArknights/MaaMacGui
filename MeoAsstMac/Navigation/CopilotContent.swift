@@ -167,9 +167,12 @@ struct CopilotContent: View {
     }
 
     private func deleteCopilot(url: URL) {
-        guard canDelete(url) else { return }
+        let canDeleteFile = canDelete(url)
         copilots.remove(url)
-        try? FileManager.default.removeItem(at: url)
+        
+        if canDeleteFile {
+            try? FileManager.default.removeItem(at: url)
+        }
     }
 
     private func deleteSelectedCopilot() {
