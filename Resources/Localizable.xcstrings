@@ -3017,12 +3017,12 @@
     "韩服（YoStarKR）" : {
 
     },
-    "领取六周年赠送月卡奖励" : {
+    "领取周年庆赠送月卡奖励" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "6주년 기념 월간 카드 보상 수령"
+            "value" : "주년 기념 월간 카드 보상 수령"
           }
         }
       }
