@@ -55,7 +55,7 @@ struct FightSettingsView: View {
                     get: { config.series ?? -1 },
                     set: { config.series = $0 == -1 ? nil : $0 }
                 )) {
-                    Text("AUTO").tag(1000)
+                    Text("AUTO").tag(0)
                     Text("6").tag(6)
                     Text("5").tag(5)
                     Text("4").tag(4)
@@ -148,7 +148,7 @@ struct FightSettingsView: View {
         Binding {
             config.series != nil && config.series != -1
         } set: {
-            config.series = $0 ? 1000 : -1  // Default to AUTO when enabled, -1 when disabled
+            config.series = $0 ? 0 : -1  // Default to 0 (AUTO) if enabled, otherwise set to -1 (not in use)
         }
     }
 
