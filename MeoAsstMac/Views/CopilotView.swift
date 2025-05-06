@@ -118,7 +118,7 @@ struct CopilotView_Previews: PreviewProvider {
     static let url = Bundle.main.resourceURL!
         .appendingPathComponent("resource")
         .appendingPathComponent("copilot")
-        .appendingPathComponent("SSS_约翰老妈新建地块")
+        .appendingPathComponent("OF-1_credit_fight")
         .appendingPathExtension("json")
 
     static var previews: some View {
