@@ -51,7 +51,19 @@ struct FightSettingsView: View {
                     Toggle("指定次数", isOn: limitBattles)
                 }
 
-                TextField(value: $config.series, format: .number) {
+                Picker(selection: Binding(
+                    get: { config.series ?? -1 },
+                    set: { config.series = $0 == -1 ? nil : $0 }
+                )) {
+                    Text("AUTO").tag(1000)
+                    Text("6").tag(6)
+                    Text("5").tag(5)
+                    Text("4").tag(4)
+                    Text("3").tag(3)
+                    Text("2").tag(2)
+                    Text("1").tag(1)
+                    Text("不使用").tag(-1)
+                } label: {
                     Toggle("连战次数", isOn: seriesBattles)
                 }
             }
@@ -134,9 +146,9 @@ struct FightSettingsView: View {
 
     private var seriesBattles: Binding<Bool> {
         Binding {
-            config.series != nil
+            config.series != nil && config.series != -1
         } set: {
-            config.series = $0 ? 1 : nil
+            config.series = $0 ? 1000 : -1  // Default to AUTO when enabled, -1 when disabled
         }
     }
 
