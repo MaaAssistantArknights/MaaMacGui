@@ -270,7 +270,7 @@ extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
         }
     }
 
-    static let max = Self(id: 999)
+    static let max = Self(id: Int(Int32.max))
     static let current = Self(id: -1)
 
     static func upto(maximum: Int) -> [Self] {
