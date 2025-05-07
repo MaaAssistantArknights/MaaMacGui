@@ -22,7 +22,7 @@ struct AwardSettingsView: View {
 
             Toggle("领取限时开采许可合成玉奖励", isOn: $config.mining)
 
-            Toggle("领取五周年赠送月卡奖励", isOn: $config.specialaccess)
+            Toggle("领取周年庆赠送月卡奖励", isOn: $config.specialaccess)
         }
         .padding()
     }
