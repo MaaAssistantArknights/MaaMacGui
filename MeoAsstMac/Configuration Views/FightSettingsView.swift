@@ -51,18 +51,12 @@ struct FightSettingsView: View {
                     Toggle("指定次数", isOn: limitBattles)
                 }
 
-                Picker(selection: Binding(
-                    get: { config.series ?? -1 },
-                    set: { config.series = $0 == -1 ? nil : $0 }
-                )) {
-                    Text("AUTO").tag(0)
-                    Text("6").tag(6)
-                    Text("5").tag(5)
-                    Text("4").tag(4)
-                    Text("3").tag(3)
-                    Text("2").tag(2)
-                    Text("1").tag(1)
-                    Text("不使用").tag(-1)
+                Picker(selection: $config.series) {
+                    Text(verbatim: "AUTO").tag(0)
+                    ForEach((1...6).reversed(), id: \.self) { i in
+                        Text(verbatim: "\(i)").tag(i)
+                    }
+                    Text("不使用").tag(Int?.none)
                 } label: {
                     Toggle("连战次数", isOn: seriesBattles)
                 }
@@ -146,9 +140,9 @@ struct FightSettingsView: View {
 
     private var seriesBattles: Binding<Bool> {
         Binding {
-            config.series != nil && config.series != -1
+            config.series != nil
         } set: {
-            config.series = $0 ? 0 : -1  // Default to 0 (AUTO) if enabled, otherwise set to -1 (not in use)
+            config.series = $0 ? 0 : nil
         }
     }
 
