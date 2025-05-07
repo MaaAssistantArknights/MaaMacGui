@@ -53,16 +53,16 @@ struct CopilotDetail: View {
         VStack(alignment: .leading, spacing: 9) {
             Text("神秘代码 [作业站链接](https://prts.plus)")
                 .font(.headline)
-            
+
             HStack {
                 Image(systemName: "link")
                     .foregroundColor(.secondary)
                 TextField("maa://", text: $prtsCode)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                    .textFieldStyle(.roundedBorder)
             }
-            
+
             Divider()
-            
+
             Button {
                 viewModel.downloadCopilot = prtsCode.parsedID
                 showAdd = false
@@ -72,10 +72,11 @@ struct CopilotDetail: View {
             }
             .buttonStyle(.borderedProminent)
             .disabled(prtsCode.parsedID == nil)
-            
+
             Button {
                 if let clipboardString = NSPasteboard.general.string(forType: .string),
-                   let parsedID = clipboardString.parsedID {
+                    let parsedID = clipboardString.parsedID
+                {
                     prtsCode = clipboardString
                     viewModel.downloadCopilot = parsedID
                     showAdd = false
@@ -85,11 +86,11 @@ struct CopilotDetail: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
-            
+
             Button {
                 viewModel.showImportCopilot = true
             } label: {
-                Label("选择本地文件", systemImage: "folder")
+                Label("选择本地文件…", systemImage: "folder")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
@@ -114,17 +115,19 @@ struct CopilotDetail_Previews: PreviewProvider {
 
 // MARK: - Value Extensions
 
-private extension String {
-    var parsedID: String? {
-        guard let regex = try? NSRegularExpression(pattern: #"(?:maa:\/\/)?(\d+)"#,
-                                                   options: .caseInsensitive)
+extension String {
+    fileprivate var parsedID: String? {
+        guard
+            let regex = try? NSRegularExpression(
+                pattern: #"(?:maa:\/\/)?(\d+)"#,
+                options: .caseInsensitive)
         else {
             return nil
         }
 
         let range = NSRange(location: 0, length: utf16.count)
         guard let match = regex.firstMatch(in: self, range: range),
-              let idRange = Range(match.range(at: 1), in: self)
+            let idRange = Range(match.range(at: 1), in: self)
         else {
             return nil
         }
