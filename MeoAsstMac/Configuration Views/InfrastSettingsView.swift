@@ -14,16 +14,44 @@ struct InfrastSettingsView: View {
 
     var body: some View {
         VStack {
-            HStack {
-                facilityList
-                preferenceForm
+            Form {
+                Picker("基建模式", selection: $config.mode) {
+                    Text("常规模式").tag(InfrastConfiguration.Mode.default)
+                    Text("队列轮换").tag(InfrastConfiguration.Mode.rotation)
+                    Text("自定义基建配置").tag(InfrastConfiguration.Mode.custom)
+                }
+                if config.mode == .custom {
+                    customPlanView
+                } else {
+                    Picker("无人机用途", selection: $config.drones) {
+                        ForEach(InfrastConfiguration.DroneUsage.allCases, id: \.self) { usage in
+                            Text(usage.description).tag(usage)
+                        }
+                    }
+                }
             }
 
-            if useCustomPlan.wrappedValue {
-                customPlanView
+            Divider()
+
+            HStack(alignment: .top) {
+                if config.mode != .rotation {
+                    facilityList
+                }
+                Form {
+                    if config.mode != .rotation {
+                        Section {
+                            Text("基建工作心情阈值: \(config.threshold * 100, specifier: "%.0f")%")
+                            Slider(value: $config.threshold, in: 0...1)
+                        }
+                        Divider()
+                    }
+                    Section {
+                        preferenceForm
+                    }
+                }
             }
         }
-        .animation(.default, value: useCustomPlan.wrappedValue)
+        .animation(.default, value: config.mode)
         .padding()
     }
 
@@ -53,40 +81,16 @@ struct InfrastSettingsView: View {
     }
 
     @ViewBuilder private var preferenceForm: some View {
-        Form {
-            Section {
-                Text("无人机用途：")
-                Picker("", selection: $config.drones) {
-                    ForEach(InfrastConfiguration.DroneUsage.allCases, id: \.self) { usage in
-                        Text(usage.description).tag(usage)
-                    }
-                }
-            }
-
-            Divider().padding(.top)
-
-            Section {
-                Text("基建工作心情阈值: \(config.threshold * 100, specifier: "%.0f")%")
-                Slider(value: $config.threshold, in: 0...1)
-            }
-
-            Divider()
-
-            Section {
-                Toggle("宿舍空余位置蹭信赖", isOn: $config.dorm_trust_enabled)
-                Toggle("不将已进驻的干员放入宿舍", isOn: $config.dorm_notstationed_enabled)
-                Toggle("源石碎片自动补货", isOn: $config.replenish)
-            }
-
-            Divider()
-
-            Toggle("启用自定义基建配置(beta)", isOn: useCustomPlan)
-        }
+        Toggle("宿舍空余位置蹭信赖", isOn: $config.dorm_trust_enabled)
+        Toggle("不将已进驻的干员放入宿舍", isOn: $config.dorm_notstationed_enabled)
+        Toggle("源石碎片自动补货", isOn: $config.replenish)
+        Toggle("会客室信息板收取信用", isOn: $config.reception_message_board)
+        Toggle("训练完成后继续尝试专精当前技能", isOn: $config.continue_training)
     }
 
     @ViewBuilder private var customPlanView: some View {
         VStack {
-            Picker("方案：", selection: customPlan) {
+            Picker("方案", selection: customPlan) {
                 Section {
                     ForEach(customInfrastPaths, id: \.self) { path in
                         path.label
@@ -104,7 +108,7 @@ struct InfrastSettingsView: View {
                 }
             }
 
-            Picker("班次：", selection: $config.plan_index) {
+            Picker("班次", selection: $config.plan_index) {
                 try? MAAInfrast(path: config.filename).planList
             }
 
@@ -127,14 +131,6 @@ struct InfrastSettingsView: View {
         } set: {
             config.plan_index = 0
             config.filename = $0
-        }
-    }
-
-    private var useCustomPlan: Binding<Bool> {
-        Binding {
-            config.mode == .custom
-        } set: {
-            config.mode = $0 ? .custom : .default
         }
     }
 

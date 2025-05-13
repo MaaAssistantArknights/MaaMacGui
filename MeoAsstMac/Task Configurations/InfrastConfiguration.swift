@@ -13,6 +13,7 @@ struct InfrastConfiguration: MAATaskConfiguration {
     enum Mode: Int, Codable {
         case `default` = 0
         case custom = 10000
+        case rotation = 20000
     }
 
     enum Facility: String, CaseIterable, Codable {
@@ -46,6 +47,9 @@ struct InfrastConfiguration: MAATaskConfiguration {
 
     var dorm_notstationed_enabled: Bool
     var dorm_trust_enabled: Bool
+
+    var continue_training: Bool
+    var reception_message_board: Bool
 
     var filename: String
     var plan_index: Int
@@ -158,5 +162,8 @@ extension InfrastConfiguration {
         self.dorm_trust_enabled = try container.decodeIfPresent(Bool.self, forKey: .dorm_trust_enabled) ?? false
         self.filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
         self.plan_index = try container.decodeIfPresent(Int.self, forKey: .plan_index) ?? 0
+        self.continue_training = try container.decodeIfPresent(Bool.self, forKey: .continue_training) ?? true
+        self.reception_message_board =
+            try container.decodeIfPresent(Bool.self, forKey: .reception_message_board) ?? true
     }
 }
