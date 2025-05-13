@@ -96,6 +96,7 @@
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 		9BEBD1002DD3CA3C006D212B /* CopilotListConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */; };
 		9BEBD1012DD3CA3C006D212B /* CopilotItemConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */; };
+		9BEBD1052DD3CBB2006D212B /* MapHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1042DD3CBB2006D212B /* MapHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -216,6 +217,7 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotItemConfiguration.swift; sourceTree = "<group>"; };
 		9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotListConfiguration.swift; sourceTree = "<group>"; };
+		9BEBD1042DD3CBB2006D212B /* MapHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -457,6 +459,7 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				9BEBD1042DD3CBB2006D212B /* MapHelper.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
@@ -604,6 +607,7 @@
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
+				9BEBD1052DD3CBB2006D212B /* MapHelper.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
