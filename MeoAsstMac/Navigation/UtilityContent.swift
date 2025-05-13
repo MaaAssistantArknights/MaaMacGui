@@ -74,6 +74,7 @@ struct UtilityDetailContent_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             UtilityContent(selection: .constant(.recruit))
+                .environmentObject(MAAViewModel())
         }
     }
 }
