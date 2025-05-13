@@ -94,6 +94,8 @@
 		92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */; };
 		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
+		9BEBD1002DD3CA3C006D212B /* CopilotListConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */; };
+		9BEBD1012DD3CA3C006D212B /* CopilotItemConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -212,6 +214,8 @@
 		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
+		9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotItemConfiguration.swift; sourceTree = "<group>"; };
+		9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotListConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,6 +261,8 @@
 				83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */,
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
 				8341195429EC55C600044F45 /* CopilotConfiguration.swift */,
+				9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */,
+				9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */,
 				832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */,
 				83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */,
 			);
@@ -618,6 +624,8 @@
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
+				9BEBD1002DD3CA3C006D212B /* CopilotListConfiguration.swift in Sources */,
+				9BEBD1012DD3CA3C006D212B /* CopilotItemConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
 				83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */,
 			);
