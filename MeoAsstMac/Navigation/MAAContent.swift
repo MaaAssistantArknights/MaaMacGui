@@ -14,14 +14,14 @@ struct MAAContent: View {
     var body: some View {
         Group {
             switch sidebar {
-                case .daily:
-                    TasksContent(selection: $selection.task)
-                case .copilot:
-                    CopilotContent(selection: $selection.copilot)
-                case .utility:
-                    UtilityContent(selection: $selection.utility)
-                case .none:
-                    Text("请从边栏选择功能")
+            case .daily:
+                TasksContent(selection: $selection.task)
+            case .copilot:
+                CopilotContent(selection: $selection.copilot)
+            case .utility:
+                UtilityContent(selection: $selection.utility)
+            case .none:
+                Text("请从边栏选择功能")
             }
         }
         .frame(minWidth: 260)
@@ -30,8 +30,11 @@ struct MAAContent: View {
 
 struct MAAContent_Previews: PreviewProvider {
     static var previews: some View {
-        MAAContent(sidebar: .constant(.daily),
-                   selection: .constant(.init()))
+        MAAContent(
+            sidebar: .constant(.daily),
+            selection: .constant(.init())
+        )
+        .environmentObject(MAAViewModel())
     }
 }
 
