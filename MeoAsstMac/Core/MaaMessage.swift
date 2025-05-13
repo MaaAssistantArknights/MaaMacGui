@@ -568,7 +568,7 @@ extension MAAViewModel {
         }
     }
 
-    // MARK: Recruit Recoginition
+    // MARK: - Recruit Recoginition
 
     private func processRecruitMessage(details: JSON) {
         guard let what = details["what"].string else {
@@ -590,7 +590,7 @@ extension MAAViewModel {
         }
     }
 
-    // MARK: Video Recognition
+    // MARK: - Video Recognition
 
     private func processVideoMessage(details: JSON) {
         guard let what = details["what"].string else {

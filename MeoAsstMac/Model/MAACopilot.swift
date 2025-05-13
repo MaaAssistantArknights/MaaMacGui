@@ -22,7 +22,7 @@ struct MAACopilot: Codable, Equatable {
     let doc: Documentation?
     var difficulty: DifficultyFlags? = nil
 
-    // MARK: SSS
+    // MARK: - SSS
 
     let type: String?
     let equipment: [String]?

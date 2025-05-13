@@ -57,7 +57,7 @@ struct CopilotView: View {
                     Toggle("自动编队", isOn: binding.formation)
                     Toggle("信赖干员", isOn: binding.add_trust)
                 }
-                
+
                 Button(action: addToCopilotList) {
                     Label("添加到战斗列表", systemImage: "plus.rectangle.on.rectangle")
                 }

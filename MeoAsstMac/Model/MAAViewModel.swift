@@ -382,7 +382,7 @@ extension MAAViewModel {
     }
 }
 
-// MARK: Daily Tasks
+// MARK: - Daily Tasks
 
 extension MAAViewModel {
     func tryStartTasks() async {
@@ -576,7 +576,7 @@ extension MAAViewModel {
     }
 }
 
-// MARK: Copilot List
+// MARK: - Copilot List
 
 extension MAAViewModel {
     func startCopilot() async throws {
@@ -748,7 +748,7 @@ extension MAAViewModel {
     }
 }
 
-// MARK: Utility
+// MARK: - Utility
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {
