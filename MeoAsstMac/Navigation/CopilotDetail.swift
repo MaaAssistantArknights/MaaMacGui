@@ -15,7 +15,14 @@ struct CopilotDetail: View {
 
     var body: some View {
         VStack {
-            if let url {
+            if viewModel.useCopilotList {
+                switch viewModel.copilotDetailMode {
+                case .copilotConfig:
+                    CopilotListSettings()
+                case .log:
+                    LogView()
+                }
+            } else if let url {
                 CopilotView(url: url)
             } else {
                 LogView()
@@ -23,6 +30,20 @@ struct CopilotDetail: View {
         }
         .padding()
         .toolbar(content: detailToolbar)
+    }
+
+    private struct CopilotListSettings: View {
+        @EnvironmentObject private var viewModel: MAAViewModel
+
+        var body: some View {
+            Form {
+                Section("全局设置") {
+                    Toggle("自动编队", isOn: $viewModel.copilotListConfig.formation)
+                    Toggle("信赖干员", isOn: $viewModel.copilotListConfig.add_trust)
+                    Toggle("允许使用理智药", isOn: $viewModel.copilotListConfig.use_sanity_potion)
+                }
+            }
+        }
     }
 
     // MARK: - Toolbar
@@ -39,13 +60,15 @@ struct CopilotDetail: View {
         }
 
         ToolbarItemGroup {
-            Button {
-                viewModel.copilotDetailMode = .log
-            } label: {
-                Label("日志", systemImage: "note.text")
-                    .foregroundColor(url == nil ? Color.accentColor : nil)
+            HStack {
+                Divider()
+
+                if viewModel.useCopilotList {
+                    CopilotDetailTabButton(
+                        mode: .copilotConfig, icon: "gearshape", selection: $viewModel.copilotDetailMode)
+                }
+                CopilotDetailTabButton(mode: .log, icon: "note.text", selection: $viewModel.copilotDetailMode)
             }
-            .help("运行日志")
         }
     }
 
@@ -64,7 +87,7 @@ struct CopilotDetail: View {
             Divider()
 
             Button {
-                viewModel.downloadCopilot = prtsCode.parsedID
+                viewModel.downloadCopilot(id: prtsCode.parsedID)
                 showAdd = false
             } label: {
                 Label("下载作业", systemImage: "arrow.down.doc")
@@ -78,7 +101,7 @@ struct CopilotDetail: View {
                     let parsedID = clipboardString.parsedID
                 {
                     prtsCode = clipboardString
-                    viewModel.downloadCopilot = parsedID
+                    viewModel.downloadCopilot(id: parsedID)
                     showAdd = false
                 }
             } label: {
@@ -94,9 +117,29 @@ struct CopilotDetail: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
+            .fileImporter(
+                isPresented: $viewModel.showImportCopilot,
+                allowedContentTypes: [.json],
+                allowsMultipleSelection: true,
+                onCompletion: viewModel.addCopilots)
         }
         .frame(width: 200)
         .padding()
+    }
+}
+
+struct CopilotDetailTabButton: View {
+    let mode: MAAViewModel.CopilotDetailMode
+    let icon: String
+    @Binding var selection: MAAViewModel.CopilotDetailMode
+
+    var body: some View {
+        Button {
+            selection = mode
+        } label: {
+            Image(systemName: icon)
+                .foregroundColor(mode == selection ? Color.accentColor : nil)
+        }
     }
 }
 

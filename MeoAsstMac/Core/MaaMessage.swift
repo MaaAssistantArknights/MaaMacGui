@@ -139,11 +139,23 @@ extension MAAViewModel {
             logError("TaskError \(taskChain)")
             if isCopilot {
                 logError("CombatError")
+                if isCopilotListRunning {
+                    Task { try await stop() }
+                    self.copilotListConfig = copilotListConfig
+                    if let stage = getCurrentCopilotStageName() {
+                        logError("战斗出错：\(stage)")
+                    }
+                    isCopilotListRunning = false
+                    logError("CopilotListError")
+                }
             }
 
         case .TaskChainStart:
             if let id = taskID(taskDetails: message.details) {
                 taskStatus[id] = .running
+            }
+            if isCopilot, let stage = getCurrentCopilotStageName() {
+                logInfo("开始关卡：\(stage)")
             }
             logTrace("StartTask \(taskChain)")
 
@@ -173,6 +185,15 @@ extension MAAViewModel {
 
             if isCopilot {
                 logInfo("CompleteCombat")
+                if isCopilotListRunning {
+                    if let stage = getCurrentCopilotStageName() {
+                        logInfo("完成关卡：\(stage)")
+                    }
+                    if let idx = copilotListConfig.items.firstIndex(where: { $0.enabled }) {
+                        copilotListConfig.items[idx].enabled = false
+                        self.copilotListConfig = copilotListConfig
+                    }
+                }
             }
 
         case .TaskChainExtraInfo:
@@ -180,6 +201,10 @@ extension MAAViewModel {
 
         case .AllTasksCompleted:
             logTrace("AllTasksComplete")
+            if isCopilotListRunning {
+                logInfo("CopilotListCompleted")
+                isCopilotListRunning = false
+            }
             resetStatus()
 
         default:

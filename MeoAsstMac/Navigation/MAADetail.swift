@@ -14,14 +14,14 @@ struct MAADetail: View {
     var body: some View {
         Group {
             switch sidebar {
-                case .daily:
-                    TaskDetail(id: selection.task)
-                case .copilot:
-                    CopilotDetail(url: selection.copilot)
-                case .utility:
-                    UtilityDetail(entry: selection.utility)
-                case .none:
-                    Text("请选择内容项目")
+            case .daily:
+                TaskDetail(id: selection.task)
+            case .copilot:
+                CopilotDetail(url: selection.copilot)
+            case .utility:
+                UtilityDetail(entry: selection.utility)
+            case .none:
+                Text("请选择内容项目")
             }
         }
         .frame(minWidth: 450, minHeight: 360)

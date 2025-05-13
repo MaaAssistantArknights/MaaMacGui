@@ -24,7 +24,7 @@ struct MAAContent: View {
                 Text("请从边栏选择功能")
             }
         }
-        .frame(minWidth: 260)
+        .frame(minWidth: 290)
     }
 }
 
