@@ -93,11 +93,10 @@ import SwiftUI
     @Published var downloading = false
     @Published var selectedCopilotURL: URL?
 
-    @AppStorage("MAAUseCopilotList") var useCopilotList = false
-
+    @Published var useCopilotList = false
     @Published var isCopilotListRunning = false
 
-    @AppStorage("MAACopilotListConfig") private var serializedCopilotListConfig: String?
+    @AppStorage("MAACopilotListConfig") var serializedCopilotListConfig: String?
 
     @Published var copilotListConfig = CopilotListConfiguration()
 
@@ -520,12 +519,12 @@ extension MAAViewModel {
                 let response = try JSONDecoder().decode(CopilotResponse.self, from: data)
                 try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
                 copilots.insert(file)
-                logInfo("下载成功: \(file.lastPathComponent)")
-                self.useCopilotList = false
+                logTrace("下载成功：\(file.lastPathComponent)")
                 self.selectedCopilotURL = file
+                self.useCopilotList = false
             } catch {
                 print(error)
-                logInfo("下载失败: \(error.localizedDescription)")
+                logTrace("下载失败：\(error.localizedDescription)")
             }
             self.downloading = false
         }
