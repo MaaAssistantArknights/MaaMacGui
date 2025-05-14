@@ -54,14 +54,6 @@ struct RegularCopilotList: View {
         .onDrop(of: [.fileURL], isTargeted: .none, perform: viewModel.addCopilots)
         .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
         .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
-        // 这里我不太会处理双向数据绑定，先用这种方式
-        .onChange(of: selection) { newValue in
-            viewModel.selectedCopilotURL = newValue
-            viewModel.copilotDetailMode = newValue == nil ? .log : .copilotConfig
-        }
-        .onChange(of: viewModel.selectedCopilotURL) { newValue in
-            selection = newValue
-        }
     }
 
     private func deselectCopilot(_ viewMode: MAAViewModel.CopilotDetailMode) {

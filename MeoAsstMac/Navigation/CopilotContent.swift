@@ -28,6 +28,14 @@ struct CopilotContent: View {
             }
         }
         .toolbar(content: listToolbar)
+        // 这里我不太会处理双向数据绑定，先用这种方式
+        .onChange(of: selection) { newValue in
+            viewModel.selectedCopilotURL = newValue
+            viewModel.copilotDetailMode = newValue == nil ? .log : .copilotConfig
+        }
+        .onChange(of: viewModel.selectedCopilotURL) { newValue in
+            selection = newValue
+        }
     }
 
     @ToolbarContentBuilder private func listToolbar() -> some ToolbarContent {

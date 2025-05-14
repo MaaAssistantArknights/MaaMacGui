@@ -82,6 +82,12 @@ struct CopilotDetail: View {
                     .foregroundColor(.secondary)
                 TextField("maa://", text: $prtsCode)
                     .textFieldStyle(.roundedBorder)
+                    .onSubmit {
+                        if let parsedID = prtsCode.parsedID {
+                            viewModel.downloadCopilot(id: parsedID)
+                            showAdd = false
+                        }
+                    }
             }
 
             Divider()
