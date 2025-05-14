@@ -54,9 +54,11 @@ struct CopilotContent: View {
             Button(action: toggleCopilotList) {
                 Label(
                     "战斗列表",
-                    systemImage: viewModel.useCopilotList ? "list.bullet.rectangle.fill" : "list.bullet.rectangle"
+                    systemImage: "list.bullet"
                 )
             }
+            .background(viewModel.useCopilotList ? .gray.opacity(0.2) : .clear)
+            .cornerRadius(4)
             .help(viewModel.useCopilotList ? "切换回单个作业模式" : "切换到战斗列表模式")
         }
 
