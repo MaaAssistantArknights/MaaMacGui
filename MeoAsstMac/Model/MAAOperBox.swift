@@ -50,7 +50,7 @@ extension MAAOperBox.OwnedOper: Comparable {
         { $0.elite > $1.elite },
         { $0.level > $1.level },
         { $0.rarity > $1.rarity },
-        { $0.id < $1.id }
+        { $0.id < $1.id },
     ]
 }
 

@@ -33,7 +33,8 @@ struct CheckForUpdatesView: View {
 }
 
 struct CheckForUpdatesView_Previews: PreviewProvider {
-    private static let updateController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
+    private static let updateController = SPUStandardUpdaterController(
+        startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
 
     static var previews: some View {
         CheckForUpdatesView(updater: updateController.updater)

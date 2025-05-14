@@ -34,7 +34,7 @@ actor MAAHandle {
 
     private let callback: AsstApiCallback = { msg, details_json, custom_arg in
         guard let details_json, let custom_arg,
-              let detailString = String(cString: details_json, encoding: .utf8)
+            let detailString = String(cString: details_json, encoding: .utf8)
         else {
             return
         }
@@ -43,9 +43,10 @@ actor MAAHandle {
         let message = MaaMessage(code: Int(msg), details: details)
         let uuid = custom_arg.assumingMemoryBound(to: UUID.self).pointee
 
-        NotificationCenter.default.post(name: .MAAReceivedCallbackMessage,
-                                        object: message,
-                                        userInfo: ["uuid": uuid])
+        NotificationCenter.default.post(
+            name: .MAAReceivedCallbackMessage,
+            object: message,
+            userInfo: ["uuid": uuid])
     }
 
     init(options: MAAInstanceOptions = [:]) throws {
@@ -103,8 +104,9 @@ actor MAAHandle {
 
         let data = Data(bytesNoCopy: buffer, count: size, deallocator: .free)
         guard let provider = CGDataProvider(data: data as CFData),
-              let image = CGImage(pngDataProviderSource: provider, decode: nil,
-                                  shouldInterpolate: false, intent: .defaultIntent)
+            let image = CGImage(
+                pngDataProviderSource: provider, decode: nil,
+                shouldInterpolate: false, intent: .defaultIntent)
         else {
             throw MaaCoreError.getImageFailed
         }
@@ -175,8 +177,8 @@ extension JSON {
     }
 }
 
-private extension AsstBool {
-    var isTrue: Bool { self != 0 }
+extension AsstBool {
+    fileprivate var isTrue: Bool { self != 0 }
 }
 
 struct MAAResourceVersion: Codable {
