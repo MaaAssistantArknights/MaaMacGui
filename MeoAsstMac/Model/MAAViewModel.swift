@@ -694,7 +694,7 @@ extension MAAViewModel {
             name: name,
             is_raid: is_raid,
             need_navigate: true,
-            navigate_name: navigate_name,
+            navigate_name: navigate_name
         )
         copilotListConfig.items.append(item)
     }
