@@ -28,7 +28,7 @@ extension MAATaskConfiguration {
     }
 }
 
-// MARK: JSON TaskParams
+// MARK: - JSON TaskParams
 
 extension MAAHandle {
     func appendTask(_ task: MAATask) throws -> Int32 {

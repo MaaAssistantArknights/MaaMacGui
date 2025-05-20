@@ -12,6 +12,11 @@ struct RegularCopilotConfiguration: Codable {
     var filename: String
     var formation = false
     var add_trust = false
+    var is_raid = false
+    var loop_times = 1
+    var use_sanity_potion = false
+    var need_navigate = false
+    var navigate_name: String?
 }
 
 struct SSSCopilotConfiguration: Codable {

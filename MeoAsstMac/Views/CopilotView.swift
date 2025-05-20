@@ -37,8 +37,9 @@ struct CopilotView: View {
         }
     }
 
-    private var copilot: MAACopilot? {
-        MAACopilot(url: url)
+    private func addToCopilotList() {
+        guard let pilot = MAACopilot(url: url) else { return }
+        viewModel.addToCopilotList(copilot: pilot, url: url)
     }
 
     // MARK: - Copilot Config
@@ -51,9 +52,24 @@ struct CopilotView: View {
             } set: { newValue in
                 viewModel.copilot = .regular(newValue)
             }
-            HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
+            VStack {
+                HStack {
+                    Toggle("自动编队", isOn: binding.formation)
+                    Toggle("信赖干员", isOn: binding.add_trust)
+                }
+
+                Button(action: addToCopilotList) {
+                    Label("添加到战斗列表", systemImage: "plus.rectangle.on.rectangle")
+                }
+                .buttonStyle(.borderedProminent)
+
+                if viewModel.copilotListConfig.items.contains(where: { $0.filename == innerConfig.filename }) {
+                    Text("已添加到战斗列表")
+                        .foregroundColor(.green)
+                } else {
+                    Text("未添加到战斗列表")
+                        .foregroundColor(.red)
+                }
             }
 
         case .sss(let innerConfig):
@@ -118,7 +134,7 @@ struct CopilotView_Previews: PreviewProvider {
     static let url = Bundle.main.resourceURL!
         .appendingPathComponent("resource")
         .appendingPathComponent("copilot")
-        .appendingPathComponent("SSS_约翰老妈新建地块")
+        .appendingPathComponent("OF-1_credit_fight")
         .appendingPathExtension("json")
 
     static var previews: some View {

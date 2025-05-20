@@ -68,7 +68,7 @@ extension MAATaskType: Codable, CustomStringConvertible {
     }
 }
 
-// MARK: Task Persistance
+// MARK: - Task Persistance
 
 struct DailyTask: Codable, Equatable, Identifiable {
     let id: UUID
