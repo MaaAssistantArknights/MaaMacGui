@@ -1333,6 +1333,17 @@
         }
       }
     },
+    "SK-5" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "碳-5"
+          }
+        }
+      }
+    },
     "SSSGamePass" : {
       "localizations" : {
         "ko" : {
