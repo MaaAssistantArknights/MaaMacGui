@@ -9,6 +9,8 @@ import SwiftUI
 import ZIPFoundation
 
 struct ResourceUpdateView: View {
+    let onUpdate: () async throws -> Void
+
     @State private var progress: (String, Double)? = ("", 0)
     @State private var error: Error?
     @State private var shouldUpdate = true
@@ -55,13 +57,13 @@ struct ResourceUpdateView: View {
                     dismiss()
                 }
             } else {
-                Text("更新完成，请重新启动应用")
+                Text("更新完成")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
-                Button("退出") {
-                    dismiss()
-                    NSApplication.shared.terminate(nil)
-                }
+                    .task {
+                        try? await Task.sleep(nanoseconds: 500_000_000)
+                        dismiss()
+                    }
             }
         }
         .animation(.smooth, value: progress?.0)
@@ -72,6 +74,7 @@ struct ResourceUpdateView: View {
                 try await downloadResource(from: url)
                 try await extractResource()
                 try await copyResource()
+                try await onUpdate()
                 progress = nil
             } catch MAAResourceChannel.Error.noNeedUpdate {
                 self.shouldUpdate = false
@@ -112,5 +115,5 @@ private let tmpURL = FileManager.default.temporaryDirectory
 private let localURL = tmpURL.appendingPathComponent("MaaResource.zip")
 
 #Preview {
-    ResourceUpdateView()
+    ResourceUpdateView {}
 }

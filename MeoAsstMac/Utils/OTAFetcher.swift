@@ -29,6 +29,7 @@ struct OTAFetcher: Sendable {
         request.setValue(eTag, forHTTPHeaderField: "If-None-Match")
 
         let (url, response) = try await session.download(for: request)
+        defer { try? FileManager.default.removeItem(at: url) }
         guard let response = response as? HTTPURLResponse else {
             throw URLError(.badServerResponse)
         }
