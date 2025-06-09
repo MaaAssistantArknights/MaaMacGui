@@ -300,7 +300,7 @@ extension MAAViewModel {
                     name: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json"
                 ))
         }
-        try await withThrowingTaskGroup { group in
+        try await withThrowingTaskGroup(of: Void.self) { group in
             for (path, name) in files {
                 group.addTask {
                     try await otaFetcher.download(path: path, name: name)
