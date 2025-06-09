@@ -197,8 +197,10 @@ import SwiftUI
 
 extension MAAViewModel {
     func initialize() async throws {
+        status = .pending
         try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
         try await loadResource(channel: clientChannel)
+        status = .idle
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
@@ -288,7 +290,6 @@ extension MAAViewModel {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         if preferUser {
             try await loadResource(url: documentsDirectory, channel: channel)
-            try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
             logTrace(
                 """
                 外部资源版本：\(currentResourceVersion.activity.name)
@@ -300,6 +301,17 @@ extension MAAViewModel {
                 内置资源版本：\(currentResourceVersion.activity.name)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
+        }
+
+        do {
+            let otaFetcher = OTAFetcher()
+            try await otaFetcher.download(
+                path: "resource/tasks.json",
+                name: "resource/tasks/tasks.json")
+            let cachedBaseURL = documentsDirectory.appendingPathComponent("cache")
+            try await loadResource(url: cachedBaseURL, channel: channel)
+        } catch {
+            logError("关卡资源获取失败: \(error.localizedDescription)")
         }
 
         #if DEBUG
