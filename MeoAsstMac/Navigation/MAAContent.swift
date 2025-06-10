@@ -32,6 +32,7 @@ struct MAAContent_Previews: PreviewProvider {
     static var previews: some View {
         MAAContent(sidebar: .constant(.daily),
                    selection: .constant(.init()))
+        .environmentObject(MAAViewModel())
     }
 }
 
