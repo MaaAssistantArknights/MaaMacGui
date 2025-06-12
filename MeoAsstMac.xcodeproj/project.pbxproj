@@ -91,6 +91,8 @@
 		83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83E9ED972DF693B20069CFE9 /* OTAFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E9ED962DF693B20069CFE9 /* OTAFetcher.swift */; };
 		83FF5A9C2978FE27000AE831 /* resource in Resources */ = {isa = PBXBuildFile; fileRef = 83FF5A9B2978FE27000AE831 /* resource */; };
+		8E9D74272DF395CC00310A55 /* RemoteControlSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9D74262DF395C100310A55 /* RemoteControlSettingsView.swift */; };
+		8E9D74292DF5055700310A55 /* MaaRemoteControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9D74282DF5055700310A55 /* MaaRemoteControl.swift */; };
 		92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92CDF6212A065E55005669EC /* Codeable+JSON.swift */; };
 		92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */; };
 		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
@@ -210,6 +212,8 @@
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83E9ED962DF693B20069CFE9 /* OTAFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTAFetcher.swift; sourceTree = "<group>"; };
 		83FF5A9B2978FE27000AE831 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resource; path = ../../../../resource; sourceTree = "<group>"; };
+		8E9D74262DF395C100310A55 /* RemoteControlSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteControlSettingsView.swift; sourceTree = "<group>"; };
+		8E9D74282DF5055700310A55 /* MaaRemoteControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaRemoteControl.swift; sourceTree = "<group>"; };
 		92CDF6212A065E55005669EC /* Codeable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codeable+JSON.swift"; sourceTree = "<group>"; };
 		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
@@ -419,6 +423,7 @@
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
+				8E9D74282DF5055700310A55 /* MaaRemoteControl.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -444,6 +449,7 @@
 			children = (
 				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
+				8E9D74262DF395C100310A55 /* RemoteControlSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
 				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
 			);
@@ -566,6 +572,7 @@
 				8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */,
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
+				8E9D74292DF5055700310A55 /* MaaRemoteControl.swift in Sources */,
 				832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */,
 				830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */,
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
@@ -624,6 +631,7 @@
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
 				83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */,
+				8E9D74272DF395CC00310A55 /* RemoteControlSettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
