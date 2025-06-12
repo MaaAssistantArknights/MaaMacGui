@@ -20,6 +20,11 @@ extension MAAViewModel {
         guard let message = output.object as? MaaMessage else {
             return
         }
+        
+        let prettyJSON = (try? JSONSerialization.jsonObject(with: message.details.rawData(), options: []))
+            .flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted) }
+            .flatMap { String(data: $0, encoding: .utf8) } ?? "Nothing to display"
+        print("\(prettyJSON)\n")
 
         switch message.code {
         case .InternalError:
@@ -652,6 +657,13 @@ extension MAAViewModel {
 
     private func writeLog(color: MAALog.LogColor, _ key: String.LocalizationValue, comment: StaticString?) {
         let content = String(localized: key, comment: comment)
+//        let jsonString = (try? key.jsonString()) ?? "No json string"
+//        let prettyJSON = (try? JSONSerialization.jsonObject(with: Data(jsonString.utf8), options: []))
+//            .flatMap { try? JSONSerialization.data(withJSONObject: $0, options: .prettyPrinted) }
+//            .flatMap { String(data: $0, encoding: .utf8) } ?? jsonString
+//
+//        print("key: \n\(prettyJSON)\n")
+
         let entry = MAALog(date: Date(), content: content, color: color)
         logs.append(entry)
         fileLogger.write(entry)
