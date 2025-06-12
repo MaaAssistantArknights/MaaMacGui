@@ -1478,6 +1478,7 @@
       }
     },
     "TotalDrop\n%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1489,6 +1490,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "掉落统计：\n%@"
+          }
+        }
+      }
+    },
+    "TotalDrop\n%@\n\nSanityLeft: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "掉落统计：\n%1$@\n\n剩余理智: %2$@"
           }
         }
       }
@@ -2667,6 +2678,9 @@
         }
       }
     },
+    "繁中服（txwy）" : {
+
+    },
     "组装批次数：" : {
       "localizations" : {
         "ko" : {
@@ -2686,9 +2700,6 @@
           }
         }
       }
-    },
-    "繁中服（txwy）" : {
-
     },
     "自动下载更新" : {
       "localizations" : {
