@@ -1477,23 +1477,6 @@
         }
       }
     },
-    "TotalDrop\n%@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "총 드롭:\n%@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "掉落统计：\n%@"
-          }
-        }
-      }
-    },
     "TotalDrop\n%@\n\nSanityLeft: %@" : {
       "localizations" : {
         "zh-Hans" : {
@@ -2678,9 +2661,6 @@
         }
       }
     },
-    "繁中服（txwy）" : {
-
-    },
     "组装批次数：" : {
       "localizations" : {
         "ko" : {
@@ -2700,6 +2680,9 @@
           }
         }
       }
+    },
+    "繁中服（txwy）" : {
+
     },
     "自动下载更新" : {
       "localizations" : {

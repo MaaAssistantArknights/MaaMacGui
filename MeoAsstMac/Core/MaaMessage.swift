@@ -20,7 +20,7 @@ extension MAAViewModel {
         guard let message = output.object as? MaaMessage else {
             return
         }
-        
+
         switch message.code {
         case .InternalError:
             break
@@ -389,9 +389,11 @@ extension MAAViewModel {
             if allDrops.count == 0 {
                 allDrops.append(NSLocalizedString("NoDrop", comment: ""))
             }
-            
+
             let sanityLeft = self.curSanityBeforeFight - self.sanityCost
-            logTrace("TotalDrop\n\(allDrops.joined(separator: "\n"))\n\nSanityLeft: \(sanityLeft >= 0 ? String(sanityLeft) : "Error")")
+            logTrace(
+                "TotalDrop\n\(allDrops.joined(separator: "\n"))\n\nSanityLeft: \(sanityLeft >= 0 ? String(sanityLeft) : "Error")"
+            )
 
         case "EnterFacility":
             guard let facility = subTaskDetails["facility"].string,
