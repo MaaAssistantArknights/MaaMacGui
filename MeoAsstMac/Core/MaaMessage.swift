@@ -389,7 +389,11 @@ extension MAAViewModel {
             if allDrops.count == 0 {
                 allDrops.append(NSLocalizedString("NoDrop", comment: ""))
             }
-            logTrace("TotalDrop\n\(allDrops.joined(separator: "\n"))")
+
+            let sanityLeft = self.curSanityBeforeFight - self.sanityCost
+            logTrace(
+                "TotalDrop\n\(allDrops.joined(separator: "\n"))\n\nSanityLeft: \(sanityLeft >= 0 ? String(sanityLeft) : "Error")"
+            )
 
         case "EnterFacility":
             guard let facility = subTaskDetails["facility"].string,
@@ -536,6 +540,16 @@ extension MAAViewModel {
                     expiringMedicineUsedTimes += medicineCount
                     logInfo("ExpiringMedicineUsed \(expiringMedicineUsedTimes)(+\(medicineCount)) UnitTime")
                 }
+            }
+
+        case "SanityBeforeStage":
+            if let curSanityBeforeFight = subTaskDetails["current_sanity"].int {
+                self.curSanityBeforeFight = curSanityBeforeFight
+            }
+
+        case "FightTimes":
+            if let sanityCost = subTaskDetails["sanity_cost"].int {
+                self.sanityCost = sanityCost
             }
 
         default:

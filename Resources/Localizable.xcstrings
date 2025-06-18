@@ -1477,18 +1477,12 @@
         }
       }
     },
-    "TotalDrop\n%@" : {
+    "TotalDrop\n%@\n\nSanityLeft: %@" : {
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "총 드롭:\n%@"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "掉落统计：\n%@"
+            "value" : "掉落统计：\n%1$@\n\n剩余理智: %2$@"
           }
         }
       }

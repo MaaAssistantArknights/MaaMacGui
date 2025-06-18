@@ -21,6 +21,12 @@ import SwiftUI
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
+    /// Current sanity value before this fight(s)
+    var curSanityBeforeFight = 0
+
+    /// Sanity cost of current fight(s)
+    var sanityCost = 0
+
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
