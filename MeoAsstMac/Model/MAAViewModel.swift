@@ -21,6 +21,12 @@ import SwiftUI
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
+    /// Current sanity value before this fight(s)
+    var curSanityBeforeFight = 0
+
+    /// Sanity cost of current fight(s)
+    var sanityCost = 0
+
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
@@ -211,8 +217,10 @@ import SwiftUI
 
 extension MAAViewModel {
     func initialize() async throws {
+        status = .pending
         try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
         try await loadResource(channel: clientChannel)
+        status = .idle
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
@@ -260,6 +268,12 @@ extension MAAViewModel {
         return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
     }
 
+    /// Reloads the resources from the documents directory after update.
+    func reloadResources(channel: MAAClientChannel) async throws {
+        let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        try await loadResource(url: documentsDirectory, channel: channel)
+    }
+
     /// Load base resources and channel-specific resources.
     ///
     /// Should be called by `loadResource(channel:)`.
@@ -292,6 +306,30 @@ extension MAAViewModel {
         }
     }
 
+    /// Fetches OTA resources for the specified channel.
+    private func fetchOTAResource(channel: MAAClientChannel) async throws {
+        let otaFetcher = OTAFetcher()
+        var files = [
+            (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
+            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
+        ]
+        if channel.isGlobal {
+            files.append(
+                (
+                    path: "resource/global/\(channel.rawValue)/resource/tasks.json",
+                    name: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json"
+                ))
+        }
+        try await withThrowingTaskGroup(of: Void.self) { group in
+            for (path, name) in files {
+                group.addTask {
+                    try await otaFetcher.download(path: path, name: name)
+                }
+            }
+            try await group.waitForAll()
+        }
+    }
+
     /// Load resources from bundled, user, and remote resources.
     ///
     /// Should be the outermost call to load resources.
@@ -304,8 +342,7 @@ extension MAAViewModel {
 
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         if preferUser {
-            try await loadResource(url: documentsDirectory, channel: channel)
-            try await loadResource(url: documentsDirectory.appendingPathComponent("cache"), channel: channel)
+            try await reloadResources(channel: channel)
             logTrace(
                 """
                 外部资源版本：\(currentResourceVersion.activity.name)
@@ -317,6 +354,14 @@ extension MAAViewModel {
                 内置资源版本：\(currentResourceVersion.activity.name)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
+        }
+
+        do {
+            try await fetchOTAResource(channel: channel)
+            let cachedBaseURL = documentsDirectory.appendingPathComponent("cache")
+            try await loadResource(url: cachedBaseURL, channel: channel)
+        } catch {
+            logError("关卡数据获取失败: \(error.localizedDescription)")
         }
 
         #if DEBUG

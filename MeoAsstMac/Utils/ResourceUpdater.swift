@@ -62,7 +62,11 @@ extension MAAResourceChannel {
     public func latestURL() async throws -> URL {
         let localVersion = try version().1.last_updated
         let (remoteVersion, url) = try await latest(currentVersion: localVersion)
+        #if DEBUG
+        _ = remoteVersion
+        #else
         guard remoteVersion > localVersion else { throw Error.noNeedUpdate }
+        #endif
         guard let url else { throw Error.emptyURL }
         return url
     }

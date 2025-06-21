@@ -34,13 +34,13 @@ public struct MirrorChyan: Sendable {
     }
 }
 
-private struct MirrorChyanResponse<T: Decodable>: Decodable {
+private struct MirrorChyanResponse: Decodable {
     let code: Int
     let msg: String
-    let data: T?
+    let data: MirrorChyan.Version?
 
-    func get() throws -> T {
-        guard let data else {
+    func get() throws -> MirrorChyan.Version {
+        guard let data, data.url != nil else {
             throw MirrorChyan.Error(code: code, msg: msg)
         }
         return data
@@ -63,7 +63,7 @@ extension MirrorChyan {
         }
 
         let (data, _) = try await URLSession.shared.data(from: urlComps.url!)
-        let response = try JSONDecoder().decode(MirrorChyanResponse<Version>.self, from: data)
+        let response = try JSONDecoder().decode(MirrorChyanResponse.self, from: data)
         return try response.get()
     }
 }

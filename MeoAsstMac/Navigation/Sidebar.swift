@@ -11,6 +11,7 @@ struct Sidebar: View {
     @Binding var selection: SidebarEntry?
 
     @Binding var showUpdate: Bool
+    let onUpdate: () async throws -> Void
 
     @Environment(\.defaultMinListRowHeight) var rowHeight
 
@@ -42,7 +43,7 @@ struct Sidebar: View {
         }
         .withSidebarButton()
         .sheet(isPresented: $showUpdate) {
-            ResourceUpdateView()
+            ResourceUpdateView(onUpdate: onUpdate)
         }
         .frame(minWidth: 150)
     }
@@ -51,7 +52,9 @@ struct Sidebar: View {
 struct SidebarView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            Sidebar(selection: .constant(.daily), showUpdate: .constant(false))
+            Sidebar(selection: .constant(.daily), showUpdate: .constant(false)) {
+                print("Resource updated")
+            }
         }
     }
 }

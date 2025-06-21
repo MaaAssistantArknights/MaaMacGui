@@ -15,7 +15,9 @@ struct ContentView: View {
 
     var body: some View {
         NavigationSplitViewWrapper {
-            Sidebar(selection: $selectedSidebar, showUpdate: $viewModel.showResourceUpdate)
+            Sidebar(selection: $selectedSidebar, showUpdate: $viewModel.showResourceUpdate) {
+                try await viewModel.reloadResources(channel: viewModel.clientChannel)
+            }
         } content: {
             MAAContent(sidebar: $selectedSidebar, selection: $selectedContent)
         } detail: {

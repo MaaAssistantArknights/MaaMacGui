@@ -9,12 +9,32 @@ import SwiftUI
 import ZIPFoundation
 
 struct ResourceUpdateView: View {
+    let onUpdate: () async throws -> Void
+
     @State private var progress: (String, Double)? = ("", 0)
     @State private var error: Error?
     @State private var shouldUpdate = true
 
     @Environment(\.dismiss) private var dismiss
     @AppStorage("ResourceUpdateChannel") var resourceChannel = MAAResourceChannel.github
+
+    private var extractURL: URL {
+        switch resourceChannel {
+        case .github:
+            tmpURL.appendingPathComponent("MaaResource-main", isDirectory: true)
+        case .mirrorChyan:
+            tmpURL.appendingPathComponent("resource", isDirectory: true)
+        }
+    }
+
+    private var sourceURL: URL {
+        switch resourceChannel {
+        case .github:
+            extractURL.appendingPathComponent("resource", isDirectory: true)
+        case .mirrorChyan:
+            extractURL
+        }
+    }
 
     var body: some View {
         VStack {
@@ -37,13 +57,13 @@ struct ResourceUpdateView: View {
                     dismiss()
                 }
             } else {
-                Text("更新完成，请重新启动应用")
+                Text("更新完成")
                     .font(.headline)
                     .frame(maxWidth: .infinity)
-                Button("退出") {
-                    dismiss()
-                    NSApplication.shared.terminate(nil)
-                }
+                    .task {
+                        try? await Task.sleep(nanoseconds: 500_000_000)
+                        dismiss()
+                    }
             }
         }
         .animation(.smooth, value: progress?.0)
@@ -54,6 +74,7 @@ struct ResourceUpdateView: View {
                 try await downloadResource(from: url)
                 try await extractResource()
                 try await copyResource()
+                try await onUpdate()
                 progress = nil
             } catch MAAResourceChannel.Error.noNeedUpdate {
                 self.shouldUpdate = false
@@ -82,18 +103,9 @@ struct ResourceUpdateView: View {
     }
 
     private func copyResource() async throws {
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for subDirectory in ["cache", "resource"] {
-                try Task.checkCancellation()
-                let source = extractURL.appendingPathComponent(subDirectory)
-                let destination = documentsURL.appendingPathComponent(subDirectory)
-
-                group.addTask(priority: .userInitiated) {
-                    _ = try FileManager.default.replaceItemAt(destination, withItemAt: source)
-                }
-            }
-            try await group.waitForAll()
-        }
+        try Task.checkCancellation()
+        let destination = documentsURL.appendingPathComponent("resource", isDirectory: true)
+        _ = try FileManager.default.replaceItemAt(destination, withItemAt: sourceURL)
     }
 }
 
@@ -101,8 +113,7 @@ private let documentsURL = FileManager.default.urls(for: .documentDirectory, in:
 private let tmpURL = FileManager.default.temporaryDirectory
 
 private let localURL = tmpURL.appendingPathComponent("MaaResource.zip")
-private let extractURL = tmpURL.appendingPathComponent("MaaResource-main")
 
 #Preview {
-    ResourceUpdateView()
+    ResourceUpdateView {}
 }
