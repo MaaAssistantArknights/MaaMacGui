@@ -31,7 +31,7 @@ import SwiftUI
 
     private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
-    private var handle: MAAHandle?
+    private(set) var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Core Callback
@@ -151,6 +151,14 @@ import SwiftUI
         }
     }
 
+    // MARK: - Remote Control Settings
+
+    @AppStorage("RemoteControlGetTaskEndpointUri") var remoteControlGetTaskEndpointUri = ""
+    @AppStorage("RemoteControlReportStatusUri") var remoteControlReportStatusUri = ""
+    @AppStorage("RemoteControlUserIdentity") var remoteControlUserIdentity = ""
+    @AppStorage("RemoteControlDeviceIdentity") var remoteControlDeviceIdentity = ""
+    @AppStorage("RemoteControlPollIntervalMs") var remoteControlPollIntervalMs = 1000
+
     // MARK: - Initializer
 
     init() {
@@ -207,9 +215,13 @@ extension MAAViewModel {
         try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
         try await loadResource(channel: clientChannel)
         status = .idle
+
+        if !remoteControlGetTaskEndpointUri.isEmpty {
+            startRemoteControl()
+        }
     }
 
-    func ensureHandle(requireConnect: Bool = true) async throws {
+    func ensureHandle(requireConnect: Bool = true, clearLogs: Bool = true) async throws {
         if handle == nil {
             handle = try MAAHandle(options: instanceOptions)
         }
@@ -218,7 +230,9 @@ extension MAAViewModel {
             throw MAAError.handleNotRunning
         }
 
-        logs.removeAll()
+        if clearLogs {
+            logs.removeAll()
+        }
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
@@ -406,6 +420,46 @@ extension MAAViewModel {
 
     private var adbPath: String {
         Bundle.main.url(forAuxiliaryExecutable: "adb")!.path
+    }
+
+    // MARK: Remote Control Utility
+
+    func linkStart(variant: String) async throws {
+        status = .pending
+        defer { handleEarlyReturn(backTo: .idle) }
+        
+        try await ensureHandle(clearLogs: false)
+
+        let config = getTaskVariantConfiguration(taskVariant: variant)
+
+        guard let taskConfig = config else {
+            return
+        }
+
+        try await _ = handle?.appendTask(config: taskConfig)
+        try await handle?.start()
+
+        status = .busy
+    }
+
+    func getTaskVariantConfiguration(taskVariant: String) -> (any MAATaskConfiguration)? {
+        // fallback to default task configurations if not found in tasks
+        for config in tasks.map(\.task.configuration) + defaultTaskConfigurations {
+            switch (taskVariant, config.type) {
+            case ("Base", .Infrast),
+                ("WakeUp", .StartUp),
+                ("Combat", .Fight),
+                ("Recruiting", .Recruit),
+                ("Mall", .Mall),
+                ("Mission", .Award),
+                ("AutoRoguelike", .Roguelike),
+                ("Reclamation", .Reclamation):
+                return config
+            default: continue
+            }
+        }
+
+        return nil
     }
 }
 
