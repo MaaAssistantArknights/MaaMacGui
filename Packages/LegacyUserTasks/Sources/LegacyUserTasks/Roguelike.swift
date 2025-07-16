@@ -53,4 +53,5 @@ extension LegacyRoguelikeConfiguration {
     case Mizuki
     case Sami
     case Sarkaz
+    case JieGarden
 }

@@ -32,6 +32,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         case Mizuki
         case Sami
         case Sarkaz
+        case JieGarden
     }
 
     struct Difficulty: Hashable, Identifiable {
@@ -216,6 +217,8 @@ extension RoguelikeConfiguration.Theme {
             return NSLocalizedString("萨米", comment: "")
         case .Sarkaz:
             return NSLocalizedString("萨卡兹", comment: "")
+        case .JieGarden:
+            return NSLocalizedString("界园志异", comment: "")
         }
     }
 
