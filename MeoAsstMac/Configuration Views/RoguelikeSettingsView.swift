@@ -224,6 +224,8 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
             return NSLocalizedString("探索者的银凇止境", comment: "")
         case .Sarkaz:
             return NSLocalizedString("萨卡兹的无终奇语", comment: "")
+        case .JieGarden:
+            return NSLocalizedString("界园志异", comment: "")
         }
     }
 
@@ -237,6 +239,8 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
             return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         case .Sarkaz:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
+        case .JieGarden:
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         }
     }
 
@@ -270,10 +274,22 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
                 "高规格分队", "因地制宜分队",
                 "点刺成锭分队", "拟态学者分队", "异想天开分队",
             ]
+        case .JieGarden:
+            [
+                "指挥分队", "特勤分队", "后勤分队",
+                "突击战术分队","堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "高规格分队", "高台突破分队","地面突破分队",
+                "游客分队", "司岁台分队", "天师府分队",
+            ]
         }
     }
 
     var roles: [String] {
-        ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
+        switch self {
+            case .JieGarden:
+                ["先手必胜", "稳扎稳打", "取长补短","灵活部署", "坚不可摧", "随心所欲"]
+            default:
+                ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
+        }
     }
 }
