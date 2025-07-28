@@ -129,7 +129,7 @@ import SwiftUI
 
     // MARK: - Game Settings
 
-    @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.default {
+    @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.Official {
         didSet {
             updateChannel(channel: clientChannel)
         }
@@ -375,9 +375,6 @@ extension MAAViewModel {
             }
 
             config.client_type = channel
-            if config.client_type == .default {
-                config.start_game_enabled = false
-            }
 
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
         }

@@ -41,14 +41,13 @@ struct StartupConfiguration: MAATaskConfiguration {
 extension StartupConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .default
+        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .Official
         self.start_game_enabled = try container.decodeIfPresent(Bool.self, forKey: .start_game_enabled) ?? false
         self.account_name = try container.decodeIfPresent(String.self, forKey: .account_name) ?? ""
     }
 }
 
 enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
-    case `default` = ""
     case Official
     case Bilibili
     case YoStarEN
@@ -58,8 +57,6 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
 
     var description: String {
         switch self {
-        case .default:
-            return NSLocalizedString("不选择", comment: "")
         case .Official:
             return NSLocalizedString("官服", comment: "")
         case .Bilibili:
@@ -76,12 +73,12 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     }
 
     var isGlobal: Bool {
-        ![MAAClientChannel.default, .Official, .Bilibili].contains(self)
+        ![MAAClientChannel.Official, .Bilibili].contains(self)
     }
 
     var appBundleName: String {
         switch self {
-        case .Official, .Bilibili, .txwy, .default:
+        case .Official, .Bilibili, .txwy:
             return "明日方舟.app"
         case .YoStarEN:
             return "Arknights.app"
@@ -94,7 +91,7 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
 
     var appBundleID: String {
         switch self {
-        case .Official, .Bilibili, .default:
+        case .Official, .Bilibili:
             return "com.hypergryph.arknights"
         case .YoStarEN:
             return "com.YoStarEN.Arknights"
