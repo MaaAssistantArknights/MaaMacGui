@@ -54,9 +54,9 @@ struct OTAFetcher: Sendable {
             return nil
         }
         let eTags = await MainActor.run {
-            UserDefaults.standard.dictionary(forKey: "OTAETags")
+            UserDefaults.standard.dictionary(forKey: "OTAETags") as? [String: String]
         }
-        return eTags?[path] as? String
+        return eTags?[path]
     }
 
     private func cacheETag(_ path: String, _ eTag: String?) async {

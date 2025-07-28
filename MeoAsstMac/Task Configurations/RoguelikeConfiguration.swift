@@ -218,7 +218,7 @@ extension RoguelikeConfiguration.Theme {
         case .Sarkaz:
             return NSLocalizedString("萨卡兹", comment: "")
         case .JieGarden:
-            return NSLocalizedString("界园志异", comment: "")
+            return NSLocalizedString("界园", comment: "")
         }
     }
 
