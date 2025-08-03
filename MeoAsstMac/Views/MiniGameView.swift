@@ -10,51 +10,25 @@ import SwiftUI
 struct MiniGameView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     @State private var selectedGame: MiniGameOption = .greenGrass
-    
+
     var body: some View {
         VStack(spacing: 20) {
-            HStack {
-                Picker("选择小游戏", selection: $selectedGame) {
-                    ForEach(MiniGameOption.allCases, id: \.self) { game in
-                        Text(game.displayName).tag(game)
-                    }
+            Picker("选择小游戏", selection: $selectedGame) {
+                ForEach(MiniGameOption.allCases, id: \.self) { game in
+                    Text(game.displayName).tag(game)
                 }
-                .pickerStyle(.menu)
-                .frame(minWidth: 200)
-                
-                Spacer()
             }
-            
-            VStack(spacing: 10) {
+            .pickerStyle(.menu)
+
+            VStack {
                 Text(selectedGame.displayName)
                     .font(.title2)
                     .bold()
-                    .frame(maxWidth: .infinity, alignment: .center)
-                
-                VStack(spacing: 8) {
-                    ForEach(selectedGame.instructions, id: \.self) { instruction in
-                        Text(instruction)
-                            .multilineTextAlignment(.center)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    }
-                }
-                .frame(minHeight: 60, alignment: .top)
-                
-                Group {
-                    if let note = selectedGame.note {
-                        Text(note)
-                            .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                    } else {
-                        Text("")
-                            .frame(height: 20)
-                    }
-                }
-                .frame(minHeight: 40, alignment: .top)
+                    .padding()
+                Text(selectedGame.instructions)
             }
-            .frame(maxWidth: .infinity, minHeight: 100, alignment: .top)
             .animation(.easeInOut(duration: 0.2), value: selectedGame)
-            
+
             Button("开始游戏") {
                 startMiniGame()
             }
@@ -63,7 +37,7 @@ struct MiniGameView: View {
         }
         .padding()
     }
-    
+
     private func startMiniGame() {
         Task {
             try await viewModel.miniGame(name: selectedGame.taskName)
@@ -74,46 +48,84 @@ struct MiniGameView: View {
 enum MiniGameOption: CaseIterable {
     case greenGrass
     case atConversationRoom
-    
+    case greenTicketStore
+    case yellowTickerStore
+    case sideStoryStore
+    case reclamationStore
+
     var taskName: String {
         switch self {
         case .greenGrass:
             return "GreenGrass@DuelChannel@Begin"
         case .atConversationRoom:
             return "MiniGame@AT@ConversationRoom"
+        case .greenTicketStore:
+            return "GreenTicket@Store@Begin"
+        case .yellowTickerStore:
+            return "YellowTicket@Store@Begin"
+        case .sideStoryStore:
+            return "SS@Store@Begin"
+        case .reclamationStore:
+            return "RA@Store@Begin"
         }
     }
-    
+
     var displayName: String {
         switch self {
         case .greenGrass:
-            return "争锋频道：青草城"
+            return NSLocalizedString("争锋频道：青草城", comment: "")
         case .atConversationRoom:
-            return "AT-相谈室"
+            return NSLocalizedString("AT-相谈室", comment: "")
+        case .greenTicketStore:
+            return NSLocalizedString("绿票商店", comment: "")
+        case .yellowTickerStore:
+            return NSLocalizedString("黄票商店", comment: "")
+        case .sideStoryStore:
+            return NSLocalizedString("活动商店", comment: "")
+        case .reclamationStore:
+            return NSLocalizedString("生息演算商店", comment: "")
         }
     }
-    
-    var instructions: [String] {
+
+    var instructions: String {
         switch self {
         case .greenGrass:
-            return [
-                "手动跳过教程对话，然后可以直接退出",
-                "在活动主界面（右下角有“加入赛事”处）开始任务。"
-            ]
+            NSLocalizedString(
+                """
+                手动跳过教程对话，然后可以直接退出。
+                在活动主界面（右下角有“加入赛事”处）开始任务。
+
+                跟着鸭总喝口汤。
+                """, comment: "")
         case .atConversationRoom:
-            return [
-                "在活动主界面（右下角有“开始营业/继续营业”处）开始任务",
-                "等待自动完成相谈室对话"
-            ]
-        }
-    }
-    
-    var note: String? {
-        switch self {
-        case .greenGrass:
-            return "跟着鸭总喝口汤"
-        case .atConversationRoom:
-            return nil
+            NSLocalizedString(
+                """
+                在活动主界面（右下角有“开始营业/继续营业”处）开始任务。
+                等待自动完成相谈室对话。
+                """, comment: "")
+        case .greenTicketStore:
+            NSLocalizedString(
+                """
+                1层全买。
+                2层买寻访凭证和招聘许可。
+                """, comment: "")
+        case .yellowTickerStore:
+            NSLocalizedString(
+                """
+                购买寻访凭证。
+                请确保自己只少有258张黄票。
+                """, comment: "")
+        case .sideStoryStore:
+            NSLocalizedString(
+                """
+                请在活动商店页面开始。
+                不买无限池。
+                """, comment: "")
+        case .reclamationStore:
+            NSLocalizedString(
+                """
+                请在活动商店页面开始。
+                """, comment: "")
         }
     }
 }
