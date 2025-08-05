@@ -14,7 +14,9 @@ struct FileLogger: ~Copyable {
         if !FileManager.default.fileExists(atPath: url.path) {
             FileManager.default.createFile(atPath: url.path, contents: nil)
         }
-        fileHandle = try FileHandle(forWritingTo: url)
+        let fileHandle = try FileHandle(forWritingTo: url)
+        try fileHandle.seekToEnd()
+        self.fileHandle = fileHandle
     }
 
     init() {
