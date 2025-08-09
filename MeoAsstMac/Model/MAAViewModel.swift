@@ -337,6 +337,8 @@ extension MAAViewModel {
                 内置资源版本：\(currentResourceVersion.activity.name)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
+            let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
+            try? FileManager.default.removeItem(at: url)
         }
 
         do {
