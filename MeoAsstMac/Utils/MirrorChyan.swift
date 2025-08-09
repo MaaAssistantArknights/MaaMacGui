@@ -34,6 +34,10 @@ public struct MirrorChyan: Sendable {
     }
 }
 
+public struct MirrorChyanChanges: Codable, Sendable {
+    public let modified: [String]
+}
+
 private struct MirrorChyanResponse: Decodable {
     let code: Int
     let msg: String
