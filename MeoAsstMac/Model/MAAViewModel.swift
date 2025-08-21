@@ -37,7 +37,7 @@ import SwiftUI
     // MARK: - Core Callback
 
     @Published var logs = [MAALog]()
-    @Published var trackTail = false
+    @Published var trackTail = true
     let fileLogger: FileLogger
 
     // MARK: - Daily Tasks
@@ -150,6 +150,14 @@ import SwiftUI
             NotificationCenter.default.post(name: .MAAPreventSystemSleepingChanged, object: preventSystemSleeping)
         }
     }
+    
+    // MARK: - RemoteSettings
+    
+    @AppStorage("DingTalkBotURL") var DKwebhookURL = ""
+    
+    @AppStorage("DingTalkBotSecret") var DKsecret = ""
+    
+    @AppStorage("DingTalkBot") var DingTalkBot = false
 
     // MARK: - Initializer
 

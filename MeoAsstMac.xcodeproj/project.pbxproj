@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		451893752E572885007D95AB /* DingTalkBotClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451893742E572880007D95AB /* DingTalkBotClient.swift */; };
+		451893772E5737B1007D95AB /* DingTalkNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451893762E5737B1007D95AB /* DingTalkNotificationManager.swift */; };
+		4591DA492E571CD100595709 /* RemoteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591DA482E571CC400595709 /* RemoteSettingsView.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -127,6 +130,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		451893742E572880007D95AB /* DingTalkBotClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkBotClient.swift; sourceTree = "<group>"; };
+		451893762E5737B1007D95AB /* DingTalkNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkNotificationManager.swift; sourceTree = "<group>"; };
+		4591DA482E571CC400595709 /* RemoteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSettingsView.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -445,6 +451,7 @@
 		83FF5A98297855E5000AE831 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				4591DA482E571CC400595709 /* RemoteSettingsView.swift */,
 				8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */,
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
@@ -456,6 +463,8 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				451893762E5737B1007D95AB /* DingTalkNotificationManager.swift */,
+				451893742E572880007D95AB /* DingTalkBotClient.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
@@ -587,6 +596,7 @@
 				8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */,
 				8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */,
 				92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */,
+				4591DA492E571CD100595709 /* RemoteSettingsView.swift in Sources */,
 				83DD50B729BE393C000E84E7 /* UpdaterSettingsView.swift in Sources */,
 				92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */,
 				83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */,
@@ -599,6 +609,7 @@
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */,
+				451893772E5737B1007D95AB /* DingTalkNotificationManager.swift in Sources */,
 				838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */,
 				832985B429EF1219009F7ED5 /* MAARecruit.swift in Sources */,
 				83E9ED972DF693B20069CFE9 /* OTAFetcher.swift in Sources */,
@@ -615,6 +626,7 @@
 				8352529F2D533F9000C6D6D3 /* MirrorChyan.swift in Sources */,
 				835252A32D53567D00C6D6D3 /* ResourceUpdater.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
+				451893752E572885007D95AB /* DingTalkBotClient.swift in Sources */,
 				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,

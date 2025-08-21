@@ -12,6 +12,8 @@ import SwiftUI
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @StateObject private var appViewModel = MAAViewModel()
+    
+    private var notificationManager: DingTalkNotificationManager
 
     private let updaterController: SPUStandardUpdaterController
     private let updaterDelegate = MaaUpdaterDelegate()
@@ -23,6 +25,16 @@ struct MeoAsstMacApp: App {
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        
+        let viewModel = MAAViewModel()
+        let manager = DingTalkNotificationManager(viewModel: viewModel)
+        self.notificationManager = manager
+        
+        // 立即开始监听日志
+        self.notificationManager.startObserving()
+
+        print("App Started: DingTalkNotificationManager has been initialized and is observing.")
+            
     }
 
     var body: some Scene {
@@ -64,6 +76,11 @@ struct MeoAsstMacApp: App {
                 SystemSettingsView()
                     .tabItem {
                         Label("系统设置", systemImage: "wrench.adjustable")
+                    }
+                
+                RemoteSettingsView()
+                    .tabItem{
+                        Label("通知设置", systemImage: "ellipsis.message")
                     }
             }
             .environmentObject(appViewModel)
