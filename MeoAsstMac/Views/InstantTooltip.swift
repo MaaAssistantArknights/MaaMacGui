@@ -8,6 +8,7 @@
 
 import SwiftUI
 
+/// TODO: NavigationSplitView的层级限制问题
 struct InstantTooltipModifier<TooltipContent: View>: ViewModifier {
     @State private var isHovering = false
     // 任务句柄，用于管理延迟隐藏
@@ -43,7 +44,7 @@ struct InstantTooltipModifier<TooltipContent: View>: ViewModifier {
                                 .fill(Color(.windowBackgroundColor))
                                 .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
                         )
-                        .offset(y: 40) // 调整与主内容的垂直距离
+                        .offset(y: 45) // 调整与主内容的垂直距离
                         .transition(.opacity)
                         //提示框永远不参与点击或悬停，确保下方内容可被点击
                         .allowsHitTesting(false)
