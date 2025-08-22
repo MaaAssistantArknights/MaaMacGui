@@ -10,48 +10,48 @@ import SwiftUI
 
 struct InstantTooltipModifier<TooltipContent: View>: ViewModifier {
     @State private var isHovering = false
-    let tooltipContent: TooltipContent
+    // 任务句柄，用于管理延迟隐藏
+    @State private var hideTask: Task<Void, Never>?
 
+    let tooltipContent: TooltipContent
+    
     func body(content: Content) -> some View {
         content
-            // 将 onHover 应用于一个略微放大的、不可见的区域，
-            // 这样鼠标在内容和工具提示的边缘移动时不会轻易触发“离开”事件。
-            .overlay(
-                GeometryReader { geometry in
-                    Color.clear
-                        .contentShape(Rectangle()) // 确保透明区域可以接收悬停事件
-                        .frame(width: geometry.size.width, height: geometry.size.height)
-                        .onHover { hovering in
-                            // 添加一个微小的延迟，防止因鼠标快速划过而触发
-                            withAnimation(.default.delay(0.05)) {
-                                self.isHovering = hovering
-                            }
-                        }
-                }
-            )
-            .overlay(
-                // 将工具提示的视图放在主内容的上方
-                Group {
-                    if isHovering {
-                        tooltipContent
-                            // 强制视图使用其理想尺寸，防止文字被截断
-                            .fixedSize()
-                            .padding(10)
-                            .background(
-                                RoundedRectangle(cornerRadius: 8)
-                                    .fill(Color(.windowBackgroundColor))
-                                    .shadow(color: .black.opacity(0.2), radius: 5, x: 0, y: 2)
-                            )
-                            .offset(y: 40)
-                             // 使用平滑的透明度和缩放动画
-                            .transition(.opacity.combined(with: .scale(scale: 0.95, anchor: .top)))
-                            // 给一个固定的ID有助于SwiftUI在状态切换时识别视图，减少闪烁
-                            .id("tooltip")
+            .onHover { hovering in
+                // 取消之前可能存在的“隐藏”任务
+                hideTask?.cancel()
+                
+                if hovering {
+                    // 鼠标进入，立即显示
+                    isHovering = true
+                } else {
+                    // 鼠标离开，启动一个可取消的延迟任务来隐藏
+                    hideTask = Task {
+                        // 延迟 80 毫秒，这个时间足够跨越内容和提示框之间的缝隙
+                        try? await Task.sleep(nanoseconds: 80_000_000)
+                        // 如果任务没被取消，就执行隐藏
+                        isHovering = false
                     }
                 }
-                // 将动画应用到 Group 上，而不是 isHovering 的切换上
-                .animation(.easeInOut(duration: 0.15), value: isHovering)
-            )
+            }
+            .overlay(alignment: .bottom) {
+                if isHovering {
+                    tooltipContent
+                        .padding(8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(Color(.windowBackgroundColor))
+                                .shadow(color: .black.opacity(0.2), radius: 4, y: 2)
+                        )
+                        .offset(y: 40) // 调整与主内容的垂直距离
+                        .transition(.opacity)
+                        //提示框永远不参与点击或悬停，确保下方内容可被点击
+                        .allowsHitTesting(false)
+                        .fixedSize()
+                }
+            }
+            // 使用动画让显示/隐藏更平滑
+            .animation(.easeInOut(duration: 0.15), value: isHovering)
     }
 }
 
