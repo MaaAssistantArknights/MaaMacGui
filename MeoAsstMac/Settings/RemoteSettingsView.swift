@@ -19,6 +19,10 @@ struct RemoteSettingsView: View {
             Form {
                 Section {
                     Toggle("启用钉钉机器人通知", isOn: $viewModel.DingTalkBot)
+                    if viewModel.DingTalkBot {
+                        Text("若配置无效则将在正式运行中自动关闭")
+                        .font(.caption).foregroundColor(.secondary)
+                    }
                     
                     TextField("Webhook", text: $viewModel.DKwebhookURL)
                         .disabled(!viewModel.DingTalkBot)
@@ -47,7 +51,7 @@ struct RemoteSettingsView: View {
             }
         }
         .padding()
-        .animation(.default, value: viewModel.touchMode)
+        .animation(.default, value: viewModel.DingTalkBot)
     }
     
     private func sendTestMessage() {
