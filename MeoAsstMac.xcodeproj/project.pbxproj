@@ -10,6 +10,7 @@
 		451893752E572885007D95AB /* DingTalkBotClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451893742E572880007D95AB /* DingTalkBotClient.swift */; };
 		451893772E5737B1007D95AB /* DingTalkNotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451893762E5737B1007D95AB /* DingTalkNotificationManager.swift */; };
 		4591DA492E571CD100595709 /* RemoteSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4591DA482E571CC400595709 /* RemoteSettingsView.swift */; };
+		459E18F22E580C41004AF69D /* InstantTooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459E18F12E580C41004AF69D /* InstantTooltip.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -133,6 +134,7 @@
 		451893742E572880007D95AB /* DingTalkBotClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkBotClient.swift; sourceTree = "<group>"; };
 		451893762E5737B1007D95AB /* DingTalkNotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkNotificationManager.swift; sourceTree = "<group>"; };
 		4591DA482E571CC400595709 /* RemoteSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteSettingsView.swift; sourceTree = "<group>"; };
+		459E18F12E580C41004AF69D /* InstantTooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantTooltip.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -301,6 +303,7 @@
 		8329858E29EDAC7B009F7ED5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				459E18F12E580C41004AF69D /* InstantTooltip.swift */,
 				83264A3A29EC0F2E0074E33A /* LogView.swift */,
 				9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */,
 				83477CB329FEA7A500A5FF99 /* TaskButtons.swift */,
@@ -580,6 +583,7 @@
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
 				832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */,
+				459E18F22E580C41004AF69D /* InstantTooltip.swift in Sources */,
 				830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */,
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,

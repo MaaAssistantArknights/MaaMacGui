@@ -50,7 +50,10 @@ struct TasksContent: View {
             Button(action: deleteSelectedTask) {
                 Label("删除", systemImage: "trash")
             }
-            .help("删除任务")
+            //.help("删除任务")
+            .instantTooltip(content: {
+                Text("删除任务")
+            })
             .disabled(shouldDisableDeletion)
         }
 
@@ -65,12 +68,18 @@ struct TasksContent: View {
                 Button(action: stop) {
                     Label("停止", systemImage: "stop.fill")
                 }
-                .help("停止")
+                //.help("停止")
+                .instantTooltip(content: {
+                    Text("停止")
+                })
             case .idle:
                 Button(action: start) {
                     Label("开始", systemImage: "play.fill")
                 }
-                .help("开始")
+                //.help("开始")
+                .instantTooltip(content: {
+                    Text("开始")
+                })
             }
         }
     }

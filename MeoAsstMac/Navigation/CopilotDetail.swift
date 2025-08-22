@@ -34,7 +34,10 @@ struct CopilotDetail: View {
             } label: {
                 Label("添加", systemImage: "plus")
             }
-            .help("添加作业")
+            //.help("添加作业")
+            .instantTooltip(content: {
+                Text("添加作业")
+            })
             .popover(isPresented: $showAdd, arrowEdge: .bottom, content: addPopover)
         }
 
@@ -45,7 +48,10 @@ struct CopilotDetail: View {
                 Label("日志", systemImage: "note.text")
                     .foregroundColor(url == nil ? Color.accentColor : nil)
             }
-            .help("运行日志")
+            //.help("运行日志")
+            .instantTooltip(content: {
+                Text("运行日志")
+            })
         }
     }
 
