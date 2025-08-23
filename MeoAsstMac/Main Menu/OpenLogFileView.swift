@@ -17,6 +17,10 @@ struct OpenLogFileView: View {
             OpenLogFileView.revealLogInFinder()
         }
 
+        Button("打开根目录…") {
+            NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: FileManager.default.currentDirectoryPath)
+        }
+
         Button("PlayCover 链接…") {
             NSWorkspace.shared.open(URL(string: "https://github.com/hguandl/PlayCover/releases")!)
         }
