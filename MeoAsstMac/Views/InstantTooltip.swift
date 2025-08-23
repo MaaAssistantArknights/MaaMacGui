@@ -141,7 +141,6 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
             
             window.contentView = newHostingView  // 将 hostingView 设置为窗口内容。
             window.isReleasedWhenClosed = false  // 关闭时不释放，以便复用。
-            window.level = .floating  // 确保窗口显示在所有其他应用窗口之上。
             window.backgroundColor = .clear  // 窗口背景透明，以便显示 SwiftUI 视图的圆角。
 
             self.tooltipWindow = window

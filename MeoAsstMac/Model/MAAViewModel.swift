@@ -37,7 +37,7 @@ import SwiftUI
     // MARK: - Core Callback
 
     @Published var logs = [MAALog]()
-    @Published var trackTail = true
+    @AppStorage("TrackTail") var trackTail = true
     let fileLogger: FileLogger
 
     // MARK: - Daily Tasks
