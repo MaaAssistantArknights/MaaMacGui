@@ -46,13 +46,13 @@ extension StartupConfiguration {
     fileprivate init(migrating config: LegacyStartupConfiguration) {
         self.init()
         self.start_game_enabled = config.start_game_enabled
-        self.client_type = .init(rawValue: config.client_type.rawValue) ?? .default
+        self.client_type = .init(rawValue: config.client_type.rawValue) ?? .Official
     }
 }
 
 extension ClosedownConfiguration {
     fileprivate init(migrating config: LegacyClosedownConfiguration) {
-        self.client_type = .init(rawValue: config.client_type.rawValue) ?? .default
+        self.client_type = .init(rawValue: config.client_type.rawValue) ?? .Official
     }
 }
 

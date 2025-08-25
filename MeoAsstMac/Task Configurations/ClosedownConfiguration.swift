@@ -38,6 +38,6 @@ struct ClosedownConfiguration: MAATaskConfiguration {
 extension ClosedownConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .default
+        self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .Official
     }
 }

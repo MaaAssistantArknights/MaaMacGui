@@ -139,7 +139,7 @@ import SwiftUI
 
     // MARK: - Game Settings
 
-    @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.default {
+    @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.Official {
         didSet {
             updateChannel(channel: clientChannel)
         }
@@ -354,6 +354,8 @@ extension MAAViewModel {
                 内置资源版本：\(currentResourceVersion.activity.name)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
+            let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
+            try? FileManager.default.removeItem(at: url)
         }
 
         do {
@@ -392,9 +394,6 @@ extension MAAViewModel {
             }
 
             config.client_type = channel
-            if config.client_type == .default {
-                config.start_game_enabled = false
-            }
 
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
         }

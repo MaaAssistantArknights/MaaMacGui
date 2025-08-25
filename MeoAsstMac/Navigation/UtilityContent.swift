@@ -60,7 +60,7 @@ struct UtilityContent: View {
             case .oper:
                 try await viewModel.recognizeOperBox()
             case .minigame:
-                try await viewModel.miniGame(name: "GreenGrass@DuelChannel@Begin")
+                break
             case .video, .gacha:
                 break
             case .none:

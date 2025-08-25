@@ -34,13 +34,17 @@ public struct MirrorChyan: Sendable {
     }
 }
 
+public struct MirrorChyanChanges: Codable, Sendable {
+    public let modified: [String]
+}
+
 private struct MirrorChyanResponse: Decodable {
     let code: Int
     let msg: String
     let data: MirrorChyan.Version?
 
     func get() throws -> MirrorChyan.Version {
-        guard let data else {
+        guard let data, code == 0 else {
             throw MirrorChyan.Error(code: code, msg: msg)
         }
         return data

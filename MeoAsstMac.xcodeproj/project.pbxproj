@@ -100,6 +100,7 @@
 		9BEBD1052DD3CBB2006D212B /* MapHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1042DD3CBB2006D212B /* MapHelper.swift */; };
 		9BEBD1082DD3CD52006D212B /* RegularCopilotList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1072DD3CD52006D212B /* RegularCopilotList.swift */; };
 		9BEBD1092DD3CD52006D212B /* CopilotList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1062DD3CD52006D212B /* CopilotList.swift */; };
+		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -224,6 +225,7 @@
 		9BEBD1042DD3CBB2006D212B /* MapHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHelper.swift; sourceTree = "<group>"; };
 		9BEBD1062DD3CD52006D212B /* CopilotList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotList.swift; sourceTree = "<group>"; };
 		9BEBD1072DD3CD52006D212B /* RegularCopilotList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularCopilotList.swift; sourceTree = "<group>"; };
+		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,6 +308,7 @@
 			isa = PBXGroup;
 			children = (
 				83264A3A29EC0F2E0074E33A /* LogView.swift */,
+				9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */,
 				83477CB329FEA7A500A5FF99 /* TaskButtons.swift */,
 				8355E7AF29E8722E005D5A1C /* TaskCell.swift */,
 				832985A929EE9958009F7ED5 /* RecruitView.swift */,
@@ -575,6 +578,7 @@
 				83812ED22D5B0B8100CB39D6 /* Binding+semicolonString.swift in Sources */,
 				8341195329EC25A900044F45 /* MAALog.swift in Sources */,
 				83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */,
+				9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */,
 				832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */,
 				834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */,
 				9BEBD1082DD3CD52006D212B /* RegularCopilotList.swift in Sources */,

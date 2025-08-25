@@ -82,37 +82,64 @@ struct ResourceUpdateView: View {
                 self.error = error
             }
             try? FileManager.default.removeItem(at: localURL)
-            try? FileManager.default.removeItem(at: extractURL)
+            removeExtracts()
         }
     }
 
     private func downloadResource(from remoteURL: URL) async throws {
-        try Task.checkCancellation()
         try? FileManager.default.removeItem(at: localURL)
         for try await progress in URLSession.shared.downloadTo(localURL, from: remoteURL) {
+            try Task.checkCancellation()
             self.progress = (NSLocalizedString("正在下载…", comment: ""), progress.fractionCompleted)
         }
     }
 
     private func extractResource() async throws {
-        try Task.checkCancellation()
-        try? FileManager.default.removeItem(at: extractURL)
+        removeExtracts()
         for try await progress in FileManager.default.unzipItemAt(localURL, to: tmpURL) {
+            try Task.checkCancellation()
             self.progress = (NSLocalizedString("正在解压…", comment: ""), progress.fractionCompleted)
         }
     }
 
     private func copyResource() async throws {
-        try Task.checkCancellation()
-        let destination = documentsURL.appendingPathComponent("resource", isDirectory: true)
-        _ = try FileManager.default.replaceItemAt(destination, withItemAt: sourceURL)
+        try FileManager.default.createDirectory(at: targetURL, withIntermediateDirectories: true)
+
+        let directoryEnumerator = FileManager.default.enumerator(
+            at: sourceURL, includingPropertiesForKeys: [.isDirectoryKey],
+            options: [.skipsHiddenFiles, .producesRelativePathURLs])!
+
+        while case let fileURL as URL = directoryEnumerator.nextObject() {
+            try Task.checkCancellation()
+
+            guard let resourceValues = try? fileURL.resourceValues(forKeys: [.isDirectoryKey]),
+                let isDirectory = resourceValues.isDirectory
+            else {
+                continue
+            }
+
+            let destination = targetURL.appendingPathComponent(fileURL.relativePath, isDirectory: isDirectory)
+
+            if isDirectory {
+                try FileManager.default.createDirectory(at: destination, withIntermediateDirectories: true)
+            } else {
+                _ = try FileManager.default.replaceItemAt(destination, withItemAt: fileURL)
+            }
+        }
+    }
+
+    private func removeExtracts() {
+        try? FileManager.default.removeItem(at: extractURL)
+        try? FileManager.default.removeItem(at: changesURL)
     }
 }
 
 private let documentsURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 private let tmpURL = FileManager.default.temporaryDirectory
 
+private let targetURL = documentsURL.appendingPathComponent("resource", isDirectory: true)
 private let localURL = tmpURL.appendingPathComponent("MaaResource.zip")
+private let changesURL = tmpURL.appendingPathComponent("changes.json", isDirectory: false)
 
 #Preview {
     ResourceUpdateView {}

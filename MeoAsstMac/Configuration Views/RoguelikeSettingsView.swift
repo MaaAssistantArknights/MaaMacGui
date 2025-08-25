@@ -225,7 +225,7 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
         case .Sarkaz:
             return NSLocalizedString("萨卡兹的无终奇语", comment: "")
         case .JieGarden:
-            return NSLocalizedString("界园志异", comment: "")
+            return NSLocalizedString("岁的界园志异", comment: "")
         }
     }
 

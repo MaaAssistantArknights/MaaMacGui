@@ -39,7 +39,6 @@ struct StartupSettingsView: View {
             Divider()
 
             Toggle("自动启动客户端", isOn: $config.start_game_enabled)
-                .disabled(config.client_type == .default)
                 .padding(.vertical)
 
             Picker("账号切换", selection: $config.account_name) {
