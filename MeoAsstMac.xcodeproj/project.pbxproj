@@ -95,6 +95,11 @@
 		92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */; };
 		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
+		9BEBD1002DD3CA3C006D212B /* CopilotListConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */; };
+		9BEBD1012DD3CA3C006D212B /* CopilotItemConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */; };
+		9BEBD1052DD3CBB2006D212B /* MapHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1042DD3CBB2006D212B /* MapHelper.swift */; };
+		9BEBD1082DD3CD52006D212B /* RegularCopilotList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1072DD3CD52006D212B /* RegularCopilotList.swift */; };
+		9BEBD1092DD3CD52006D212B /* CopilotList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BEBD1062DD3CD52006D212B /* CopilotList.swift */; };
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 /* End PBXBuildFile section */
 
@@ -215,6 +220,11 @@
 		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
+		9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotItemConfiguration.swift; sourceTree = "<group>"; };
+		9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotListConfiguration.swift; sourceTree = "<group>"; };
+		9BEBD1042DD3CBB2006D212B /* MapHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHelper.swift; sourceTree = "<group>"; };
+		9BEBD1062DD3CD52006D212B /* CopilotList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotList.swift; sourceTree = "<group>"; };
+		9BEBD1072DD3CD52006D212B /* RegularCopilotList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegularCopilotList.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -261,6 +271,8 @@
 				83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */,
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
 				8341195429EC55C600044F45 /* CopilotConfiguration.swift */,
+				9BEBD0FE2DD3CA3C006D212B /* CopilotItemConfiguration.swift */,
+				9BEBD0FF2DD3CA3C006D212B /* CopilotListConfiguration.swift */,
 				832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */,
 				83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */,
 			);
@@ -329,10 +341,12 @@
 				832985B829EF9D50009F7ED5 /* MAAContent.swift */,
 				832985BC29EFA43B009F7ED5 /* MAADetail.swift */,
 				8355E7B329E918A2005D5A1C /* TasksContent.swift */,
-				8341195C29EC719B00044F45 /* CopilotContent.swift */,
-				832985AD29EEE672009F7ED5 /* UtilityContent.swift */,
 				832985BA29EFA26D009F7ED5 /* TaskDetail.swift */,
+				9BEBD1072DD3CD52006D212B /* RegularCopilotList.swift */,
+				9BEBD1062DD3CD52006D212B /* CopilotList.swift */,
+				8341195C29EC719B00044F45 /* CopilotContent.swift */,
 				8329858929ED121A009F7ED5 /* CopilotDetail.swift */,
+				832985AD29EEE672009F7ED5 /* UtilityContent.swift */,
 				832985C029EFB665009F7ED5 /* UtilityDetail.swift */,
 			);
 			path = Navigation;
@@ -456,6 +470,7 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				9BEBD1042DD3CBB2006D212B /* MapHelper.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
@@ -566,6 +581,8 @@
 				9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */,
 				832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */,
 				834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */,
+				9BEBD1082DD3CD52006D212B /* RegularCopilotList.swift in Sources */,
+				9BEBD1092DD3CD52006D212B /* CopilotList.swift in Sources */,
 				83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */,
 				8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */,
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,
@@ -606,6 +623,7 @@
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
+				9BEBD1052DD3CBB2006D212B /* MapHelper.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
@@ -626,6 +644,8 @@
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
+				9BEBD1002DD3CA3C006D212B /* CopilotListConfiguration.swift in Sources */,
+				9BEBD1012DD3CA3C006D212B /* CopilotItemConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
 				83264A2B29EBED780074E33A /* StartupConfiguration.swift in Sources */,
 			);

@@ -11,6 +11,11 @@ struct CopilotView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     let url: URL
 
+    @State private var userAdditionals: [UserAdditional] = []
+    @State private var additionalOperName: String = ""
+    @State private var additionalOperSkill: String = "1"
+    @State private var showUserAdditional: Bool = false
+
     var body: some View {
         if let copilot = MAACopilot(url: url) {
             VStack(spacing: 20) {
@@ -37,8 +42,9 @@ struct CopilotView: View {
         }
     }
 
-    private var copilot: MAACopilot? {
-        MAACopilot(url: url)
+    private func addToCopilotList() {
+        guard let pilot = MAACopilot(url: url) else { return }
+        viewModel.addToCopilotList(copilot: pilot, url: url)
     }
 
     // MARK: - Copilot Config
@@ -47,13 +53,81 @@ struct CopilotView: View {
         switch viewModel.copilot {
         case .regular(let innerConfig):
             let binding = Binding<RegularCopilotConfiguration> {
-                innerConfig
+                var config = innerConfig
+                config.user_additional = userAdditionals.isEmpty ? nil : userAdditionals
+                return config
             } set: { newValue in
+                userAdditionals = newValue.user_additional ?? []
                 viewModel.copilot = .regular(newValue)
             }
-            HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
+            VStack {
+                // 战斗列表相关
+                Button(action: addToCopilotList) {
+                    Label("添加到战斗列表", systemImage: "plus.rectangle.on.rectangle")
+                }
+                .buttonStyle(.borderedProminent)
+
+                if viewModel.copilotListConfig.items.contains(where: { $0.filename == innerConfig.filename }) {
+                    Text("已添加到战斗列表")
+                        .foregroundColor(.green)
+                } else {
+                    Text("未添加到战斗列表")
+                        .foregroundColor(.red)
+                }
+
+                // 自动编队相关
+                HStack {
+                    VStack(alignment: .leading) {
+                        Toggle("自动编队", isOn: binding.formation)
+                        if binding.formation.wrappedValue {
+                            Toggle("追加低信赖干员", isOn: binding.add_trust)
+                            Toggle("追加自定干员", isOn: $showUserAdditional)
+                        }
+                    }
+                }
+                // 仅自动编队选中时展示
+                if binding.formation.wrappedValue {
+                    if showUserAdditional {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("追加自定干员")
+                                .font(.subheadline)
+                            ForEach($userAdditionals) { $additional in
+                                HStack {
+                                    TextField("干员名", text: $additional.name)
+                                        .frame(width: 100)
+                                    TextField("技能", text: Binding(
+                                        get: { String($additional.skill.wrappedValue) },
+                                        set: { $additional.skill.wrappedValue = Int($0) ?? 1 }
+                                    ))
+                                    .frame(width: 40)
+                                    Button(action: {
+                                        userAdditionals.removeAll { $0.id == additional.id }
+                                        updateCopilotUserAdditionals()
+                                    }) {
+                                        Image(systemName: "minus.circle.fill").foregroundColor(.red)
+                                    }
+                                }
+                            }
+                            HStack {
+                                TextField("干员名", text: $additionalOperName)
+                                    .frame(width: 100)
+                                TextField("技能", text: $additionalOperSkill)
+                                    .frame(width: 40)
+                                Button(action: {
+                                    guard !additionalOperName.isEmpty, let skill = Int(additionalOperSkill) else { return }
+                                    let newAdd = UserAdditional(name: additionalOperName, skill: skill)
+                                    userAdditionals.append(newAdd)
+                                    additionalOperName = ""
+                                    additionalOperSkill = "1"
+                                    updateCopilotUserAdditionals()
+                                }) {
+                                    Image(systemName: "plus.circle.fill").foregroundColor(.green)
+                                }
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
             }
 
         case .sss(let innerConfig):
@@ -112,13 +186,30 @@ struct CopilotView: View {
             Text(toolmen.sorted { $0.key < $1.key }.map { "\($1)\($0)" }.joined(separator: ", "))
         }
     }
+
+    private func updateCopilotUserAdditionals() {
+        if case .regular(var config) = viewModel.copilot {
+            if bindingFormation() && showUserAdditional {
+                config.user_additional = userAdditionals.isEmpty ? nil : userAdditionals
+            } else {
+                config.user_additional = nil
+            }
+            viewModel.copilot = .regular(config)
+        }
+    }
+    private func bindingFormation() -> Bool {
+        if case .regular(let config) = viewModel.copilot {
+            return config.formation
+        }
+        return false
+    }
 }
 
 struct CopilotView_Previews: PreviewProvider {
     static let url = Bundle.main.resourceURL!
         .appendingPathComponent("resource")
         .appendingPathComponent("copilot")
-        .appendingPathComponent("SSS_约翰老妈新建地块")
+        .appendingPathComponent("OF-1_credit_fight")
         .appendingPathExtension("json")
 
     static var previews: some View {
