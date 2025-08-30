@@ -14,7 +14,7 @@ struct MeoAsstMacApp: App {
     @StateObject private var appViewModel: MAAViewModel
 
     // 钉钉通知管理器
-    private var notificationManager: DingTalkNotificationManager
+    private var notificationManager: NotificationManager
     // Sparkle 更新框架的控制器
     private let updaterController: SPUStandardUpdaterController
     // 更新器的自定义代理
@@ -29,7 +29,7 @@ struct MeoAsstMacApp: App {
         _appViewModel = StateObject(wrappedValue: viewModel)
 
         // 现在，使用同一个实例来初始化通知管理器
-        let manager = DingTalkNotificationManager(viewModel: viewModel)
+        let manager = NotificationManager(viewModel: viewModel)
         self.notificationManager = manager
         
         #if DEBUG

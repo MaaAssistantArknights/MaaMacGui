@@ -151,13 +151,24 @@ import SwiftUI
         }
     }
     
-    // MARK: - RemoteSettings
+    // MARK: - DingTalk Settings
+    
+    @AppStorage("SendLogsInGUI") var showSendLogsInGUI: Bool = true
     
     @AppStorage("DingTalkBotURL") var DKwebhookURL = ""
     
     @AppStorage("DingTalkBotSecret") var DKsecret = ""
     
     @AppStorage("DingTalkBot") var DingTalkBot = false
+    
+    // MARK: - Bark Settings
+    
+    @AppStorage("Bark") var BarkBot: Bool = false
+    
+    @AppStorage("BarkKey") var BarkKey: String = ""
+    
+    @AppStorage("BarkServer") var BarkServer: String = "https://api.day.app/"
+    
 
     // MARK: - Initializer
 
