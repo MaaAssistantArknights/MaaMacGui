@@ -11,18 +11,39 @@ import SwiftUI
 @main
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    @StateObject private var appViewModel = MAAViewModel()
+    @StateObject private var appViewModel: MAAViewModel
 
+    // 钉钉通知管理器
+    private var notificationManager: NotificationManager
+    // Sparkle 更新框架的控制器
     private let updaterController: SPUStandardUpdaterController
+    // 更新器的自定义代理
     private let updaterDelegate = MaaUpdaterDelegate()
 
     init() {
+        // 创建 MAAViewModel 的唯一实例
+        let viewModel = MAAViewModel()
+
+        // 使用创建的实例初始化 @StateObject 属性。
+        // 注意在初始化器中为属性包装器赋值时使用的下划线语法。
+        _appViewModel = StateObject(wrappedValue: viewModel)
+
+        // 现在，使用同一个实例来初始化通知管理器
+        let manager = NotificationManager(viewModel: viewModel)
+        self.notificationManager = manager
+        
         #if DEBUG
         let isRelease = false
         #else
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+
+        // 立即开始监听日志
+        self.notificationManager.startObserving()
+
+        // 打印启动信息，确认通知管理器已初始化并开始工作
+        print("App Started: DingTalkNotificationManager has been initialized and is observing.")
     }
 
     var body: some Scene {
@@ -64,6 +85,11 @@ struct MeoAsstMacApp: App {
                 SystemSettingsView()
                     .tabItem {
                         Label("系统设置", systemImage: "wrench.adjustable")
+                    }
+
+                RemoteSettingsView()
+                    .tabItem {
+                        Label("通知设置", systemImage: "ellipsis.message")
                     }
             }
             .environmentObject(appViewModel)

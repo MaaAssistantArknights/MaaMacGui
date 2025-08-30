@@ -140,7 +140,10 @@ private struct SidebarButtonModifier: ViewModifier {
                     } label: {
                         Label("显示/隐藏边栏", systemImage: "sidebar.left")
                     }
-                    .help("显示/隐藏边栏")
+                    //.help("显示/隐藏边栏")
+                    .instantTooltip(content: {
+                        Text("显示/隐藏边栏")
+                    })
                 }
             }
         }

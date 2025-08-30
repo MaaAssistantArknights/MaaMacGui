@@ -32,12 +32,18 @@ struct UtilityContent: View {
                 Button(action: stop) {
                     Label("停止", systemImage: "stop.fill")
                 }
-                .help("停止")
+                //.help("停止")
+                .instantTooltip(content: {
+                    Text("停止")
+                })
             case .idle:
                 Button(action: start) {
                     Label("开始", systemImage: "play.fill")
                 }
-                .help("开始")
+                //.help("开始")
+                .instantTooltip(content: {
+                    Text("开始")
+                })
             }
         }
     }
