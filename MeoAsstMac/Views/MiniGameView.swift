@@ -46,6 +46,7 @@ struct MiniGameView: View {
 }
 
 enum MiniGameOption: CaseIterable {
+    case honeyFruit
     case greenGrass
     case atConversationRoom
     case greenTicketStore
