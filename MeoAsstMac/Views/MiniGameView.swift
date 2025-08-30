@@ -46,6 +46,7 @@ struct MiniGameView: View {
 }
 
 enum MiniGameOption: CaseIterable {
+    case honeyFruit
     case greenGrass
     case atConversationRoom
     case greenTicketStore
@@ -55,8 +56,10 @@ enum MiniGameOption: CaseIterable {
 
     var taskName: String {
         switch self {
+        case .honeyFruit:
+            return "MiniGame@ALL@GreenGrass@DuelChannel@Begin"
         case .greenGrass:
-            return "GreenGrass@DuelChannel@Begin"
+            return "MiniGame@ALL@GreenGrass@DuelChannel@Begin"
         case .atConversationRoom:
             return "MiniGame@AT@ConversationRoom"
         case .greenTicketStore:
@@ -72,6 +75,8 @@ enum MiniGameOption: CaseIterable {
 
     var displayName: String {
         switch self {
+        case .honeyFruit:
+            return NSLocalizedString("争锋频道：蜜果城", comment: "")
         case .greenGrass:
             return NSLocalizedString("争锋频道：青草城", comment: "")
         case .atConversationRoom:
@@ -89,6 +94,14 @@ enum MiniGameOption: CaseIterable {
 
     var instructions: String {
         switch self {
+        case .honeyFruit:
+            NSLocalizedString(
+                """
+                手动跳过教程对话，然后可以直接退出。
+                在活动主界面（右下角有“加入赛事”处）开始任务。
+
+                跟着鸭总喝口汤。
+                """, comment: "")
         case .greenGrass:
             NSLocalizedString(
                 """
