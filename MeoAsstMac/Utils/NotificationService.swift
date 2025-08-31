@@ -13,6 +13,8 @@ struct NotificationConfig {
     let dingTalkSecret: String?
     let barkKey: String
     let barkServer: String
+    let qmsg: QmsgSettings
+    let customWebhook: CustomWebhookSettings
 }
 
 /// 定义了所有通知服务都必须具备的功能。

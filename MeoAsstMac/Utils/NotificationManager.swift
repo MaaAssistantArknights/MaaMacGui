@@ -23,9 +23,6 @@ class NotificationManager {
 
     private let viewModel: MAAViewModel
 
-    /// 发送的时间间隔（单位：秒），用于节流。
-    private let sendingInterval: TimeInterval = 30.0
-
     /// 所有新日志的共享缓冲区。
     private var logBuffer: [MAALog] = []
 
@@ -39,6 +36,8 @@ class NotificationManager {
     // 将它们作为属性持有，可以让他们各自维护自己的状态（例如失败计数）。
     private let dingTalkService = DingTalkService()
     private let barkService = BarkService()
+    private let qmsgService = QmsgService()
+    private let customWebhookService = CustomWebhookService()
 
     init(viewModel: MAAViewModel) {
         self.viewModel = viewModel
@@ -56,7 +55,10 @@ class NotificationManager {
                 guard let self = self, let latestLog = newLogs.last else { return }
 
                 // 过滤掉管理器自身产生的日志，防止无限反馈循环。
-                if !latestLog.content.contains("钉钉") && !latestLog.content.contains("Bark") {
+                if !latestLog.content.contains("钉钉") && !latestLog.content.contains("DingTalk")
+                    && !latestLog.content.contains("Bark") && !latestLog.content.contains("Webhook")
+                    && !latestLog.content.contains("Qmsg")
+                {
                     self.logBuffer.append(latestLog)
                 }
             }
@@ -64,7 +66,12 @@ class NotificationManager {
 
         processingTask = Task {
             while !Task.isCancelled {
-                try? await Task.sleep(nanoseconds: UInt64(sendingInterval * 1_000_000_000))
+                // 从 ViewModel 动态获取用户设置的发送间隔（分钟）
+                let intervalInMinutes = viewModel.notificationSendingInterval
+                // 确保间隔至少为 0.1 分钟（6秒），防止设置过小导致问题
+                let safeInterval = max(intervalInMinutes, 0.1)
+
+                try? await Task.sleep(nanoseconds: UInt64(safeInterval * 60 * 1_000_000_000))
                 await processAndSendBuffer()
             }
         }
@@ -94,7 +101,9 @@ class NotificationManager {
             dingTalkWebhook: viewModel.DKwebhookURL,
             dingTalkSecret: viewModel.DKsecret,
             barkKey: viewModel.BarkKey,
-            barkServer: viewModel.BarkServer
+            barkServer: viewModel.BarkServer,
+            qmsg: viewModel.qmsg,
+            customWebhook: viewModel.customWebhook,
         )
 
         // --- 冲突解决方案 ---
@@ -123,6 +132,28 @@ class NotificationManager {
             if let logsToRequeue = await barkService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
             {
                 // 同样，检查标志位以避免重复入队。
+                if !logsHaveBeenRequeued {
+                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
+                    logsHaveBeenRequeued = true
+                }
+            }
+        }
+
+        // --- 调度自定义 Webhook 服务 ---
+        if viewModel.customWebhook.isEnabled && !currentConfig.customWebhook.url.isEmpty {
+            if let logsToRequeue = await customWebhookService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
+            {
+                if !logsHaveBeenRequeued {
+                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
+                    logsHaveBeenRequeued = true
+                }
+            }
+        }
+
+        // --- 调度 Qmsg 服务 ---
+        if viewModel.qmsg.isEnabled && !currentConfig.qmsg.key.isEmpty {
+            if let logsToRequeue = await qmsgService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
+            {
                 if !logsHaveBeenRequeued {
                     self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
                     logsHaveBeenRequeued = true

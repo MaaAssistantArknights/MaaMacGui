@@ -14,6 +14,8 @@
 		45E56BD42E62F678003E70CE /* BarkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E56BD32E62F678003E70CE /* BarkService.swift */; };
 		45E56BD62E62F683003E70CE /* DingTalkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E56BD52E62F683003E70CE /* DingTalkService.swift */; };
 		45E56BD82E62F68B003E70CE /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E56BD72E62F68B003E70CE /* NotificationManager.swift */; };
+		45E56BDA2E633168003E70CE /* CustomWebhookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E56BD92E633168003E70CE /* CustomWebhookService.swift */; };
+		45E56BDE2E63DA24003E70CE /* QmsgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E56BDD2E63DA24003E70CE /* QmsgService.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -141,6 +143,8 @@
 		45E56BD32E62F678003E70CE /* BarkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarkService.swift; sourceTree = "<group>"; };
 		45E56BD52E62F683003E70CE /* DingTalkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkService.swift; sourceTree = "<group>"; };
 		45E56BD72E62F68B003E70CE /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		45E56BD92E633168003E70CE /* CustomWebhookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWebhookService.swift; sourceTree = "<group>"; };
+		45E56BDD2E63DA24003E70CE /* QmsgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QmsgService.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -472,6 +476,8 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				45E56BDD2E63DA24003E70CE /* QmsgService.swift */,
+				45E56BD92E633168003E70CE /* CustomWebhookService.swift */,
 				45E56BD72E62F68B003E70CE /* NotificationManager.swift */,
 				45E56BD12E62F66D003E70CE /* NotificationService.swift */,
 				45E56BD52E62F683003E70CE /* DingTalkService.swift */,
@@ -606,6 +612,7 @@
 				8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */,
 				838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */,
 				832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */,
+				45E56BDE2E63DA24003E70CE /* QmsgService.swift in Sources */,
 				83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */,
 				8355E7AE29E7F9DD005D5A1C /* ContentView.swift in Sources */,
 				8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */,
@@ -625,6 +632,7 @@
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */,
+				45E56BDA2E633168003E70CE /* CustomWebhookService.swift in Sources */,
 				838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */,
 				832985B429EF1219009F7ED5 /* MAARecruit.swift in Sources */,
 				83E9ED972DF693B20069CFE9 /* OTAFetcher.swift in Sources */,

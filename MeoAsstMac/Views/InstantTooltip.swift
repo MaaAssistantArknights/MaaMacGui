@@ -72,6 +72,9 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
         private var hostingView: NSHostingView<AnyView>?
         /// AppKit 的追踪区域对象，用于侦测鼠标事件。
         private var trackingArea: NSTrackingArea?
+        
+        /// 用于实现10秒后自动隐藏的计时器。
+        private var hideTimer: Timer?
 
         init(tooltipContent: @escaping () -> TooltipContent) {
             self.tooltipContent = tooltipContent
@@ -151,6 +154,8 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
             createTooltipWindow()
             updateTooltipPosition(event)
             tooltipWindow?.orderFront(nil)  // 显示窗口。
+            
+            startHideTimer()
         }
 
         /// 当鼠标在追踪区域内移动时由 `NSTrackingArea` 调用。
@@ -161,6 +166,26 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
         /// 当鼠标离开追踪区域时由 `NSTrackingArea` 调用。
         @objc func mouseExited(_ event: NSEvent) {
             tooltipWindow?.orderOut(nil)  // 隐藏窗口。
+            
+            invalidateHideTimer()
+        }
+        
+        /// 启动计时器
+        private func startHideTimer() {
+            // 在创建新计时器之前，先确保旧的计时器已失效，防止内存泄漏或意外行为。
+            hideTimer?.invalidate()
+            // 创建一个10秒后执行一次的计时器。
+            // 使用 [weak self] 来避免计时器和 Coordinator 之间的循环引用。
+            hideTimer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
+                // 10秒后，如果窗口仍然存在，就将其隐藏。
+                self?.tooltipWindow?.orderOut(nil)
+            }
+        }
+        
+        /// 停止并销毁计时器
+        private func invalidateHideTimer() {
+            hideTimer?.invalidate()
+            hideTimer = nil
         }
 
         /// 根据鼠标当前位置计算并更新工具提示窗口的位置。
