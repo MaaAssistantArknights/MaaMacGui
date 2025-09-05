@@ -64,6 +64,9 @@
     "%lld★ %@" : {
       "shouldTranslate" : false
     },
+    "<无忧梦呓>请使用特殊关卡名，如AveMujica-8" : {
+
+    },
     "1" : {
       "shouldTranslate" : false
     },
