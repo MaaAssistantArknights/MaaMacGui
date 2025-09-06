@@ -82,7 +82,7 @@ class QmsgService: NotificationService {
                 viewModel.logError("Qmsg 通知连续失败 \(consecutiveFailureCount) 次，已自动关闭。")
                 return nil
             } else {
-                viewModel.logWarn("Qmsg 通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在下一周期重试。")
+                viewModel.logWarn("Qmsg 通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在10s后重试。")
                 return logs
             }
         }

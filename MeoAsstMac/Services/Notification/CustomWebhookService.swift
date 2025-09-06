@@ -77,7 +77,7 @@ class CustomWebhookService: NotificationService {
                 viewModel.logError("自定义 Webhook 连续失败 \(consecutiveFailureCount) 次，已自动关闭。")
                 return nil
             } else {
-                viewModel.logWarn("自定义 Webhook 发送失败（第 \(consecutiveFailureCount) 次尝试），将在下一周期重试。")
+                viewModel.logWarn("自定义 Webhook 发送失败（第 \(consecutiveFailureCount) 次尝试），将在10s后重试。")
                 return logs
             }
         }

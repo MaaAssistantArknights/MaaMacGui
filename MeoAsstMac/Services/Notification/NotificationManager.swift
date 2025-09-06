@@ -62,12 +62,15 @@ class NotificationManager {
                     {
                         self.logBuffer.append(latestLog)
                     }
-                }
-                else {
-                    if viewModel.notificationTriggers.onTaskCompletion && (latestLog.content.contains("完成任务") || latestLog.content.contains("작업 완료") || latestLog.content.contains("任务已全部完成！") || latestLog.content.contains("모든 작업이 완료되었습니다!")) {
+                } else {
+                    if viewModel.notificationTriggers.onTaskCompletion
+                        && (latestLog.content.contains("完成任务") || latestLog.content.contains("작업 완료")
+                            || latestLog.content.contains("任务已全部完成！") || latestLog.content.contains("모든 작업이 완료되었습니다!"))
+                    {
                         self.logBuffer.append(latestLog)
-                    }
-                    else if viewModel.notificationTriggers.onTaskError && (latestLog.content.contains("任务出错") || latestLog.content.contains("작업 오류")) {
+                    } else if viewModel.notificationTriggers.onTaskError
+                        && (latestLog.content.contains("任务出错") || latestLog.content.contains("작업 오류"))
+                    {
                         self.logBuffer.append(latestLog)
                     }
                 }
@@ -78,8 +81,8 @@ class NotificationManager {
             while !Task.isCancelled {
                 // 从 ViewModel 动态获取用户设置的发送间隔（分钟）
                 let intervalInMinutes = viewModel.notificationSendingInterval
-                // 确保间隔至少为 0.1 分钟（6秒），防止设置过小导致问题
-                let safeInterval = max(intervalInMinutes, 0.1)
+                // 确保间隔至少为 1 分钟，防止设置过小导致问题
+                let safeInterval = max(intervalInMinutes, 1)
 
                 try? await Task.sleep(nanoseconds: UInt64(safeInterval * 60 * 1_000_000_000))
                 await processAndSendBuffer()
@@ -116,58 +119,102 @@ class NotificationManager {
             customWebhook: viewModel.customWebhook,
         )
 
-        // --- 冲突解决方案 ---
-        // 使用一个标志位确保即使多个服务都失败，日志也只会被重新入队一次。
-        var logsHaveBeenRequeued = false
-
         // --- 调度钉钉服务 ---
         if viewModel.DingTalkBot && !currentConfig.dingTalkWebhook.isEmpty {
-            // 使用 `if let` 捕获返回值，解决 "Result unused" 警告。
-            if let logsToRequeue = await dingTalkService.send(
-                logs: logsToSend, using: currentConfig, viewModel: viewModel)
-            {
-                // 如果需要重试，并且日志尚未被重新入队...
-                if !logsHaveBeenRequeued {
-                    // ...则将日志重新插入缓冲区的最前端。
-                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
-                    // 并设置标志位，防止其他服务重复操作。
-                    logsHaveBeenRequeued = true
+            Task {
+                var Ding_retryCount = 0
+                var Ding_logsToRetry: [MAALog]? = logsToSend
+
+                while let currentLogs = Ding_logsToRetry, Ding_retryCount < 3 {
+                    // 如果不是第一次尝试，则等待 10 秒
+                    if Ding_retryCount > 0 {
+                        try? await Task.sleep(nanoseconds: UInt64(10 * 1_000_000_000))
+                    }
+
+                    // 调用 钉钉 服务发送
+                    Ding_logsToRetry = await dingTalkService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+
+                    // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
+                    if Ding_logsToRetry == nil {
+                        break
+                    }
+
+                    Ding_retryCount += 1
                 }
             }
         }
 
         // --- 调度 Bark 服务 ---
         if viewModel.BarkBot && !currentConfig.barkKey.isEmpty {
-            // 对 Bark 服务也使用同样的模式捕获返回值。
-            if let logsToRequeue = await barkService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
-            {
-                // 同样，检查标志位以避免重复入队。
-                if !logsHaveBeenRequeued {
-                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
-                    logsHaveBeenRequeued = true
+            Task {
+                var Bark_retryCount = 0
+                var Bark_logsToRetry: [MAALog]? = logsToSend
+
+                while let currentLogs = Bark_logsToRetry, Bark_retryCount < 3 {
+                    // 如果不是第一次尝试，则等待 10 秒
+                    if Bark_retryCount > 0 {
+                        try? await Task.sleep(nanoseconds: UInt64(10 * 1_000_000_000))
+                    }
+
+                    // 调用 Bark 服务发送
+                    Bark_logsToRetry = await barkService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+
+                    // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
+                    if Bark_logsToRetry == nil {
+                        break
+                    }
+
+                    Bark_retryCount += 1
                 }
             }
         }
 
         // --- 调度自定义 Webhook 服务 ---
         if viewModel.customWebhook.isEnabled && !currentConfig.customWebhook.url.isEmpty {
-            if let logsToRequeue = await customWebhookService.send(
-                logs: logsToSend, using: currentConfig, viewModel: viewModel)
-            {
-                if !logsHaveBeenRequeued {
-                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
-                    logsHaveBeenRequeued = true
+            Task {
+                var Webhook_retryCount = 0
+                var Webhook_logsToRetry: [MAALog]? = logsToSend
+
+                while let currentLogs = Webhook_logsToRetry, Webhook_retryCount < 3 {
+                    // 如果不是第一次尝试，则等待 10 秒
+                    if Webhook_retryCount > 0 {
+                        try? await Task.sleep(nanoseconds: UInt64(10 * 1_000_000_000))
+                    }
+
+                    // 调用 Webhook 服务发送
+                    Webhook_logsToRetry = await customWebhookService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+
+                    // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
+                    if Webhook_logsToRetry == nil {
+                        break
+                    }
+
+                    Webhook_retryCount += 1
                 }
             }
         }
 
         // --- 调度 Qmsg 服务 ---
         if viewModel.qmsg.isEnabled && !currentConfig.qmsg.key.isEmpty {
-            if let logsToRequeue = await qmsgService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
-            {
-                if !logsHaveBeenRequeued {
-                    self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)
-                    logsHaveBeenRequeued = true
+            Task {
+                var Qmsg_retryCount = 0
+                var Qmsg_logsToRetry: [MAALog]? = logsToSend
+
+                while let currentLogs = Qmsg_logsToRetry, Qmsg_retryCount < 3 {
+                    // 如果不是第一次尝试，则等待 10 秒
+                    if Qmsg_retryCount > 0 {
+                        try? await Task.sleep(nanoseconds: UInt64(10 * 1_000_000_000))
+                    }
+
+                    // 调用 Qmsg 服务发送
+                    Qmsg_logsToRetry = await qmsgService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+
+                    // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
+                    if Qmsg_logsToRetry == nil {
+                        break
+                    }
+
+                    Qmsg_retryCount += 1
                 }
             }
         }

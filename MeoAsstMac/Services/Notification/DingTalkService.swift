@@ -64,7 +64,7 @@ class DingTalkService: NotificationService {
             } else {
                 // 如果失败次数未达到阈值
                 if viewModel.showSendLogsInGUI {
-                    viewModel.logWarn("钉钉通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在下一周期重试。")
+                    viewModel.logWarn("钉钉通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在10s后重试。")
                 }
                 // 返回原始的日志数组，通知上层管理器需要将这些日志加回缓冲区
                 return logs

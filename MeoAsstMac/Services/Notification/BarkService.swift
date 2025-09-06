@@ -17,6 +17,8 @@ class BarkService: NotificationService {
     private var consecutiveFailureCount = 0
     /// 连续失败多少次后自动禁用功能。
     private let failureThreshold = 3
+    /// 所有发送失败日志的缓冲区。
+    private var faillogBuffer: [MAALog] = []
 
     /// 发送 Bark 通知。
     /// - Returns: 如果发送失败且需要重试，则返回原始的日志数组；否则返回 `nil`。
@@ -68,7 +70,7 @@ class BarkService: NotificationService {
             } else {
                 // 如果失败次数未达到阈值，则请求重试。
                 if viewModel.showSendLogsInGUI {
-                    viewModel.logWarn("Bark 通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在下一周期重试。")
+                    viewModel.logWarn("Bark 通知发送失败（第 \(consecutiveFailureCount) 次尝试），将在10s后重试。")
                 }
                 // 返回原始日志数组，通知上层管理器将它们加回缓冲区。
                 return logs
