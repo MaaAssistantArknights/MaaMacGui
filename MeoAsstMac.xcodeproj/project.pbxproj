@@ -255,6 +255,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		45CFD1292E6C5AFE000B27D0 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				45CFD12A2E6C5B0C000B27D0 /* Notification */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		45CFD12A2E6C5B0C000B27D0 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				45E56BD12E62F66D003E70CE /* NotificationService.swift */,
+				45E56BD72E62F68B003E70CE /* NotificationManager.swift */,
+				45E56BD32E62F678003E70CE /* BarkService.swift */,
+				45E56BDD2E63DA24003E70CE /* QmsgService.swift */,
+				45E56BD92E633168003E70CE /* CustomWebhookService.swift */,
+				451893742E572880007D95AB /* DingTalkBotClient.swift */,
+				45E56BD52E62F683003E70CE /* DingTalkService.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -392,6 +414,7 @@
 				83264A2729EBEB9B0074E33A /* Task Configurations */,
 				92CDF6202A065E20005669EC /* Utils */,
 				83FF5A98297855E5000AE831 /* Settings */,
+				45CFD1292E6C5AFE000B27D0 /* Services */,
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				830C3D1F29BC86EE00B13A9F /* Info.plist */,
@@ -476,13 +499,6 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
-				45E56BDD2E63DA24003E70CE /* QmsgService.swift */,
-				45E56BD92E633168003E70CE /* CustomWebhookService.swift */,
-				45E56BD72E62F68B003E70CE /* NotificationManager.swift */,
-				45E56BD12E62F66D003E70CE /* NotificationService.swift */,
-				45E56BD52E62F683003E70CE /* DingTalkService.swift */,
-				45E56BD32E62F678003E70CE /* BarkService.swift */,
-				451893742E572880007D95AB /* DingTalkBotClient.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,

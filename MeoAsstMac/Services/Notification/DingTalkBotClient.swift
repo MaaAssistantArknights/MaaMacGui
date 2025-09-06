@@ -1,3 +1,11 @@
+//
+//  DingTalkBotClient.swift
+//  MAA
+//
+//  Created by RainYang on 2025/8/30.
+//
+
+
 import Foundation
 import SwiftUI
 import CryptoKit

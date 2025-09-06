@@ -54,12 +54,22 @@ class NotificationManager {
             .sink { [weak self] newLogs in
                 guard let self = self, let latestLog = newLogs.last else { return }
 
-                // 过滤掉管理器自身产生的日志，防止无限反馈循环。
-                if !latestLog.content.contains("钉钉") && !latestLog.content.contains("DingTalk")
-                    && !latestLog.content.contains("Bark") && !latestLog.content.contains("Webhook")
-                    && !latestLog.content.contains("Qmsg")
-                {
-                    self.logBuffer.append(latestLog)
+                if viewModel.notificationTriggers.sendAllLogs {
+                    // 过滤掉管理器自身产生的日志，防止无限反馈循环。
+                    if !latestLog.content.contains("钉钉") && !latestLog.content.contains("DingTalk")
+                        && !latestLog.content.contains("Bark") && !latestLog.content.contains("Webhook")
+                        && !latestLog.content.contains("Qmsg")
+                    {
+                        self.logBuffer.append(latestLog)
+                    }
+                }
+                else {
+                    if viewModel.notificationTriggers.onTaskCompletion && (latestLog.content.contains("完成任务") || latestLog.content.contains("작업 완료") || latestLog.content.contains("任务已全部完成！") || latestLog.content.contains("모든 작업이 완료되었습니다!")) {
+                        self.logBuffer.append(latestLog)
+                    }
+                    else if viewModel.notificationTriggers.onTaskError && (latestLog.content.contains("任务出错") || latestLog.content.contains("작업 오류")) {
+                        self.logBuffer.append(latestLog)
+                    }
                 }
             }
             .store(in: &cancellables)
@@ -141,7 +151,8 @@ class NotificationManager {
 
         // --- 调度自定义 Webhook 服务 ---
         if viewModel.customWebhook.isEnabled && !currentConfig.customWebhook.url.isEmpty {
-            if let logsToRequeue = await customWebhookService.send(logs: logsToSend, using: currentConfig, viewModel: viewModel)
+            if let logsToRequeue = await customWebhookService.send(
+                logs: logsToSend, using: currentConfig, viewModel: viewModel)
             {
                 if !logsHaveBeenRequeued {
                     self.logBuffer.insert(contentsOf: logsToRequeue, at: 0)

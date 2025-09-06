@@ -20,7 +20,7 @@ enum NotificationServiceType: String, CaseIterable, Identifiable {
 struct RemoteSettingsView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
-    @State private var testMessageContent: String = "这是一条来自 MAA 的测试消息"
+    @State private var testMessageContent: String = "这是 MAA 外部通知测试信息。如果你看到了这段内容，就说明通知发送成功了！"
     @State private var statusMessage: String = "准备就绪"
     @State private var isLoading: Bool = false
 
@@ -33,6 +33,7 @@ struct RemoteSettingsView: View {
         let isDingTalkEnabled: Bool
         let isBarkEnabled: Bool
         let isCustomWebhookEnabled: Bool
+        let isSendAllLogsEnabled: Bool
     }
 
     // MARK: 计算属性来生成 AnimationID
@@ -41,7 +42,8 @@ struct RemoteSettingsView: View {
             service: selectedService,
             isDingTalkEnabled: viewModel.DingTalkBot,
             isBarkEnabled: viewModel.BarkBot,
-            isCustomWebhookEnabled: viewModel.customWebhook.isEnabled
+            isCustomWebhookEnabled: viewModel.customWebhook.isEnabled,
+            isSendAllLogsEnabled: viewModel.notificationTriggers.sendAllLogs
         )
     }
 
@@ -60,6 +62,16 @@ struct RemoteSettingsView: View {
                         Text("分钟")
                     }
                     .help("设置合并日志并发送通知的时间间隔，单位为分钟（1-120）。")
+                    
+                    Toggle("发送所有日志", isOn: $viewModel.notificationTriggers.sendAllLogs)
+                    
+                    if !viewModel.notificationTriggers.sendAllLogs {
+                        VStack(alignment: .leading, spacing: 10) {
+                            SubToggleView(title: "任务完成后发送通知", isOn: $viewModel.notificationTriggers.onTaskCompletion)
+                            SubToggleView(title: "任务出错时发送通知", isOn: $viewModel.notificationTriggers.onTaskError)
+                        }
+                        .padding(.leading, 5)
+                    }
                 }
                 // MARK: - 主表单
                 Form {
@@ -92,6 +104,9 @@ struct RemoteSettingsView: View {
 
                     }
                 }
+                
+                Text("将在下一发送周期生效")
+                    .font(.caption).foregroundColor(.secondary)
 
                 // MARK: - 统一的状态栏页脚
                 StatusFooter(isLoading: isLoading, statusMessage: statusMessage)
@@ -269,6 +284,24 @@ struct RemoteSettingsView: View {
                 statusMessage = "Qmsg 发送失败: \(error.localizedDescription)"
             }
             isLoading = false
+        }
+    }
+}
+
+// MARK: - 带连接线的子 Toggle 视图
+struct SubToggleView: View {
+    let title: String
+    @Binding var isOn: Bool
+
+    var body: some View {
+        HStack(spacing: 12) {
+            // 这就是我们的“连接线”，用一个圆角矩形或胶囊体模拟
+            Capsule()
+                .fill(Color.gray.opacity(0.5)) // 设置颜色和透明度
+                .frame(width: 2.5) // 线的宽度
+                .frame(maxHeight: 25) // 线的高度，可以根据你的 Toggle 高度微调
+
+            Toggle(title, isOn: $isOn)
         }
     }
 }

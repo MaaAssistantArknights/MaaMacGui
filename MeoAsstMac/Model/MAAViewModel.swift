@@ -9,6 +9,14 @@ import Combine
 import IOKit.pwr_mgt
 import SwiftUI
 
+/// 用于存储通知触发器配置的结构体
+struct NotificationTriggers: Codable {
+    var onTaskCompletion: Bool = false
+    var sendAllLogs: Bool = true
+    var onTaskError: Bool = false
+    var onTaskTimeout: Bool = false
+}
+
 /// 自定义 Webhook 配置结构体
 struct CustomWebhookSettings: Codable {
     var isEnabled: Bool = false
@@ -174,6 +182,24 @@ struct QmsgSettings: Codable {
     // MARK: - General Notification Settings
     
     @AppStorage("notificationSendingInterval") var notificationSendingInterval: Double = 1.0
+    
+    @AppStorage("notificationTriggersData") private var notificationTriggersData: Data?
+
+    var notificationTriggers: NotificationTriggers {
+        get {
+            if let data = notificationTriggersData,
+                let decodedSettings = try? JSONDecoder().decode(NotificationTriggers.self, from: data)
+            {
+                return decodedSettings
+            }
+            return NotificationTriggers()
+        }
+        set {
+            if let encodedData = try? JSONEncoder().encode(newValue) {
+                notificationTriggersData = encodedData
+            }
+        }
+    }
 
     // MARK: - DingTalk Settings
 
@@ -193,7 +219,7 @@ struct QmsgSettings: Codable {
 
     @AppStorage("BarkServer") var BarkServer: String = "https://api.day.app/"
 
-    // MARK: - Qmsg Settings (新增部分)
+    // MARK: - Qmsg Settings
     @AppStorage("qmsgSettingsData") private var qmsgSettingsData: Data?
 
     var qmsg: QmsgSettings {
