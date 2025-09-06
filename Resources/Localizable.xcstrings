@@ -1945,7 +1945,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구매 우선"
+            "value" : "우선 구매"
           }
         }
       }
@@ -2015,7 +2015,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "크레딧이 넘칠 때 블랙리스트 무시"
+            "value" : "크레딧이 넘치면 무시 항목도 구매"
           }
         }
       }
@@ -2225,7 +2225,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내장 교대 근무"
+            "value" : "내장 교대"
           }
         }
       }
@@ -2515,7 +2515,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이성 파밍"
+            "value" : "이성 사용"
           }
         }
       }
@@ -2675,7 +2675,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주간 미션"
+            "value" : "주간 임무"
           }
         }
       }
@@ -2725,7 +2725,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기반 시설 교대 근무"
+            "value" : "기반 시설 교대"
           }
         }
       }
@@ -3055,7 +3055,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시작 직업군"
+            "value" : "시작 직군 (모집 조합)"
           }
         }
       }
@@ -3155,7 +3155,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용자 지정 교대 근무 폴더 열기…"
+            "value" : "사용자 지정 교대 폴더 열기…"
           }
         }
       }
@@ -3395,7 +3395,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일일 미션"
+            "value" : "일일 임무"
           }
         }
       }
@@ -3405,7 +3405,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일일 미션 예약 실행은 시스템 절전 모드 진입 시 무효화됩니다. 이 기능을 켜면 시스템이 자동으로 절전 모드로 진입하는 것을 방지할 수 있습니다."
+            "value" : "일일 임무 예약 실행은 시스템 절전 모드 진입 시 무효화됩니다. 이 기능을 켜면 시스템이 자동으로 절전 모드로 진입하는 것을 방지할 수 있습니다."
           }
         }
       }
@@ -3575,7 +3575,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알 수 없는 교대 근무"
+            "value" : "알 수 없는 교대"
           }
         }
       }
@@ -4311,7 +4311,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용자 지정 교대 근무"
+            "value" : "사용자 지정 교대"
           }
         }
       }
@@ -4821,7 +4821,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일일/주간 미션 보상 수령"
+            "value" : "일일/주간 임무 보상 수령"
           }
         }
       }
@@ -4861,7 +4861,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "블랙리스트"
+            "value" : "무시 항목"
           }
         }
       }
@@ -4871,7 +4871,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기본 교대 근무"
+            "value" : "기본 교대"
           }
         }
       }
