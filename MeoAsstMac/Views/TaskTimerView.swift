@@ -25,16 +25,18 @@ struct TaskTimerView: View {
                 )
             }
         }
-        .alert("允许阻止系统睡眠",
-               isPresented: $showingAlertForPreventingSleep,
-               actions: {
-                   Button("允许") {
-                       viewModel.preventSystemSleeping = true
-                   }
-                   Button("取消", role: .cancel) {}
-               }, message: {
-                   Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
-               })
+        .alert(
+            "允许阻止系统睡眠",
+            isPresented: $showingAlertForPreventingSleep,
+            actions: {
+                Button("允许") {
+                    viewModel.preventSystemSleeping = true
+                }
+                Button("取消", role: .cancel) {}
+            },
+            message: {
+                Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
+            })
     }
 
     private func showAlertIfNeeded() {
@@ -53,12 +55,15 @@ struct TaskTimerItem: View {
 
     var body: some View {
         HStack {
-            Button(action: {
-                onDelete()
-            }, label: {
-                Image(systemName: "minus.circle")
-                    .foregroundColor(.red)
-            })
+            Button(
+                action: {
+                    onDelete()
+                },
+                label: {
+                    Image(systemName: "minus.circle")
+                        .foregroundColor(.red)
+                }
+            )
             .buttonStyle(PlainButtonStyle())
 
             Spacer()
@@ -79,9 +84,12 @@ struct TaskTimerItem: View {
 
             Spacer()
 
-            Toggle(isOn: $taskTimer.isEnabled, label: {
-                Text("开启")
-            })
+            Toggle(
+                isOn: $taskTimer.isEnabled,
+                label: {
+                    Text("开启")
+                }
+            )
             .toggleStyle(.switch)
             .onChange(of: taskTimer.isEnabled) {
                 if $0 {

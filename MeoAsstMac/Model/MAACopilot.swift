@@ -7,14 +7,22 @@
 
 import Foundation
 
+enum DifficultyFlags: Int, Codable {
+    case none = 0
+    case normal = 1
+    case raid = 2
+    case normal_raid = 3
+}
+
 struct MAACopilot: Codable, Equatable {
     let stage_name: String
     let opers: [Operator]
     let groups: [Group]?
     let minimum_required: String
     let doc: Documentation?
+    var difficulty: DifficultyFlags? = nil
 
-    // MARK: SSS
+    // MARK: - SSS
 
     let type: String?
     let equipment: [String]?

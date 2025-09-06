@@ -14,8 +14,8 @@ actor MaaToolClient {
     init?(address: String) async {
         let parts = address.split(separator: ":")
         guard parts.count >= 2,
-              let portNumber = UInt16(parts[1]),
-              let port = NWEndpoint.Port(rawValue: portNumber)
+            let portNumber = UInt16(parts[1]),
+            let port = NWEndpoint.Port(rawValue: portNumber)
         else {
             return nil
         }
@@ -62,13 +62,15 @@ actor MaaToolClient {
         let data = Data([0x4d, 0x41, 0x41, 0x00, 0x00, 0x04, 0x54, 0x45, 0x52, 0x4d])
 
         return try await withCheckedThrowingContinuation { continuation in
-            connection.send(content: data, completion: .contentProcessed { error in
-                if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
-                }
-            })
+            connection.send(
+                content: data,
+                completion: .contentProcessed { error in
+                    if let error {
+                        continuation.resume(throwing: error)
+                    } else {
+                        continuation.resume()
+                    }
+                })
         }
     }
 }

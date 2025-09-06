@@ -14,17 +14,17 @@ struct MAAContent: View {
     var body: some View {
         Group {
             switch sidebar {
-                case .daily:
-                    TasksContent(selection: $selection.task)
-                case .copilot:
-                    CopilotContent(selection: $selection.copilot)
-                case .utility:
-                    UtilityContent(selection: $selection.utility)
-                case .none:
-                    Text("请从边栏选择功能")
+            case .daily:
+                TasksContent(selection: $selection.task)
+            case .copilot:
+                CopilotContent(selection: $selection.copilot)
+            case .utility:
+                UtilityContent(selection: $selection.utility)
+            case .none:
+                Text("请从边栏选择功能")
             }
         }
-        .frame(minWidth: 260)
+        .frame(minWidth: 290)
     }
 }
 

@@ -77,9 +77,9 @@ struct TaskDetail: View {
             HStack {
                 Divider()
 
-                ViewDetaiTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(
+                ViewDetailTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
+                ViewDetailTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
+                ViewDetailTabButton(
                     mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
             }
         }
@@ -93,7 +93,7 @@ struct TaskDetail: View {
     }
 }
 
-struct ViewDetaiTabButton: View {
+struct ViewDetailTabButton: View {
     let mode: MAAViewModel.DailyTasksDetailMode
     let icon: String
     @Binding var selection: MAAViewModel.DailyTasksDetailMode

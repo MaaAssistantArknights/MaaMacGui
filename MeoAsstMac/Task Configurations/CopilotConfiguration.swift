@@ -7,11 +7,23 @@
 
 import Foundation
 
+struct UserAdditional: Codable, Hashable, Identifiable {
+    var id = UUID()
+    var name: String
+    var skill: Int
+}
+
 struct RegularCopilotConfiguration: Codable {
     var enable = true
     var filename: String
     var formation = false
     var add_trust = false
+    var is_raid = false
+    var loop_times = 1
+    var use_sanity_potion = false
+    var need_navigate = false
+    var navigate_name: String?
+    var user_additional: [UserAdditional]? = nil
 }
 
 struct SSSCopilotConfiguration: Codable {
