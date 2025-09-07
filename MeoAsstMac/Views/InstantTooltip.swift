@@ -72,13 +72,19 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
         private var hostingView: NSHostingView<AnyView>?
         /// AppKit 的追踪区域对象，用于侦测鼠标事件。
         private var trackingArea: NSTrackingArea?
-        
+
         /// 用于实现10秒后自动隐藏的计时器。
         private var hideTimer: Timer?
 
         init(tooltipContent: @escaping () -> TooltipContent) {
             self.tooltipContent = tooltipContent
             super.init()
+        }
+        
+        deinit {
+            // 在 Coordinator 销毁时，确保所有资源被清理，防止内存泄漏
+            closeTooltipWindow()
+            NotificationCenter.default.removeObserver(self)
         }
 
         /// 更新或创建鼠标追踪区域。当视图大小改变时需要调用。
@@ -106,7 +112,7 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
             // 如果窗口已存在，先关闭并销毁，以确保内容是最新的。
             if tooltipWindow != nil {
                 tooltipWindow?.close()
-                tooltipWindow = nil
+                //tooltipWindow = nil
             }
 
             // --- 内置样式 ---
@@ -141,6 +147,7 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
             window.isOpaque = false
             // 让系统为这个窗口绘制标准阴影
             window.hasShadow = true
+            window.hidesOnDeactivate = true
             
             window.contentView = newHostingView  // 将 hostingView 设置为窗口内容。
             window.isReleasedWhenClosed = false  // 关闭时不释放，以便复用。
@@ -151,10 +158,16 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
 
         /// 当鼠标进入追踪区域时由 `NSTrackingArea` 调用。
         @objc func mouseEntered(_ event: NSEvent) {
-            createTooltipWindow()
-            updateTooltipPosition(event)
-            tooltipWindow?.orderFront(nil)  // 显示窗口。
+            // 如果窗口不存在，就创建它
+            if tooltipWindow == nil {
+                createTooltipWindow()
+            }
             
+            // 无论窗口是否已存在，都更新位置并将其置于最前
+            updateTooltipPosition(event)
+            tooltipWindow?.orderFront(nil)
+            
+            // 重新启动计时器
             startHideTimer()
         }
 
@@ -165,11 +178,15 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
 
         /// 当鼠标离开追踪区域时由 `NSTrackingArea` 调用。
         @objc func mouseExited(_ event: NSEvent) {
-            tooltipWindow?.orderOut(nil)  // 隐藏窗口。
-            
-            invalidateHideTimer()
+            // tooltipWindow?.orderOut(nil)  // 隐藏窗口。
+            // invalidateHideTimer()
+            closeTooltipWindow()
         }
-        
+
+        @objc private func handleAppDidResignActive() {
+            closeTooltipWindow()
+        }
+
         /// 启动计时器
         private func startHideTimer() {
             // 在创建新计时器之前，先确保旧的计时器已失效，防止内存泄漏或意外行为。
@@ -181,11 +198,29 @@ private struct TooltipView<TooltipContent: View>: NSViewRepresentable {
                 self?.tooltipWindow?.orderOut(nil)
             }
         }
-        
+
         /// 停止并销毁计时器
         private func invalidateHideTimer() {
             hideTimer?.invalidate()
             hideTimer = nil
+        }
+        
+        private func hideTooltip() {
+            tooltipWindow?.orderOut(nil)
+            invalidateHideTimer()
+        }
+        
+        /// 销毁并释放工具提示窗口
+        private func closeTooltipWindow() {
+            // 先停止计时器，以防其在窗口销毁后触发
+            invalidateHideTimer()
+
+            // 如果窗口存在，关闭它
+            if let window = tooltipWindow {
+                window.close() // 这会释放窗口本身
+                tooltipWindow = nil // 清空引用，以便SwiftUI可以重建
+                hostingView = nil // 释放 hostingView
+            }
         }
 
         /// 根据鼠标当前位置计算并更新工具提示窗口的位置。
