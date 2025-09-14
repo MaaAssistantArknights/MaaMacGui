@@ -24,7 +24,7 @@ struct InfrastSettingsView: View {
                     customPlanView
                 } else {
                     Picker("无人机用途", selection: $config.drones) {
-                        ForEach(InfrastConfiguration.DroneUsage.allCases, id: \.self) { usage in
+                        ForEach(droneUsages, id: \.self) { usage in
                             Text(usage.description).tag(usage)
                         }
                     }
@@ -150,6 +150,26 @@ struct InfrastSettingsView: View {
                 config.facility.removeAll { $0 == facility }
             }
         }
+    }
+
+    private var droneUsages: [InfrastConfiguration.DroneUsage] {
+        var usages = [InfrastConfiguration.DroneUsage.NotUse]
+
+        if config.mode == .rotation {
+            return InfrastConfiguration.DroneUsage.allCases
+        } else if config.mode == .custom {
+            return usages
+        }
+
+        if config.facility.contains(.Mfg) {
+            usages.append(contentsOf: [.Chip, .CombatRecord, .OriginStone, .PureGold, .SyntheticJade])
+        }
+
+        if config.facility.contains(.Trade) {
+            usages.append(.Money)
+        }
+
+        return usages
     }
 
     // MARK: - File Paths

@@ -64,6 +64,9 @@
     "%lld★ %@" : {
       "shouldTranslate" : false
     },
+    "<无忧梦呓>请使用特殊关卡名，如AveMujica-8" : {
+
+    },
     "1" : {
       "shouldTranslate" : false
     },
@@ -1660,6 +1663,9 @@
           }
         }
       }
+    },
+    "争锋频道：蜜果城" : {
+
     },
     "争锋频道：青草城" : {
 

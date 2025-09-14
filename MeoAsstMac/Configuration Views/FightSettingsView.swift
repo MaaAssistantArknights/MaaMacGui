@@ -33,7 +33,10 @@ struct FightSettingsView: View {
                     Toggle("手动输入关卡名", isOn: isUsingCustomStage)
                 }
                 .animation(.default, value: config.stage)
-                .animation(.default, value: useCustomStage)
+            }
+
+            if useCustomStage || stageNotListed {
+                Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
             }
 
             Divider()
@@ -104,6 +107,7 @@ struct FightSettingsView: View {
             }
         }
         .padding()
+        .animation(.default, value: useCustomStage)
     }
 
     private var useExpiringMedicine: Binding<Bool> {
