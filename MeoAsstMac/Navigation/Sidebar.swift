@@ -41,7 +41,6 @@ struct Sidebar: View {
             .buttonStyle(.plain)
             .frame(maxHeight: rowHeight * 4.2)
         }
-        .withSidebarButton()
         .sheet(isPresented: $showUpdate) {
             ResourceUpdateView(onUpdate: onUpdate)
         }
@@ -119,37 +118,6 @@ private struct SettingsLink<Label: View>: View {
     }
 
     private func showSettings() {
-        if #available(macOS 13, *) {
-            NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-        } else {
-            NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-        }
-    }
-}
-
-@available(macOS, introduced: 10.15, obsoleted: 13)
-private struct SidebarButtonModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        if #available(iOS 16, macOS 13, tvOS 16, watchOS 9, visionOS 1, *) {
-            content
-        } else {
-            content.toolbar {
-                ToolbarItemGroup {
-                    Button {
-                        NSApp.sendAction(#selector(NSSplitViewController.toggleSidebar), to: nil, from: nil)
-                    } label: {
-                        Label("显示/隐藏边栏", systemImage: "sidebar.left")
-                    }
-                    .help("显示/隐藏边栏")
-                }
-            }
-        }
-    }
-}
-
-extension View {
-    @available(macOS, introduced: 10.15, obsoleted: 13)
-    fileprivate func withSidebarButton() -> some View {
-        modifier(SidebarButtonModifier())
+        NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
     }
 }

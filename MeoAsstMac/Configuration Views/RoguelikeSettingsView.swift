@@ -112,14 +112,10 @@ struct RoguelikeSettingsView: View {
                     Text($0).tag($0)
                 }
             }
-            if #available(macOS 13.0, *) {
-                LabeledContent("烧水奖励", value: "").padding(.top, 1)
-                startCollectibles().padding(.top, -rowHeight)
-            } else {
-                Divider()
-                Text("烧水奖励")
-                startCollectibles()
-            }
+
+            LabeledContent("烧水奖励", value: "").padding(.top, 1)
+            startCollectibles().padding(.top, -rowHeight)
+
             Divider()
         }
 
@@ -277,8 +273,8 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
         case .JieGarden:
             [
                 "指挥分队", "特勤分队", "后勤分队",
-                "突击战术分队","堡垒战术分队", "远程战术分队", "破坏战术分队",
-                "高规格分队", "高台突破分队","地面突破分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+                "高规格分队", "高台突破分队", "地面突破分队",
                 "游客分队", "司岁台分队", "天师府分队",
             ]
         }
@@ -286,10 +282,10 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
 
     var roles: [String] {
         switch self {
-            case .JieGarden:
-                ["先手必胜", "稳扎稳打", "取长补短","灵活部署", "坚不可摧", "随心所欲"]
-            default:
-                ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
+        case .JieGarden:
+            ["先手必胜", "稳扎稳打", "取长补短", "灵活部署", "坚不可摧", "随心所欲"]
+        default:
+            ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
         }
     }
 }

@@ -2426,16 +2426,6 @@
         }
       }
     },
-    "显示/隐藏边栏" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "사이드바 표시/숨기기"
-          }
-        }
-      }
-    },
     "更新失败：%@" : {
 
     },
