@@ -96,6 +96,7 @@
 		92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */; };
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
+		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -216,6 +217,7 @@
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
+		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -379,6 +381,7 @@
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
 				838433CC2D65BD0C00B0F78E /* MAADev.entitlements */,
 				833786D428F188D900D39D6F /* Preview Content */,
+				AEA8E39F2E77003F00355D84 /* AppIcon.icon */,
 			);
 			indentWidth = 4;
 			path = MeoAsstMac;
@@ -546,6 +549,7 @@
 				83FF5A9C2978FE27000AE831 /* resource in Resources */,
 				833786D628F188D900D39D6F /* Preview Assets.xcassets in Resources */,
 				833786D328F188D900D39D6F /* Assets.xcassets in Resources */,
+				AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -705,6 +709,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MAADev.entitlements;
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
@@ -793,6 +798,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = MeoAsstMac/MeoAsstMac.entitlements;
 				CODE_SIGN_IDENTITY = "Developer ID Application";
 				CODE_SIGN_STYLE = Manual;
