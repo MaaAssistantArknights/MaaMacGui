@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4505F96D2E7E9852006E7D28 /* DingTalkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9672E7E9852006E7D28 /* DingTalkService.swift */; };
+		4505F96E2E7E9852006E7D28 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9692E7E9852006E7D28 /* NotificationService.swift */; };
+		4505F96F2E7E9852006E7D28 /* DingTalkBotClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9662E7E9852006E7D28 /* DingTalkBotClient.swift */; };
+		4505F9702E7E9852006E7D28 /* CustomWebhookService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9652E7E9852006E7D28 /* CustomWebhookService.swift */; };
+		4505F9712E7E9852006E7D28 /* BarkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9642E7E9852006E7D28 /* BarkService.swift */; };
+		4505F9722E7E9852006E7D28 /* QmsgService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F96A2E7E9852006E7D28 /* QmsgService.swift */; };
+		4505F9732E7E9852006E7D28 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9682E7E9852006E7D28 /* NotificationManager.swift */; };
+		4505F9752E7E9884006E7D28 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4505F9742E7E9884006E7D28 /* NotificationSettingsView.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -128,6 +136,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4505F9642E7E9852006E7D28 /* BarkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarkService.swift; sourceTree = "<group>"; };
+		4505F9652E7E9852006E7D28 /* CustomWebhookService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWebhookService.swift; sourceTree = "<group>"; };
+		4505F9662E7E9852006E7D28 /* DingTalkBotClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkBotClient.swift; sourceTree = "<group>"; };
+		4505F9672E7E9852006E7D28 /* DingTalkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DingTalkService.swift; sourceTree = "<group>"; };
+		4505F9682E7E9852006E7D28 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		4505F9692E7E9852006E7D28 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		4505F96A2E7E9852006E7D28 /* QmsgService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QmsgService.swift; sourceTree = "<group>"; };
+		4505F9742E7E9884006E7D28 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -239,6 +255,28 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4505F96B2E7E9852006E7D28 /* Notification */ = {
+			isa = PBXGroup;
+			children = (
+				4505F9642E7E9852006E7D28 /* BarkService.swift */,
+				4505F9652E7E9852006E7D28 /* CustomWebhookService.swift */,
+				4505F9662E7E9852006E7D28 /* DingTalkBotClient.swift */,
+				4505F9672E7E9852006E7D28 /* DingTalkService.swift */,
+				4505F9682E7E9852006E7D28 /* NotificationManager.swift */,
+				4505F9692E7E9852006E7D28 /* NotificationService.swift */,
+				4505F96A2E7E9852006E7D28 /* QmsgService.swift */,
+			);
+			path = Notification;
+			sourceTree = "<group>";
+		};
+		4505F96C2E7E9852006E7D28 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				4505F96B2E7E9852006E7D28 /* Notification */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -376,6 +414,7 @@
 				92CDF6202A065E20005669EC /* Utils */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				8337870728F1DA7B00D39D6F /* Resources */,
+				4505F96C2E7E9852006E7D28 /* Services */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
 				830C3D1F29BC86EE00B13A9F /* Info.plist */,
 				833786D728F188D900D39D6F /* MeoAsstMac.entitlements */,
@@ -452,6 +491,7 @@
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
 				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
+				4505F9742E7E9884006E7D28 /* NotificationSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -572,6 +612,13 @@
 				834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */,
 				83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */,
 				8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */,
+				4505F96D2E7E9852006E7D28 /* DingTalkService.swift in Sources */,
+				4505F96E2E7E9852006E7D28 /* NotificationService.swift in Sources */,
+				4505F96F2E7E9852006E7D28 /* DingTalkBotClient.swift in Sources */,
+				4505F9702E7E9852006E7D28 /* CustomWebhookService.swift in Sources */,
+				4505F9712E7E9852006E7D28 /* BarkService.swift in Sources */,
+				4505F9722E7E9852006E7D28 /* QmsgService.swift in Sources */,
+				4505F9732E7E9852006E7D28 /* NotificationManager.swift in Sources */,
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
 				832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */,
@@ -596,6 +643,7 @@
 				83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */,
 				92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */,
 				8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */,
+				4505F9752E7E9884006E7D28 /* NotificationSettingsView.swift in Sources */,
 				83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */,
 				83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */,
 				8329858C29EDA952009F7ED5 /* OpenLogFileView.swift in Sources */,
