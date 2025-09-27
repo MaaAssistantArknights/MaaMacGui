@@ -46,6 +46,7 @@ struct MiniGameView: View {
 }
 
 enum MiniGameOption: CaseIterable {
+    case rebuildingMandate
     case honeyFruit
     case greenGrass
     case atConversationRoom
@@ -56,6 +57,8 @@ enum MiniGameOption: CaseIterable {
 
     var taskName: String {
         switch self {
+        case .rebuildingMandate:
+            return "MiniGame@RebuildingMandate@Begin"
         case .honeyFruit:
             return "MiniGame@ALL@GreenGrass@DuelChannel@Begin"
         case .greenGrass:
@@ -75,6 +78,8 @@ enum MiniGameOption: CaseIterable {
 
     var displayName: String {
         switch self {
+        case .rebuildingMandate:
+            return NSLocalizedString("RM-次生预案", comment: "")
         case .honeyFruit:
             return NSLocalizedString("争锋频道：蜜果城", comment: "")
         case .greenGrass:
@@ -94,6 +99,11 @@ enum MiniGameOption: CaseIterable {
 
     var instructions: String {
         switch self {
+        case .rebuildingMandate
+            NSLocalizedString(
+                """
+                过完新手教程后进入前哨支点，滑动到界面最左侧。
+                """, comment: "")
         case .honeyFruit:
             NSLocalizedString(
                 """
