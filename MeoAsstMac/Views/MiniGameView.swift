@@ -9,7 +9,7 @@ import SwiftUI
 
 struct MiniGameView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
-    @State private var selectedGame: MiniGameOption = .greenGrass
+    @SceneStorage("selectedMiniGame") private var selectedGame = MiniGameOption.greenTicketStore
 
     var body: some View {
         VStack(spacing: 20) {
@@ -45,7 +45,7 @@ struct MiniGameView: View {
     }
 }
 
-enum MiniGameOption: CaseIterable {
+enum MiniGameOption: String, CaseIterable {
     case rebuildingMandate
     case honeyFruit
     case greenGrass
