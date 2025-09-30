@@ -34,6 +34,7 @@ struct NotificationSettingsView: View {
         let isBarkEnabled: Bool
         let isCustomWebhookEnabled: Bool
         let isSendAllLogsEnabled: Bool
+        let isSendAllLogsAfterFinishEnabled: Bool
     }
 
     // MARK: 计算属性来生成 AnimationID
@@ -43,7 +44,8 @@ struct NotificationSettingsView: View {
             isDingTalkEnabled: viewModel.DingTalkBot,
             isBarkEnabled: viewModel.BarkBot,
             isCustomWebhookEnabled: viewModel.customWebhook.isEnabled,
-            isSendAllLogsEnabled: viewModel.notificationTriggers.sendAllLogs
+            isSendAllLogsEnabled: viewModel.notificationTriggers.sendAllLogs,
+            isSendAllLogsAfterFinishEnabled: viewModel.notificationTriggers.sendAllLogsAfterFinish
         )
     }
 
@@ -51,24 +53,26 @@ struct NotificationSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
                 // MARK: - 通用设置
+                Toggle("任务全部完成后发送", isOn: $viewModel.notificationTriggers.sendAllLogsAfterFinish)
                 Section {
-                    HStack {
-                        Text("发送间隔")
-                        Spacer()
-                        // 使用 TextField 允许用户直接输入
-                        TextField("分钟", value: $viewModel.notificationSendingInterval, formatter: NumberFormatter())
-                            .multilineTextAlignment(.trailing)
-                            .frame(width: 80)  // 限制输入框宽度
-                        Text("分钟")
+                    if !viewModel.notificationTriggers.sendAllLogsAfterFinish {
+                        HStack {
+                            Text("发送间隔")
+                            Spacer()
+                            // 使用 TextField 允许用户直接输入
+                            TextField("分钟", value: $viewModel.notificationSendingInterval, formatter: NumberFormatter())
+                                .multilineTextAlignment(.trailing)
+                                .frame(width: 80)  // 限制输入框宽度
+                            Text("分钟")
+                        }
                     }
-                    .help("设置合并日志并发送通知的时间间隔，单位为分钟（1-120）。")
-                    
+
                     Toggle("发送所有日志", isOn: $viewModel.notificationTriggers.sendAllLogs)
-                    
+
                     if !viewModel.notificationTriggers.sendAllLogs {
                         VStack(alignment: .leading, spacing: 10) {
-                            SubToggleView(title: "任务完成后发送通知", isOn: $viewModel.notificationTriggers.onTaskCompletion)
-                            SubToggleView(title: "任务出错时发送通知", isOn: $viewModel.notificationTriggers.onTaskError)
+                            SubToggleView(title: "任务完成后", isOn: $viewModel.notificationTriggers.onTaskCompletion)
+                            SubToggleView(title: "任务出错时", isOn: $viewModel.notificationTriggers.onTaskError)
                         }
                         .padding(.leading, 5)
                     }
@@ -104,7 +108,7 @@ struct NotificationSettingsView: View {
 
                     }
                 }
-                
+
                 Text("将在下一发送周期生效")
                     .font(.caption).foregroundColor(.secondary)
 
@@ -297,9 +301,9 @@ struct SubToggleView: View {
         HStack(spacing: 12) {
             // 这就是我们的“连接线”，用一个圆角矩形或胶囊体模拟
             Capsule()
-                .fill(Color.gray.opacity(0.5)) // 设置颜色和透明度
-                .frame(width: 2.5) // 线的宽度
-                .frame(maxHeight: 25) // 线的高度，可以根据你的 Toggle 高度微调
+                .fill(Color.gray.opacity(0.5))  // 设置颜色和透明度
+                .frame(width: 2.5)  // 线的宽度
+                .frame(maxHeight: 25)  // 线的高度，可以根据你的 Toggle 高度微调
 
             Toggle(title, isOn: $isOn)
         }

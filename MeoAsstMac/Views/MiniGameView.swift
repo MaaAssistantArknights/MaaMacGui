@@ -99,7 +99,7 @@ enum MiniGameOption: CaseIterable {
 
     var instructions: String {
         switch self {
-        case .rebuildingMandate
+        case .rebuildingMandate:
             NSLocalizedString(
                 """
                 过完新手教程后进入前哨支点，滑动到界面最左侧。

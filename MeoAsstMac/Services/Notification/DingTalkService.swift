@@ -22,14 +22,14 @@ class DingTalkService: NotificationService {
             secret: config.dingTalkSecret
         )
 
-        let title = "MAA 日志摘要 (\(logs.count)条)"
+        let title = (viewModel.notificationTriggers.sendAllLogsAfterFinish) ? "MAA 任务已全部完成" : "MAA 日志摘要 (\(logs.count)条)"
         let contentItems = logs.map { log in
             let timeString = log.date.formatted(date: .omitted, time: .standard)
             let escapedContent = log.content.replacingOccurrences(of: "\"", with: "\\\"")
             return "- **[\(timeString)]** \(escapedContent)"
         }
         let fullContent = """
-            ### MAA 日志摘要 (\(logs.count)条新消息)
+            ### \(title)
             ---
             \(contentItems.joined(separator: "\n\n"))
             """

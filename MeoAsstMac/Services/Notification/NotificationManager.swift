@@ -74,18 +74,30 @@ class NotificationManager {
                         self.logBuffer.append(latestLog)
                     }
                 }
+
+                // 检查“任务已全部完成！”日志，并检查是否启用了“完成后发送全部日志”
+                if latestLog.content.contains("已停止") {
+                    if self.viewModel.notificationTriggers.sendAllLogsAfterFinish {
+                        // 如果启用了此功能，将所有日志设置为待发送，并立即触发发送
+                        // self.logBuffer = newLogs
+                        Task { @MainActor in
+                            await self.processAndSendBuffer()
+                        }
+                    }
+                }
             }
             .store(in: &cancellables)
-
         processingTask = Task {
             while !Task.isCancelled {
                 // 从 ViewModel 动态获取用户设置的发送间隔（分钟）
                 let intervalInMinutes = viewModel.notificationSendingInterval
                 // 确保间隔至少为 1 分钟，防止设置过小导致问题
                 let safeInterval = max(intervalInMinutes, 1)
-
                 try? await Task.sleep(nanoseconds: UInt64(safeInterval * 60 * 1_000_000_000))
-                await processAndSendBuffer()
+
+                if !viewModel.notificationTriggers.sendAllLogsAfterFinish {
+                    await processAndSendBuffer()
+                }
             }
         }
     }
@@ -132,7 +144,8 @@ class NotificationManager {
                     }
 
                     // 调用 钉钉 服务发送
-                    Ding_logsToRetry = await dingTalkService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+                    Ding_logsToRetry = await dingTalkService.send(
+                        logs: currentLogs, using: currentConfig, viewModel: viewModel)
 
                     // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
                     if Ding_logsToRetry == nil {
@@ -157,7 +170,8 @@ class NotificationManager {
                     }
 
                     // 调用 Bark 服务发送
-                    Bark_logsToRetry = await barkService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+                    Bark_logsToRetry = await barkService.send(
+                        logs: currentLogs, using: currentConfig, viewModel: viewModel)
 
                     // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
                     if Bark_logsToRetry == nil {
@@ -182,7 +196,8 @@ class NotificationManager {
                     }
 
                     // 调用 Webhook 服务发送
-                    Webhook_logsToRetry = await customWebhookService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+                    Webhook_logsToRetry = await customWebhookService.send(
+                        logs: currentLogs, using: currentConfig, viewModel: viewModel)
 
                     // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
                     if Webhook_logsToRetry == nil {
@@ -207,7 +222,8 @@ class NotificationManager {
                     }
 
                     // 调用 Qmsg 服务发送
-                    Qmsg_logsToRetry = await qmsgService.send(logs: currentLogs, using: currentConfig, viewModel: viewModel)
+                    Qmsg_logsToRetry = await qmsgService.send(
+                        logs: currentLogs, using: currentConfig, viewModel: viewModel)
 
                     // 如果发送成功，`logsToRetry` 将变为 nil，循环自动结束
                     if Qmsg_logsToRetry == nil {

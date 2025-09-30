@@ -34,7 +34,7 @@ class QmsgService: NotificationService {
             request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
 
             // 1. 格式化日志摘要作为消息内容
-            let title = "MAA 日志摘要 (\(logs.count)条)"
+            let title = (viewModel.notificationTriggers.sendAllLogsAfterFinish) ? "MAA 任务已全部完成" : "MAA 日志摘要 (\(logs.count)条)"
             let contentItems = logs.map { log -> String in
                 let timeString = log.date.formatted(date: .omitted, time: .standard)
                 return "[\(timeString)] \(log.content)"

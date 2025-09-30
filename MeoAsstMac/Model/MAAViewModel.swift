@@ -15,6 +15,7 @@ struct NotificationTriggers: Codable {
     var sendAllLogs: Bool = true
     var onTaskError: Bool = false
     var onTaskTimeout: Bool = false
+    var sendAllLogsAfterFinish: Bool = true
 }
 
 /// 自定义 Webhook 配置结构体

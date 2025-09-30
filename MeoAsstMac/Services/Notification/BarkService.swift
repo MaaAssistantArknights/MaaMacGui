@@ -24,7 +24,7 @@ class BarkService: NotificationService {
     /// - Returns: 如果发送失败且需要重试，则返回原始的日志数组；否则返回 `nil`。
     func send(logs: [MAALog], using config: NotificationConfig, viewModel: MAAViewModel) async -> [MAALog]? {
         // 1. 构建 Bark 请求 URL
-        guard let url = buildURL(for: logs, config: config) else {
+        guard let url = buildURL(for: logs, config: config, viewModel: viewModel) else {
             if viewModel.showSendLogsInGUI {
                 viewModel.logError("构建 Bark URL 失败。")
             }
@@ -79,8 +79,8 @@ class BarkService: NotificationService {
     }
 
     /// 根据配置和日志内容构建最终的 Bark URL。
-    private func buildURL(for logs: [MAALog], config: NotificationConfig) -> URL? {
-        let title = "MAA 日志摘要 (\(logs.count)条)"
+    private func buildURL(for logs: [MAALog], config: NotificationConfig, viewModel: MAAViewModel) -> URL? {
+        let title = (viewModel.notificationTriggers.sendAllLogsAfterFinish) ? "MAA 任务已全部完成" : "MAA 日志摘要 (\(logs.count)条)"
         let bodyItems = logs.map { log in
             let timeString = log.date.formatted(date: .omitted, time: .standard)
             return "[\(timeString)] \(log.content)"

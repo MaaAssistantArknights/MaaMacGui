@@ -30,8 +30,7 @@ class CustomWebhookService: NotificationService {
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
 
             // 1. 准备所有可用的模板变量
-            let title = "MAA 日志摘要 (\(logs.count)条)"
-            
+            let title = (viewModel.notificationTriggers.sendAllLogsAfterFinish) ? "MAA 任务已全部完成" : "MAA 日志摘要 (\(logs.count)条)"
             let contentItems = logs.map { log -> String in
                 let timeString = log.date.formatted(date: .omitted, time: .standard)
                 // 为 JSON 字符串中的内容转义特殊字符
