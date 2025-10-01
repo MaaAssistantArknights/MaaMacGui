@@ -23,13 +23,13 @@ class BarkService: NotificationService {
     /// 发送 Bark 通知。
     /// - Returns: 如果发送失败且需要重试，则返回原始的日志数组；否则返回 `nil`。
     func send(logs: [MAALog], using config: NotificationConfig, viewModel: MAAViewModel) async -> [MAALog]? {
-        // 1. 构建 Bark 请求 URL
-        guard let url = buildURL(for: logs, config: config, viewModel: viewModel) else {
+        // 1. 构建 Bark 请求 URLRequest (使用 JSON POST)
+        guard let request = buildRequest(for: logs, config: config, viewModel: viewModel) else {
             if viewModel.showSendLogsInGUI {
-                viewModel.logError("构建 Bark URL 失败。")
+                viewModel.logError("构建 Bark POST 请求失败。")
             }
             viewModel.BarkBot = false
-            // 这是配置错误，不是网络错误，因此不进行重试。
+            // 这是配置错误或 JSON 编码错误，不进行重试。
             return nil
         }
 
@@ -38,7 +38,8 @@ class BarkService: NotificationService {
             if viewModel.showSendLogsInGUI {
                 viewModel.logInfo("准备发送 Bark 日志摘要 (\(logs.count)条)...")
             }
-            let (_, response) = try await URLSession.shared.data(from: url)
+            // 改为使用 URLSession.shared.upload(for:from:) 来发送 POST 请求体
+            let (_, response) = try await URLSession.shared.data(for: request)
 
             // 3. 检查服务器响应
             guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode == 200 else {
@@ -78,8 +79,10 @@ class BarkService: NotificationService {
         }
     }
 
-    /// 根据配置和日志内容构建最终的 Bark URL。
-    private func buildURL(for logs: [MAALog], config: NotificationConfig, viewModel: MAAViewModel) -> URL? {
+    /// 根据配置和日志内容构建最终的 Bark URLRequest 和 JSON Body。
+    /// 移除原 buildURL 方法，改为此 POST 请求构建方法。
+    private func buildRequest(for logs: [MAALog], config: NotificationConfig, viewModel: MAAViewModel) -> URLRequest? {
+        // 1. 准备通知内容
         let title = (viewModel.notificationTriggers.sendAllLogsAfterFinish) ? "MAA 任务已全部完成" : "MAA 日志摘要 (\(logs.count)条)"
         let bodyItems = logs.map { log in
             let timeString = log.date.formatted(date: .omitted, time: .standard)
@@ -87,15 +90,34 @@ class BarkService: NotificationService {
         }
         let body = bodyItems.joined(separator: "\n")
 
-        guard let encodedTitle = title.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed),
-            let encodedBody = body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed)
-        else {
+        // 2. 准备 Bark 服务器 URL
+        // 注意：POST 请求的 URL 路径与 GET 不同，只需要到 /push 即可。
+        // 为了兼容旧的配置，我们从 config.barkServer 和 config.barkKey 构造基础 URL。
+        let barkBaseURL = config.barkServer.hasSuffix("/") ? config.barkServer : "\(config.barkServer)/"
+        guard let url = URL(string: "\(barkBaseURL)push") else {
+            return nil
+        }
+        
+        // 3. 构建 JSON Payload
+        let jsonPayload: [String: Any] = [
+            "title": title,
+            "body": body,
+            "device_key": config.barkKey, // 使用 device_key 字段传递 Bark Key
+            "group": "MAA",
+            "icon": "https://maa.plus/docs/images/maa-logo_512x512.png"
+        ]
+
+        // 4. JSON 编码
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: jsonPayload, options: []) else {
             return nil
         }
 
-        let fullURLString =
-            "\(config.barkServer)\(config.barkKey)/\(encodedTitle)/\(encodedBody)?group=MAA&&icon=https://maa.plus/docs/images/maa-logo_512x512.png"
+        // 5. 构建 URLRequest
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = httpBody
 
-        return URL(string: fullURLString)
+        return request
     }
 }
