@@ -136,7 +136,7 @@ enum MiniGameOption: String, CaseIterable {
             NSLocalizedString(
                 """
                 购买寻访凭证。
-                请确保自己只少有258张黄票。
+                请确保自己至少有258张黄票。
                 """, comment: "")
         case .sideStoryStore:
             NSLocalizedString(
