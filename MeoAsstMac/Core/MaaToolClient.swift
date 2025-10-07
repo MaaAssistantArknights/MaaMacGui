@@ -47,7 +47,10 @@ actor MaaToolClient {
             switch state {
             case .setup, .preparing, .cancelled:
                 break
-            case .waiting, .failed:
+            case .waiting:
+                try? await Task.sleep(for: .seconds(0.5))
+                connection.restart()
+            case .failed:
                 retryCount += 1
                 if retryCount > maxRetries {
                     connection.cancel()  // 取消连接
