@@ -28,7 +28,9 @@ struct LogView: View {
                 HStack {
                     Divider()
 
-                    Toggle(isOn: $viewModel.trackTail) {
+                    Button {
+                        viewModel.trackTail.toggle()
+                    } label: {
                         Label("现在", systemImage: "arrow.down.to.line")
                             .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
                     }
