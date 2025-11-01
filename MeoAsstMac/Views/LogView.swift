@@ -32,6 +32,7 @@ struct LogView: View {
                         Label("现在", systemImage: "arrow.down.to.line")
                             .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
                     }
+                    .tint(.clear)
                     .help("自动滚动到底部")
                 }
             }
