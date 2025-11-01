@@ -50,6 +50,7 @@
 		8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195629EC58CF00044F45 /* MAACopilot.swift */; };
 		8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195C29EC719B00044F45 /* CopilotContent.swift */; };
 		834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */; };
+		834374AD2EB61C3E002CC2D3 /* MaaUtils.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB129FEA12300A5FF99 /* TaskCommands.swift */; };
 		83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB329FEA7A500A5FF99 /* TaskButtons.swift */; };
 		8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */; };
@@ -111,6 +112,7 @@
 				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
 				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
+				834374AD2EB61C3E002CC2D3 /* MaaUtils.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
