@@ -9,6 +9,35 @@ import Combine
 import IOKit.pwr_mgt
 import SwiftUI
 
+/// 用于存储通知触发器配置的结构体
+struct NotificationTriggers: Codable {
+    var onTaskCompletion: Bool = false
+    var sendAllLogs: Bool = true
+    var onTaskError: Bool = false
+    var onTaskTimeout: Bool = false
+    var sendAllLogsAfterFinish: Bool = true
+}
+
+/// 自定义 Webhook 配置结构体
+struct CustomWebhookSettings: Codable {
+    var isEnabled: Bool = false
+    var url: String = ""
+    var bodyTemplate: String = """
+        {
+             "content": "{title}\n{content}"
+        }
+        """
+}
+
+/// 用于存储 Qmsg 配置的结构体
+struct QmsgSettings: Codable {
+    var isEnabled: Bool = false
+    var server: String = "https://qmsg.zendee.cn/"
+    var key: String = ""
+    var userQQ: String = ""  // 推送目标的 QQ
+    var botQQ: String = ""  // 机器人的 QQ
+}
+
 @MainActor class MAAViewModel: ObservableObject {
     // MARK: - Core Status
 
@@ -148,6 +177,90 @@ import SwiftUI
     @AppStorage("MAAPreventSystemSleeping") var preventSystemSleeping = false {
         didSet {
             NotificationCenter.default.post(name: .MAAPreventSystemSleepingChanged, object: preventSystemSleeping)
+        }
+    }
+
+    // MARK: - General Notification Settings
+
+    @AppStorage("notificationSendingInterval") var notificationSendingInterval: Double = 1.0
+
+    @AppStorage("notificationTriggersData") private var notificationTriggersData: Data?
+
+    var notificationTriggers: NotificationTriggers {
+        get {
+            if let data = notificationTriggersData,
+                let decodedSettings = try? JSONDecoder().decode(NotificationTriggers.self, from: data)
+            {
+                return decodedSettings
+            }
+            return NotificationTriggers()
+        }
+        set {
+            if let encodedData = try? JSONEncoder().encode(newValue) {
+                notificationTriggersData = encodedData
+            }
+        }
+    }
+
+    // MARK: - DingTalk Settings
+
+    @AppStorage("SendLogsInGUI") var showSendLogsInGUI: Bool = true
+
+    @AppStorage("DingTalkBotURL") var DKwebhookURL = ""
+
+    @AppStorage("DingTalkBotSecret") var DKsecret = ""
+
+    @AppStorage("DingTalkBot") var DingTalkBot = false
+
+    // MARK: - Bark Settings
+
+    @AppStorage("Bark") var BarkBot: Bool = false
+
+    @AppStorage("BarkKey") var BarkKey: String = ""
+
+    @AppStorage("BarkServer") var BarkServer: String = "https://api.day.app/"
+
+    // MARK: - Qmsg Settings
+    @AppStorage("qmsgSettingsData") private var qmsgSettingsData: Data?
+
+    var qmsg: QmsgSettings {
+        get {
+            if let data = qmsgSettingsData,
+                let decodedSettings = try? JSONDecoder().decode(QmsgSettings.self, from: data)
+            {
+                return decodedSettings
+            }
+            return QmsgSettings()
+        }
+        set {
+            if let encodedData = try? JSONEncoder().encode(newValue) {
+                qmsgSettingsData = encodedData
+            }
+        }
+    }
+
+    // MARK: - Custom Webhook Settings
+
+    @AppStorage("customWebhookSettingsData") private var customWebhookSettingsData: Data?
+    ///    这是我们提供给 App 其他部分（比如 UI）使用的接口。
+    ///    它是一个计算属性，自动处理编码和解码的复杂工作。
+    var customWebhook: CustomWebhookSettings {
+        get {
+            // “get” - 当 UI 需要读取设置时：
+            // 尝试从 Data 中解码。如果失败或没有数据，就返回一个全新的默认设置。
+            if let data = customWebhookSettingsData,
+                let decodedSettings = try? JSONDecoder().decode(CustomWebhookSettings.self, from: data)
+            {
+                return decodedSettings
+            }
+            return CustomWebhookSettings()
+        }
+        set {
+            // “set” - 当 UI 修改了设置时：
+            // 将新的设置编码成 Data，然后保存到 AppStorage 中。
+            if let encodedData = try? JSONEncoder().encode(newValue) {
+                customWebhookSettingsData = encodedData
+            }
         }
     }
 
