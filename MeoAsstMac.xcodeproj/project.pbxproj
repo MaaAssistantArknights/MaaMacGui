@@ -57,6 +57,8 @@
 		8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195429EC55C600044F45 /* CopilotConfiguration.swift */; };
 		8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195629EC58CF00044F45 /* MAACopilot.swift */; };
 		8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8341195C29EC719B00044F45 /* CopilotContent.swift */; };
+		834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */; };
+		834374AD2EB61C3E002CC2D3 /* MaaUtils.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB129FEA12300A5FF99 /* TaskCommands.swift */; };
 		83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83477CB329FEA7A500A5FF99 /* TaskButtons.swift */; };
 		8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */; };
@@ -118,6 +120,7 @@
 				831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */,
 				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
+				834374AD2EB61C3E002CC2D3 /* MaaUtils.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -186,6 +189,7 @@
 		8341195429EC55C600044F45 /* CopilotConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotConfiguration.swift; sourceTree = "<group>"; };
 		8341195629EC58CF00044F45 /* MAACopilot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAACopilot.swift; sourceTree = "<group>"; };
 		8341195C29EC719B00044F45 /* CopilotContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotContent.swift; sourceTree = "<group>"; };
+		834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaUtils.xcframework; path = ../../build/MaaUtils.xcframework; sourceTree = "<group>"; };
 		83477CB129FEA12300A5FF99 /* TaskCommands.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskCommands.swift; sourceTree = "<group>"; };
 		83477CB329FEA7A500A5FF99 /* TaskButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskButtons.swift; sourceTree = "<group>"; };
 		8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceUpdateView.swift; sourceTree = "<group>"; };
@@ -243,6 +247,7 @@
 			files = (
 				8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */,
 				83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */,
+				834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
 				833F7B2A29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
@@ -280,6 +285,7 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
 				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
 				83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */,
