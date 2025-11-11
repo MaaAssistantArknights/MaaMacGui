@@ -54,6 +54,7 @@ enum MiniGameOption: String, CaseIterable {
     case yellowTickerStore
     case sideStoryStore
     case reclamationStore
+    case osKarlanTradeTechnology
 
     var taskName: String {
         switch self {
@@ -73,6 +74,8 @@ enum MiniGameOption: String, CaseIterable {
             return "SS@Store@Begin"
         case .reclamationStore:
             return "RA@Store@Begin"
+        case .osKarlanTradeTechnology:
+            return "MiniGame@OS@Begin"
         }
     }
 
@@ -94,6 +97,8 @@ enum MiniGameOption: String, CaseIterable {
             return NSLocalizedString("活动商店", comment: "")
         case .reclamationStore:
             return NSLocalizedString("生息演算商店", comment: "")
+        case .osKarlanTradeTechnology:
+            return NSLocalizedString("OS-喀兰贸易技术研发部", comment: "")
         }
     }
 
@@ -148,6 +153,11 @@ enum MiniGameOption: String, CaseIterable {
             NSLocalizedString(
                 """
                 请在活动商店页面开始。
+                """, comment: "")
+        case .osKarlanTradeTechnology:
+            NSLocalizedString(
+                """
+                在活动主界面（右下角有“开始重建”处）开始任务。
                 """, comment: "")
         }
     }
