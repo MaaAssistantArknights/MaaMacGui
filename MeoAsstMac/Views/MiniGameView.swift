@@ -55,6 +55,7 @@ enum MiniGameOption: String, CaseIterable {
     case sideStoryStore
     case reclamationStore
     case osKarlanTradeTechnology
+    case strongholdProtocolAlliance
 
     var taskName: String {
         switch self {
@@ -76,6 +77,8 @@ enum MiniGameOption: String, CaseIterable {
             return "RA@Store@Begin"
         case .osKarlanTradeTechnology:
             return "MiniGame@OS@Begin"
+        case .strongholdProtocolAlliance:
+            return "MiniGame@SPA@Begin"
         }
     }
 
@@ -99,6 +102,8 @@ enum MiniGameOption: String, CaseIterable {
             return NSLocalizedString("生息演算商店", comment: "")
         case .osKarlanTradeTechnology:
             return NSLocalizedString("OS-喀兰贸易技术研发部", comment: "")
+        case .strongholdProtocolAlliance:
+            return NSLocalizedString("卫戍协议：盟约", comment: "")
         }
     }
 
@@ -158,6 +163,13 @@ enum MiniGameOption: String, CaseIterable {
             NSLocalizedString(
                 """
                 在活动主界面（右下角有“开始重建”处）开始任务。
+                """, comment: "")
+        case .strongholdProtocolAlliance:
+            NSLocalizedString(
+                """
+                在活动主界面（有 ｢独立模拟｣ 处开始任务）
+                手动通关 ｢标准模拟｣ 可以更快的刷分
+                只能刷等级奖励，拿蚀刻章得打完所有的 ｢关键目标｣
                 """, comment: "")
         }
     }
