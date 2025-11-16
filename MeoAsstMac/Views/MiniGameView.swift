@@ -167,9 +167,9 @@ enum MiniGameOption: String, CaseIterable {
         case .strongholdProtocolAlliance:
             NSLocalizedString(
                 """
-                在活动主界面（有 ｢独立模拟｣ 处开始任务）
-                手动通关 ｢标准模拟｣ 可以更快的刷分
-                只能刷等级奖励，拿蚀刻章得打完所有的 ｢关键目标｣
+                在活动主界面（有“独立模拟”处开始任务）
+                手动通关“标准模拟”可以更快的刷分
+                只能刷等级奖励，拿蚀刻章得打完所有的“关键目标”
                 """, comment: "")
         }
     }
