@@ -33,6 +33,9 @@ struct LogView: View {
                             .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
                     }
                     .help("自动滚动到底部")
+                    .instantTooltip(content: {
+                        Text("自动滚动到底部")
+                    })
                 }
             }
             .onChange(of: viewModel.logs) { _ in
