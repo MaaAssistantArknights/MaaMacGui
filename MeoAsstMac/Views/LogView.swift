@@ -30,8 +30,8 @@ struct LogView: View {
 
                     Toggle(isOn: $viewModel.trackTail) {
                         Label("现在", systemImage: "arrow.down.to.line")
-                            .foregroundColor(viewModel.trackTail ? Color.accentColor : nil)
                     }
+                    .tint(viewModel.trackTail ? .accentColor : .primary)
                     .help("自动滚动到底部")
                 }
             }
