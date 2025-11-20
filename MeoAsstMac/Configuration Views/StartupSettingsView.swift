@@ -34,7 +34,7 @@ struct StartupSettingsView: View {
                 Text("客户端类型：\(config.client_type.description)")
                 Text("请在“设置” > “游戏设置” 中选择客户端类型。")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
             Divider()
 
@@ -51,7 +51,7 @@ struct StartupSettingsView: View {
             if touchMode == .MacPlayTools {
                 Text("请将PlayCover的分辨率设置为1280x720、分辨率缩放设置为1.0。")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
             }
 
             if !showAccountInput {

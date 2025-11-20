@@ -56,7 +56,7 @@ struct CopilotDetail: View {
 
             HStack {
                 Image(systemName: "link")
-                    .foregroundColor(.secondary)
+                    .foregroundStyle(.secondary)
                 TextField("maa://", text: $prtsCode)
                     .textFieldStyle(.roundedBorder)
             }

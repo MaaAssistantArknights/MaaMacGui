@@ -9,7 +9,7 @@ struct SystemSettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("阻止系统睡眠")
                     Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
-                        .font(.caption).foregroundColor(.secondary)
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
         }

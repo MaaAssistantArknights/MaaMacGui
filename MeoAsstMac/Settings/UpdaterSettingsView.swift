@@ -51,13 +51,13 @@ struct UpdaterSettingsView: View {
                 SecureField("CDK", text: mirrorChyanCDK)
             } else if resourceChannel == .github {
                 Text("可能需要设置系统代理。")
-                    .font(.caption).foregroundColor(.secondary)
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             Toggle("自动资源更新", isOn: $autoResourceUpdate)
 
             Text("重新打开应用后生效。")
-                .font(.caption).foregroundColor(.secondary)
+                .font(.caption).foregroundStyle(.secondary)
         }
         .animation(.default, value: resourceChannel)
         .padding()
