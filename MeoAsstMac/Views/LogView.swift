@@ -18,7 +18,7 @@ struct LogView: View {
                 TableColumn("信息") { log in
                     Text(log.content)
                         .textSelection(.enabled)
-                        .foregroundColor(log.color.textColor)
+                        .foregroundStyle(log.color.textColor)
                         .lineLimit(nil)
                 }
                 .width(min: 100, ideal: 300)
@@ -31,7 +31,6 @@ struct LogView: View {
                     Toggle(isOn: $viewModel.trackTail) {
                         Label("现在", systemImage: "arrow.down.to.line")
                     }
-                    .tint(viewModel.trackTail ? .accentColor : .primary)
                     .help("自动滚动到底部")
                 }
             }

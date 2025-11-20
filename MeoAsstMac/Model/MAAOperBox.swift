@@ -59,7 +59,7 @@ extension MAAOperBox.OwnedOper {
         HStack(spacing: 20) {
             Text(name)
             Text("精英\(elite) Lv\(level) 潜能\(potential)")
-                .foregroundColor(.secondary)
+                .foregroundStyle(.secondary)
         }
     }
 }

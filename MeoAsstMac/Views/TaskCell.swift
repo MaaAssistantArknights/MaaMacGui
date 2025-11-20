@@ -26,7 +26,7 @@ struct TaskCell<Config: MAATaskConfiguration>: View {
 
                     Text(config.summary)
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .foregroundStyle(.secondary)
                 }
                 .lineLimit(1)
             }
@@ -47,13 +47,13 @@ private struct TaskIndicator: View {
     var body: some View {
         switch viewModel.taskStatus[id] {
         case .cancel:
-            Image(systemName: "slash.circle").foregroundColor(.secondary)
+            Image(systemName: "slash.circle").foregroundStyle(.secondary)
         case .failure:
-            Image(systemName: "xmark.circle").foregroundColor(.red)
+            Image(systemName: "xmark.circle").foregroundStyle(.red)
         case .running:
             ProgressView().controlSize(.small)
         case .success:
-            Image(systemName: "checkmark.circle").foregroundColor(.green)
+            Image(systemName: "checkmark.circle").foregroundStyle(.green)
         case .none:
             EmptyView()
         }

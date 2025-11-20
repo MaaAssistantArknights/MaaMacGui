@@ -57,7 +57,7 @@ struct TaskTimerItem: View {
                 onDelete()
             }, label: {
                 Image(systemName: "minus.circle")
-                    .foregroundColor(.red)
+                    .foregroundStyle(.red)
             })
             .buttonStyle(PlainButtonStyle())
 

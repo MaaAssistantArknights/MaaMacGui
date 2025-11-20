@@ -20,7 +20,7 @@ struct ConnectionSettingsView: View {
 
             if viewModel.touchMode == .MacPlayTools {
                 Text("PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。")
-                    .font(.caption).foregroundColor(.secondary)
+                    .font(.caption).foregroundStyle(.secondary)
             }
 
             HStack {
@@ -34,7 +34,7 @@ struct ConnectionSettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("允许使用 Gzip")
                     Text("使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。")
-                        .font(.caption).foregroundColor(.secondary)
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
 
@@ -42,7 +42,7 @@ struct ConnectionSettingsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("使用 adb-lite 连接")
                     Text("实验性功能，理论性能更好。")
-                        .font(.caption).foregroundColor(.secondary)
+                        .font(.caption).foregroundStyle(.secondary)
                 }
             }
         }
