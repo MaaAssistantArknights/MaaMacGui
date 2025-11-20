@@ -16,12 +16,12 @@ struct Sidebar: View {
     @Environment(\.defaultMinListRowHeight) var rowHeight
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading) {
             List(SidebarEntry.allCases, selection: $selection) { entry in
                 entry.label
             }
 
-            List {
+            VStack(alignment: .listRowSeparatorLeading, spacing: 12) {
                 Button {
                     showUpdate.toggle()
                 } label: {
@@ -39,7 +39,7 @@ struct Sidebar: View {
                 }
             }
             .buttonStyle(.plain)
-            .frame(maxHeight: rowHeight * 4.2)
+            .padding()
         }
         .sheet(isPresented: $showUpdate) {
             ResourceUpdateView(onUpdate: onUpdate)
