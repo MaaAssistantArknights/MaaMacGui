@@ -16,13 +16,30 @@ struct MeoAsstMacApp: App {
     private let updaterController: SPUStandardUpdaterController
     private let updaterDelegate = MaaUpdaterDelegate()
 
+    // 通知管理器
+    private var notificationManager: NotificationManager
+
     init() {
+        // 创建 MAAViewModel 的唯一实例
+        let viewModel = MAAViewModel()
+
+        // 使用创建的实例初始化 @StateObject 属性。
+        // 注意在初始化器中为属性包装器赋值时使用的下划线语法。
+        _appViewModel = StateObject(wrappedValue: viewModel)
+
+        // 现在，使用同一个实例来初始化通知管理器
+        let manager = NotificationManager(viewModel: viewModel)
+        self.notificationManager = manager
         #if DEBUG
         let isRelease = false
         #else
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+
+        // 立即开始监听日志
+        self.notificationManager.startObserving()
+
     }
 
     var body: some Scene {
@@ -64,6 +81,11 @@ struct MeoAsstMacApp: App {
                 SystemSettingsView()
                     .tabItem {
                         Label("系统设置", systemImage: "wrench.adjustable")
+                    }
+                
+                NotificationSettingsView()
+                    .tabItem {
+                        Label("通知设置", systemImage: "ellipsis.message")
                     }
             }
             .environmentObject(appViewModel)
