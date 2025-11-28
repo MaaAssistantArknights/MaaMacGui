@@ -55,6 +55,7 @@ enum MiniGameOption: String, CaseIterable {
     case sideStoryStore
     case reclamationStore
     case osKarlanTradeTechnology
+    case pvFireworksOrganizingCommittee
     case strongholdProtocolAlliance
 
     var taskName: String {
@@ -77,6 +78,8 @@ enum MiniGameOption: String, CaseIterable {
             return "RA@Store@Begin"
         case .osKarlanTradeTechnology:
             return "MiniGame@OS@Begin"
+        case .pvFireworksOrganizingCommittee:
+            return "MiniGame@PV@Begin"
         case .strongholdProtocolAlliance:
             return "MiniGame@SPA@Begin"
         }
@@ -102,6 +105,8 @@ enum MiniGameOption: String, CaseIterable {
             return NSLocalizedString("生息演算商店", comment: "")
         case .osKarlanTradeTechnology:
             return NSLocalizedString("OS-喀兰贸易技术研发部", comment: "")
+        case .pvFireworksOrganizingCommittee:
+            return NSLocalizedString("PV-烟花筹委会", comment: "")
         case .strongholdProtocolAlliance:
             return NSLocalizedString("卫戍协议：盟约", comment: "")
         }
@@ -163,6 +168,11 @@ enum MiniGameOption: String, CaseIterable {
             NSLocalizedString(
                 """
                 在活动主界面（右下角有“开始重建”处）开始任务。
+                """, comment: "")
+        case .pvFireworksOrganizingCommittee:
+            NSLocalizedString(
+                """
+                在活动页面最左侧开始
                 """, comment: "")
         case .strongholdProtocolAlliance:
             NSLocalizedString(
