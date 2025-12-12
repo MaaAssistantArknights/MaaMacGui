@@ -7,11 +7,12 @@
 
 import Foundation
 import Network
+import SwiftUI
 
 actor MaaToolClient {
     private let connection: NWConnection
 
-    init?(address: String) async {
+    init?(address: String, allowscanreporter: Bool, appBundle: URL) async {
         let parts = address.split(separator: ":")
         guard parts.count >= 2,
             let portNumber = UInt16(parts[1]),
@@ -49,7 +50,21 @@ actor MaaToolClient {
                 break
             case .waiting:
                 try? await Task.sleep(for: .seconds(0.5))
-                connection.restart()
+                // 开启一个新的异步任务
+                Task {
+                    if allowscanreporter {
+                        let isFound = await ProblemReporterScanner.checkArknights()
+                        
+                        if isFound {
+                            print("成功！在【问题报告程序】中发现了 'Arknights'")
+                            try await NSWorkspace.shared.openApplication(at: appBundle, configuration: .init())
+                        }
+                    } else {
+                        await MainActor.run {
+                            self.connection.restart()
+                        }
+                    }
+                }
             case .failed:
                 retryCount += 1
                 if retryCount > maxRetries {

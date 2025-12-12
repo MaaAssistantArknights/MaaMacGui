@@ -37,6 +37,19 @@ struct ConnectionSettingsView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
+            
+            Toggle(isOn: $viewModel.allowscanreporter) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("允许在游戏意外退出时尝试重启")
+                    Text("仅在弹出问题报告时生效，需要录屏权限。")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .onChange(of: viewModel.allowscanreporter, perform: { isallowed in
+                if isallowed {
+                    _ = CGRequestScreenCaptureAccess()
+                }
+            })
 
             Toggle(isOn: $viewModel.useAdbLite) {
                 VStack(alignment: .leading, spacing: 2) {
