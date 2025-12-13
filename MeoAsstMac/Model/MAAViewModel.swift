@@ -696,7 +696,7 @@ extension MAAViewModel {
     }
 
     func stopGame() async throws {
-        guard let client = await MaaToolClient(address: connectionAddress, allowscanreporter: allowscanreporter, appBundle: URL(fileURLWithPath: "/Users")) else { return }
+        guard let client = await MaaToolClient(address: connectionAddress, allowscanreporter: allowscanreporter) else { return }
         try await client.terminate()
     }
 }
