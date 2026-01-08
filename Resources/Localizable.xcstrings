@@ -295,7 +295,7 @@
         }
       }
     },
-    "CambatDps" : {
+    "CombatOps" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -490,7 +490,7 @@
         }
       }
     },
-    "EmergencyDps" : {
+    "EmergencyOps" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {

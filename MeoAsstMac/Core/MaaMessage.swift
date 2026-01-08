@@ -293,11 +293,11 @@ extension MAAViewModel {
             case "StageEncounterEnter":
                 logTrace("Encounter")
 
-            case "StageCambatDpsEnter":
-                logTrace("CambatDps")
+            case "StageCombatOpsEnter":
+                logTrace("CombatOps")
 
-            case "StageEmergencyDps":
-                logTrace("EmergencyDps")
+            case "StageEmergencyOps":
+                logTrace("EmergencyOps")
 
             case "StageDreadfulFoe", "StageDreadfulFoe-5Enter":
                 logTrace("DreadfulFoe")
