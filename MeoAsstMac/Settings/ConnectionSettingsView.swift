@@ -23,6 +23,11 @@ struct ConnectionSettingsView: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
 
+            if viewModel.touchMode == .WDA {
+                Text("使用 WebDriverAgent 连接真实 iOS 设备。请确保 WDA 已在设备上运行（默认端口 8100）。")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+
             HStack {
                 Text("连接地址")
                 TextField("", text: $viewModel.connectionAddress)
@@ -75,4 +80,5 @@ enum MaaTouchMode: String, CaseIterable {
     case minitouch
     case maatouch
     case MacPlayTools
+    case WDA
 }

@@ -295,22 +295,6 @@
         }
       }
     },
-    "CombatOps" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "스테이지: 일반 작전"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关卡：普通作战"
-          }
-        }
-      }
-    },
     "CDK" : {
       "shouldTranslate" : false
     },
@@ -374,6 +358,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "战斗出错"
+          }
+        }
+      }
+    },
+    "CombatOps" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스테이지: 일반 작전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：普通作战"
           }
         }
       }
@@ -1999,6 +1999,9 @@
         }
       }
     },
+    "使用 WebDriverAgent 连接真实 iOS 设备。请确保 WDA 已在设备上运行（默认端口 8100）。" : {
+
+    },
     "使用密文板" : {
       "localizations" : {
         "ko" : {
@@ -2801,7 +2804,11 @@
         }
       }
     },
+    "如果长时间连接不上或出错，请尝试下载使用\"文件\" > \"PlayCover链接…\"中的最新版本" : {
+
+    },
     "如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -3670,6 +3677,9 @@
           }
         }
       }
+    },
+    "正在通过 WebDriverAgent 连接，请确保 WDA 已在 iOS 设备上运行" : {
+
     },
     "每次执行时最大招募次数: " : {
       "localizations" : {

@@ -118,6 +118,9 @@ import SwiftUI
                 if touchMode == .MacPlayTools {
                     useAdbLite = false
                     connectionProfile = "CompatMac"
+                } else if touchMode == .WDA {
+                    useAdbLite = false
+                    connectionProfile = "CompatMac"
                 } else {
                     useAdbLite = true
                 }
@@ -227,6 +230,8 @@ extension MAAViewModel {
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
             logTrace("如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本")
+        } else if touchMode == .WDA {
+            logTrace("正在通过 WebDriverAgent 连接，请确保 WDA 已在 iOS 设备上运行")
         }
         try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
@@ -282,7 +287,7 @@ extension MAAViewModel {
     private func loadResource(url: URL) async throws {
         try await MAAProvider.shared.loadResource(path: url.path)
 
-        if touchMode == .MacPlayTools {
+        if touchMode == .MacPlayTools || touchMode == .WDA {
             let platformResource = url.appendingPathComponent("resource")
                 .appendingPathComponent("platform_diff")
                 .appendingPathComponent("iOS")
