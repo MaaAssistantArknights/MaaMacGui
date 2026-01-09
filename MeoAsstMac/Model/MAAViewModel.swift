@@ -126,6 +126,8 @@ import SwiftUI
             }
         }
     }
+    
+    @AppStorage("MAAReporterscan") var allowscanreporter = false
 
     // MARK: - Game Settings
 
@@ -682,7 +684,7 @@ extension MAAViewModel {
 
         do {
             try await NSWorkspace.shared.openApplication(at: appBundle, configuration: .init())
-            let client = await MaaToolClient(address: connectionAddress)
+            let client = await MaaToolClient(address: connectionAddress, allowscanreporter: allowscanreporter, appBundle: appBundle)
             return client != nil
         } catch {
             let nsError = error as NSError
@@ -694,7 +696,7 @@ extension MAAViewModel {
     }
 
     func stopGame() async throws {
-        guard let client = await MaaToolClient(address: connectionAddress) else { return }
+        guard let client = await MaaToolClient(address: connectionAddress, allowscanreporter: allowscanreporter) else { return }
         try await client.terminate()
     }
 }

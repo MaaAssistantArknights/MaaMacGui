@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4524D2062EEC60A7009DC898 /* ProblemReporterScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4524D2052EEC60A7009DC898 /* ProblemReporterScanner.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -131,6 +132,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4524D2052EEC60A7009DC898 /* ProblemReporterScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProblemReporterScanner.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -465,6 +467,7 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				4524D2052EEC60A7009DC898 /* ProblemReporterScanner.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
@@ -628,6 +631,7 @@
 				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
+				4524D2062EEC60A7009DC898 /* ProblemReporterScanner.swift in Sources */,
 				83D061F62CF81519008F0140 /* FileLogger.swift in Sources */,
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
 				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
