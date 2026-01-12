@@ -32,6 +32,9 @@ struct LogView: View {
                         Label("现在", systemImage: "arrow.down.to.line")
                     }
                     .help("自动滚动到底部")
+                    .instantTooltip(content: {
+                        Text("自动滚动到底部")
+                    })
                 }
             }
             .onChange(of: viewModel.logs) { _ in

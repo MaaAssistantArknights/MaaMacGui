@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45384FB22E7E89560094C5A2 /* InstantTooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45384FB12E7E89560094C5A2 /* InstantTooltip.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -131,6 +132,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		45384FB12E7E89560094C5A2 /* InstantTooltip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantTooltip.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				838FF82629FDD0F9000566A0 /* GachaView.swift */,
 				92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */,
 				8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */,
+				45384FB12E7E89560094C5A2 /* InstantTooltip.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -570,6 +573,7 @@
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,
 				83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */,
+				45384FB22E7E89560094C5A2 /* InstantTooltip.swift in Sources */,
 				83812ED22D5B0B8100CB39D6 /* Binding+semicolonString.swift in Sources */,
 				8341195329EC25A900044F45 /* MAALog.swift in Sources */,
 				83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */,
