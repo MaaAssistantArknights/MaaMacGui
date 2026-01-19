@@ -47,6 +47,12 @@ struct CopilotContent: View {
                         ProgressView().controlSize(.small)
                     }
                 }
+            } footer: {
+                VStack(alignment: .leading, spacing: 4) {
+                    Link("自动战斗作业分享", destination: URL(string: "https://zoot.plus")!)
+                    Link("自动战斗地图坐标", destination: URL(string: "https://map.ark-nights.com/areas")!)
+                }
+                .font(.subheadline)
             }
         }
         .toolbar(content: listToolbar)
