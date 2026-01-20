@@ -54,7 +54,7 @@ extension MAAHandle {
         }
     }
 
-    fileprivate func appendTask<T: MAATaskConfiguration>(config: T) throws -> Int32 {
+    func appendTask<T: MAATaskConfiguration>(config: T) throws -> Int32 {
         try appendTask(type: config.type, params: config.params.jsonString())
     }
 }
