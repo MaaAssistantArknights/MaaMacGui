@@ -1479,6 +1479,17 @@
         }
       }
     },
+    "SK-5" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "碳-5"
+          }
+        }
+      }
+    },
     "SSSGamePass" : {
       "localizations" : {
         "ko" : {
@@ -4096,6 +4107,9 @@
           }
         }
       }
+    },
+    "繁中服（txwy）" : {
+
     },
     "自动下载更新" : {
       "localizations" : {
