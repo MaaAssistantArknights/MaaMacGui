@@ -108,21 +108,17 @@ import SwiftUI
 
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
-    @AppStorage("MAAConnectionProfile") var connectionProfile = "CompatMac"
+    @AppStorage("MAAUseGzip") var useGzip = false
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
 
+    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.RGBA
+
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
-            Task {
-                if touchMode == .MacPlayTools {
-                    useAdbLite = false
-                    connectionProfile = "CompatMac"
-                } else {
-                    useAdbLite = true
-                }
-
-                try await loadResource(channel: clientChannel)
+            guard touchMode != oldValue else { return }
+            if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
+                Task { try await loadResource(channel: clientChannel) }
             }
         }
     }
@@ -227,7 +223,23 @@ extension MAAViewModel {
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
             logTrace("如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本")
+            if toolsMode == .MacSCK && !CGPreflightScreenCaptureAccess() {
+                logError("未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问")
+            }
         }
+
+        let connectionProfile: String
+        switch (touchMode, toolsMode, useGzip) {
+        case (.MacPlayTools, .MacSCK, _):
+            connectionProfile = "MacSCK"
+        case (.MacPlayTools, .BGR, _):
+            connectionProfile = "MacBGR"
+        case (_, _, true):
+            connectionProfile = "Compatible"
+        default:
+            connectionProfile = "CompatMac"
+        }
+
         try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
     }
@@ -399,7 +411,7 @@ extension MAAViewModel {
     private var instanceOptions: MAAInstanceOptions {
         [
             .TouchMode: touchMode.rawValue,
-            .AdbLiteEnabled: useAdbLite ? "1" : "0",
+            .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
         ]
     }
 

@@ -81,6 +81,12 @@
         }
       }
     },
+    "⚠️ 屏幕录制权限未开启" : {
+
+    },
+    "✅ 屏幕录制权限已开启" : {
+
+    },
     "1" : {
       "shouldTranslate" : false
     },
@@ -295,22 +301,6 @@
         }
       }
     },
-    "CombatOps" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "스테이지: 일반 작전"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关卡：普通作战"
-          }
-        }
-      }
-    },
     "CDK" : {
       "shouldTranslate" : false
     },
@@ -374,6 +364,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "战斗出错"
+          }
+        }
+      }
+    },
+    "CombatOps" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스테이지: 일반 작전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关卡：普通作战"
           }
         }
       }
@@ -1959,6 +1965,9 @@
         }
       }
     },
+    "优化加速模式" : {
+
+    },
     "会客室" : {
       "localizations" : {
         "ko" : {
@@ -1985,16 +1994,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "adb-lite로 연결"
-          }
-        }
-      }
-    },
-    "使用 Gzip 压缩有可能会出现内存泄漏，非测试用途建议关闭。" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gzip 압축을 사용하면 메모리 누수가 발생할 수 있습니다. 테스트 목적이 아니라면 끄는 것을 권장합니다."
           }
         }
       }
@@ -2801,6 +2800,16 @@
         }
       }
     },
+    "如果出现内存泄漏请尝试关闭此功能。" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메모리 누수가 발생하면 이 기능을 꺼 보시기 바랍니다."
+          }
+        }
+      }
+    },
     "如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本" : {
       "localizations" : {
         "ko" : {
@@ -3131,6 +3140,9 @@
         }
       }
     },
+    "截图模式" : {
+
+    },
     "手动确认1星" : {
       "localizations" : {
         "ko" : {
@@ -3160,6 +3172,9 @@
           }
         }
       }
+    },
+    "打开录屏权限设置" : {
+
     },
     "打开根目录…" : {
       "localizations" : {
@@ -3570,6 +3585,9 @@
           }
         }
       }
+    },
+    "未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问" : {
+
     },
     "未拥有干员：%lld" : {
       "localizations" : {
@@ -4046,6 +4064,9 @@
           }
         }
       }
+    },
+    "系统屏幕捕捉" : {
+
     },
     "系统设置" : {
       "localizations" : {
@@ -4879,6 +4900,9 @@
           }
         }
       }
+    },
+    "默认兼容模式" : {
+
     },
     "默认换班" : {
       "localizations" : {
