@@ -61,7 +61,7 @@ enum MiniGameOption: String, CaseIterable {
     var taskName: String {
         switch self {
         case .rebuildingMandate:
-            return "MiniGame@RebuildingMandate@Begin"
+            return "MiniGame@RM-TR-1@Begin"
         case .honeyFruit:
             return "MiniGame@ALL@GreenGrass@DuelChannel@Begin"
         case .greenGrass:
