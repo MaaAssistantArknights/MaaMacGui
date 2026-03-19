@@ -24,7 +24,9 @@ struct FightSettingsView: View {
                     }
 
                 if config.useOptionalStage {
-                    ForEach(Array(config.stagePlan.enumerated()), id: \.offset) { index, stageName in
+                    ForEach(config.stagePlan.indices, id: \.self) { index in
+                        let stageName = config.stagePlan[index]
+                        let isOpen = !stageName.isEmpty && FightConfiguration.isStageOpenToday(stageName)
                         HStack(spacing: 8) {
                             if planListedStages.contains(stageName) {
                                 Picker("关卡 \(index + 1)", selection: $config.stagePlan[index]) {
@@ -41,17 +43,9 @@ struct FightSettingsView: View {
                                 TextField("关卡 \(index + 1)", text: $config.stagePlan[index])
                             }
                             if !stageName.isEmpty {
-                                Image(
-                                    systemName: FightConfiguration.isStageOpenToday(stageName)
-                                        ? "checkmark.circle.fill" : "clock.fill"
-                                )
-                                .foregroundColor(
-                                    FightConfiguration.isStageOpenToday(stageName) ? .green : .orange
-                                )
-                                .help(
-                                    FightConfiguration.isStageOpenToday(stageName)
-                                        ? "今天开放" : "今天不开放"
-                                )
+                                Image(systemName: isOpen ? "checkmark.circle.fill" : "clock.fill")
+                                    .foregroundColor(isOpen ? .green : .orange)
+                                    .help(isOpen ? "今天开放" : "今天不开放")
                             }
                             Button {
                                 config.stagePlan.remove(at: index)
