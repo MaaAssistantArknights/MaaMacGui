@@ -35,35 +35,35 @@ extension MAATaskType: Codable, CustomStringConvertible {
     var description: String {
         switch self {
         case .StartUp:
-            return NSLocalizedString("开始唤醒", comment: "")
+            return String(localized: "开始唤醒", comment: "")
         case .CloseDown:
-            return NSLocalizedString("关闭游戏", comment: "")
+            return String(localized: "关闭游戏", comment: "")
         case .Recruit:
-            return NSLocalizedString("自动公招", comment: "")
+            return String(localized: "自动公招", comment: "")
         case .Infrast:
-            return NSLocalizedString("基建换班", comment: "")
+            return String(localized: "基建换班", comment: "")
         case .Fight:
-            return NSLocalizedString("刷理智", comment: "")
+            return String(localized: "刷理智", comment: "")
         case .Mall:
-            return NSLocalizedString("收取信用及购物", comment: "")
+            return String(localized: "收取信用及购物", comment: "")
         case .Award:
-            return NSLocalizedString("领取奖励", comment: "")
+            return String(localized: "领取奖励", comment: "")
         case .Roguelike:
-            return NSLocalizedString("自动肉鸽", comment: "")
+            return String(localized: "自动肉鸽", comment: "")
         case .Copilot:
-            return NSLocalizedString("自动抄作业", comment: "")
+            return String(localized: "自动抄作业", comment: "")
         case .SSSCopilot:
-            return NSLocalizedString("自动抄保全作业", comment: "")
+            return String(localized: "自动抄保全作业", comment: "")
         case .Depot:
-            return NSLocalizedString("仓库识别", comment: "")
+            return String(localized: "仓库识别", comment: "")
         case .Reclamation:
-            return NSLocalizedString("生息演算", comment: "")
+            return String(localized: "生息演算", comment: "")
         case .VideoRecognition:
-            return NSLocalizedString("视频识别", comment: "")
+            return String(localized: "视频识别", comment: "")
         case .OperBox:
-            return NSLocalizedString("干员识别", comment: "")
+            return String(localized: "干员识别", comment: "")
         case .Custom:
-            return NSLocalizedString("自定义", comment: "")
+            return String(localized: "自定义", comment: "")
         }
     }
 }

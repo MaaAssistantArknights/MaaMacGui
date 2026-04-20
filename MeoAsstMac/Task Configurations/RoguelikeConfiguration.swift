@@ -210,15 +210,15 @@ extension RoguelikeConfiguration.Theme {
     var shortDescription: String {
         switch self {
         case .Phantom:
-            return NSLocalizedString("傀影", comment: "")
+            return String(localized: "傀影", comment: "")
         case .Mizuki:
-            return NSLocalizedString("水月", comment: "")
+            return String(localized: "水月", comment: "")
         case .Sami:
-            return NSLocalizedString("萨米", comment: "")
+            return String(localized: "萨米", comment: "")
         case .Sarkaz:
-            return NSLocalizedString("萨卡兹", comment: "")
+            return String(localized: "萨卡兹", comment: "")
         case .JieGarden:
-            return NSLocalizedString("界园", comment: "")
+            return String(localized: "界园", comment: "")
         }
     }
 
@@ -236,17 +236,17 @@ extension RoguelikeConfiguration.Mode {
     var shortDescription: String {
         switch self {
         case .exp:
-            NSLocalizedString("优先层数", comment: "")
+            String(localized: "优先层数", comment: "")
         case .investment:
-            NSLocalizedString("优先投资", comment: "")
+            String(localized: "优先投资", comment: "")
         case .collectible:
-            NSLocalizedString("凹开局", comment: "")
+            String(localized: "凹开局", comment: "")
         case .clpPds:
-            NSLocalizedString("刷坍缩", comment: "")
+            String(localized: "刷坍缩", comment: "")
         case .squad:
-            NSLocalizedString("月度小队", comment: "")
+            String(localized: "月度小队", comment: "")
         case .exploration:
-            NSLocalizedString("深入调查", comment: "")
+            String(localized: "深入调查", comment: "")
         }
     }
 }
@@ -265,9 +265,9 @@ extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
     var description: String {
         switch self {
         case .max:
-            return NSLocalizedString("最高难度", comment: "")
+            return String(localized: "最高难度", comment: "")
         case .current:
-            return NSLocalizedString("当前难度", comment: "")
+            return String(localized: "当前难度", comment: "")
         default:
             return "难度\(id)"
         }

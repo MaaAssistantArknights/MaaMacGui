@@ -24,23 +24,23 @@ struct AwardConfiguration: MAATaskConfiguration {
     var subtitle: String {
         var awards = [String]()
         if award {
-            awards.append(NSLocalizedString("日常任务", comment: ""))
-            awards.append(NSLocalizedString("周常任务", comment: ""))
+            awards.append(String(localized: "日常任务", comment: ""))
+            awards.append(String(localized: "周常任务", comment: ""))
         }
         if mail {
-            awards.append(NSLocalizedString("邮件", comment: ""))
+            awards.append(String(localized: "邮件", comment: ""))
         }
         if recruit {
-            awards.append(NSLocalizedString("免费单抽", comment: ""))
+            awards.append(String(localized: "免费单抽", comment: ""))
         }
         if orundum {
-            awards.append(NSLocalizedString("幸运墙", comment: ""))
+            awards.append(String(localized: "幸运墙", comment: ""))
         }
         if mining {
-            awards.append(NSLocalizedString("限时开采许可", comment: ""))
+            awards.append(String(localized: "限时开采许可", comment: ""))
         }
         if specialaccess {
-            awards.append(NSLocalizedString("专享月卡", comment: ""))
+            awards.append(String(localized: "专享月卡", comment: ""))
         }
         return awards.joined(separator: " ")
     }

@@ -88,39 +88,39 @@ enum MiniGameOption: String, CaseIterable {
     var displayName: String {
         switch self {
         case .rebuildingMandate:
-            return NSLocalizedString("RM-次生预案", comment: "")
+            return String(localized: "RM-次生预案", comment: "")
         case .honeyFruit:
-            return NSLocalizedString("争锋频道：蜜果城", comment: "")
+            return String(localized: "争锋频道：蜜果城", comment: "")
         case .greenGrass:
-            return NSLocalizedString("争锋频道：青草城", comment: "")
+            return String(localized: "争锋频道：青草城", comment: "")
         case .atConversationRoom:
-            return NSLocalizedString("AT-相谈室", comment: "")
+            return String(localized: "AT-相谈室", comment: "")
         case .greenTicketStore:
-            return NSLocalizedString("绿票商店", comment: "")
+            return String(localized: "绿票商店", comment: "")
         case .yellowTickerStore:
-            return NSLocalizedString("黄票商店", comment: "")
+            return String(localized: "黄票商店", comment: "")
         case .sideStoryStore:
-            return NSLocalizedString("活动商店", comment: "")
+            return String(localized: "活动商店", comment: "")
         case .reclamationStore:
-            return NSLocalizedString("生息演算商店", comment: "")
+            return String(localized: "生息演算商店", comment: "")
         case .osKarlanTradeTechnology:
-            return NSLocalizedString("OS-喀兰贸易技术研发部", comment: "")
+            return String(localized: "OS-喀兰贸易技术研发部", comment: "")
         case .pvFireworksOrganizingCommittee:
-            return NSLocalizedString("PV-烟花筹委会", comment: "")
+            return String(localized: "PV-烟花筹委会", comment: "")
         case .strongholdProtocolAlliance:
-            return NSLocalizedString("卫戍协议：盟约", comment: "")
+            return String(localized: "卫戍协议：盟约", comment: "")
         }
     }
 
     var instructions: String {
         switch self {
         case .rebuildingMandate:
-            NSLocalizedString(
+            String(localized:
                 """
                 过完新手教程后进入前哨支点，滑动到界面最左侧。
                 """, comment: "")
         case .honeyFruit:
-            NSLocalizedString(
+            String(localized:
                 """
                 手动跳过教程对话，然后可以直接退出。
                 在活动主界面（右下角有“加入赛事”处）开始任务。
@@ -128,7 +128,7 @@ enum MiniGameOption: String, CaseIterable {
                 跟着鸭总喝口汤。
                 """, comment: "")
         case .greenGrass:
-            NSLocalizedString(
+            String(localized:
                 """
                 手动跳过教程对话，然后可以直接退出。
                 在活动主界面（右下角有“加入赛事”处）开始任务。
@@ -136,46 +136,46 @@ enum MiniGameOption: String, CaseIterable {
                 跟着鸭总喝口汤。
                 """, comment: "")
         case .atConversationRoom:
-            NSLocalizedString(
+            String(localized:
                 """
                 在活动主界面（右下角有“开始营业/继续营业”处）开始任务。
                 等待自动完成相谈室对话。
                 """, comment: "")
         case .greenTicketStore:
-            NSLocalizedString(
+            String(localized:
                 """
                 1层全买。
                 2层买寻访凭证和招聘许可。
                 """, comment: "")
         case .yellowTickerStore:
-            NSLocalizedString(
+            String(localized:
                 """
                 购买寻访凭证。
                 请确保自己至少有258张黄票。
                 """, comment: "")
         case .sideStoryStore:
-            NSLocalizedString(
+            String(localized:
                 """
                 请在活动商店页面开始。
                 不买无限池。
                 """, comment: "")
         case .reclamationStore:
-            NSLocalizedString(
+            String(localized:
                 """
                 请在活动商店页面开始。
                 """, comment: "")
         case .osKarlanTradeTechnology:
-            NSLocalizedString(
+            String(localized:
                 """
                 在活动主界面（右下角有“开始重建”处）开始任务。
                 """, comment: "")
         case .pvFireworksOrganizingCommittee:
-            NSLocalizedString(
+            String(localized:
                 """
                 在活动页面最左侧开始
                 """, comment: "")
         case .strongholdProtocolAlliance:
-            NSLocalizedString(
+            String(localized:
                 """
                 在活动主界面（有“独立模拟”处开始任务）
                 手动通关“标准模拟”可以更快的刷分

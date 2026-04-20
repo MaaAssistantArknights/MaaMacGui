@@ -71,11 +71,11 @@ extension SidebarEntry: CustomStringConvertible {
     var description: String {
         switch self {
         case .daily:
-            return NSLocalizedString("一键长草", comment: "")
+            return String(localized: "一键长草", comment: "")
         case .copilot:
-            return NSLocalizedString("自动战斗", comment: "")
+            return String(localized: "自动战斗", comment: "")
         case .utility:
-            return NSLocalizedString("实用工具", comment: "")
+            return String(localized: "实用工具", comment: "")
         }
     }
 
