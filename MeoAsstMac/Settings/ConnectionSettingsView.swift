@@ -98,11 +98,11 @@ extension MaaToolsMode: CustomStringConvertible {
     var description: String {
         switch self {
         case .RGBA:
-            NSLocalizedString("默认兼容模式", comment: "")
+            String(localized: "默认兼容模式", comment: "")
         case .BGR:
-            NSLocalizedString("优化加速模式", comment: "")
+            String(localized: "优化加速模式", comment: "")
         case .MacSCK:
-            NSLocalizedString("系统屏幕捕捉", comment: "")
+            String(localized: "系统屏幕捕捉", comment: "")
         }
     }
 }

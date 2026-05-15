@@ -23,9 +23,9 @@ struct MallConfiguration: MAATaskConfiguration {
 
     var subtitle: String {
         if shopping {
-            return NSLocalizedString("购物", comment: "")
+            return String(localized: "购物", comment: "")
         } else {
-            return NSLocalizedString("不购物", comment: "")
+            return String(localized: "不购物", comment: "")
         }
     }
 

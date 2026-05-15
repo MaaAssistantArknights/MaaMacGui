@@ -23,7 +23,7 @@ struct StartupConfiguration: MAATaskConfiguration {
     }
 
     var summary: String {
-        let startGame = start_game_enabled ? NSLocalizedString("自动启动", comment: "") : ""
+        let startGame = start_game_enabled ? String(localized: "自动启动", comment: "") : ""
         return "\(account_name) \(startGame)"
     }
 
@@ -58,17 +58,17 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
     var description: String {
         switch self {
         case .Official:
-            return NSLocalizedString("官服", comment: "")
+            return String(localized: "官服", comment: "")
         case .Bilibili:
-            return NSLocalizedString("Bilibili服", comment: "")
+            return String(localized: "Bilibili服", comment: "")
         case .YoStarEN:
-            return NSLocalizedString("国际服（YoStarEN）", comment: "")
+            return String(localized: "国际服（YoStarEN）", comment: "")
         case .YoStarJP:
-            return NSLocalizedString("日服（YoStarJP）", comment: "")
+            return String(localized: "日服（YoStarJP）", comment: "")
         case .YoStarKR:
-            return NSLocalizedString("韩服（YoStarKR）", comment: "")
+            return String(localized: "韩服（YoStarKR）", comment: "")
         case .txwy:
-            return NSLocalizedString("繁中服（txwy）", comment: "")
+            return String(localized: "繁中服（txwy）", comment: "")
         }
     }
 
