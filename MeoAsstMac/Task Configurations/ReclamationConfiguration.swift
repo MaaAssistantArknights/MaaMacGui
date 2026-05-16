@@ -28,6 +28,8 @@ struct ReclamationConfiguration: MAATaskConfiguration {
                 0: String(localized: "无存档，通过进出关卡刷生息点数", comment: ""),
                 1: String(localized: "有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档", comment: ""),
             ]
+        case .relaunch:
+            return [:]
         }
     }
 
@@ -79,6 +81,7 @@ extension ReclamationConfiguration {
 enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {
     case fire = "Fire"
     case tales = "Tales"
+    case relaunch = "RelaunchAnchor"
 
     var description: String {
         switch self {
@@ -86,6 +89,8 @@ enum ReclamationTheme: String, CaseIterable, Codable, CustomStringConvertible {
             return String(localized: "沙中之火", comment: "")
         case .tales:
             return String(localized: "沙洲遗闻", comment: "")
+        case .relaunch:
+            return String(localized: "重启锚点")
         }
     }
 }
