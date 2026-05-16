@@ -17,7 +17,7 @@ struct ClosedownConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
-        String(localized: "请确保这是最后一个任务", comment: "")
+        String(localized: "请确保这是最后一个任务")
     }
 
     var summary: String {

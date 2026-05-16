@@ -88,27 +88,27 @@ enum MiniGameOption: String, CaseIterable {
     var displayName: String {
         switch self {
         case .rebuildingMandate:
-            return String(localized: "RM-次生预案", comment: "")
+            return String(localized: "RM-次生预案")
         case .honeyFruit:
-            return String(localized: "争锋频道：蜜果城", comment: "")
+            return String(localized: "争锋频道：蜜果城")
         case .greenGrass:
-            return String(localized: "争锋频道：青草城", comment: "")
+            return String(localized: "争锋频道：青草城")
         case .atConversationRoom:
-            return String(localized: "AT-相谈室", comment: "")
+            return String(localized: "AT-相谈室")
         case .greenTicketStore:
-            return String(localized: "绿票商店", comment: "")
+            return String(localized: "绿票商店")
         case .yellowTickerStore:
-            return String(localized: "黄票商店", comment: "")
+            return String(localized: "黄票商店")
         case .sideStoryStore:
-            return String(localized: "活动商店", comment: "")
+            return String(localized: "活动商店")
         case .reclamationStore:
-            return String(localized: "生息演算商店", comment: "")
+            return String(localized: "生息演算商店")
         case .osKarlanTradeTechnology:
-            return String(localized: "OS-喀兰贸易技术研发部", comment: "")
+            return String(localized: "OS-喀兰贸易技术研发部")
         case .pvFireworksOrganizingCommittee:
-            return String(localized: "PV-烟花筹委会", comment: "")
+            return String(localized: "PV-烟花筹委会")
         case .strongholdProtocolAlliance:
-            return String(localized: "卫戍协议：盟约", comment: "")
+            return String(localized: "卫戍协议：盟约")
         }
     }
 
@@ -118,7 +118,7 @@ enum MiniGameOption: String, CaseIterable {
             String(localized:
                 """
                 过完新手教程后进入前哨支点，滑动到界面最左侧。
-                """, comment: "")
+                """)
         case .honeyFruit:
             String(localized:
                 """
@@ -126,7 +126,7 @@ enum MiniGameOption: String, CaseIterable {
                 在活动主界面（右下角有“加入赛事”处）开始任务。
 
                 跟着鸭总喝口汤。
-                """, comment: "")
+                """)
         case .greenGrass:
             String(localized:
                 """
@@ -134,53 +134,53 @@ enum MiniGameOption: String, CaseIterable {
                 在活动主界面（右下角有“加入赛事”处）开始任务。
 
                 跟着鸭总喝口汤。
-                """, comment: "")
+                """)
         case .atConversationRoom:
             String(localized:
                 """
                 在活动主界面（右下角有“开始营业/继续营业”处）开始任务。
                 等待自动完成相谈室对话。
-                """, comment: "")
+                """)
         case .greenTicketStore:
             String(localized:
                 """
                 1层全买。
                 2层买寻访凭证和招聘许可。
-                """, comment: "")
+                """)
         case .yellowTickerStore:
             String(localized:
                 """
                 购买寻访凭证。
                 请确保自己至少有258张黄票。
-                """, comment: "")
+                """)
         case .sideStoryStore:
             String(localized:
                 """
                 请在活动商店页面开始。
                 不买无限池。
-                """, comment: "")
+                """)
         case .reclamationStore:
             String(localized:
                 """
                 请在活动商店页面开始。
-                """, comment: "")
+                """)
         case .osKarlanTradeTechnology:
             String(localized:
                 """
                 在活动主界面（右下角有“开始重建”处）开始任务。
-                """, comment: "")
+                """)
         case .pvFireworksOrganizingCommittee:
             String(localized:
                 """
                 在活动页面最左侧开始
-                """, comment: "")
+                """)
         case .strongholdProtocolAlliance:
             String(localized:
                 """
                 在活动主界面（有“独立模拟”处开始任务）
                 手动通关“标准模拟”可以更快的刷分
                 只能刷等级奖励，拿蚀刻章得打完所有的“关键目标”
-                """, comment: "")
+                """)
         }
     }
 }

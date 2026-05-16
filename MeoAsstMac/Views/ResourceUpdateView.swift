@@ -90,7 +90,7 @@ struct ResourceUpdateView: View {
         try? FileManager.default.removeItem(at: localURL)
         for try await progress in URLSession.shared.downloadTo(localURL, from: remoteURL) {
             try Task.checkCancellation()
-            self.progress = (String(localized: "正在下载…", comment: ""), progress.fractionCompleted)
+            self.progress = (String(localized: "正在下载…"), progress.fractionCompleted)
         }
     }
 
@@ -98,7 +98,7 @@ struct ResourceUpdateView: View {
         removeExtracts()
         for try await progress in FileManager.default.unzipItemAt(localURL, to: tmpURL) {
             try Task.checkCancellation()
-            self.progress = (String(localized: "正在解压…", comment: ""), progress.fractionCompleted)
+            self.progress = (String(localized: "正在解压…"), progress.fractionCompleted)
         }
     }
 

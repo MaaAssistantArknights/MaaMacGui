@@ -387,7 +387,7 @@ extension MAAViewModel {
             }
 
             if allDrops.count == 0 {
-                allDrops.append(String(localized: "NoDrop", comment: ""))
+                allDrops.append(String(localized: "NoDrop"))
             }
 
             let sanityLeft = self.curSanityBeforeFight - self.sanityCost

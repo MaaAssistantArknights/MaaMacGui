@@ -33,9 +33,9 @@ struct RecruitConfiguration: MAATaskConfiguration {
 
     var subtitle: String {
         if expedite {
-            return String(localized: "加急", comment: "")
+            return String(localized: "加急")
         } else {
-            return String(localized: "不加急", comment: "")
+            return String(localized: "不加急")
         }
     }
 

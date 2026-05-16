@@ -194,17 +194,17 @@ extension RoguelikeConfiguration.Mode {
     var description: String {
         switch self {
         case .exp:
-            String(localized: "刷分/奖励点数，尽可能稳定地打更多层数", comment: "")
+            String(localized: "刷分/奖励点数，尽可能稳定地打更多层数")
         case .investment:
-            String(localized: "刷源石锭，到达第二层后直接退出", comment: "")
+            String(localized: "刷源石锭，到达第二层后直接退出")
         case .collectible:
-            String(localized: "刷开局，刷取热水壶或精二干员开局", comment: "")
+            String(localized: "刷开局，刷取热水壶或精二干员开局")
         case .clpPds:
-            String(localized: "刷坍缩范式，遇到非稀有坍缩范式后重开", comment: "")
+            String(localized: "刷坍缩范式，遇到非稀有坍缩范式后重开")
         case .squad:
-            String(localized: "刷月度小队，到达第五层后直接退出", comment: "")
+            String(localized: "刷月度小队，到达第五层后直接退出")
         case .exploration:
-            String(localized: "刷深入调查，尽可能稳定地打更多层数", comment: "")
+            String(localized: "刷深入调查，尽可能稳定地打更多层数")
         }
     }
 }
@@ -213,15 +213,15 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
     var description: String {
         switch self {
         case .Phantom:
-            return String(localized: "傀影与猩红血钻", comment: "")
+            return String(localized: "傀影与猩红血钻")
         case .Mizuki:
-            return String(localized: "水月与深蓝之树", comment: "")
+            return String(localized: "水月与深蓝之树")
         case .Sami:
-            return String(localized: "探索者的银凇止境", comment: "")
+            return String(localized: "探索者的银凇止境")
         case .Sarkaz:
-            return String(localized: "萨卡兹的无终奇语", comment: "")
+            return String(localized: "萨卡兹的无终奇语")
         case .JieGarden:
-            return String(localized: "岁的界园志异", comment: "")
+            return String(localized: "岁的界园志异")
         }
     }
 

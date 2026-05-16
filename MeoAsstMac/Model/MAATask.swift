@@ -35,35 +35,35 @@ extension MAATaskType: Codable, CustomStringConvertible {
     var description: String {
         switch self {
         case .StartUp:
-            return String(localized: "开始唤醒", comment: "")
+            return String(localized: "开始唤醒")
         case .CloseDown:
-            return String(localized: "关闭游戏", comment: "")
+            return String(localized: "关闭游戏")
         case .Recruit:
-            return String(localized: "自动公招", comment: "")
+            return String(localized: "自动公招")
         case .Infrast:
-            return String(localized: "基建换班", comment: "")
+            return String(localized: "基建换班")
         case .Fight:
-            return String(localized: "刷理智", comment: "")
+            return String(localized: "刷理智")
         case .Mall:
-            return String(localized: "收取信用及购物", comment: "")
+            return String(localized: "收取信用及购物")
         case .Award:
-            return String(localized: "领取奖励", comment: "")
+            return String(localized: "领取奖励")
         case .Roguelike:
-            return String(localized: "自动肉鸽", comment: "")
+            return String(localized: "自动肉鸽")
         case .Copilot:
-            return String(localized: "自动抄作业", comment: "")
+            return String(localized: "自动抄作业")
         case .SSSCopilot:
-            return String(localized: "自动抄保全作业", comment: "")
+            return String(localized: "自动抄保全作业")
         case .Depot:
-            return String(localized: "仓库识别", comment: "")
+            return String(localized: "仓库识别")
         case .Reclamation:
-            return String(localized: "生息演算", comment: "")
+            return String(localized: "生息演算")
         case .VideoRecognition:
-            return String(localized: "视频识别", comment: "")
+            return String(localized: "视频识别")
         case .OperBox:
-            return String(localized: "干员识别", comment: "")
+            return String(localized: "干员识别")
         case .Custom:
-            return String(localized: "自定义", comment: "")
+            return String(localized: "自定义")
         }
     }
 }

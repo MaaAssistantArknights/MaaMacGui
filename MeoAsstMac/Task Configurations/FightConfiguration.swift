@@ -30,7 +30,7 @@ struct FightConfiguration: MAATaskConfiguration {
 
     var subtitle: String {
         if stage == "" {
-            return String(localized: "当前/上次", comment: "")
+            return String(localized: "当前/上次")
         } else {
             return stage
         }
@@ -40,15 +40,15 @@ struct FightConfiguration: MAATaskConfiguration {
         var parts = [String]()
 
         if let medicine {
-            parts.append(String(localized: "理智药", comment: "") + "\(medicine)")
+            parts.append(String(localized: "理智药") + "\(medicine)")
         }
 
         if let stone {
-            parts.append(String(localized: "源石", comment: "") + "\(stone)")
+            parts.append(String(localized: "源石") + "\(stone)")
         }
 
         if let times {
-            parts.append("\(times)" + String(localized: "次", comment: ""))
+            parts.append("\(times)" + String(localized: "次"))
         }
 
         return parts.joined(separator: ";")

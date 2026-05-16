@@ -210,15 +210,15 @@ extension RoguelikeConfiguration.Theme {
     var shortDescription: String {
         switch self {
         case .Phantom:
-            return String(localized: "傀影", comment: "")
+            return String(localized: "傀影")
         case .Mizuki:
-            return String(localized: "水月", comment: "")
+            return String(localized: "水月")
         case .Sami:
-            return String(localized: "萨米", comment: "")
+            return String(localized: "萨米")
         case .Sarkaz:
-            return String(localized: "萨卡兹", comment: "")
+            return String(localized: "萨卡兹")
         case .JieGarden:
-            return String(localized: "界园", comment: "")
+            return String(localized: "界园")
         }
     }
 
@@ -236,17 +236,17 @@ extension RoguelikeConfiguration.Mode {
     var shortDescription: String {
         switch self {
         case .exp:
-            String(localized: "优先层数", comment: "")
+            String(localized: "优先层数")
         case .investment:
-            String(localized: "优先投资", comment: "")
+            String(localized: "优先投资")
         case .collectible:
-            String(localized: "凹开局", comment: "")
+            String(localized: "凹开局")
         case .clpPds:
-            String(localized: "刷坍缩", comment: "")
+            String(localized: "刷坍缩")
         case .squad:
-            String(localized: "月度小队", comment: "")
+            String(localized: "月度小队")
         case .exploration:
-            String(localized: "深入调查", comment: "")
+            String(localized: "深入调查")
         }
     }
 }
@@ -265,9 +265,9 @@ extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
     var description: String {
         switch self {
         case .max:
-            return String(localized: "最高难度", comment: "")
+            return String(localized: "最高难度")
         case .current:
-            return String(localized: "当前难度", comment: "")
+            return String(localized: "当前难度")
         default:
             return "难度\(id)"
         }

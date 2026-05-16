@@ -60,25 +60,25 @@ struct InfrastConfiguration: MAATaskConfiguration {
 
     var subtitle: String {
         if mode != .custom {
-            return String(localized: "默认换班", comment: "")
+            return String(localized: "默认换班")
         }
 
         if let plan = try? MAAInfrast(path: filename) {
             return plan.title ?? filename
         } else {
-            return String(localized: "无法识别配置", comment: "")
+            return String(localized: "无法识别配置")
         }
     }
 
     var summary: String {
         if mode != .custom {
-            return String(localized: "单设施最优解", comment: "")
+            return String(localized: "单设施最优解")
         }
 
         if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
             return plan.plans[plan_index].name ?? "\(plan_index)"
         } else {
-            return String(localized: "未知排班", comment: "")
+            return String(localized: "未知排班")
         }
     }
 
@@ -104,23 +104,23 @@ extension InfrastConfiguration.Facility: CustomStringConvertible, Identifiable {
     var description: String {
         switch self {
         case .Mfg:
-            return String(localized: "制造站", comment: "")
+            return String(localized: "制造站")
         case .Trade:
-            return String(localized: "贸易站", comment: "")
+            return String(localized: "贸易站")
         case .Power:
-            return String(localized: "发电站", comment: "")
+            return String(localized: "发电站")
         case .Control:
-            return String(localized: "控制中枢", comment: "")
+            return String(localized: "控制中枢")
         case .Reception:
-            return String(localized: "会客室", comment: "")
+            return String(localized: "会客室")
         case .Office:
-            return String(localized: "办公室", comment: "")
+            return String(localized: "办公室")
         case .Dorm:
-            return String(localized: "宿舍", comment: "")
+            return String(localized: "宿舍")
         case .Processing:
-            return String(localized: "加工站", comment: "")
+            return String(localized: "加工站")
         case .Training:
-            return String(localized: "训练室", comment: "")
+            return String(localized: "训练室")
         }
     }
 }
@@ -129,19 +129,19 @@ extension InfrastConfiguration.DroneUsage: CustomStringConvertible {
     var description: String {
         switch self {
         case .NotUse:
-            return String(localized: "不使用无人机", comment: "")
+            return String(localized: "不使用无人机")
         case .Money:
-            return String(localized: "贸易站-龙门币", comment: "")
+            return String(localized: "贸易站-龙门币")
         case .SyntheticJade:
-            return String(localized: "贸易站-合成玉", comment: "")
+            return String(localized: "贸易站-合成玉")
         case .CombatRecord:
-            return String(localized: "制造站-经验书", comment: "")
+            return String(localized: "制造站-经验书")
         case .PureGold:
-            return String(localized: "制造站-赤金", comment: "")
+            return String(localized: "制造站-赤金")
         case .OriginStone:
-            return String(localized: "制造站-源石碎片", comment: "")
+            return String(localized: "制造站-源石碎片")
         case .Chip:
-            return String(localized: "制造站-芯片组", comment: "")
+            return String(localized: "制造站-芯片组")
         }
     }
 }

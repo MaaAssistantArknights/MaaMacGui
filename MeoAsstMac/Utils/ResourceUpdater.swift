@@ -23,9 +23,9 @@ extension MAAResourceChannel: CustomStringConvertible {
     public var description: String {
         switch self {
         case .github:
-            return String(localized: "GitHub", comment: "")
+            return String(localized: "GitHub")
         case .mirrorChyan:
-            return String(localized: "MirrorChyan", comment: "")
+            return String(localized: "MirrorChyan")
         }
     }
 }
@@ -34,13 +34,13 @@ extension MAAResourceChannel.Error: LocalizedError {
     public var errorDescription: String? {
         switch self {
         case .emptyURL:
-            return String(localized: "无下载链接，请检查CDK", comment: "")
+            return String(localized: "无下载链接，请检查CDK")
         case .noNeedUpdate:
-            return String(localized: "无需更新", comment: "")
+            return String(localized: "无需更新")
         case .forbidden:
-            return String(localized: "访问被禁止，请检查IP或CDK", comment: "")
+            return String(localized: "访问被禁止，请检查IP或CDK")
         case .rateExceeded:
-            return String(localized: "IP请求频率过快，请稍后再试", comment: "")
+            return String(localized: "IP请求频率过快，请稍后再试")
         }
     }
 }
