@@ -29,7 +29,10 @@ struct ReclamationConfiguration: MAATaskConfiguration {
                 1: String(localized: "有存档，通过组装支援道具刷生息点数，组装完成后将会跳到下一个量定日并读取前一个量定日的存档"),
             ]
         case .relaunch:
-            return [:]
+            return [
+                0: String(localized: "RA-1"),
+                1: String(localized: "RA-15"),
+            ]
         }
     }
 
