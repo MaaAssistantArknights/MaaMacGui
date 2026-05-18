@@ -30,8 +30,8 @@ struct ReclamationConfiguration: MAATaskConfiguration {
             ]
         case .relaunch:
             return [
-                0: String(localized: "RA-1"),
-                1: String(localized: "RA-15"),
+                1 << 4: String(localized: "RA-1"),
+                2 << 4: String(localized: "RA-15"),
             ]
         }
     }
@@ -74,10 +74,16 @@ extension ReclamationConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.theme = try container.decodeIfPresent(ReclamationTheme.self, forKey: .theme) ?? .tales
-        self.mode = try container.decodeIfPresent(Int.self, forKey: .mode) ?? 0
+        let rawMode = try container.decodeIfPresent(Int.self, forKey: .mode) ?? 0
         self.tools_to_craft = try container.decodeIfPresent([String].self, forKey: .tools_to_craft) ?? ["荧光棒"]
         self.increment_mode = try container.decodeIfPresent(Int.self, forKey: .increment_mode) ?? 0
         self.num_craft_batches = try container.decodeIfPresent(Int.self, forKey: .num_craft_batches) ?? 16
+
+        if self.theme == .relaunch && rawMode < 1 << 4 {
+            self.mode = rawMode == 1 ? (2 << 4) : (1 << 4)
+        } else {
+            self.mode = rawMode
+        }
     }
 }
 
