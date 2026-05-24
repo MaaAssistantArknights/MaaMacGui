@@ -11,6 +11,9 @@ struct FightConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Fight }
 
     var stage: String
+    var stagePlan: [String]
+    var useOptionalStage: Bool
+
     var medicine: Int?
     var expiring_medicine: Int?
     var stone: Int?
@@ -29,6 +32,10 @@ struct FightConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
+        if useOptionalStage {
+            let stages = stagePlan.filter { !$0.isEmpty }
+            return stages.isEmpty ? NSLocalizedString("当前/上次", comment: "") : stages.joined(separator: " / ")
+        }
         if stage == "" {
             return String(localized: "当前/上次")
         } else {
@@ -58,10 +65,67 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    typealias Params = Self
+    // MARK: - Params sent to MAA Core
 
-    var params: Self {
-        self
+    struct CoreParams: Encodable {
+        var stage: String
+        var medicine: Int?
+        var expiring_medicine: Int?
+        var stone: Int?
+        var times: Int?
+        var series: Int?
+        var drops: [String: Int]?
+        var report_to_penguin: Bool
+        var penguin_id: String
+        var server: String
+        var client_type: String
+        var DrGrandet: Bool
+    }
+
+    typealias Params = CoreParams
+
+    var params: CoreParams {
+        let activeStage: String
+        if useOptionalStage {
+            activeStage = stagePlan.first { Self.isStageOpenToday($0) } ?? stagePlan.first ?? ""
+        } else {
+            activeStage = stage
+        }
+        return CoreParams(
+            stage: activeStage,
+            medicine: medicine,
+            expiring_medicine: expiring_medicine,
+            stone: stone,
+            times: times,
+            series: series,
+            drops: drops,
+            report_to_penguin: report_to_penguin,
+            penguin_id: penguin_id,
+            server: server,
+            client_type: client_type,
+            DrGrandet: DrGrandet
+        )
+    }
+
+    // MARK: - Stage Open Days
+    // Calendar.weekday: 1=Sun, 2=Mon, 3=Tue, 4=Wed, 5=Thu, 6=Fri, 7=Sat
+    private static let stageOpenDays: [String: Set<Int>] = [
+        "CE-6": [3, 5, 7, 1],   // Tue, Thu, Sat, Sun
+        "AP-5": [2, 5, 7, 1],   // Mon, Thu, Sat, Sun
+        "CA-5": [3, 4, 6, 1],   // Tue, Wed, Fri, Sun
+        "SK-5": [2, 4, 6, 7],   // Mon, Wed, Fri, Sat
+        "PR-A-1": [2, 5, 6, 1], "PR-A-2": [2, 5, 6, 1],  // Mon, Thu, Fri, Sun
+        "PR-B-1": [2, 3, 6, 7], "PR-B-2": [2, 3, 6, 7],  // Mon, Tue, Fri, Sat
+        "PR-C-1": [4, 5, 7, 1], "PR-C-2": [4, 5, 7, 1],  // Wed, Thu, Sat, Sun
+        "PR-D-1": [3, 4, 7, 1], "PR-D-2": [3, 4, 7, 1],  // Tue, Wed, Sat, Sun
+    ]
+
+    /// 判断关卡今天是否开放（未在列表中的关卡视为全天开放）
+    static func isStageOpenToday(_ stage: String) -> Bool {
+        guard !stage.isEmpty else { return true }
+        guard let days = stageOpenDays[stage] else { return true }
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        return days.contains(weekday)
     }
 
     // 掉落物品列表
@@ -130,6 +194,8 @@ extension FightConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.stage = try container.decodeIfPresent(String.self, forKey: .stage) ?? ""
+        self.useOptionalStage = try container.decodeIfPresent(Bool.self, forKey: .useOptionalStage) ?? false
+        self.stagePlan = try container.decodeIfPresent([String].self, forKey: .stagePlan) ?? [self.stage]
         self.medicine = try container.decodeIfPresent(Int.self, forKey: .medicine)
         self.expiring_medicine = try container.decodeIfPresent(Int.self, forKey: .expiring_medicine)
         self.stone = try container.decodeIfPresent(Int.self, forKey: .stone)
