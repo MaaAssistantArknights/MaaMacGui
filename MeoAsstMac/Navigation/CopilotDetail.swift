@@ -14,8 +14,12 @@ struct CopilotDetail: View {
     let url: URL?
 
     var body: some View {
-        VStack {
-            if let url {
+        VStack(spacing: 20) {
+            commonCopilotConfiguration()
+
+            Divider()
+
+            if let url, viewModel.copilotDetailMode == .copilotConfig {
                 CopilotView(url: url)
             } else {
                 LogView()
@@ -26,6 +30,15 @@ struct CopilotDetail: View {
     }
 
     // MARK: - Toolbar
+
+    private func commonCopilotConfiguration() -> some View {
+        HStack {
+            Toggle("自动编队", isOn: $viewModel.copilotFormation)
+            Toggle("信赖干员", isOn: $viewModel.copilotAddTrust)
+            Toggle("使用作业集", isOn: $viewModel.useCopilotSet)
+                .disabled(viewModel.copilotSetEntries.isEmpty)
+        }
+    }
 
     @ToolbarContentBuilder private func detailToolbar() -> some ToolbarContent {
         ToolbarItemGroup {
@@ -74,12 +87,20 @@ struct CopilotDetail: View {
             .disabled(prtsCode.parsedID == nil)
 
             Button {
+                viewModel.downloadCopilotSet = prtsCode.parsedID
+                showAdd = false
+            } label: {
+                Label("添加作业集", systemImage: "square.stack.3d.down.right")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .disabled(prtsCode.parsedID == nil)
+
+            Button {
                 if let clipboardString = NSPasteboard.general.string(forType: .string),
-                    let parsedID = clipboardString.parsedID
+                    clipboardString.parsedID != nil
                 {
                     prtsCode = clipboardString
-                    viewModel.downloadCopilot = parsedID
-                    showAdd = false
                 }
             } label: {
                 Label("从剪贴板读取", systemImage: "doc.on.clipboard")

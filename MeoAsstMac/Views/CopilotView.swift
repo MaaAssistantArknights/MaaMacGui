@@ -45,16 +45,8 @@ struct CopilotView: View {
 
     @ViewBuilder private func pilotConfiguration() -> some View {
         switch viewModel.copilot {
-        case .regular(let innerConfig):
-            let binding = Binding<RegularCopilotConfiguration> {
-                innerConfig
-            } set: { newValue in
-                viewModel.copilot = .regular(newValue)
-            }
-            HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
-            }
+        case .regular, .regularList:
+            EmptyView()
 
         case .sss(let innerConfig):
             let binding = Binding<SSSCopilotConfiguration> {
