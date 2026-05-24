@@ -32,6 +32,7 @@ struct ReclamationConfiguration: MAATaskConfiguration {
             return [
                 1 << 4: String(localized: "RA-1"),
                 2 << 4: String(localized: "RA-15"),
+                3 << 4: String(localized: "RA-4"),
             ]
         }
     }
