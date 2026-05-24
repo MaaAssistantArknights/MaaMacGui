@@ -92,7 +92,12 @@ import SwiftUI
     }
 
     @Published var copilot: CopilotConfiguration?
+    @Published var copilotFormation = false
+    @Published var copilotAddTrust = false
+    @Published var useCopilotSet = false
+    @Published var copilotSetEntries = [CopilotSetTaskEntry]()
     @Published var downloadCopilot: String?
+    @Published var downloadCopilotSet: String?
     @Published var showImportCopilot = false
     @Published var copilotDetailMode: CopilotDetailMode = .log
 
@@ -518,7 +523,9 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         guard let copilot,
-            let params = copilot.params
+            let params = copilot
+                .applyingCommonOptions(formation: copilotFormation, addTrust: copilotAddTrust)
+                .params
         else {
             return
         }
@@ -526,7 +533,7 @@ extension MAAViewModel {
         try await ensureHandle()
 
         switch copilot {
-        case .regular:
+        case .regular, .regularList:
             _ = try await handle?.appendTask(type: .Copilot, params: params)
         case .sss:
             _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
