@@ -7,6 +7,7 @@
 
 import Sparkle
 import SwiftUI
+import AppKit
 
 struct UpdaterSettingsView: View {
     private let updater: SPUUpdater
@@ -38,6 +39,10 @@ struct UpdaterSettingsView: View {
                 .onChange(of: automaticallyDownloadsUpdates) { newValue in
                     updater.automaticallyDownloadsUpdates = newValue
                 }
+            
+            Button("复制版本信息") {
+                copyVersionInfo()
+            }
 
             Divider()
 
@@ -61,6 +66,15 @@ struct UpdaterSettingsView: View {
         }
         .animation(.default, value: resourceChannel)
         .padding()
+    }
+    
+//复制更详细的版本信息
+    private func copyVersionInfo() {
+        guard let (_, resourceVersion) = try? resourceChannel.version() else { return }
+
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(MaaVersionInfo.text(resourceVersion: resourceVersion), forType: .string)
     }
 }
 

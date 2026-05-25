@@ -10,8 +10,20 @@ import Foundation
 import MaaCore
 import SwiftyJSON
 
+@_silgen_name("AsstGetVersion")
+private func MaaCoreAsstGetVersion() -> UnsafePointer<CChar>?
+
 actor MAAProvider {
     static let shared = MAAProvider()
+    
+    static let coreVersion: String = {
+        guard let versionPointer = MaaCoreAsstGetVersion() else {
+            return "Unknown"
+        }
+
+        return String(cString: versionPointer)
+    }()
+    
     private init() {}
 
     func loadResource(path: String) throws {
