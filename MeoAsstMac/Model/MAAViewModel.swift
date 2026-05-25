@@ -347,6 +347,7 @@ extension MAAViewModel {
             logTrace(
                 """
                 内置资源版本：\(currentResourceVersion.title)
+                MaaCore 版本：\(MAAProvider.coreVersion)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
             let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)

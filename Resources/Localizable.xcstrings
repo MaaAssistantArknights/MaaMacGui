@@ -1226,6 +1226,15 @@
     "PV-烟花筹委会" : {
 
     },
+    "RA-1" : {
+
+    },
+    "RA-4" : {
+
+    },
+    "RA-15" : {
+
+    },
     "Read item_index.json failed: %@" : {
       "localizations" : {
         "ko" : {
@@ -2238,7 +2247,18 @@
         }
       }
     },
+    "内置资源版本：%@\nMaaCore 版本：%@\n更新时间：%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "内置资源版本：%1$@\nMaaCore 版本：%2$@\n更新时间：%3$@"
+          }
+        }
+      }
+    },
     "内置资源版本：%@\n更新时间：%@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2759,6 +2779,9 @@
           }
         }
       }
+    },
+    "复制版本信息" : {
+
     },
     "复制结果JSON至剪贴板：" : {
       "localizations" : {
