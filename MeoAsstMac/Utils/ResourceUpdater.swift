@@ -126,4 +126,8 @@ enum MaaVersionInfo {
         Resource Time: \(resourceVersion.last_updated)
         """
     }
+    
+    static func coreVersionLogLine() -> String {
+        String(localized: "Core Version: \(coreVersion)")
+    }
 }

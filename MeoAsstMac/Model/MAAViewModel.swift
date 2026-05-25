@@ -342,13 +342,14 @@ extension MAAViewModel {
                 """
                 外部资源版本：\(currentResourceVersion.title)
                 更新时间：\(currentResourceVersion.last_updated)
+                \(MaaVersionInfo.coreVersionLogLine())
                 """)
         } else {
             logTrace(
                 """
                 内置资源版本：\(currentResourceVersion.title)
-                MaaCore 版本：\(MAAProvider.coreVersion)
                 更新时间：\(currentResourceVersion.last_updated)
+                \(MaaVersionInfo.coreVersionLogLine())
                 """)
             let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
             try? FileManager.default.removeItem(at: url)
