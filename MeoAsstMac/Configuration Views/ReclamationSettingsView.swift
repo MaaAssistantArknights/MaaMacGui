@@ -23,6 +23,13 @@ struct ReclamationSettingsView: View {
                     Text(desc).tag(mode)
                 }
             }
+            
+            if !config.tip.isEmpty {
+                Text(config.tip)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
 
             if config.toolsToCraftEnabled {
                 TextField("支援道具：", text: $config.semicolonString(for: \.tools_to_craft))
