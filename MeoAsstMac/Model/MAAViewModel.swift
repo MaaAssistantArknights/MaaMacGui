@@ -592,8 +592,15 @@ extension MAAViewModel {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
         guard let data = try? encoder.encode(copilotList) else { return }
-        try? data.write(to: copilotListURL)
+        // 编码在主线程读取已发布状态，写盘 IO 放到后台队列，避免勾选/排序时阻塞 UI。
+        let url = copilotListURL
+        Self.copilotListIOQueue.async {
+            try? data.write(to: url)
+        }
     }
+
+    /// Serial queue for persisting the copilot list off the main thread.
+    private static let copilotListIOQueue = DispatchQueue(label: "com.hguandl.MeoAsstMac.copilotListIO")
 
     /// 把一个作业文件加入作业集。会自动把作业的内部关卡名解析为核心导航所需的关卡代号
     /// （如 act50side_01 → TD-1）。

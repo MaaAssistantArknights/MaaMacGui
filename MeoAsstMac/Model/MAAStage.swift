@@ -88,11 +88,20 @@ struct StageActivityInfo: Equatable {
     var isResourceCollection = false
 
     /// Activity currently open: started and not yet expired.
-    var beingOpen: Bool { !notOpenYet && !isExpired }
+    var beingOpen: Bool { status().beingOpen }
 
-    var isExpired: Bool { Date() >= expireTime }
+    var isExpired: Bool { status().isExpired }
 
-    var notOpenYet: Bool { Date() <= startTime }
+    var notOpenYet: Bool { status().notOpenYet }
+
+    /// Computes the open/expired flags at a single point in time. Capturing one `date`
+    /// avoids inconsistencies near boundary times (each `Date()` call would otherwise
+    /// differ by a few milliseconds).
+    func status(at date: Date = Date()) -> (beingOpen: Bool, isExpired: Bool, notOpenYet: Bool) {
+        let isExpired = date >= expireTime
+        let notOpenYet = date <= startTime
+        return (!notOpenYet && !isExpired, isExpired, notOpenYet)
+    }
 
     init(
         tip: String = "", stageName: String = "", startTime: Date, expireTime: Date,
@@ -159,7 +168,8 @@ struct MAAStageInfo: Identifiable, Equatable {
     /// Whether the stage is open on the given weekday (1 = Sunday ... 7 = Saturday).
     func isStageOpen(weekday: Int) -> Bool {
         if let activity {
-            if activity.beingOpen {
+            let status = activity.status()
+            if status.beingOpen {
                 return true
             }
             // Expired non-resource activity is closed.
