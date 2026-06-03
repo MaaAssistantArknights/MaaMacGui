@@ -96,6 +96,28 @@ import SwiftUI
     @Published var showImportCopilot = false
     @Published var copilotDetailMode: CopilotDetailMode = .log
 
+    /// Ordered list of copilot operations for the 作业集 feature.
+    @Published var copilotList: [CopilotEntry] = [] {
+        didSet { saveCopilotList() }
+    }
+
+    /// Global options applied to a copilot-list run.
+    @Published var copilotListOptions = CopilotListOptions()
+
+    /// Whether the copilot panel runs the list (true) or the single selected file (false).
+    @Published var useCopilotList = false
+
+    // MARK: - Stages
+
+    /// Stage list (activity + permanent), refreshed after each resource load / channel change.
+    @Published var stages: [MAAStageInfo] = []
+
+    /// In-game day of the last stage hot-update, used to detect day rollover.
+    private var lastStageRefreshDay: DateComponents?
+
+    /// Timer driving the stage hot-update (checks the in-game day-rollover points).
+    private var stageRefreshTimer: Timer?
+
     // MARK: - Recognition
 
     @Published var recruitConfig = RecruitConfiguration.recognition
@@ -192,6 +214,7 @@ import SwiftUI
             .store(in: &cancellables)
 
         initScheduledDailyTaskTimer()
+        loadCopilotList()
     }
 }
 
@@ -304,28 +327,31 @@ extension MAAViewModel {
         }
     }
 
-    /// Fetches OTA resources for the specified channel.
-    private func fetchOTAResource(channel: MAAClientChannel) async throws {
-        let otaFetcher = OTAFetcher()
-        var files = [
-            (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
-            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
-        ]
+    /// Fetches OTA (hot-update) resources for the specified channel via MaaApiService:
+    /// StageActivityV2.json + tasks.json (+ the channel-specific tasks.json for global servers).
+    /// Returns whether the tasks data changed (i.e. the core resources should be reloaded).
+    @discardableResult
+    private func fetchOTAResource(channel: MAAClientChannel) async throws -> Bool {
+        let api = MaaApiService.shared
+
+        // StageActivityV2.json: download path == cache path.
+        async let stageCached = api.requestWithCache(api: "gui/StageActivityV2.json")
+
+        // tasks.json: API path differs from the core's cache layout (resource/tasks/tasks.json).
+        async let tasksCached = api.requestWithCache(
+            api: "resource/tasks.json", cacheName: "resource/tasks/tasks.json")
+
+        var tasksChanged = !(try await tasksCached)
+        _ = try await stageCached
+
         if channel.isGlobal {
-            files.append(
-                (
-                    path: "resource/global/\(channel.rawValue)/resource/tasks.json",
-                    name: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json"
-                ))
+            let globalCached = try await api.requestWithCache(
+                api: "resource/global/\(channel.rawValue)/resource/tasks.json",
+                cacheName: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json")
+            tasksChanged = tasksChanged || !globalCached
         }
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for (path, name) in files {
-                group.addTask {
-                    try await otaFetcher.download(path: path, name: name)
-                }
-            }
-            try await group.waitForAll()
-        }
+
+        return tasksChanged
     }
 
     /// Load resources from bundled, user, and remote resources.
@@ -360,6 +386,10 @@ extension MAAViewModel {
         } catch {
             logError("关卡数据获取失败: \(error.localizedDescription)")
         }
+
+        stages = MAAStageManager.loadStages(channel: channel)
+        lastStageRefreshDay = GameCalendar.yjDay(channel: channel)
+        startStageRefreshTimer()
 
         #if DEBUG
         guard false else { return }
@@ -530,6 +560,9 @@ extension MAAViewModel {
             _ = try await handle?.appendTask(type: .Copilot, params: params)
         case .sss:
             _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
+        case .list:
+            // 作业集复用 Copilot 任务类型，核心通过 copilot_list 参数识别为多任务
+            _ = try await handle?.appendTask(type: .Copilot, params: params)
         }
 
         try await handle?.start()
@@ -538,7 +571,169 @@ extension MAAViewModel {
     }
 }
 
-// MARK: Utility
+// MARK: Copilot List (作业集)
+
+extension MAAViewModel {
+    /// 作业集列表持久化文件：Application Support/CopilotList.json
+    private var copilotListURL: URL {
+        Self.userDirectory.appendingPathComponent("CopilotList.json", isDirectory: false)
+    }
+
+    func loadCopilotList() {
+        guard let data = try? Data(contentsOf: copilotListURL),
+            let list = try? JSONDecoder().decode([CopilotEntry].self, from: data)
+        else {
+            return
+        }
+        copilotList = list
+    }
+
+    func saveCopilotList() {
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .withoutEscapingSlashes]
+        guard let data = try? encoder.encode(copilotList) else { return }
+        try? data.write(to: copilotListURL)
+    }
+
+    /// 把一个作业文件加入作业集。会自动把作业的内部关卡名解析为核心导航所需的关卡代号
+    /// （如 act50side_01 → TD-1）。
+    func addToCopilotList(filePath: String, copilotId: Int = 0, isRaid: Bool = false) {
+        let copilot = MAACopilot(url: URL(fileURLWithPath: filePath))
+        let navCode = StageCodeResolver.navigationCode(
+            stageName: copilot?.stage_name ?? "", title: copilot?.doc?.title)
+        let entry = CopilotEntry(
+            name: navCode, filePath: filePath, copilotId: copilotId, isRaid: isRaid)
+        copilotList.append(entry)
+    }
+
+    /// 运行作业集：把所有勾选项打包成一个 copilot_list 任务。
+    func startCopilotList() async throws {
+        status = .pending
+        defer { handleEarlyReturn(backTo: .idle) }
+
+        let items = copilotList.filter(\.isChecked).map {
+            CopilotListItem(filename: $0.filePath, stage_name: $0.name, is_raid: $0.isRaid)
+        }
+
+        guard !items.isEmpty else {
+            logError("作业集为空，请先勾选作业")
+            status = .idle
+            return
+        }
+
+        let config = CopilotListConfiguration(
+            copilot_list: items,
+            formation: copilotListOptions.formation,
+            add_trust: copilotListOptions.addTrust,
+            support_unit_usage: copilotListOptions.supportUnitUsage,
+            use_sanity_potion: copilotListOptions.useSanityPotion)
+
+        guard let params = CopilotConfiguration.list(config).params else {
+            status = .idle
+            return
+        }
+
+        try await ensureHandle()
+        _ = try await handle?.appendTask(type: .Copilot, params: params)
+        try await handle?.start()
+
+        status = .busy
+    }
+
+    /// 从 PRTS 作业集 ID 批量导入：先取作业集元数据，再逐个下载其中的作业。
+    func importCopilotSet(id: String) async {
+        guard let setURL = URL(string: "https://prts.maa.plus/set/get?id=\(id)") else { return }
+
+        do {
+            let data = try await URLSession.shared.data(from: setURL).0
+            let response = try JSONDecoder().decode(PrtsCopilotSetResponse.self, from: data)
+            guard response.statusCode == 200, let copilotIds = response.data?.copilotIds,
+                !copilotIds.isEmpty
+            else {
+                logError("作业集获取失败，请确认这是作业集神秘代码而非单份作业: \(id)")
+                return
+            }
+
+            logInfo("正在导入作业集，共 \(copilotIds.count) 份作业……")
+            var success = 0
+            for copilotId in copilotIds where await downloadCopilotToList(id: copilotId) {
+                success += 1
+            }
+
+            if success == copilotIds.count {
+                logInfo("作业集导入完成，成功 \(success) 份")
+            } else {
+                logError("作业集导入完成，成功 \(success)/\(copilotIds.count) 份，部分作业下载失败")
+            }
+        } catch {
+            logError("作业集导入失败: \(error.localizedDescription)")
+        }
+    }
+
+    /// 下载单个作业（按 PRTS ID）并加入作业集。返回是否成功。
+    @discardableResult
+    private func downloadCopilotToList(id: Int) async -> Bool {
+        // 作业集的作业下载到独立目录，避免混入单个作业列表（后者读取 copilot/）。
+        let externalDirectory = FileManager.default
+            .urls(for: .documentDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("copilot_list")
+        try? FileManager.default.createDirectory(
+            at: externalDirectory, withIntermediateDirectories: true)
+
+        let file = externalDirectory
+            .appendingPathComponent("\(id)")
+            .appendingPathExtension("json")
+
+        guard let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)") else { return false }
+
+        do {
+            let data = try await URLSession.shared.data(from: url).0
+            let response = try JSONDecoder().decode(CopilotContentResponse.self, from: data)
+
+            // 写入文件，并校验确实能解析为合法作业后才加入列表。
+            try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
+            guard MAACopilot(url: file) != nil else {
+                try? FileManager.default.removeItem(at: file)
+                logError("作业解析失败 (\(id))")
+                return false
+            }
+
+            addToCopilotList(filePath: file.path, copilotId: id)
+            return true
+        } catch {
+            logError("作业下载失败 (\(id)): \(error.localizedDescription)")
+            return false
+        }
+    }
+}
+
+// MARK: - PRTS Copilot Set Models
+
+private struct PrtsCopilotSetResponse: Codable {
+    let statusCode: Int
+    let data: SetData?
+
+    enum CodingKeys: String, CodingKey {
+        case statusCode = "status_code"
+        case data
+    }
+
+    struct SetData: Codable {
+        let copilotIds: [Int]
+
+        enum CodingKeys: String, CodingKey {
+            case copilotIds = "copilot_ids"
+        }
+    }
+}
+
+private struct CopilotContentResponse: Codable {
+    let data: Content
+
+    struct Content: Codable {
+        let content: String
+    }
+}
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {
@@ -628,7 +823,55 @@ extension MAAViewModel {
     }
 }
 
-// MARK: - Prevent Sleep
+// MARK: - Stage Hot Update
+
+extension MAAViewModel {
+    /// Starts the 60s timer that triggers a stage hot-update at in-game day-rollover points
+    /// (server 04:00 / 16:00, i.e. Yj 0:00 / 12:00) or whenever the in-game day changes.
+    func startStageRefreshTimer() {
+        stageRefreshTimer?.invalidate()
+        let timer = Timer(timeInterval: 60, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                await self?.stageRefreshTick()
+            }
+        }
+        // Allow the timer to fire while menus/popovers are open.
+        RunLoop.main.add(timer, forMode: .common)
+        stageRefreshTimer = timer
+    }
+
+    func stopStageRefreshTimer() {
+        stageRefreshTimer?.invalidate()
+        stageRefreshTimer = nil
+    }
+
+    /// Per-tick check: refresh only when the in-game day changed, or at the 0:00 / 12:00
+    /// Yj refresh points (mirrors the Windows NeedToUpdateDatePrompt logic).
+    private func stageRefreshTick() async {
+        let channel = clientChannel
+        let today = GameCalendar.yjDay(channel: channel)
+        let (hour, minute) = GameCalendar.yjHourMinute(channel: channel)
+
+        let isRefreshPoint = minute == 0 && (hour == 0 || hour == 12)
+        let isNewDay = today != lastStageRefreshDay
+
+        guard isRefreshPoint || isNewDay else { return }
+
+        lastStageRefreshDay = today
+        await refreshStageActivity(channel: channel)
+    }
+
+    /// Hot-update: re-fetch StageActivityV2.json (ETag/304) and reload the stage list,
+    /// without touching the full resource package. Safe to call at runtime.
+    func refreshStageActivity(channel: MAAClientChannel) async {
+        do {
+            try await MaaApiService.shared.requestWithCache(api: "gui/StageActivityV2.json")
+        } catch {
+            logError("关卡数据热更新失败: \(error.localizedDescription)")
+        }
+        stages = MAAStageManager.loadStages(channel: channel)
+    }
+}
 
 extension MAAViewModel {
     func switchAwakeGuard(_ newValue: Status) {
