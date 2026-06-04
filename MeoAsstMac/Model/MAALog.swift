@@ -5,6 +5,7 @@
 //  Created by hguandl on 16/4/2023.
 //
 
+import Foundation
 import SwiftUI
 
 struct MAALog: Identifiable, Hashable {
@@ -37,5 +38,27 @@ extension MAALog.LogColor {
         case .error:
             return .red
         }
+    }
+}
+
+extension Date {
+    private static let guiLogDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd HH:mm:ss"
+        return formatter
+    }()
+
+    private static let fileLogDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+        return formatter
+    }()
+
+    var maaGuiLogFormat: String {
+        Self.guiLogDateFormatter.string(from: self)
+    }
+
+    var maaFileLogFormat: String {
+        Self.fileLogDateFormatter.string(from: self)
     }
 }

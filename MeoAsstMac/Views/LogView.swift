@@ -13,7 +13,7 @@ struct LogView: View {
     var body: some View {
         ScrollViewReader { proxy in
             Table(viewModel.logs) {
-                TableColumn("时间", value: \.date.maaFormat)
+                TableColumn("时间", value: \.date.maaGuiLogFormat)
                     .width(min: 100, ideal: 125, max: 150)
                 TableColumn("信息") { log in
                     Text(log.content)
@@ -49,14 +49,6 @@ struct LogView: View {
                 }
             }
         }
-    }
-}
-
-extension Date {
-    fileprivate var maaFormat: String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM-dd HH:mm:ss"
-        return dateFormatter.string(from: self)
     }
 }
 
