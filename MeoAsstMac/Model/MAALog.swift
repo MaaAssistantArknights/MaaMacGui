@@ -24,6 +24,24 @@ struct MAALog: Identifiable, Hashable {
     let color: LogColor
 }
 
+extension Date {
+    private func maaLogFormatted(dateFormat: String) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone.current
+        formatter.dateFormat = dateFormat
+        return formatter.string(from: self)
+    }
+
+    var maaGuiLogFormat: String {
+        maaLogFormatted(dateFormat: "MM-dd HH:mm:ss")
+    }
+
+    var maaFileLogFormat: String {
+        maaLogFormatted(dateFormat: "yyyy-MM-dd HH:mm:ss")
+    }
+}
+
 extension MAALog.LogColor {
     var textColor: Color {
         switch self {
@@ -38,27 +56,5 @@ extension MAALog.LogColor {
         case .error:
             return .red
         }
-    }
-}
-
-extension Date {
-    private static let guiLogDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "MM-dd HH:mm:ss"
-        return formatter
-    }()
-
-    private static let fileLogDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        return formatter
-    }()
-
-    var maaGuiLogFormat: String {
-        Self.guiLogDateFormatter.string(from: self)
-    }
-
-    var maaFileLogFormat: String {
-        Self.fileLogDateFormatter.string(from: self)
     }
 }
