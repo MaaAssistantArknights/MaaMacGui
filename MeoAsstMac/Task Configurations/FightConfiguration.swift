@@ -7,6 +7,45 @@
 
 import Foundation
 
+struct WeeklySchedule: Codable, Equatable, Hashable {
+    var sunday: Bool = true
+    var monday: Bool = true
+    var tuesday: Bool = true
+    var wednesday: Bool = true
+    var thursday: Bool = true
+    var friday: Bool = true
+    var saturday: Bool = true
+
+    func isEnabled(for weekday: Int) -> Bool {
+        switch weekday {
+        case 1: return sunday
+        case 2: return monday
+        case 3: return tuesday
+        case 4: return wednesday
+        case 5: return thursday
+        case 6: return friday
+        case 7: return saturday
+        default: return true
+        }
+    }
+
+    subscript(_ index: Int) -> Bool {
+        get { isEnabled(for: index) }
+        set {
+            switch index {
+            case 1: sunday = newValue
+            case 2: monday = newValue
+            case 3: tuesday = newValue
+            case 4: wednesday = newValue
+            case 5: thursday = newValue
+            case 6: friday = newValue
+            case 7: saturday = newValue
+            default: break
+            }
+        }
+    }
+}
+
 struct FightConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Fight }
 
@@ -23,6 +62,9 @@ struct FightConfiguration: MAATaskConfiguration {
     var server: String
     var client_type: String
     var DrGrandet: Bool
+
+    var useWeeklySchedule: Bool
+    var weeklySchedule: WeeklySchedule
 
     var title: String {
         type.description
@@ -141,5 +183,7 @@ extension FightConfiguration {
         self.server = try container.decodeIfPresent(String.self, forKey: .server) ?? "CN"
         self.client_type = try container.decodeIfPresent(String.self, forKey: .client_type) ?? ""
         self.DrGrandet = try container.decodeIfPresent(Bool.self, forKey: .DrGrandet) ?? false
+        self.useWeeklySchedule = try container.decodeIfPresent(Bool.self, forKey: .useWeeklySchedule) ?? false
+        self.weeklySchedule = try container.decodeIfPresent(WeeklySchedule.self, forKey: .weeklySchedule) ?? WeeklySchedule()
     }
 }

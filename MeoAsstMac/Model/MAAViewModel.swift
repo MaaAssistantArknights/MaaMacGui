@@ -464,8 +464,18 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        let today = Self.inGameDayOfWeek(for: clientChannel)
+
         for task in tasks {
             guard task.enabled else { continue }
+
+            if case .fight(let config) = task.task,
+               config.useWeeklySchedule,
+               !config.weeklySchedule.isEnabled(for: today)
+            {
+                logInfo("跳过刷理智任务（今日不在周计划内）")
+                continue
+            }
 
             if let coreID = try await handle?.appendTask(task.task) {
                 taskIDMap[coreID] = task.id
@@ -708,5 +718,25 @@ extension MAAViewModel {
     func stopGame() async throws {
         guard let client = await MaaToolClient(address: connectionAddress) else { return }
         try await client.terminate()
+    }
+}
+
+extension MAAViewModel {
+    private static let serverUTCOffsets: [MAAClientChannel: Int] = [
+        .Official: 8,
+        .Bilibili: 8,
+        .txwy: 8,
+        .YoStarEN: -7,
+        .YoStarJP: 9,
+        .YoStarKR: 9,
+    ]
+
+    static func inGameDayOfWeek(for channel: MAAClientChannel) -> Int {
+        let offset = serverUTCOffsets[channel] ?? 8
+        let yjShift = (offset - 4) * 3600
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let adjusted = Date().addingTimeInterval(TimeInterval(yjShift))
+        return calendar.component(.weekday, from: adjusted)
     }
 }

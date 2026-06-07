@@ -105,9 +105,26 @@ struct FightSettingsView: View {
             TextField(text: $config.penguin_id) {
                 Toggle("企鹅物流汇报ID", isOn: $config.report_to_penguin)
             }
+
+            Divider()
+
+            Section {
+                Toggle(String(localized: "启用周计划"), isOn: $config.useWeeklySchedule)
+                if config.useWeeklySchedule {
+                    Text((String(localized: "此处星期根据游戏时间计算（每日 4:00 刷新），而非现实时间。例如游戏在 4:00 刷新，则 3:59 仍算作前一天。")))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]) {
+                        ForEach(weekdayRange, id: \.self) { day in
+                            Toggle(weekdayLabel(for: day), isOn: weekdayBinding(for: day))
+                        }
+                    }
+                }
+            }
         }
         .padding()
         .animation(.default, value: useCustomStage)
+        .animation(.default, value: config.useWeeklySchedule)
     }
 
     private var useExpiringMedicine: Binding<Bool> {
@@ -212,6 +229,23 @@ struct FightSettingsView: View {
 
     private var stageNotListed: Bool { !listedStages.contains(config.stage) }
     private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+
+    // MARK: - Weekly Schedule
+
+    private let weekdayRange = 1...7
+    private let weekdaySymbols = Calendar.current.shortWeekdaySymbols
+
+    private func weekdayLabel(for day: Int) -> String {
+        weekdaySymbols[day - 1]
+    }
+
+    private func weekdayBinding(for day: Int) -> Binding<Bool> {
+        Binding {
+            config.weeklySchedule[day]
+        } set: {
+            config.weeklySchedule[day] = $0
+        }
+    }
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
