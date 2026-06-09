@@ -24,6 +24,13 @@ struct ReclamationSettingsView: View {
                 }
             }
 
+            if let tip = config.tip {
+                Text(tip)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+            }
+
             if config.toolsToCraftEnabled {
                 TextField("支援道具：", text: $config.semicolonString(for: \.tools_to_craft))
                 TextField("组装批次数：", value: $config.num_craft_batches, format: .number)
@@ -34,6 +41,8 @@ struct ReclamationSettingsView: View {
                 }
             }
         }
+        .animation(.default, value: config.theme)
+        .animation(.default, value: config.mode)
         .animation(.default, value: config.toolsToCraftEnabled)
         .padding()
     }
