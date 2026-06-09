@@ -16,11 +16,7 @@ struct MaaMessage {
 extension MAAViewModel {
     // MARK: - Process Message
 
-    func processMessage(_ output: Notification) {
-        guard let message = output.object as? MaaMessage else {
-            return
-        }
-
+    func processMessage(_ message: MaaMessage) {
         switch message.code {
         case .InternalError:
             break

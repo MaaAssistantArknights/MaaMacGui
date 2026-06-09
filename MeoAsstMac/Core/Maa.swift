@@ -8,7 +8,10 @@
 import CoreGraphics
 import Foundation
 import MaaCore
+import OSLog
 import SwiftyJSON
+
+private let logger = Logger(subsystem: "plus.maa.swift", category: "MAAHandle")
 
 actor MAAProvider {
     static let shared = MAAProvider()
@@ -27,31 +30,42 @@ actor MAAProvider {
     }
 }
 
-actor MAAHandle {
-    private let handle: AsstHandle
-    private let uuid = UUID()
-    private let uuidPointer = UnsafeMutablePointer<UUID>.allocate(capacity: 1)
+private func handleAsst(msg: AsstId, detailsPtr: UnsafePointer<CChar>?, handlePtr: UnsafeMutableRawPointer?) {
+    guard let handlePtr else {
+        logger.error("handlePtr is nil")
+        return
+    }
+    let handle = Unmanaged<MAAHandle>.fromOpaque(handlePtr).takeUnretainedValue()
 
-    private let callback: AsstApiCallback = { msg, details_json, custom_arg in
-        guard let details_json, let custom_arg,
-            let detailString = String(cString: details_json, encoding: .utf8)
-        else {
-            return
+    let details = detailsPtr.map(String.init(cString:))
+
+    let json = details.map(JSON.init(parseJSON:)) ?? .null
+    handle.send(message: .init(code: Int(msg), details: json))
+}
+
+actor MAAHandle {
+    private var handle: AsstHandle!
+
+    private let callbacks: AsyncStream<MaaMessage>
+    private let callbackContinuation: AsyncStream<MaaMessage>.Continuation
+    private var callbackTask: Task<Void, Never>!
+
+    nonisolated let messages: AsyncStream<MaaMessage>
+    private let messageContinuation: AsyncStream<MaaMessage>.Continuation
+    private var pendingCalls = [AsstAsyncCallId: CheckedContinuation<JSON, Error>]()
+
+    init(options: MAAInstanceOptions = [:]) async throws {
+        (self.callbacks, self.callbackContinuation) = AsyncStream<MaaMessage>.makeStream()
+        (self.messages, self.messageContinuation) = AsyncStream<MaaMessage>.makeStream()
+
+        self.callbackTask = Task { [weak self, callbacks] in
+            for await callback in callbacks {
+                await self?.process(callback)
+            }
         }
 
-        let details = JSON(parseJSON: detailString)
-        let message = MaaMessage(code: Int(msg), details: details)
-        let uuid = custom_arg.assumingMemoryBound(to: UUID.self).pointee
-
-        NotificationCenter.default.post(
-            name: .MAAReceivedCallbackMessage,
-            object: message,
-            userInfo: ["uuid": uuid])
-    }
-
-    init(options: MAAInstanceOptions = [:]) throws {
-        uuidPointer.initialize(to: uuid)
-        handle = AsstCreateEx(callback, uuidPointer)
+        let selfPtr = Unmanaged.passUnretained(self).toOpaque()
+        handle = AsstCreateEx(handleAsst, selfPtr)
 
         for (key, value) in options {
             let success = AsstSetInstanceOption(handle, key.rawValue, value)
@@ -63,7 +77,43 @@ actor MAAHandle {
 
     deinit {
         AsstDestroy(handle)
-        uuidPointer.deallocate()
+        callbackTask?.cancel()
+        callbackContinuation.finish()
+        pendingCalls.forEach { $1.resume(throwing: CancellationError()) }
+        messageContinuation.finish()
+    }
+
+    nonisolated func send(message: MaaMessage) {
+        self.callbackContinuation.yield(message)
+    }
+
+    private func process(_ message: MaaMessage) {
+        if message.code == 4 {
+            // AsyncCallInfo
+            let info = message.details
+            guard let callID = info["async_call_id"].int32 else {
+                logger.error("Invalid `async_call_id` in AsyncCallInfo: \(info)")
+                return
+            }
+            guard let continuation = pendingCalls.removeValue(forKey: callID) else {
+                logger.error("No pending call with ID: \(callID)")
+                return
+            }
+            continuation.resume(returning: info)
+            return
+        }
+        messageContinuation.yield(message)
+    }
+
+    private func waitFor(_ call: @autoclosure () -> AsstAsyncCallId) async throws -> JSON {
+        try await withCheckedThrowingContinuation { continuation in
+            let callID = call()
+            guard callID != 0 else {
+                continuation.resume(throwing: MaaCoreError.asyncCallFailed)
+                return
+            }
+            pendingCalls[callID] = continuation
+        }
     }
 
     func appendTask(type: MAATaskType, params: String) throws -> Int32 {
@@ -75,9 +125,15 @@ actor MAAHandle {
         }
     }
 
-    func connect(adbPath: String, address: String, profile: String) throws {
-        _ = AsstAsyncConnect(handle, adbPath, address, profile, 1)
-        guard connected else {
+    func connect(adbPath: String, address: String, profile: String) async throws {
+        let info = try await waitFor(AsstAsyncConnect(handle, adbPath, address, profile, 0))
+
+        guard let ret = info["details"]["ret"].bool else {
+            logger.error("Invalid `ret` in AsyncCallInfo: \(info)")
+            throw MaaCoreError.connectFailed
+        }
+
+        guard ret else {
             throw MaaCoreError.connectFailed
         }
     }
@@ -150,6 +206,7 @@ enum MaaCoreError: Error {
     case stopFailed
     case connectFailed
     case getImageFailed
+    case asyncCallFailed
 }
 
 enum MAAInstanceOptionKey: Int32 {
@@ -163,7 +220,6 @@ enum MAAInstanceOptionKey: Int32 {
 typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]
 
 extension Notification.Name {
-    static let MAAReceivedCallbackMessage = Notification.Name("MAAReceivedCallbackMessage")
     static let MAAPreventSystemSleepingChanged = Notification.Name("MAAPreventSystemSleepingChanged")
 }
 

@@ -36,6 +36,7 @@ import SwiftUI
 
     // MARK: - Core Callback
 
+    private var messageTask: Task<Void, Never>?
     @Published var logs = [MAALog]()
     @Published var trackTail = false
     let fileLogger: FileLogger
@@ -185,13 +186,13 @@ import SwiftUI
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
-        NotificationCenter.default
-            .publisher(for: .MAAReceivedCallbackMessage)
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: processMessage)
-            .store(in: &cancellables)
-
         initScheduledDailyTaskTimer()
+    }
+
+    deinit {
+        messageTask?.cancel()
+        Self.releaseAssertion(awakeAssertionID)
+        Self.releaseAssertion(wakeupAssertionID)
     }
 }
 
@@ -207,7 +208,16 @@ extension MAAViewModel {
 
     func ensureHandle(requireConnect: Bool = true) async throws {
         if handle == nil {
-            handle = try MAAHandle(options: instanceOptions)
+            let handle = try await MAAHandle(options: instanceOptions)
+            self.handle = handle
+            messageTask?.cancel()
+
+            let messages = handle.messages
+            messageTask = Task { [weak self, messages] in
+                for await message in messages {
+                    self?.processMessage(message)
+                }
+            }
         }
 
         guard await handle?.running == false else {
@@ -669,11 +679,19 @@ extension MAAViewModel {
         }
     }
 
+    private nonisolated static func releaseAssertion(_ assertionID: IOPMAssertionID?) {
+        if let assertionID {
+            let result = IOPMAssertionRelease(assertionID)
+            if result != kIOReturnSuccess {
+                // TODO: Replace with OSLog
+                print("Failed to release PM assertion (\(result))")
+            }
+        }
+    }
+
     private func disableAwake() {
-        guard let awakeAssertionID else { return }
-        guard let wakeupAssertionID else { return }
-        IOPMAssertionRelease(awakeAssertionID)
-        IOPMAssertionRelease(wakeupAssertionID)
+        Self.releaseAssertion(awakeAssertionID)
+        Self.releaseAssertion(wakeupAssertionID)
         self.awakeAssertionID = nil
         self.wakeupAssertionID = nil
     }
