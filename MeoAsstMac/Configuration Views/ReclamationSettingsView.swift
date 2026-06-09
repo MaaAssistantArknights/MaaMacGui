@@ -23,9 +23,9 @@ struct ReclamationSettingsView: View {
                     Text(desc).tag(mode)
                 }
             }
-            
-            if !config.tip.isEmpty {
-                Text(config.tip)
+
+            if let tip = config.tip {
+                Text(tip)
                     .font(.callout)
                     .foregroundStyle(.secondary)
                     .textSelection(.enabled)
@@ -41,6 +41,8 @@ struct ReclamationSettingsView: View {
                 }
             }
         }
+        .animation(.default, value: config.theme)
+        .animation(.default, value: config.mode)
         .animation(.default, value: config.toolsToCraftEnabled)
         .padding()
     }
