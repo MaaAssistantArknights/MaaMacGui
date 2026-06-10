@@ -14,9 +14,32 @@ struct CopilotContent: View {
     @State private var copilots = Set<URL>()
     @State private var downloading = false
     @State private var expanded = false
+    @State private var copilotSetExpanded = true
 
     var body: some View {
         List(selection: $selection) {
+            DisclosureGroup(isExpanded: $copilotSetExpanded) {
+                ForEach(viewModel.copilotSetEntries) { entry in
+                    CopilotListRow(
+                        title: entry.displayName,
+                        onSelect: { selectCopilot(url: URL(fileURLWithPath: entry.filename)) },
+                        removalTitle: "移出作业集",
+                        onRemove: { removeCopilotSetEntry(entry) })
+                }
+            } label: {
+                Text("作业集")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation {
+                            copilotSetExpanded.toggle()
+                        }
+                    }
+            }
+
             DisclosureGroup(isExpanded: $expanded) {
                 ForEach(bundledCopilots, id: \.self) { url in
                     Text(url.lastPathComponent)
@@ -51,11 +74,14 @@ struct CopilotContent: View {
         }
         .toolbar(content: listToolbar)
         .animation(.default, value: copilots)
+        .animation(.default, value: viewModel.copilotSetEntries)
+        .animation(.default, value: viewModel.useCopilotSet)
         .animation(.default, value: downloading)
         .onAppear(perform: loadUserCopilots)
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
         .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
         .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
+        .onReceive(viewModel.$downloadCopilotSet, perform: downloadCopilotSet)
         .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
         .fileImporter(
             isPresented: $viewModel.showImportCopilot,
@@ -108,6 +134,10 @@ struct CopilotContent: View {
     private func start() {
         Task {
             viewModel.copilotDetailMode = .log
+            if viewModel.useCopilotSet {
+                guard !viewModel.copilotSetEntries.isEmpty else { return }
+                viewModel.copilot = .regularList(makeCopilotListConfiguration())
+            }
             try await viewModel.startCopilot()
         }
     }
@@ -145,22 +175,74 @@ struct CopilotContent: View {
     private func downloadCopilot(id: String?) {
         guard let id else { return }
 
-        let file =
-            externalDirectory
-            .appendingPathComponent(id)
-            .appendingPathExtension("json")
-
-        let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
         Task {
             self.downloading = true
             do {
-                let data = try await URLSession.shared.data(from: url).0
-                let response = try JSONDecoder().decode(CopilotResponse.self, from: data)
-                try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
+                let file = externalDirectory.appendingPathComponent(id).appendingPathExtension("json")
+                let content = try await requestCopilotContent(id: id)
+                try content.write(toFile: file.path, atomically: true, encoding: .utf8)
                 copilots.insert(file)
                 self.selection = file
             } catch {
-                print(error)
+                viewModel.logError("下载作业失败: \(id)")
+                viewModel.logError("\(error.localizedDescription)")
+            }
+            self.downloading = false
+        }
+    }
+
+    private func downloadCopilotSet(id: String?) {
+        guard let id else { return }
+
+        Task {
+            self.downloading = true
+            do {
+                let response = try await requestCopilotSet(id: id)
+                guard response.statusCode == 200 else {
+                    if let message = response.message {
+                        viewModel.logError("\(message)")
+                    } else {
+                        viewModel.logError("作业集不存在: \(id)")
+                    }
+                    self.downloading = false
+                    return
+                }
+
+                guard let copilotIds = response.data?.copilotIds, !copilotIds.isEmpty else {
+                    viewModel.logError("作业集为空: \(id)")
+                    self.downloading = false
+                    return
+                }
+
+                var importedFiles = [URL]()
+                var copilotSetEntries = [CopilotSetTaskEntry]()
+                let fileNames = copilotSetImportFileNames(copilotIDs: copilotIds)
+
+                for (copilotId, fileName) in zip(copilotIds, fileNames) {
+                    do {
+                        let file = externalDirectory.appendingPathComponent(fileName)
+                        let content = try await requestCopilotContent(id: String(copilotId))
+                        try content.write(toFile: file.path, atomically: true, encoding: .utf8)
+                        copilots.insert(file)
+                        importedFiles.append(file)
+                        if let entries = makeCopilotSetEntries(file: file, content: content, copilotID: copilotId) {
+                            copilotSetEntries.append(contentsOf: entries)
+                        }
+                    } catch {
+                        viewModel.logError("下载作业集条目失败: \(copilotId)")
+                    }
+                }
+
+                if importedFiles.isEmpty {
+                    viewModel.logError("作业集导入失败: \(id)")
+                } else {
+                    viewModel.copilotSetEntries = copilotSetEntries
+                    viewModel.useCopilotSet = !copilotSetEntries.isEmpty
+                    self.selection = importedFiles.first
+                }
+            } catch {
+                viewModel.logError("下载作业集失败: \(id)")
+                viewModel.logError("\(error.localizedDescription)")
             }
             self.downloading = false
         }
@@ -168,6 +250,7 @@ struct CopilotContent: View {
 
     private func deleteCopilot(url: URL) {
         copilots.remove(url)
+        removeCopilotSetEntries(filename: url.path)
         guard canDelete(url) else { return }
         try? FileManager.default.removeItem(at: url)
     }
@@ -176,12 +259,31 @@ struct CopilotContent: View {
         guard let selection, let index = copilots.urls.firstIndex(of: selection) else { return }
 
         deleteCopilot(url: selection)
+        selectCopilotAfterDeletion(deletedIndex: index)
+    }
+
+    private func deleteCopilotAndSelectNext(url: URL) {
+        guard let index = copilots.urls.firstIndex(of: url) else {
+            deleteCopilot(url: url)
+            if selection == url {
+                selectCopilot(url: nil)
+            }
+            return
+        }
+
+        deleteCopilot(url: url)
+        if selection == url {
+            selectCopilotAfterDeletion(deletedIndex: index)
+        }
+    }
+
+    private func selectCopilotAfterDeletion(deletedIndex index: Int) {
 
         let urls = copilots.urls
         if index < urls.count {
-            self.selection = urls[index]
+            selectCopilot(url: urls[index])
         } else {
-            self.selection = urls.last
+            selectCopilot(url: urls.last)
         }
     }
 
@@ -194,8 +296,46 @@ struct CopilotContent: View {
     private func selectNewCopilot(url: URL?) {
         if let url {
             copilots.insert(url)
-            selection = copilots.urls.last
+            selectCopilot(url: copilots.urls.last)
         }
+    }
+
+    private func selectCopilot(url: URL?) {
+        selection = url
+        if url != nil {
+            viewModel.copilotDetailMode = .copilotConfig
+        }
+    }
+
+    private func removeCopilotSetEntry(_ entry: CopilotSetTaskEntry) {
+        viewModel.copilotSetEntries.removeAll { $0.id == entry.id }
+        if viewModel.copilotSetEntries.isEmpty {
+            viewModel.useCopilotSet = false
+        }
+    }
+
+    private func removeCopilotSetEntries(filename: String) {
+        viewModel.copilotSetEntries.removeAll { $0.filename == filename }
+        if viewModel.copilotSetEntries.isEmpty {
+            viewModel.useCopilotSet = false
+        }
+    }
+
+    private func makeCopilotListConfiguration() -> RegularCopilotListConfiguration {
+        let list = viewModel.copilotSetEntries.map {
+            CopilotListItem(filename: $0.filename, stage_name: $0.stageName, is_raid: $0.isRaid)
+        }
+        let regularConfig: RegularCopilotConfiguration? = {
+            if case .regular(let config) = viewModel.copilot {
+                return config
+            }
+            return nil
+        }()
+
+        return .init(
+            copilot_list: list,
+            formation: regularConfig?.formation ?? false,
+            add_trust: regularConfig?.add_trust ?? false)
     }
 
     // MARK: - State Wrappers
@@ -246,6 +386,50 @@ struct CopilotContent: View {
             .appendingPathComponent("cache")
             .appendingPathComponent("CombatRecord")
     }
+
+    private func requestCopilotContent(id: String) async throws -> String {
+        let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
+        let data = try await URLSession.shared.data(from: url).0
+        let response = try JSONDecoder().decode(CopilotResponse.self, from: data)
+        return response.data.content
+    }
+
+    private func requestCopilotSet(id: String) async throws -> CopilotSetResponse {
+        let url = URL(string: "https://prts.maa.plus/set/get?id=\(id)")!
+        let data = try await URLSession.shared.data(from: url).0
+        return try JSONDecoder().decode(CopilotSetResponse.self, from: data)
+    }
+
+    private func makeCopilotSetEntries(file: URL, content: String, copilotID: Int) -> [CopilotSetTaskEntry]? {
+        guard
+            let data = content.data(using: .utf8),
+            let copilot = try? JSONDecoder().decode(MAACopilot.self, from: data)
+        else {
+            viewModel.logError("作业集条目解析失败: \(copilotID)")
+            return nil
+        }
+
+        guard copilot.type != "SSS" else {
+            viewModel.logWarn("作业集列表暂不支持保全作业: \(copilotID)")
+            return nil
+        }
+
+        let stageName = StageNavigationNameResolver.resolve(
+            stageName: copilot.stage_name,
+            title: copilot.doc?.title)
+        return copilotSetTaskEntries(filename: file.path, stageName: stageName, difficulty: copilot.difficulty)
+    }
+}
+
+struct CopilotSetTaskEntry: Equatable, Identifiable {
+    let id = UUID()
+    var filename: String
+    var stageName: String
+    var isRaid: Bool
+
+    var displayName: String {
+        isRaid ? "\(stageName)-Adverse" : stageName
+    }
 }
 
 struct CopilotContent_Previews: PreviewProvider {
@@ -255,7 +439,110 @@ struct CopilotContent_Previews: PreviewProvider {
     }
 }
 
+private struct CopilotListRow: View {
+    let title: String
+    var onSelect: () -> Void
+    var removalTitle: String?
+    var onRemove: (() -> Void)?
+
+    var body: some View {
+        Button(action: onSelect) {
+            Text(title)
+                .lineLimit(1)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            if let removalTitle, let onRemove {
+                Button(removalTitle, action: onRemove)
+            }
+        }
+    }
+}
+
 // MARK: - Value Extensions
+
+private func copilotSetImportFileNames(copilotIDs: [Int]) -> [String] {
+    let width = max(2, String(copilotIDs.count).count)
+    return copilotIDs.enumerated().map { index, copilotID in
+        "\(String(format: "%0*d", width, index + 1))_\(copilotID).json"
+    }
+}
+
+private func copilotSetTaskEntries(filename: String, stageName: String, difficulty: Int?) -> [CopilotSetTaskEntry] {
+    let difficulty = difficulty ?? 0
+    let supportsNormal = difficulty == 0 || difficulty & 1 != 0
+    let supportsRaid = difficulty & 2 != 0
+
+    var entries = [CopilotSetTaskEntry]()
+    if supportsNormal {
+        entries.append(.init(filename: filename, stageName: stageName, isRaid: false))
+    }
+    if supportsRaid {
+        entries.append(.init(filename: filename, stageName: stageName, isRaid: true))
+    }
+    return entries
+}
+
+private enum StageNavigationNameResolver {
+    private static let stageCodeByIdentifier: [String: String] = {
+        let url = Bundle.main.resourceURL?
+            .appendingPathComponent("resource")
+            .appendingPathComponent("Arknights-Tile-Pos")
+            .appendingPathComponent("overview")
+            .appendingPathExtension("json")
+
+        guard
+            let url,
+            let data = try? Data(contentsOf: url),
+            let overview = try? JSONDecoder().decode([String: StageOverview].self, from: data)
+        else { return [:] }
+
+        var result = [String: String]()
+        for (_, stage) in overview {
+            guard let code = stage.code else { continue }
+            for identifier in [stage.code, stage.name, stage.stageId, stage.levelId].compactMap({ $0 }) {
+                result[identifier] = code
+            }
+        }
+        return result
+    }()
+
+    static func resolve(stageName: String, title: String?) -> String {
+        if let code = stageCodeByIdentifier[stageName] {
+            return code
+        }
+
+        if let title, let code = extractStageCode(from: title) {
+            return code
+        }
+
+        return stageName
+    }
+
+    private static func extractStageCode(from title: String) -> String? {
+        let pattern = #"(?:[A-Za-z]{0,3})(?:\d{0,2})-(?:(?:A|B|C|D|EX|S|TR|MO)-?)?(?:\d{1,2})"#
+        guard let regex = try? NSRegularExpression(pattern: pattern, options: [.caseInsensitive]) else {
+            return nil
+        }
+
+        let range = NSRange(title.startIndex..<title.endIndex, in: title)
+        guard
+            let match = regex.firstMatch(in: title, range: range),
+            let matchRange = Range(match.range, in: title)
+        else { return nil }
+
+        return String(title[matchRange])
+    }
+
+    private struct StageOverview: Decodable {
+        let code: String?
+        let name: String?
+        let stageId: String?
+        let levelId: String?
+    }
+}
 
 extension URL {
     fileprivate var copilots: [URL] {
@@ -287,6 +574,26 @@ private struct CopilotResponse: Codable {
 
     struct CopilotData: Codable {
         let content: String
+    }
+}
+
+private struct CopilotSetResponse: Codable {
+    let statusCode: Int
+    let message: String?
+    let data: CopilotSetData?
+
+    enum CodingKeys: String, CodingKey {
+        case statusCode = "status_code"
+        case message
+        case data
+    }
+
+    struct CopilotSetData: Codable {
+        let copilotIds: [Int]
+
+        enum CodingKeys: String, CodingKey {
+            case copilotIds = "copilot_ids"
+        }
     }
 }
 

@@ -14,6 +14,19 @@ struct RegularCopilotConfiguration: Codable {
     var add_trust = false
 }
 
+struct RegularCopilotListConfiguration: Codable {
+    var enable = true
+    var copilot_list: [CopilotListItem]
+    var formation = false
+    var add_trust = false
+}
+
+struct CopilotListItem: Codable, Equatable {
+    var filename: String
+    var stage_name: String
+    var is_raid = false
+}
+
 struct SSSCopilotConfiguration: Codable {
     var enable = true
     var filename: String
@@ -31,14 +44,32 @@ struct VideoRecognitionConfiguration: Codable {
 
 enum CopilotConfiguration {
     case regular(RegularCopilotConfiguration)
+    case regularList(RegularCopilotListConfiguration)
     case sss(SSSCopilotConfiguration)
 
     var params: String? {
         switch self {
         case .regular(let config):
             return try? config.jsonString()
+        case .regularList(let config):
+            return try? config.jsonString()
         case .sss(let config):
             return try? config.jsonString()
+        }
+    }
+
+    func applyingCommonOptions(formation: Bool, addTrust: Bool) -> Self {
+        switch self {
+        case .regular(var config):
+            config.formation = formation
+            config.add_trust = addTrust
+            return .regular(config)
+        case .regularList(var config):
+            config.formation = formation
+            config.add_trust = addTrust
+            return .regularList(config)
+        case .sss:
+            return self
         }
     }
 }

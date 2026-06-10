@@ -13,6 +13,7 @@ struct MAACopilot: Codable, Equatable {
     let groups: [Group]?
     let minimum_required: String
     let doc: Documentation?
+    let difficulty: Int?
 
     // MARK: SSS
 
@@ -36,6 +37,10 @@ struct MAACopilot: Codable, Equatable {
         let title_color: String?
         let details: String?
         let details_color: String?
+    }
+
+    var isRaid: Bool {
+        difficulty == 2
     }
 }
 
