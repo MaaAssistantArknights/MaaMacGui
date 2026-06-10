@@ -46,6 +46,7 @@ struct MiniGameView: View {
 }
 
 enum MiniGameOption: String, CaseIterable {
+    case positionalFootballTournament
     case rebuildingMandate
     case honeyFruit
     case greenGrass
@@ -60,6 +61,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var taskName: String {
         switch self {
+        case .positionalFootballTournament:
+            return "MiniGame@PF@Begin"
         case .rebuildingMandate:
             return "MiniGame@RebuildingMandate@Begin"
         case .honeyFruit:
@@ -87,6 +90,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var displayName: String {
         switch self {
+        case .positionalFootballTournament:
+            return String(localized: "阵地足球锦标赛")
         case .rebuildingMandate:
             return String(localized: "RM-次生预案")
         case .honeyFruit:
@@ -114,6 +119,13 @@ enum MiniGameOption: String, CaseIterable {
 
     var instructions: String {
         switch self {
+        case .positionalFootballTournament:
+            String(localized:
+                """
+                手动通过教程关卡后，进入 PF-1 进行手动编队，
+                要求仅编入 ｢克洛丝｣ 单个干员，
+                并回到在活动关卡界面点击 PF-1 后开始任务。
+                """)
         case .rebuildingMandate:
             String(localized:
                 """
