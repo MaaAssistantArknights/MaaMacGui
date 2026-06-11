@@ -11,18 +11,29 @@ struct CopilotView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     let url: URL
 
+    /// In preview mode (used by the copilot-list detail pane) only the documentation is
+    /// shown — the single-copilot configuration toggles are hidden and `viewModel.copilot`
+    /// is not modified, so previewing a list entry never overwrites the single-copilot run state.
+    var previewOnly = false
+
     var body: some View {
         if let copilot = MAACopilot(url: url) {
             VStack(spacing: 20) {
-                pilotConfiguration()
+                if !previewOnly {
+                    pilotConfiguration()
 
-                Divider()
+                    Divider()
+                }
 
                 ScrollView {
                     pilotDescription(pilot: copilot)
                 }
             }
-            .task(id: url) { updateCopilot() }
+            .task(id: url) {
+                if !previewOnly {
+                    updateCopilot()
+                }
+            }
         } else {
             Text("文件格式错误")
         }
@@ -67,6 +78,10 @@ struct CopilotView: View {
                 TextField("1", value: binding.loop_times, format: .number)
             }
             .frame(maxWidth: 130)
+
+        case .list:
+            // 作业集的配置项在 CopilotListView 中展示，此处单作业详情区留空
+            EmptyView()
 
         case .none:
             EmptyView()

@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct FightSettingsView: View {
+    @EnvironmentObject private var viewModel: MAAViewModel
     @Binding var config: FightConfiguration
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
+    @AppStorage("MAAHideUnavailableStage") private var hideUnavailableStage = false
 
     var body: some View {
         Form {
@@ -22,17 +24,21 @@ struct FightSettingsView: View {
                     } else {
                         Picker("关卡选择", selection: $config.stage) {
                             Text("当前/上次").tag("")
-                            Text("1-7").tag("1-7")
-                            Text("CE-6").tag("CE-6")
-                            Text("AP-5").tag("AP-5")
-                            Text("CA-5").tag("CA-5")
-                            Text("LS-6").tag("LS-6")
-                            Text("剿灭模式").tag("Annihilation")
+                            ForEach(pickerStages) { stage in
+                                stageLabel(stage).tag(stage.value)
+                            }
                         }
                     }
                     Toggle("手动输入关卡名", isOn: isUsingCustomStage)
                 }
                 .animation(.default, value: config.stage)
+
+                if !useCustomStage && !stageNotListed {
+                    Toggle("隐藏未开放关卡", isOn: $hideUnavailableStage)
+                    if let tip = selectedStageTip {
+                        Text(tip).font(.caption).foregroundStyle(.secondary)
+                    }
+                }
             }
 
             if useCustomStage || stageNotListed {
@@ -210,12 +216,73 @@ struct FightSettingsView: View {
         }
     }
 
-    private var stageNotListed: Bool { !listedStages.contains(config.stage) }
-    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+    // MARK: - Stage List
+
+    /// In-game weekday (accounts for the 04:00 server day-rollover), per current channel.
+    private var currentWeekday: Int {
+        GameCalendar.yjWeekday(channel: viewModel.clientChannel)
+    }
+
+    /// Stages shown in the picker, respecting the "hide unavailable" toggle.
+    /// The currently-selected stage is always kept visible so the picker never shows blank.
+    private var pickerStages: [MAAStageInfo] {
+        var listed = viewModel.stages.listedStages(hideClosed: hideUnavailableStage, weekday: currentWeekday)
+        if !config.stage.isEmpty, !listed.contains(where: { $0.value == config.stage }),
+            let selected = viewModel.stages.stageInfo(for: config.stage)
+        {
+            listed.insert(selected, at: 0)
+        }
+        return listed
+    }
+
+    /// Tip text of the currently-selected stage (e.g. open days or activity description),
+    /// combined with the stage's drop material when available.
+    private var selectedStageTip: String? {
+        guard let stage = viewModel.stages.stageInfo(for: config.stage) else {
+            return nil
+        }
+
+        var parts: [String] = []
+        if !stage.tip.isEmpty {
+            parts.append(stage.tip)
+        }
+        if let drop = dropDescription(for: stage) {
+            parts.append(String(localized: "可刷取：\(drop)"))
+        }
+        return parts.isEmpty ? nil : parts.joined(separator: "\n")
+    }
+
+    /// Human-readable drop material for a stage. The `drop` field is either an item id
+    /// (resolved to its localized name via item_index) or already a descriptive string.
+    private func dropDescription(for stage: MAAStageInfo) -> String? {
+        guard let drop = stage.drop, !drop.isEmpty else { return nil }
+        if let idx = FightConfiguration.id2index[drop] {
+            return FightConfiguration.dropItems[idx].item.name
+        }
+        return drop
+    }
+
+    /// Renders a stage entry: dimmed when closed today, strikethrough when its activity expired.
+    @ViewBuilder private func stageLabel(_ stage: MAAStageInfo) -> some View {
+        let isOpen = stage.isStageOpen(weekday: currentWeekday)
+        if stage.isOutdated {
+            Text(stage.display).strikethrough().foregroundStyle(.red)
+        } else if isOpen {
+            Text(stage.display)
+        } else {
+            Text(stage.display).foregroundStyle(.secondary)
+        }
+    }
+
+    private var stageNotListed: Bool {
+        guard !config.stage.isEmpty else { return false }
+        return viewModel.stages.stageInfo(for: config.stage) == nil
+    }
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         FightSettingsView(config: .constant(.init()))
+            .environmentObject(MAAViewModel())
     }
 }

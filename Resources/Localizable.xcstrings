@@ -4925,6 +4925,486 @@
           }
         }
       }
+    },
+    "可刷取：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drops: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "획득 가능: %@"
+          }
+        }
+      }
+    },
+    "PR-B-1/2: 狙击、术师芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-B-1/2: Sniper & Caster Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-B-1/2: 스나이퍼·캐스터 칩"
+          }
+        }
+      }
+    },
+    "CA-5: 技能书" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CA-5: Skill Summary"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CA-5: 스킬 요약"
+          }
+        }
+      }
+    },
+    "LS-6: 经验书" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LS-6: EXP"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LS-6: 경험치"
+          }
+        }
+      }
+    },
+    "AP-5: 红票" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AP-5: Red Cert."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AP-5: 붉은 인증서"
+          }
+        }
+      }
+    },
+    "作业集为空，请先勾选作业" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The copilot set is empty. Please select operations first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트가 비어 있습니다. 먼저 작전을 선택하세요."
+          }
+        }
+      }
+    },
+    "PR-C-1/2: 先锋、辅助芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-C-1/2: Vanguard & Supporter Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-C-1/2: 뱅가드·서포터 칩"
+          }
+        }
+      }
+    },
+    "导入作业集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Import Copilot Set"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트 가져오기"
+          }
+        }
+      }
+    },
+    "突袭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raid"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비상 작전"
+          }
+        }
+      }
+    },
+    "正在导入作业集，共 %lld 份作业……" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Importing copilot set, %lld operations in total…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트 가져오는 중, 총 %lld개…"
+          }
+        }
+      }
+    },
+    "作业集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copilot Set"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트"
+          }
+        }
+      }
+    },
+    "作业集获取失败，请确认这是作业集神秘代码而非单份作业: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to fetch copilot set. Make sure this is a set code, not a single operation: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트를 가져오지 못했습니다. 단일 작전이 아닌 세트 코드인지 확인하세요: %@"
+          }
+        }
+      }
+    },
+    "作业解析失败 (%lld)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to parse operation (%lld)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 분석 실패 (%lld)"
+          }
+        }
+      }
+    },
+    "未知关卡" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unknown Stage"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 스테이지"
+          }
+        }
+      }
+    },
+    "将当前作业加入作业集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add the current copilot to the set"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 작전을 세트에 추가"
+          }
+        }
+      }
+    },
+    "随机助战" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random Support"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무작위 지원"
+          }
+        }
+      }
+    },
+    "PR-A-1/2: 重装、医疗芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-A-1/2: Guard & Medic Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-A-1/2: 디펜더·메딕 칩"
+          }
+        }
+      }
+    },
+    "单个作业" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Single Copilot"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단일 작전"
+          }
+        }
+      }
+    },
+    "隐藏未开放关卡" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hide Unavailable Stages"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미개방 스테이지 숨기기"
+          }
+        }
+      }
+    },
+    "自动使用理智药" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto Use Sanity Potion"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이성 회복제 자동 사용"
+          }
+        }
+      }
+    },
+    "作业集导入完成，成功 %lld 份" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copilot set imported: %lld succeeded"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트 가져오기 완료: %lld개 성공"
+          }
+        }
+      }
+    },
+    "加入作业集" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to Set"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세트에 추가"
+          }
+        }
+      }
+    },
+    "助战干员" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support Unit"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원 오퍼레이터"
+          }
+        }
+      }
+    },
+    "仅在需要时" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When Needed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필요할 때만"
+          }
+        }
+      }
+    },
+    "作业集为空，请在右侧作业详情点击「加入作业集」" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The copilot set is empty. Add operations via \"Add to Set\" in the detail panel."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트가 비어 있습니다. 상세 패널의 \"세트에 추가\"로 작전을 추가하세요."
+          }
+        }
+      }
+    },
+    "PR-D-1/2: 近卫、特种芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-D-1/2: Guard & Specialist Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-D-1/2: 가드·스페셜리스트 칩"
+          }
+        }
+      }
+    },
+    "关卡数据热更新失败: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stage data hot-update failed: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스테이지 데이터 핫 업데이트 실패: %@"
+          }
+        }
+      }
+    },
+    "SK-5: 碳条" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5: Carbon"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5: 카본"
+          }
+        }
+      }
+    },
+    "作业集导入完成，成功 %lld/%lld 份，部分作业下载失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copilot set imported: %lld/%lld succeeded, some downloads failed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작전 세트 가져오기: %lld/%lld개 성공, 일부 다운로드 실패"
+          }
+        }
+      }
+    },
+    "CE-6: 龙门币" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CE-6: LMD"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CE-6: 용문폐"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
