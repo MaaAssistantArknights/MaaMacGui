@@ -2690,6 +2690,34 @@
         }
       }
     },
+    "启用周计划" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable Weekly Schedule"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "週間スケジュールを有効にする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "주간 일정 활성화"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟用週計劃"
+          }
+        }
+      }
+    },
     "周常任务" : {
       "localizations" : {
         "ko" : {
@@ -3698,6 +3726,34 @@
         }
       }
     },
+    "此处星期根据游戏时间计算（每日 4:00 刷新），而非现实时间。例如游戏在 4:00 刷新，则 3:59 仍算作前一天。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The day of week here is based on in-game time (daily reset at 4:00), not real time. For example, if the game resets at 4:00, 3:59 is still counted as the previous day."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここでの曜日はゲーム内時間（毎日4:00リセット）に基づいて計算され、実際の時間ではありません。例えば、ゲームが4:00にリセットされる場合、3:59はまだ前日としてカウントされます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기서 요일은 게임 내 시간(매일 4:00 초기화)을 기준으로 계산되며 실제 시간이 아닙니다. 예를 들어 게임이 4:00에 초기화되면 3:59는 여전히 전날로 계산됩니다."
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此處星期根據遊戲時間計算（每日 4:00 刷新），而非現實時間。例如遊戲在 4:00 刷新，則 3:59 仍算作前一天。"
+          }
+        }
+      }
+    },
     "每次执行时最大招募次数: " : {
       "localizations" : {
         "ko" : {
@@ -4633,6 +4689,34 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "리소스 업데이트 출처"
+          }
+        }
+      }
+    },
+    "跳过刷理智任务（今日不在周计划内）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skipped fight task (not in today's weekly schedule)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戦闘任務をスキップしました（本日の週間スケジュールに含まれていません）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전투 작업을 건너뜁니다 (오늘의 주간 일정에 없음)"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳過刷理智任務（今日不在週計劃內）"
           }
         }
       }
