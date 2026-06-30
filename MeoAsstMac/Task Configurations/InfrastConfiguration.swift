@@ -38,7 +38,13 @@ struct InfrastConfiguration: MAATaskConfiguration {
         case Chip
     }
 
+    enum RotationStyle: String, CaseIterable, Codable {
+        case game
+        case station_preset
+    }
+
     var mode: Mode
+    var rotation_style: RotationStyle
 
     var facility: [Facility]
     var drones: DroneUsage
@@ -50,51 +56,116 @@ struct InfrastConfiguration: MAATaskConfiguration {
 
     var continue_training: Bool
     var reception_message_board: Bool
+    var reception_receive_clue: Bool
+    var reception_clue_exchange: Bool
+    var reception_send_clue: Bool
 
     var filename: String
     var plan_index: Int
+    var auto_advance_plan_index: Bool = true
+
+    var preset_layout: StationPresetLayout
+    var preset_selected_rooms: [String]
+    var preset_rest: Bool
+    var station_preset_drones: StationPresetDrones
+
+    var usesCustomJsonPlan: Bool {
+        mode == .custom
+    }
+
+    var usesRotationStationPreset: Bool {
+        mode == .rotation && rotation_style == .station_preset
+    }
 
     var title: String {
         type.description
     }
 
     var subtitle: String {
-        if mode != .custom {
-            return String(localized: "默认换班")
+        if usesRotationStationPreset {
+            return String(localized: "进驻总览设施点预设")
         }
 
-        if let plan = try? MAAInfrast(path: filename) {
-            return plan.title ?? filename
-        } else {
+        if usesCustomJsonPlan {
+            if let plan = try? MAAInfrast(path: filename) {
+                return plan.title ?? filename
+            }
             return String(localized: "无法识别配置")
         }
+
+        if mode == .rotation {
+            return String(localized: "队列轮换")
+        }
+
+        return String(localized: "默认换班")
     }
 
     var summary: String {
-        if mode != .custom {
-            return String(localized: "单设施最优解")
+        if usesRotationStationPreset {
+            let count = preset_selected_rooms.count
+            return String(localized: "设施预设 · \(count) 个设施")
         }
 
-        if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
-            return plan.plans[plan_index].name ?? "\(plan_index)"
-        } else {
+        if usesCustomJsonPlan {
+            if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
+                return plan.plans[plan_index].name ?? "\(plan_index)"
+            }
             return String(localized: "未知排班")
         }
+
+        if mode == .rotation {
+            return String(localized: "游戏内一键轮换")
+        }
+
+        return String(localized: "单设施最优解")
     }
 
     var projectedTask: MAATask {
         .infrast(self)
     }
 
-    typealias Params = Self
+    typealias Params = InfrastTaskAPIParams
 
-    var params: Self {
-        self
+    var params: InfrastTaskAPIParams {
+        InfrastTaskAPIParams(configuration: self)
     }
 
-    private var customPlan: MAAInfrast? {
-        guard mode == .custom else { return nil }
-        return try? MAAInfrast(path: filename)
+    static func makeForNewTask() -> InfrastConfiguration {
+        var config = InfrastConfiguration()
+        let layout = StationPresetLayoutStore.lastUsed
+        config.preset_layout = layout
+        config.preset_selected_rooms = StationPresetRoomList.defaultSelection(for: layout)
+        return config
+    }
+
+    mutating func syncPresetRoomsAfterLayoutChange() {
+        preset_layout.clamp()
+        StationPresetLayoutStore.lastUsed = preset_layout
+        let pruned = StationPresetRoomList.pruneSelection(preset_selected_rooms, layout: preset_layout)
+        if pruned.isEmpty {
+            preset_selected_rooms = StationPresetRoomList.defaultSelection(for: preset_layout)
+        } else {
+            preset_selected_rooms = pruned
+        }
+    }
+
+    mutating func selectAllPresetRooms() {
+        preset_selected_rooms = StationPresetRoomList.rooms(for: preset_layout).map(\.id)
+    }
+
+    mutating func clearAllPresetRooms() {
+        preset_selected_rooms = []
+    }
+}
+
+extension InfrastConfiguration.RotationStyle: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .game:
+            return String(localized: "游戏内一键轮换")
+        case .station_preset:
+            return String(localized: "进驻总览设施点预设")
+        }
     }
 }
 
@@ -150,6 +221,8 @@ extension InfrastConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.mode = try container.decodeIfPresent(InfrastConfiguration.Mode.self, forKey: .mode) ?? .default
+        self.rotation_style =
+            try container.decodeIfPresent(InfrastConfiguration.RotationStyle.self, forKey: .rotation_style) ?? .game
         self.facility =
             try container.decodeIfPresent([InfrastConfiguration.Facility].self, forKey: .facility) ?? [
                 .Mfg, .Trade, .Control, .Power, .Reception, .Office, .Dorm, .Processing, .Training,
@@ -162,8 +235,45 @@ extension InfrastConfiguration {
         self.dorm_trust_enabled = try container.decodeIfPresent(Bool.self, forKey: .dorm_trust_enabled) ?? false
         self.filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
         self.plan_index = try container.decodeIfPresent(Int.self, forKey: .plan_index) ?? 0
+        self.auto_advance_plan_index = try container.decodeIfPresent(Bool.self, forKey: .auto_advance_plan_index) ?? true
         self.continue_training = try container.decodeIfPresent(Bool.self, forKey: .continue_training) ?? true
         self.reception_message_board =
             try container.decodeIfPresent(Bool.self, forKey: .reception_message_board) ?? true
+        self.reception_receive_clue =
+            try container.decodeIfPresent(Bool.self, forKey: .reception_receive_clue) ?? true
+        self.reception_clue_exchange =
+            try container.decodeIfPresent(Bool.self, forKey: .reception_clue_exchange) ?? true
+        self.reception_send_clue = try container.decodeIfPresent(Bool.self, forKey: .reception_send_clue) ?? true
+
+        let defaultLayout = StationPresetLayoutStore.lastUsed
+        self.preset_layout = try container.decodeIfPresent(StationPresetLayout.self, forKey: .preset_layout) ?? defaultLayout
+        self.preset_selected_rooms =
+            try container.decodeIfPresent([String].self, forKey: .preset_selected_rooms)
+            ?? StationPresetRoomList.defaultSelection(for: preset_layout)
+        self.preset_rest = try container.decodeIfPresent(Bool.self, forKey: .preset_rest) ?? true
+        self.station_preset_drones =
+            try container.decodeIfPresent(StationPresetDrones.self, forKey: .station_preset_drones) ?? .init()
+    }
+}
+
+extension StationPresetDrones.Room: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .manufacture:
+            return String(localized: "制造站")
+        case .trading:
+            return String(localized: "贸易站")
+        }
+    }
+}
+
+extension StationPresetDrones.Order: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .pre:
+            return String(localized: "换班前")
+        case .post:
+            return String(localized: "换班后")
+        }
     }
 }

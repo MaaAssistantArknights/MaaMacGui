@@ -22,7 +22,7 @@ enum MAATask: Codable, Equatable {
 let defaultTaskConfigurations: [any MAATaskConfiguration] = [
     StartupConfiguration(),
     RecruitConfiguration(),
-    InfrastConfiguration(),
+    InfrastConfiguration.makeForNewTask(),
     FightConfiguration(),
     MallConfiguration(),
     AwardConfiguration(),

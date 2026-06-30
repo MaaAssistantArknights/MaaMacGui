@@ -19,6 +19,7 @@
 		83264A2D29EBEDD80074E33A /* FightConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A2C29EBEDD80074E33A /* FightConfiguration.swift */; };
 		83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A2E29EBEE140074E33A /* RecruitConfiguration.swift */; };
 		83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */; };
+		83AA000129F000010074E33A /* StationPresetSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AA000029F000010074E33A /* StationPresetSupport.swift */; };
 		83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3229EBEE680074E33A /* MallConfiguration.swift */; };
 		83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */; };
 		83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3A29EC0F2E0074E33A /* LogView.swift */; };
@@ -142,6 +143,7 @@
 		83264A2C29EBEDD80074E33A /* FightConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightConfiguration.swift; sourceTree = "<group>"; };
 		83264A2E29EBEE140074E33A /* RecruitConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitConfiguration.swift; sourceTree = "<group>"; };
 		83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastConfiguration.swift; sourceTree = "<group>"; };
+		83AA000029F000010074E33A /* StationPresetSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationPresetSupport.swift; sourceTree = "<group>"; };
 		83264A3229EBEE680074E33A /* MallConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallConfiguration.swift; sourceTree = "<group>"; };
 		83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardConfiguration.swift; sourceTree = "<group>"; };
 		83264A3A29EC0F2E0074E33A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
@@ -265,6 +267,7 @@
 				83264A2C29EBEDD80074E33A /* FightConfiguration.swift */,
 				83264A2E29EBEE140074E33A /* RecruitConfiguration.swift */,
 				83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */,
+				83AA000029F000010074E33A /* StationPresetSupport.swift */,
 				83264A3229EBEE680074E33A /* MallConfiguration.swift */,
 				83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */,
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
@@ -625,6 +628,7 @@
 				8352529F2D533F9000C6D6D3 /* MirrorChyan.swift in Sources */,
 				835252A32D53567D00C6D6D3 /* ResourceUpdater.swift in Sources */,
 				83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */,
+				83AA000129F000010074E33A /* StationPresetSupport.swift in Sources */,
 				8347B5AD2CDF8B2800AEB627 /* FileManager+unzipProgress.swift in Sources */,
 				83264A2929EBEBB00074E33A /* MAATaskConfiguration.swift in Sources */,
 				83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */,
