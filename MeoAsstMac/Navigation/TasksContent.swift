@@ -12,30 +12,35 @@ struct TasksContent: View {
     @Binding var selection: UUID?
 
     var body: some View {
-        List(selection: $selection) {
-            ForEach($viewModel.tasks, id: \.id) { $task in
-                switch task.task {
-                case .startup(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .closedown(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .recruit(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .infrast(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .fight(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .mall(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .award(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .roguelike(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
-                case .reclamation(let config):
-                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
+        VStack(spacing: 0) {
+            List(selection: $selection) {
+                ForEach($viewModel.tasks, id: \.id) { $task in
+                    switch task.task {
+                    case .startup(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .closedown(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .recruit(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .infrast(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .fight(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .mall(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .award(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .roguelike(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    case .reclamation(let config):
+                        TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                    }
                 }
+                .onMove(perform: moveTask)
             }
-            .onMove(perform: moveTask)
+
+            Divider()
+            TodayStageTipView()
         }
         .onChange(of: selection, perform: updateViewMode)
         .toolbar(content: listToolbar)

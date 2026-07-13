@@ -12,4 +12,5 @@ enum MAAError: Error {
     case gameStartFailed
     case handleNotRunning
     case imageUnavailable
+    case fightTaskAppendFailed(String)
 }

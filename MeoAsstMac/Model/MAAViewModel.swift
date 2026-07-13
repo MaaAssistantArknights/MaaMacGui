@@ -64,6 +64,7 @@ import SwiftUI
     }
 
     @Published var taskStatus: [UUID: TaskStatus] = [:]
+    @Published private(set) var stageCatalog = StageCatalog()
 
     var tasksDirectory: URL {
         Self.userDirectory.appendingPathComponent("DailyTasks", isDirectory: true)
@@ -280,6 +281,7 @@ extension MAAViewModel {
     func reloadResources(channel: MAAClientChannel) async throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         try await loadResource(url: documentsDirectory, channel: channel)
+        reloadStageCatalog(at: documentsDirectory.appendingPathComponent("cache", isDirectory: true))
     }
 
     /// Load base resources and channel-specific resources.
@@ -319,7 +321,7 @@ extension MAAViewModel {
         let otaFetcher = OTAFetcher()
         var files = [
             (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
-            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
+            (path: "gui/StageActivityV2.json", name: "gui/StageActivityV2.json"),
         ]
         if channel.isGlobal {
             files.append(
@@ -363,13 +365,19 @@ extension MAAViewModel {
             try? FileManager.default.removeItem(at: url)
         }
 
+        let cachedBaseURL = documentsDirectory.appendingPathComponent("cache", isDirectory: true)
         do {
             try await fetchOTAResource(channel: channel)
-            let cachedBaseURL = documentsDirectory.appendingPathComponent("cache")
-            try await loadResource(url: cachedBaseURL, channel: channel)
         } catch {
             logError("关卡数据获取失败: \(error.localizedDescription)")
         }
+
+        do {
+            try await loadResource(url: cachedBaseURL, channel: channel)
+        } catch {
+            logError("缓存资源加载失败: \(error.localizedDescription)")
+        }
+        reloadStageCatalog(at: cachedBaseURL)
 
         #if DEBUG
         guard false else { return }
@@ -408,6 +416,23 @@ extension MAAViewModel {
         }
     }
 
+    private func reloadStageCatalog(at cacheURL: URL) {
+        let url = cacheURL.appendingPathComponent("gui/StageActivityV2.json", isDirectory: false)
+        guard let data = try? Data(contentsOf: url) else {
+            stageCatalog = StageCatalog()
+            resetUnavailableFightStages(now: Date())
+            return
+        }
+
+        do {
+            stageCatalog = try StageCatalog(data: data)
+        } catch {
+            stageCatalog = StageCatalog()
+            logError("活动关卡数据解析失败: \(error.localizedDescription)")
+        }
+        resetUnavailableFightStages(now: Date())
+    }
+
     private func handleEarlyReturn(backTo: Status) {
         if status == .pending {
             status = backTo
@@ -436,9 +461,14 @@ extension MAAViewModel {
     func tryStartTasks() async {
         do {
             try await startTasks()
-        } catch {
+        } catch MAAError.fightTaskAppendFailed(let stage) {
+            logError("无法添加刷理智任务：关卡 \(stage) 或其他任务参数无效")
+            logInfo("请检查手动输入的关卡名和刷理智设置，或改用关卡选择器")
+        } catch MaaCoreError.connectFailed {
             logError("ConnectFailed")
             logInfo("CheckSettings")
+        } catch {
+            logError("任务启动失败：\(error.localizedDescription)")
         }
     }
 
@@ -472,19 +502,56 @@ extension MAAViewModel {
             tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        resetUnavailableFightStages(now: Date())
+
         try await ensureHandle()
 
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
-                taskIDMap[coreID] = task.id
+            do {
+                if let coreID = try await handle?.appendTask(task.task) {
+                    taskIDMap[coreID] = task.id
+                }
+            } catch MaaCoreError.appendTaskFailed {
+                discardHandleAfterAppendFailure()
+                if case .fight(let config) = task.task {
+                    throw MAAError.fightTaskAppendFailed(config.stage)
+                }
+                throw MaaCoreError.appendTaskFailed
             }
         }
 
         try await handle?.start()
 
         status = .busy
+    }
+
+    private func discardHandleAfterAppendFailure() {
+        messageTask?.cancel()
+        messageTask = nil
+        handle = nil
+        taskIDMap.removeAll()
+        taskStatus.removeAll()
+    }
+
+    private func resetUnavailableFightStages(now: Date) {
+        let server = StageServer(channelRawValue: clientChannel.rawValue)
+        for (index, task) in tasks.enumerated() {
+            guard task.enabled, case .fight(var config) = task.task else { continue }
+
+            let previousStage = config.stage
+            let normalizedStage = stageCatalog.normalizedStageID(
+                previousStage,
+                server: server,
+                now: now,
+                coreVersion: MAAProvider.version)
+            guard normalizedStage != previousStage else { continue }
+
+            config.stage = normalizedStage
+            tasks[index] = .init(id: task.id, task: .fight(config), enabled: task.enabled)
+            logWarn("所选关卡 \(previousStage) 当前不可用，已重置为当前/上次")
+        }
     }
 
     private func initScheduledDailyTaskTimer() {

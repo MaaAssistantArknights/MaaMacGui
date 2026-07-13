@@ -8,35 +8,17 @@
 import SwiftUI
 
 struct FightSettingsView: View {
+    @EnvironmentObject private var viewModel: MAAViewModel
     @Binding var config: FightConfiguration
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
+    @AppStorage("MAAShowUnavailableStages") private var showUnavailableStages = false
 
     var body: some View {
         Form {
-            Section {
-                HStack(spacing: 20) {
-                    if useCustomStage || stageNotListed {
-                        TextField("关卡名", text: $config.stage)
-                    } else {
-                        Picker("关卡选择", selection: $config.stage) {
-                            Text("当前/上次").tag("")
-                            Text("1-7").tag("1-7")
-                            Text("CE-6").tag("CE-6")
-                            Text("AP-5").tag("AP-5")
-                            Text("CA-5").tag("CA-5")
-                            Text("LS-6").tag("LS-6")
-                            Text("剿灭模式").tag("Annihilation")
-                        }
-                    }
-                    Toggle("手动输入关卡名", isOn: isUsingCustomStage)
-                }
-                .animation(.default, value: config.stage)
-            }
-
-            if useCustomStage || stageNotListed {
-                Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                stageSettings(now: context.date)
             }
 
             Divider()
@@ -210,12 +192,123 @@ struct FightSettingsView: View {
         }
     }
 
-    private var stageNotListed: Bool { !listedStages.contains(config.stage) }
-    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+    @ViewBuilder
+    private func stageSettings(now: Date) -> some View {
+        Section {
+            HStack(spacing: 20) {
+                if useCustomStage || stageNotListed {
+                    TextField("关卡名", text: $config.stage)
+                } else {
+                    Picker("关卡选择", selection: $config.stage) {
+                        stageOptions(now: now)
+                    }
+                }
+                Toggle("手动输入关卡名", isOn: isUsingCustomStage)
+            }
+            .animation(.default, value: config.stage)
+
+            if !useCustomStage && !stageNotListed {
+                Toggle("显示今日未开放关卡", isOn: $showUnavailableStages)
+            }
+        }
+
+        if useCustomStage || stageNotListed {
+            Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
+        } else if let selected = selectedUnavailableStage(now: now) {
+            switch selected.availability {
+            case .closedForWeeklySchedule:
+                Text("所选关卡 \(selected.stage.id) 今日未开放，执行前将自动重置为当前/上次")
+                    .foregroundStyle(.orange)
+            case .activityNotStarted, .activityExpired:
+                Text("所选活动关卡 \(selected.stage.id) 尚未开始或已经结束，执行前将自动重置为当前/上次")
+                    .foregroundStyle(.orange)
+            case .unsupportedCoreVersion(let required):
+                Text("所选活动关卡需要 MaaCore \(required) 或更高版本")
+                    .foregroundStyle(.orange)
+            case .open:
+                EmptyView()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func stageOptions(now: Date) -> some View {
+        let stages = pickerStages(now: now)
+        let permanent = stages.filter { $0.kind == .permanent }
+        let resources = stages.filter {
+            ($0.kind == .resource || $0.kind == .chip) && availability(of: $0, now: now).isOpen
+        }
+        let sideStories = stages.filter { $0.kind == .sideStory && availability(of: $0, now: now).isOpen }
+        let unavailable = stages.filter { !availability(of: $0, now: now).isOpen }
+
+        Section("常用关卡") {
+            ForEach(permanent) { stage in
+                Text(LocalizedStringKey(stage.display)).tag(stage.id)
+            }
+        }
+        if !resources.isEmpty {
+            Section("今日资源本") {
+                ForEach(resources) { stage in
+                    Text(LocalizedStringKey(stage.display)).tag(stage.id)
+                }
+            }
+        }
+        if !sideStories.isEmpty {
+            Section("活动关卡") {
+                ForEach(sideStories) { stage in
+                    Text(stage.display).tag(stage.id)
+                }
+            }
+        }
+        if !unavailable.isEmpty {
+            Section("今日未开放") {
+                ForEach(unavailable) { stage in
+                    HStack {
+                        Text(LocalizedStringKey(stage.display))
+                        Text("今日未开放").foregroundStyle(.secondary)
+                    }
+                    .tag(stage.id)
+                }
+            }
+        }
+    }
+
+    private var server: StageServer {
+        StageServer(channelRawValue: viewModel.clientChannel.rawValue)
+    }
+
+    private var allStages: [StageDescriptor] {
+        viewModel.stageCatalog.stages(for: server)
+    }
+
+    private func pickerStages(now: Date) -> [StageDescriptor] {
+        allStages.filter { stage in
+            let availability = availability(of: stage, now: now)
+            if availability.isOpen { return true }
+            if stage.id == config.stage { return true }
+            return showUnavailableStages && (stage.kind == .resource || stage.kind == .chip)
+        }
+    }
+
+    private func availability(of stage: StageDescriptor, now: Date) -> StageAvailability {
+        viewModel.stageCatalog.availability(
+            of: stage,
+            server: server,
+            now: now,
+            coreVersion: MAAProvider.version)
+    }
+
+    private func selectedUnavailableStage(now: Date) -> (stage: StageDescriptor, availability: StageAvailability)? {
+        guard let stage = allStages.first(where: { $0.id == config.stage }) else { return nil }
+        let availability = availability(of: stage, now: now)
+        return availability.isOpen ? nil : (stage, availability)
+    }
+
+    private var stageNotListed: Bool { !allStages.contains { $0.id == config.stage } }
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        FightSettingsView(config: .constant(.init()))
+        FightSettingsView(config: .constant(.init())).environmentObject(MAAViewModel())
     }
 }
