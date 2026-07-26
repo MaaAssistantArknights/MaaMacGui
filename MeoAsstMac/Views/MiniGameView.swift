@@ -46,6 +46,7 @@ struct MiniGameView: View {
 }
 
 enum MiniGameOption: String, CaseIterable {
+    case blackFlowTemporary
     case positionalFootballTournament
     case rebuildingMandate
     case honeyFruit
@@ -61,6 +62,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var taskName: String {
         switch self {
+        case .blackFlowTemporary:
+            return "BlackFlowTemporary@Begin"
         case .positionalFootballTournament:
             return "MiniGame@PF@Begin"
         case .rebuildingMandate:
@@ -90,6 +93,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var displayName: String {
         switch self {
+        case .blackFlowTemporary:
+            return String(localized: "黑流树海刷钱")
         case .positionalFootballTournament:
             return String(localized: "阵地足球锦标赛")
         case .rebuildingMandate:
@@ -119,6 +124,14 @@ enum MiniGameOption: String, CaseIterable {
 
     var instructions: String {
         switch self {
+        case .blackFlowTemporary:
+            String(localized:
+                """
+                地图太复杂了，先整个简单的刷钱脚本。
+                在右下角有开始探索的界面开始。
+                使用特勤分队 + 开局给的结构性原理（鹿精二后卖 10 个零件解锁的招募精通II 效果提升II，不是天赋的召唤物）跳节点。
+                之前有手动刷过开局低保或者有襁褓生灵的自己开一把直接放弃。
+                """)
         case .positionalFootballTournament:
             String(localized:
                 """
