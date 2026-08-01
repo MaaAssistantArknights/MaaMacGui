@@ -56,7 +56,7 @@ struct FightSettingsView: View {
 
                 Picker(selection: $config.series) {
                     Text(verbatim: "AUTO").tag(0)
-                    ForEach((1...6).reversed(), id: \.self) { i in
+                    ForEach((1...10).reversed(), id: \.self) { i in
                         Text(verbatim: "\(i)").tag(i)
                     }
                     Text("不使用").tag(Int?.none)
