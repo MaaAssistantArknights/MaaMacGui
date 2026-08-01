@@ -19,6 +19,22 @@ enum MAATask: Codable, Equatable {
     case reclamation(ReclamationConfiguration)
 }
 
+extension MAATask {
+    var configuration: any MAATaskConfiguration {
+        switch self {
+        case .startup(let config): config
+        case .closedown(let config): config
+        case .recruit(let config): config
+        case .infrast(let config): config
+        case .fight(let config): config
+        case .mall(let config): config
+        case .award(let config): config
+        case .roguelike(let config): config
+        case .reclamation(let config): config
+        }
+    }
+}
+
 let defaultTaskConfigurations: [any MAATaskConfiguration] = [
     StartupConfiguration(),
     RecruitConfiguration(),

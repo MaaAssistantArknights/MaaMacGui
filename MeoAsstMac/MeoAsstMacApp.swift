@@ -60,6 +60,11 @@ struct MeoAsstMacApp: App {
                     .tabItem {
                         Label("更新设置", systemImage: "square.and.arrow.down")
                     }
+                
+                RemoteControlSettingsView()
+                    .tabItem {
+                        Label("远程控制", systemImage: "network")
+                    }
 
                 SystemSettingsView()
                     .tabItem {
