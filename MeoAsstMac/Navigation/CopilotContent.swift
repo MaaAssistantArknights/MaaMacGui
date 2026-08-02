@@ -14,8 +14,43 @@ struct CopilotContent: View {
     @State private var copilots = Set<URL>()
     @State private var downloading = false
     @State private var expanded = false
+    @State private var copilotListSelection: CopilotEntry.ID?
 
     var body: some View {
+        VStack(spacing: 0) {
+            Picker("", selection: $viewModel.useCopilotList) {
+                Text("单个作业").tag(false)
+                Text("作业集").tag(true)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
+            .padding(8)
+
+            if viewModel.useCopilotList {
+                CopilotListView(selection: $copilotListSelection)
+            } else {
+                copilotFileList
+            }
+        }
+        .toolbar(content: listToolbar)
+        .animation(.default, value: copilots)
+        .animation(.default, value: downloading)
+        .animation(.default, value: viewModel.useCopilotList)
+        .onAppear(perform: loadUserCopilots)
+        .onChange(of: copilotListSelection, perform: showCopilotListSelection)
+        .onChange(of: viewModel.useCopilotList, perform: switchCopilotMode)
+        .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
+        .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
+        .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
+        .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
+        .fileImporter(
+            isPresented: $viewModel.showImportCopilot,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: true,
+            onCompletion: addCopilots)
+    }
+
+    @ViewBuilder private var copilotFileList: some View {
         List(selection: $selection) {
             DisclosureGroup(isExpanded: $expanded) {
                 ForEach(bundledCopilots, id: \.self) { url in
@@ -49,19 +84,6 @@ struct CopilotContent: View {
                 }
             }
         }
-        .toolbar(content: listToolbar)
-        .animation(.default, value: copilots)
-        .animation(.default, value: downloading)
-        .onAppear(perform: loadUserCopilots)
-        .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
-        .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
-        .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
-        .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
-        .fileImporter(
-            isPresented: $viewModel.showImportCopilot,
-            allowedContentTypes: [.json],
-            allowsMultipleSelection: true,
-            onCompletion: addCopilots)
     }
 
     // MARK: - Toolbar
@@ -99,6 +121,26 @@ struct CopilotContent: View {
 
     // MARK: - Actions
 
+    /// Drives the detail pane to preview the selected copilot-list entry.
+    private func showCopilotListSelection(_ id: CopilotEntry.ID?) {
+        guard let id, let entry = viewModel.copilotList.first(where: { $0.id == id }) else {
+            return
+        }
+        viewModel.copilotDetailMode = .copilotConfig
+        selection = URL(fileURLWithPath: entry.filePath)
+    }
+
+    /// Clears the opposite pane's selection when switching between single / list modes.
+    private func switchCopilotMode(_ useList: Bool) {
+        selection = nil
+        if useList {
+            // Re-show the currently selected list entry, if any.
+            showCopilotListSelection(copilotListSelection)
+        } else {
+            copilotListSelection = nil
+        }
+    }
+
     private func stop() {
         Task {
             try await viewModel.stop()
@@ -108,7 +150,11 @@ struct CopilotContent: View {
     private func start() {
         Task {
             viewModel.copilotDetailMode = .log
-            try await viewModel.startCopilot()
+            if viewModel.useCopilotList {
+                try await viewModel.startCopilotList()
+            } else {
+                try await viewModel.startCopilot()
+            }
         }
     }
 
@@ -173,6 +219,11 @@ struct CopilotContent: View {
     }
 
     private func deleteSelectedCopilot() {
+        if viewModel.useCopilotList {
+            deleteSelectedCopilotListEntry()
+            return
+        }
+
         guard let selection, let index = copilots.urls.firstIndex(of: selection) else { return }
 
         deleteCopilot(url: selection)
@@ -182,6 +233,26 @@ struct CopilotContent: View {
             self.selection = urls[index]
         } else {
             self.selection = urls.last
+        }
+    }
+
+    /// Removes the selected copilot-list entry, then selects the neighbouring entry
+    /// (mirrors the single-copilot deletion behaviour).
+    private func deleteSelectedCopilotListEntry() {
+        guard let selectedID = copilotListSelection,
+            let index = viewModel.copilotList.firstIndex(where: { $0.id == selectedID })
+        else {
+            return
+        }
+
+        viewModel.copilotList.remove(at: index)
+
+        if viewModel.copilotList.isEmpty {
+            copilotListSelection = nil
+        } else if index < viewModel.copilotList.count {
+            copilotListSelection = viewModel.copilotList[index].id
+        } else {
+            copilotListSelection = viewModel.copilotList.last?.id
         }
     }
 
@@ -201,7 +272,10 @@ struct CopilotContent: View {
     // MARK: - State Wrappers
 
     private var shouldDisableDeletion: Bool {
-        selection == nil || isBundled(selection)
+        if viewModel.useCopilotList {
+            return copilotListSelection == nil
+        }
+        return selection == nil || isBundled(selection)
     }
 
     private func isBundled(_ url: URL?) -> Bool {

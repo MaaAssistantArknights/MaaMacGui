@@ -16,7 +16,9 @@ struct CopilotDetail: View {
     var body: some View {
         VStack {
             if let url {
-                CopilotView(url: url)
+                // In copilot-list mode the detail pane previews the selected entry
+                // (documentation only) without touching the single-copilot run state.
+                CopilotView(url: url, previewOnly: viewModel.useCopilotList)
             } else {
                 LogView()
             }
@@ -36,6 +38,15 @@ struct CopilotDetail: View {
             }
             .help("添加作业")
             .popover(isPresented: $showAdd, arrowEdge: .bottom, content: addPopover)
+
+            if let url {
+                Button {
+                    addCurrentToList(url: url)
+                } label: {
+                    Label("加入作业集", systemImage: "text.badge.plus")
+                }
+                .help("将当前作业加入作业集")
+            }
         }
 
         ToolbarItemGroup {
@@ -74,6 +85,17 @@ struct CopilotDetail: View {
             .disabled(prtsCode.parsedID == nil)
 
             Button {
+                let setID = prtsCode.parsedID ?? prtsCode
+                showAdd = false
+                Task { await viewModel.importCopilotSet(id: setID) }
+            } label: {
+                Label("导入作业集", systemImage: "square.stack.3d.down.right")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+            .disabled(prtsCode.parsedID == nil)
+
+            Button {
                 if let clipboardString = NSPasteboard.general.string(forType: .string),
                     let parsedID = clipboardString.parsedID
                 {
@@ -95,8 +117,16 @@ struct CopilotDetail: View {
             }
             .buttonStyle(.bordered)
         }
-        .frame(width: 200)
+        .frame(width: 220)
         .padding()
+    }
+
+    // MARK: - Actions
+
+    /// 将当前选中的作业加入作业集（导航代号由 addToCopilotList 自动解析）。
+    private func addCurrentToList(url: URL) {
+        viewModel.addToCopilotList(filePath: url.path)
+        viewModel.useCopilotList = true
     }
 }
 
