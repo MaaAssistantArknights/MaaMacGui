@@ -51,9 +51,33 @@ struct CopilotView: View {
             } set: { newValue in
                 viewModel.copilot = .regular(newValue)
             }
-            HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
+            VStack {
+                HStack {
+                    Toggle("自动编队", isOn: binding.formation)
+                    if binding.formation.wrappedValue {
+                        Picker("编队栏位", selection: binding.formation_index) {
+                            ForEach(0..<5) { index in
+                                Text("\(index)").tag(index)
+                            }
+                        }
+                        .pickerStyle(.menu)
+                        Toggle("信赖干员", isOn: binding.add_trust)
+                        Toggle("忽视练度需求", isOn: binding.ignore_requirements)
+                    }
+                }
+                if binding.formation.wrappedValue {
+                    HStack {
+                        Picker("助战模式", selection: binding.support_unit_usage) {
+                            ForEach(RegularCopilotConfiguration.SupportUnitUsage.allCases, id: \.self) {
+                                Text($0.description).tag($0)
+                            }
+                        }
+                        if binding.support_unit_usage.wrappedValue == .Specific {
+                            TextField("指定助战干员", text: binding.support_unit_name)
+                                .frame(maxWidth: 150)
+                        }
+                    }
+                }
             }
 
         case .sss(let innerConfig):
