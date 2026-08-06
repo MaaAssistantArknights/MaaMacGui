@@ -11,7 +11,11 @@ struct RegularCopilotConfiguration: Codable {
     var enable = true
     var filename: String
     var formation = false
+    
+    static let numFormationSlots = 4
+    
     var formation_index = 0
+    
     var add_trust = false
     var ignore_requirements = false
 

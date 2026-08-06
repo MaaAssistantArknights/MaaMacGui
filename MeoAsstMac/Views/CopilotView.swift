@@ -56,8 +56,9 @@ struct CopilotView: View {
                     Toggle("自动编队", isOn: binding.formation)
                     if binding.formation.wrappedValue {
                         Picker("编队栏位", selection: binding.formation_index) {
-                            ForEach(0..<5) { index in
-                                Text("\(index)").tag(index)
+                            Text("当前").tag(0)
+                            ForEach(0..<RegularCopilotConfiguration.numFormationSlots, id: \.self) { index in
+                                Text("\(index + 1)").tag(index + 1)
                             }
                         }
                         .pickerStyle(.menu)
