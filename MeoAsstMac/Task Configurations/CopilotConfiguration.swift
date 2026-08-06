@@ -21,29 +21,29 @@ struct RegularCopilotConfiguration: Codable {
 
     enum SupportUnitUsage: Int, CaseIterable, Codable {
         /// 不加助战干员
-        case None = 0
+        case none = 0
         /// 如果仅缺一名干员则尝试补助战
-        case WhenNeeded = 1
+        case whenNeeded = 1
         /// 如果仅缺一名干员则尝试补助战，如无缺失则使用指定助战干员
-        case Specific = 2
+        case specific = 2
         /// 如果仅缺一名干员则尝试补助战，如无缺失则随机加一个助战干员
-        case Random = 3
+        case random = 3
         
         var description: String {
             switch self {
-            case .None:
+            case .none:
                 return NSLocalizedString("不借助战", comment: "")
-            case .WhenNeeded:
+            case .whenNeeded:
                 return NSLocalizedString("补漏", comment: "")
-            case .Specific:
+            case .specific:
                 return NSLocalizedString("指定", comment: "")
-            case .Random:
+            case .random:
                 return NSLocalizedString("随机", comment: "")
             }
         }
     }
     
-    var support_unit_usage: SupportUnitUsage = .None
+    var support_unit_usage: SupportUnitUsage = .none
     var support_unit_name = ""
 }
 

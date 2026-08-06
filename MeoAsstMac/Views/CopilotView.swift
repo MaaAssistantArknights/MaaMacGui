@@ -73,7 +73,7 @@ struct CopilotView: View {
                                 Text($0.description).tag($0)
                             }
                         }
-                        if binding.support_unit_usage.wrappedValue == .Specific {
+                        if binding.support_unit_usage.wrappedValue == .specific {
                             TextField("指定助战干员", text: binding.support_unit_name)
                                 .frame(maxWidth: 150)
                         }
