@@ -23,7 +23,7 @@ struct CopilotView: View {
                 }
             }
             .task(id: url) { updateCopilot() }
-            .animation(.default, value: viewModel.copilot)
+            .animation(.default, value: formation)
         } else {
             Text("文件格式错误")
         }
@@ -40,6 +40,15 @@ struct CopilotView: View {
 
     private var copilot: MAACopilot? {
         MAACopilot(url: url)
+    }
+
+    private var formation: Bool {
+        switch viewModel.copilot {
+        case .regular(let innerConfig):
+            innerConfig.formation
+        default:
+            false
+        }
     }
 }
 
@@ -67,7 +76,6 @@ private struct CopilotConfigView: View {
         case .none:
             EmptyView()
         }
-
     }
 }
 
@@ -100,6 +108,7 @@ private struct RegularCopilotConfigView: View {
                             .frame(maxWidth: 150)
                     }
                 }
+                .animation(.default, value: config.support_unit_usage)
             }
         }
     }
@@ -114,7 +123,6 @@ private struct SSSCopilotConfigView: View {
             TextField("1", value: $config.loop_times, format: .number)
         }
         .frame(maxWidth: 130)
-
     }
 }
 
