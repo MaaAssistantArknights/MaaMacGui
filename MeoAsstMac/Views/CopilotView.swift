@@ -14,15 +14,16 @@ struct CopilotView: View {
     var body: some View {
         if let copilot = MAACopilot(url: url) {
             VStack(spacing: 20) {
-                pilotConfiguration()
+                CopilotConfigView(config: $viewModel.copilot).padding(.top)
 
                 Divider()
 
                 ScrollView {
-                    pilotDescription(pilot: copilot)
+                    CopilotDescriptionView(pilot: copilot)
                 }
             }
             .task(id: url) { updateCopilot() }
+            .animation(.default, value: formation)
         } else {
             Text("文件格式错误")
         }
@@ -41,41 +42,96 @@ struct CopilotView: View {
         MAACopilot(url: url)
     }
 
-    // MARK: - Copilot Config
-
-    @ViewBuilder private func pilotConfiguration() -> some View {
+    private var formation: Bool {
         switch viewModel.copilot {
         case .regular(let innerConfig):
-            let binding = Binding<RegularCopilotConfiguration> {
+            innerConfig.formation
+        default:
+            false
+        }
+    }
+}
+
+// MARK: - Copilot Config
+
+private struct CopilotConfigView: View {
+    @Binding var config: CopilotConfiguration?
+
+    var body: some View {
+        switch config {
+        case .regular(let innerConfig):
+            let binding = Binding {
                 innerConfig
             } set: { newValue in
-                viewModel.copilot = .regular(newValue)
+                self.config = .regular(newValue)
             }
-            HStack {
-                Toggle("自动编队", isOn: binding.formation)
-                Toggle("信赖干员", isOn: binding.add_trust)
-            }
-
+            RegularCopilotConfigView(config: binding)
         case .sss(let innerConfig):
-            let binding = Binding<SSSCopilotConfiguration> {
+            let binding = Binding {
                 innerConfig
             } set: { newValue in
-                viewModel.copilot = .sss(newValue)
+                self.config = .sss(newValue)
             }
-            HStack {
-                Text("循环次数")
-                TextField("1", value: binding.loop_times, format: .number)
-            }
-            .frame(maxWidth: 130)
-
+            SSSCopilotConfigView(config: binding)
         case .none:
             EmptyView()
         }
     }
+}
 
-    // MARK: - Copilot Document
+private struct RegularCopilotConfigView: View {
+    @Binding var config: RegularCopilotConfiguration
 
-    @ViewBuilder private func pilotDescription(pilot: MAACopilot) -> some View {
+    var body: some View {
+        VStack {
+            Toggle("自动编队", isOn: $config.formation)
+            if config.formation {
+                HStack {
+                    Picker("编队栏位", selection: $config.formation_index) {
+                        Text("当前").tag(0)
+                        ForEach(0..<RegularCopilotConfiguration.formationCount, id: \.self) { index in
+                            Text("\(index + 1)").tag(index + 1)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    Toggle("忽视干员属性要求", isOn: $config.ignore_requirements)
+                    Toggle("补充低信赖干员", isOn: $config.add_trust)
+                }
+                HStack {
+                    Picker("助战模式", selection: $config.support_unit_usage) {
+                        ForEach(RegularCopilotConfiguration.SupportUnitUsage.allCases, id: \.self) {
+                            Text($0.description).tag($0)
+                        }
+                    }
+                    if config.support_unit_usage == .specific {
+                        TextField("干员名称", text: $config.support_unit_name)
+                            .frame(maxWidth: 150)
+                    }
+                }
+                .animation(.default, value: config.support_unit_usage)
+            }
+        }
+    }
+}
+
+private struct SSSCopilotConfigView: View {
+    @Binding var config: SSSCopilotConfiguration
+
+    var body: some View {
+        HStack {
+            Text("循环次数")
+            TextField("1", value: $config.loop_times, format: .number)
+        }
+        .frame(maxWidth: 130)
+    }
+}
+
+// MARK: - Copilot Document
+
+private struct CopilotDescriptionView: View {
+    let pilot: MAACopilot
+
+    var body: some View {
         if let title = pilot.doc?.title {
             Text(title).font(.title2)
         }
@@ -114,17 +170,30 @@ struct CopilotView: View {
     }
 }
 
-struct CopilotView_Previews: PreviewProvider {
-    static let url = Bundle.main.resourceURL!
+#Preview("Regular Copilot Config") {
+    let url = Bundle.main.resourceURL!
         .appendingPathComponent("resource")
         .appendingPathComponent("copilot")
+        .appendingPathComponent("OF-1_credit_fight")
+        .appendingPathExtension("json")
+
+    VStack {
+        CopilotView(url: url)
+    }
+    .environmentObject(MAAViewModel())
+}
+
+#Preview("SSS Copilot Config") {
+    let url = Bundle.main.resourceURL!
+        .appendingPathComponent("resource")
+        .appendingPathComponent("copilot")
+        .appendingPathComponent("old")
+        .appendingPathComponent("约翰老妈新建地块_Mama_Johns_New_Plate")
         .appendingPathComponent("SSS_约翰老妈新建地块")
         .appendingPathExtension("json")
 
-    static var previews: some View {
-        VStack {
-            CopilotView(url: url)
-        }
-        .environmentObject(MAAViewModel())
+    VStack {
+        CopilotView(url: url)
     }
+    .environmentObject(MAAViewModel())
 }
