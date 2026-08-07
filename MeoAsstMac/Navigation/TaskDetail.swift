@@ -71,6 +71,9 @@ struct TaskDetail: View {
                 Label("添加", systemImage: "plus")
             }
             .help("添加任务")
+            .instantTooltip(content: {
+                Text("添加任务")
+            })
         }
 
         ToolbarItemGroup {
@@ -78,9 +81,19 @@ struct TaskDetail: View {
                 Divider()
 
                 ViewDetaiTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
+                    .instantTooltip(content: {
+                        Text("任务设置")
+                    })
                 ViewDetaiTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
+                    .instantTooltip(content: {
+                        Text("运行日志")
+                    })
                 ViewDetaiTabButton(
-                    mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
+                    mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode
+                )
+                .instantTooltip(content: {
+                    Text("设置定时")
+                })
             }
         }
     }
