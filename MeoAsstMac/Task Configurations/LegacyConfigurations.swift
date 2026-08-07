@@ -73,6 +73,7 @@ extension RecruitConfiguration {
 extension InfrastConfiguration {
     fileprivate init(migrating config: LegacyInfrastConfiguration) {
         self.mode = .init(rawValue: config.mode) ?? .default
+        self.rotation_style = .game
         self.facility = config.facility.compactMap { .init(rawValue: $0.rawValue) }
         self.drones = .init(rawValue: config.drones.rawValue) ?? .NotUse
         self.threshold = config.threshold
@@ -83,6 +84,14 @@ extension InfrastConfiguration {
         self.plan_index = config.plan_index
         self.continue_training = true
         self.reception_message_board = true
+        self.reception_receive_clue = true
+        self.reception_clue_exchange = true
+        self.reception_send_clue = true
+        let layout = StationPresetLayoutStore.lastUsed
+        self.preset_layout = layout
+        self.preset_selected_rooms = StationPresetRoomList.defaultSelection(for: layout)
+        self.preset_rest = true
+        self.station_preset_drones = .init()
     }
 }
 

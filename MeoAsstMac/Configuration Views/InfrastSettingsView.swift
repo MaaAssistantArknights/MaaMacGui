@@ -20,8 +20,17 @@ struct InfrastSettingsView: View {
                     Text("队列轮换").tag(InfrastConfiguration.Mode.rotation)
                     Text("自定义基建配置").tag(InfrastConfiguration.Mode.custom)
                 }
-                if config.mode == .custom {
+                if config.mode == .rotation {
+                    Picker("轮换方式", selection: $config.rotation_style) {
+                        ForEach(InfrastConfiguration.RotationStyle.allCases, id: \.self) { style in
+                            Text(style.description).tag(style)
+                        }
+                    }
+                }
+                if config.usesCustomJsonPlan {
                     customPlanView
+                } else if config.usesRotationStationPreset {
+                    stationPresetLayoutForm
                 } else {
                     Picker("无人机用途", selection: $config.drones) {
                         ForEach(droneUsages, id: \.self) { usage in
@@ -34,7 +43,9 @@ struct InfrastSettingsView: View {
             Divider()
 
             HStack(alignment: .top) {
-                if config.mode != .rotation {
+                if config.usesRotationStationPreset {
+                    stationPresetRoomList
+                } else if config.mode != .rotation {
                     facilityList
                 }
                 Form {
@@ -52,7 +63,51 @@ struct InfrastSettingsView: View {
             }
         }
         .animation(.default, value: config.mode)
+        .animation(.default, value: config.rotation_style)
         .padding()
+    }
+
+    @ViewBuilder private var stationPresetLayoutForm: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                layoutStepper(title: "制造站", value: $config.preset_layout.mfg_count, range: StationPresetLayout.limits.mfg)
+                layoutStepper(title: "贸易站", value: $config.preset_layout.trade_count, range: StationPresetLayout.limits.trade)
+                layoutStepper(title: "发电站", value: $config.preset_layout.power_count, range: StationPresetLayout.limits.power)
+            }
+            .onChange(of: config.preset_layout) { _ in
+                config.syncPresetRoomsAfterLayoutChange()
+            }
+        }
+    }
+
+    @ViewBuilder private func layoutStepper(title: String, value: Binding<Int>, range: ClosedRange<Int>) -> some View {
+        Stepper("\(title) \(value.wrappedValue)", value: value, in: range)
+    }
+
+    @ViewBuilder private var stationPresetRoomList: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text("本次切换设施")
+                    .font(.headline)
+                Spacer()
+                Button("全选") {
+                    config.selectAllPresetRooms()
+                }
+                Button("清空") {
+                    config.clearAllPresetRooms()
+                }
+            }
+            List {
+                Section {
+                    ForEach(StationPresetRoomList.rooms(for: config.preset_layout)) { room in
+                        Toggle(room.label, isOn: presetRoomBinding(for: room.id))
+                    }
+                } footer: {
+                    Text("多班次请添加多个基建任务，每个任务配置一个班次。")
+                }
+            }
+        }
+        .frame(height: 14 * rowHeight)
     }
 
     @ViewBuilder private var facilityList: some View {
@@ -81,10 +136,64 @@ struct InfrastSettingsView: View {
     }
 
     @ViewBuilder private var preferenceForm: some View {
-        Toggle("宿舍空余位置蹭信赖", isOn: $config.dorm_trust_enabled)
-        Toggle("不将已进驻的干员放入宿舍", isOn: $config.dorm_notstationed_enabled)
+        if config.usesRotationStationPreset {
+            stationPresetPreferenceForm
+        } else {
+            defaultPreferenceForm
+        }
+    }
+
+    @ViewBuilder private var defaultPreferenceForm: some View {
+        sharedOperationalToggles
+        sharedReceptionToggles
+        sharedTrainingToggle
+    }
+
+    @ViewBuilder private var stationPresetPreferenceForm: some View {
+        Toggle("切换后干员休整", isOn: $config.preset_rest)
+        Toggle("使用无人机", isOn: $config.station_preset_drones.enable)
+        if config.station_preset_drones.enable {
+            Picker("无人机设施", selection: $config.station_preset_drones.room) {
+                ForEach(StationPresetDrones.Room.allCases, id: \.self) { room in
+                    Text(room.description).tag(room)
+                }
+            }
+            Picker("设施序号", selection: $config.station_preset_drones.index) {
+                ForEach(droneIndexRange, id: \.self) { index in
+                    Text("\(index)").tag(index)
+                }
+            }
+            Picker("使用时机", selection: $config.station_preset_drones.order) {
+                ForEach(StationPresetDrones.Order.allCases, id: \.self) { order in
+                    Text(order.description).tag(order)
+                }
+            }
+            .onChange(of: config.station_preset_drones.room) { _ in
+                let range = droneIndexRange
+                if !range.contains(config.station_preset_drones.index), let first = range.first {
+                    config.station_preset_drones.index = first
+                }
+            }
+        }
+        sharedOperationalToggles
+        sharedReceptionToggles
+        sharedTrainingToggle
+    }
+
+    @ViewBuilder private var sharedOperationalToggles: some View {
         Toggle("源石碎片自动补货", isOn: $config.replenish)
+        Toggle("不将已进驻的干员放入宿舍", isOn: $config.dorm_notstationed_enabled)
+        Toggle("宿舍空余位置蹭信赖", isOn: $config.dorm_trust_enabled)
+    }
+
+    @ViewBuilder private var sharedReceptionToggles: some View {
         Toggle("会客室信息板收取信用", isOn: $config.reception_message_board)
+        Toggle("会客室接收线索", isOn: $config.reception_receive_clue)
+        Toggle("会客室线索交流", isOn: $config.reception_clue_exchange)
+        Toggle("会客室赠送线索", isOn: $config.reception_send_clue)
+    }
+
+    @ViewBuilder private var sharedTrainingToggle: some View {
         Toggle("训练完成后继续尝试专精当前技能", isOn: $config.continue_training)
     }
 
@@ -110,6 +219,10 @@ struct InfrastSettingsView: View {
 
             Picker("班次", selection: $config.plan_index) {
                 try? MAAInfrast(path: config.filename).planList
+            }
+
+            if config.plan_index >= 0 {
+                Toggle("完成后自动切换到下个班次", isOn: $config.auto_advance_plan_index)
             }
 
             HStack(spacing: 20) {
@@ -140,6 +253,15 @@ struct InfrastSettingsView: View {
         }
     }
 
+    private var droneIndexRange: [Int] {
+        switch config.station_preset_drones.room {
+        case .manufacture:
+            return Array(1 ... config.preset_layout.mfg_count)
+        case .trading:
+            return Array(1 ... config.preset_layout.trade_count)
+        }
+    }
+
     private func facilityBinding(for facility: InfrastConfiguration.Facility) -> Binding<Bool> {
         Binding {
             config.facility.contains(facility)
@@ -148,6 +270,20 @@ struct InfrastSettingsView: View {
                 config.facility.append(facility)
             } else {
                 config.facility.removeAll { $0 == facility }
+            }
+        }
+    }
+
+    private func presetRoomBinding(for roomID: String) -> Binding<Bool> {
+        Binding {
+            config.preset_selected_rooms.contains(roomID)
+        } set: { isSelected in
+            if isSelected {
+                if !config.preset_selected_rooms.contains(roomID) {
+                    config.preset_selected_rooms.append(roomID)
+                }
+            } else {
+                config.preset_selected_rooms.removeAll { $0 == roomID }
             }
         }
     }
@@ -184,7 +320,6 @@ struct InfrastSettingsView: View {
                 options: .skipsHiddenFiles)
         else { return [] }
 
-        // Dummy state to force refreshing files
         _ = refreshCustomPlans
 
         return
@@ -223,8 +358,10 @@ extension String {
     }
 
     fileprivate static let bundledPlans = [
-        plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3,
+        plan_153_3, plan_243_3, plan_243_4, plan_252_3, plan_333_3, plan_facility_preset_3,
     ]
+
+    fileprivate static let plan_facility_preset_3 = bundledPath(for: "facility_preset_3_shifts_daily.json")
 
     fileprivate static let plan_153_3 = bundledPath(for: "153_layout_3_times_a_day.json")
     fileprivate static let plan_243_3 = bundledPath(for: "243_layout_3_times_a_day.json")

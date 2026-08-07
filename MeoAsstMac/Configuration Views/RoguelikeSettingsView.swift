@@ -277,7 +277,6 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
                 "高规格分队", "高台突破分队", "地面突破分队",
                 "游客分队", "司岁台分队", "天师府分队",
                 "花团锦簇分队", "棋行险着分队", "岁影回音分队",
-                "知学分队", "商贾分队",
             ]
         }
     }
