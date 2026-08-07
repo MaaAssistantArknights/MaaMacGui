@@ -31,6 +31,8 @@ struct FightConfiguration: MAATaskConfiguration {
     var subtitle: String {
         if stage == "" {
             return String(localized: "当前/上次")
+        } else if let display = StageCatalog.builtInDisplayName(for: stage) {
+            return String(localized: String.LocalizationValue(display))
         } else {
             return stage
         }

@@ -202,6 +202,7 @@
       }
     },
     "AP-5" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -286,6 +287,7 @@
       }
     },
     "CA-5" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -305,6 +307,7 @@
       "shouldTranslate" : false
     },
     "CE-6" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1054,6 +1057,7 @@
       }
     },
     "LS-6" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2552,6 +2556,7 @@
       }
     },
     "剿灭模式" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -3130,7 +3135,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "현재 난이도"
+            "value" : "오늘의 자원 스테이지"
           }
         }
       }
@@ -4965,6 +4970,609 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본 교대"
+          }
+        }
+      }
+    },
+    "AP-5: 红票" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AP-5: Purchase Certificate"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "AP-5: 구매증명서"
+          }
+        }
+      }
+    },
+    "CA-5: 技能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CA-5: Skill Summary"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CA-5: 스킬개론"
+          }
+        }
+      }
+    },
+    "CE-6: 龙门币" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CE-6: LMD"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "CE-6: 용문폐"
+          }
+        }
+      }
+    },
+    "LS-6: 经验" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LS-6: Battle Record"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LS-6: 작전기록"
+          }
+        }
+      }
+    },
+    "PR-A-1/2: 奶/盾芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-A-1/2: Medic/Defender Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-A-1/2: 메딕/디펜더 칩"
+          }
+        }
+      }
+    },
+    "PR-B-1/2: 术/狙芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-B-1/2: Caster/Sniper Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-B-1/2: 캐스터/스나이퍼 칩"
+          }
+        }
+      }
+    },
+    "PR-C-1/2: 先/辅芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-C-1/2: Vanguard/Supporter Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-C-1/2: 뱅가드/서포터 칩"
+          }
+        }
+      }
+    },
+    "PR-D-1/2: 近/特芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-D-1/2: Guard/Specialist Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PR-D-1/2: 가드/스페셜리스트 칩"
+          }
+        }
+      }
+    },
+    "SK-5: 碳" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5: Carbon"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5: 탄소"
+          }
+        }
+      }
+    },
+    "周一了，可以打剿灭了~" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's Monday: time to clear Annihilation~"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "월요일입니다. 섬멸 작전을 진행할 수 있어요~"
+          }
+        }
+      }
+    },
+    "周日了，记得打剿灭哦~" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "It's Sunday: don't forget Annihilation~"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일요일입니다. 섬멸 작전을 잊지 마세요~"
+          }
+        }
+      }
+    },
+    "SK-5" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "SK-5 (카본)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "碳-5"
+          }
+        }
+      }
+    },
+    "「%@」剩余 %lld 天" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%1$@\" has %2$lld days remaining"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%1$@」 종료까지 %2$lld일"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "「%1$@」剩余 %2$lld 天"
+          }
+        }
+      }
+    },
+    "「%@」剩余不到 1 天" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "\"%@\" has less than 1 day remaining"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「%@」 종료까지 1일 미만"
+          }
+        }
+      }
+    },
+    "今日关卡小提示" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Stage Tips"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘의 스테이지 팁"
+          }
+        }
+      }
+    },
+    "今日未开放" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unavailable Today"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 개방되지 않음"
+          }
+        }
+      }
+    },
+    "今日资源本" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Supplies"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘의 자원 스테이지"
+          }
+        }
+      }
+    },
+    "任务启动失败：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to start tasks: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 시작 실패: %@"
+          }
+        }
+      }
+    },
+    "先/辅芯片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vanguard/Supporter Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뱅가드/서포터 칩"
+          }
+        }
+      }
+    },
+    "先/辅芯片组" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vanguard/Supporter Chip Pack"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "뱅가드/서포터 칩셋"
+          }
+        }
+      }
+    },
+    "关卡开放状态按当前服务器时区及凌晨 4 点刷新" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stage availability refreshes at 04:00 in the selected server's time zone"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스테이지 개방 상태는 선택한 서버 시간대의 오전 4시에 갱신됩니다"
+          }
+        }
+      }
+    },
+    "奶/盾芯片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medic/Defender Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메딕/디펜더 칩"
+          }
+        }
+      }
+    },
+    "奶/盾芯片组" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Medic/Defender Chip Pack"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메딕/디펜더 칩셋"
+          }
+        }
+      }
+    },
+    "常用关卡" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Common Stages"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자주 쓰는 스테이지"
+          }
+        }
+      }
+    },
+    "所选关卡 %@ 今日未开放，执行前将自动重置为当前/上次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected stage %@ is unavailable today and will be reset to Current/Last before running"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 스테이지 %@은(는) 오늘 개방되지 않아 실행 전에 현재/최근으로 초기화됩니다"
+          }
+        }
+      }
+    },
+    "所选关卡 %@ 当前不可用，已重置为当前/上次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selected stage %@ is currently unavailable and was reset to Current/Last"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 스테이지 %@을(를) 현재 이용할 수 없어 현재/최근으로 초기화했습니다"
+          }
+        }
+      }
+    },
+    "所选活动关卡 %@ 尚未开始或已经结束，执行前将自动重置为当前/上次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected event stage %@ has not started or has ended and will be reset to Current/Last before running"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 이벤트 스테이지 %@은(는) 시작 전이거나 종료되어 실행 전에 현재/최근으로 초기화됩니다"
+          }
+        }
+      }
+    },
+    "所选活动关卡需要 MaaCore %@ 或更高版本" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected event stage requires MaaCore %@ or later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택한 이벤트 스테이지에는 MaaCore %@ 이상이 필요합니다."
+          }
+        }
+      }
+    },
+    "无法添加刷理智任务：关卡 %@ 或其他任务参数无效" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unable to add Fight task: stage %@ or another task parameter is invalid"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이성 소모 작업을 추가할 수 없습니다: 스테이지 %@ 또는 다른 작업 매개변수가 올바르지 않습니다"
+          }
+        }
+      }
+    },
+    "显示今日未开放关卡" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show Unavailable Stages"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오늘 미개방 스테이지 표시"
+          }
+        }
+      }
+    },
+    "术/狙芯片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caster/Sniper Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐스터/스나이퍼 칩"
+          }
+        }
+      }
+    },
+    "术/狙芯片组" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caster/Sniper Chip Pack"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캐스터/스나이퍼 칩셋"
+          }
+        }
+      }
+    },
+    "活动关卡" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Event Stages"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이벤트 스테이지"
+          }
+        }
+      }
+    },
+    "活动关卡数据解析失败: %@" : {
+
+    },
+    "缓存资源加载失败: %@" : {
+
+    },
+    "请检查手动输入的关卡名和刷理智设置，或改用关卡选择器" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Check the manually entered stage name and Fight settings, or use the stage picker"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 입력한 스테이지 이름과 이성 소모 설정을 확인하거나 스테이지 선택기를 사용하세요"
+          }
+        }
+      }
+    },
+    "近/特芯片" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guard/Specialist Chip"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가드/스페셜리스트 칩"
+          }
+        }
+      }
+    },
+    "近/特芯片组" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Guard/Specialist Chip Pack"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가드/스페셜리스트 칩셋"
           }
         }
       }

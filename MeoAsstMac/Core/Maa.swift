@@ -17,6 +17,10 @@ actor MAAProvider {
     static let shared = MAAProvider()
     private init() {}
 
+    nonisolated static var version: String {
+        String(cString: AsstGetVersion())
+    }
+
     func loadResource(path: String) throws {
         guard AsstLoadResource(path).isTrue else {
             throw MaaCoreError.loadResourceFailed
