@@ -16,27 +16,75 @@ struct FightSettingsView: View {
     var body: some View {
         Form {
             Section {
-                HStack(spacing: 20) {
-                    if useCustomStage || stageNotListed {
-                        TextField("关卡名", text: $config.stage)
-                    } else {
-                        Picker("关卡选择", selection: $config.stage) {
-                            Text("当前/上次").tag("")
-                            Text("1-7").tag("1-7")
-                            Text("CE-6").tag("CE-6")
-                            Text("AP-5").tag("AP-5")
-                            Text("CA-5").tag("CA-5")
-                            Text("LS-6").tag("LS-6")
-                            Text("剿灭模式").tag("Annihilation")
+                Toggle("使用备选关卡", isOn: $config.useOptionalStage)
+                    .onChange(of: config.useOptionalStage) { enabled in
+                        if enabled, config.stagePlan.count < 2 {
+                            config.stagePlan = [config.stage, ""]
                         }
                     }
-                    Toggle("手动输入关卡名", isOn: isUsingCustomStage)
-                }
-                .animation(.default, value: config.stage)
-            }
 
-            if useCustomStage || stageNotListed {
-                Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
+                if config.useOptionalStage {
+                    ForEach(config.stagePlan.indices, id: \.self) { index in
+                        let stageName = config.stagePlan[index]
+                        let isOpen = !stageName.isEmpty && FightConfiguration.isStageOpenToday(stageName)
+                        HStack(spacing: 8) {
+                            if planListedStages.contains(stageName) {
+                                Picker("关卡 \(index + 1)", selection: $config.stagePlan[index]) {
+                                    Text("当前/上次").tag("")
+                                    Text("1-7").tag("1-7")
+                                    Text("CE-6").tag("CE-6")
+                                    Text("AP-5").tag("AP-5")
+                                    Text("CA-5").tag("CA-5")
+                                    Text("LS-6").tag("LS-6")
+                                    Text("SK-5").tag("SK-5")
+                                    Text("剿灭模式").tag("Annihilation")
+                                }
+                            } else {
+                                TextField("关卡 \(index + 1)", text: $config.stagePlan[index])
+                            }
+                            if !stageName.isEmpty {
+                                Image(systemName: isOpen ? "checkmark.circle.fill" : "clock.fill")
+                                    .foregroundColor(isOpen ? .green : .orange)
+                                    .help(isOpen ? "今天开放" : "今天不开放")
+                            }
+                            Button {
+                                config.stagePlan.remove(at: index)
+                            } label: {
+                                Image(systemName: "minus.circle.fill").foregroundColor(.red)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(config.stagePlan.count <= 1)
+                        }
+                    }
+                    Button {
+                        config.stagePlan.append("")
+                    } label: {
+                        Label("添加备选关卡", systemImage: "plus.circle")
+                    }
+                    Text("从上往下选择今天第一个开放的关卡执行").foregroundStyle(.secondary).font(.caption)
+                } else {
+                    HStack(spacing: 20) {
+                        if useCustomStage || stageNotListed {
+                            TextField("关卡名", text: $config.stage)
+                        } else {
+                            Picker("关卡选择", selection: $config.stage) {
+                                Text("当前/上次").tag("")
+                                Text("1-7").tag("1-7")
+                                Text("CE-6").tag("CE-6")
+                                Text("AP-5").tag("AP-5")
+                                Text("CA-5").tag("CA-5")
+                                Text("LS-6").tag("LS-6")
+                                Text("剿灭模式").tag("Annihilation")
+                            }
+                        }
+                        Toggle("手动输入关卡名", isOn: isUsingCustomStage)
+                    }
+                    .animation(.default, value: config.stage)
+
+                    if useCustomStage || stageNotListed {
+                        Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
+                    }
+                }
             }
 
             Divider()
@@ -212,6 +260,7 @@ struct FightSettingsView: View {
 
     private var stageNotListed: Bool { !listedStages.contains(config.stage) }
     private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+    private let planListedStages: Set<String> = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "SK-5", "Annihilation"]
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
