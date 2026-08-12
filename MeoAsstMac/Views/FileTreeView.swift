@@ -65,7 +65,7 @@ struct FileTreeNode<Item: FileTreeItem, Header: View, Label: View>: View {
                 }
             }
             .onChange(of: tracker?.urlActionEvent) {
-                if tracker?.urlActionEvent?.url == item.url {
+                if $1?.url == item.url {
                     isExpanded.toggle()
                 }
             }

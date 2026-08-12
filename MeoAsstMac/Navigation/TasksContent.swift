@@ -37,7 +37,7 @@ struct TasksContent: View {
             }
             .onMove(perform: moveTask)
         }
-        .onChange(of: selection, perform: updateViewMode)
+        .onChange(of: selection, updateViewMode)
         .toolbar(content: listToolbar)
         .animation(.default, value: viewModel.tasks)
         .onReceive(viewModel.$newTaskAdded, perform: selectLastTask)
@@ -121,7 +121,7 @@ struct TasksContent: View {
         }
     }
 
-    private func updateViewMode(_ selectedTaskID: UUID?) {
+    private func updateViewMode(_: UUID?, selectedTaskID: UUID?) {
         guard selectedTaskID != nil else { return }
         viewModel.dailyTasksDetailMode = .taskConfig
     }

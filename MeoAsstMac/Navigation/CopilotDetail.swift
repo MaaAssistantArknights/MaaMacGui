@@ -64,7 +64,7 @@ struct DetailToolbar: ToolbarContent {
             }
             .pickerStyle(.segmented)
             .onChange(of: newModel.copilotStartToken) {
-                if newModel.copilotStartToken != nil {
+                if $1 != nil {
                     showInfo = false
                 }
             }
