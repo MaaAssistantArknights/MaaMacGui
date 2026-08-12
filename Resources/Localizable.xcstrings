@@ -14,6 +14,15 @@
         }
       }
     },
+    "（突袭）" : {
+
+    },
+    "[前往作业站…](https://prts.plus)" : {
+
+    },
+    "**神秘代码**" : {
+
+    },
     "%@" : {
       "shouldTranslate" : false
     },
@@ -1011,6 +1020,9 @@
         }
       }
     },
+    "info" : {
+
+    },
     "InfrastDormDoubleConfirmed" : {
       "localizations" : {
         "ko" : {
@@ -1068,9 +1080,6 @@
           }
         }
       }
-    },
-    "maa://" : {
-      "shouldTranslate" : false
     },
     "MedicineUsed %lld(+%lld) UnitTime" : {
       "localizations" : {
@@ -1222,6 +1231,9 @@
           }
         }
       }
+    },
+    "prts://" : {
+
     },
     "PV-烟花筹委会" : {
 
@@ -1888,6 +1900,7 @@
       }
     },
     "从剪贴板读取" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1999,6 +2012,9 @@
           }
         }
       }
+    },
+    "作业信息" : {
+
     },
     "使用 adb-lite 连接" : {
       "localizations" : {
@@ -2161,6 +2177,9 @@
         }
       }
     },
+    "全选" : {
+
+    },
     "全部取消" : {
       "localizations" : {
         "ko" : {
@@ -2231,7 +2250,11 @@
         }
       }
     },
+    "内置" : {
+
+    },
     "内置作业" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2340,6 +2363,9 @@
           }
         }
       }
+    },
+    "列表" : {
+
     },
     "初始化失败: %@" : {
       "localizations" : {
@@ -2789,7 +2815,11 @@
         }
       }
     },
+    "外部" : {
+
+    },
     "外部作业（可拖入文件）" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -3843,6 +3873,9 @@
         }
       }
     },
+    "清除" : {
+
+    },
     "游戏设置" : {
       "localizations" : {
         "ko" : {
@@ -3892,6 +3925,9 @@
           }
         }
       }
+    },
+    "激活此作业集" : {
+
     },
     "点击加号按钮" : {
       "localizations" : {
@@ -4034,6 +4070,7 @@
       }
     },
     "神秘代码 [作业站链接](https://prts.plus)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -4244,6 +4281,9 @@
           }
         }
       }
+    },
+    "自动抄悖论模拟作业" : {
+
     },
     "自动检查更新" : {
       "localizations" : {
@@ -4481,6 +4521,9 @@
         }
       }
     },
+    "详细内容" : {
+
+    },
     "请从边栏选择功能" : {
       "localizations" : {
         "ko" : {
@@ -4560,6 +4603,9 @@
           }
         }
       }
+    },
+    "请选择作业项目" : {
+
     },
     "请选择内容项目" : {
       "localizations" : {

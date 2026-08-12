@@ -11,12 +11,16 @@ import SwiftUI
 @main
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
-    @StateObject private var appViewModel = MAAViewModel()
+    @StateObject private var appViewModel: MAAViewModel
+    @State private var newViewModel: NewViewModel
 
     private let updaterController: SPUStandardUpdaterController
     private let updaterDelegate = MaaUpdaterDelegate()
 
     init() {
+        let viewModel = MAAViewModel()
+        _appViewModel = StateObject(wrappedValue: viewModel)
+        _newViewModel = State(wrappedValue: NewViewModel(parent: viewModel))
         #if DEBUG
         let isRelease = false
         #else
@@ -29,6 +33,7 @@ struct MeoAsstMacApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(appViewModel)
+                .environment(newViewModel)
                 .onAppear {
                     TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
                 }

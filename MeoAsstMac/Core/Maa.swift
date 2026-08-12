@@ -190,6 +190,7 @@ enum MAATaskType: String {
     case Roguelike
     case Copilot
     case SSSCopilot
+    case ParadoxCopilot
     case Depot
     case Reclamation
     case VideoRecognition

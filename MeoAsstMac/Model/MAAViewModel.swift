@@ -85,18 +85,6 @@ import SwiftUI
 
     @Published var scheduledDailyTaskTimers: [DailyTaskTimer] = []
 
-    // MARK: - Copilot
-
-    enum CopilotDetailMode: Hashable {
-        case copilotConfig
-        case log
-    }
-
-    @Published var copilot: CopilotConfiguration?
-    @Published var downloadCopilot: String?
-    @Published var showImportCopilot = false
-    @Published var copilotDetailMode: CopilotDetailMode = .log
-
     // MARK: - Recognition
 
     @Published var recruitConfig = RecruitConfiguration.recognition
@@ -523,25 +511,12 @@ extension MAAViewModel {
 // MARK: Copilot
 
 extension MAAViewModel {
-    func startCopilot() async throws {
+    func startCopilot(type: MAATaskType, params: String) async throws {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        guard let copilot,
-            let params = copilot.params
-        else {
-            return
-        }
-
         try await ensureHandle()
-
-        switch copilot {
-        case .regular:
-            _ = try await handle?.appendTask(type: .Copilot, params: params)
-        case .sss:
-            _ = try await handle?.appendTask(type: .SSSCopilot, params: params)
-        }
-
+        try await _ = handle?.appendTask(type: type, params: params)
         try await handle?.start()
 
         status = .busy

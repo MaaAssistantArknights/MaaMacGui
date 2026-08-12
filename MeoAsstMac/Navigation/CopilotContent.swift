@@ -8,76 +8,191 @@
 import SwiftUI
 
 struct CopilotContent: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
-    @Binding var selection: URL?
+    @Environment(NewViewModel.self) var newModel
 
-    @State private var copilots = Set<URL>()
-    @State private var downloading = false
-    @State private var expanded = false
+    struct Item: FileTreeItem {
+        let url: URL
+        let id: CopilotContext.ItemID
+
+        init(url: URL) {
+            self.url = url
+            self.id = .init(url: url, isRaid: nil)
+        }
+
+        var children: [Item]?
+
+        var name: String {
+            url.deletingPathExtension().lastPathComponent
+        }
+    }
+
+    @State private var bundledRoot = Item(url: .bundledCopilotDirectory)
+    @State private var externalRoot = Item(url: .externalCopilotDirectory)
+
+    enum Category: String, CaseIterable {
+        case bundled
+        case external
+        case list
+    }
+
+    @AppStorage("CopilotContentCategory")
+    private var category = Category.bundled
+
+    @State private var tracker = FileTreeTracker()
 
     var body: some View {
-        List(selection: $selection) {
-            DisclosureGroup(isExpanded: $expanded) {
-                ForEach(bundledCopilots, id: \.self) { url in
-                    Text(url.lastPathComponent)
+        @Bindable var context = newModel.copilot
+        List(selection: $context.selection) {
+            switch category {
+            case .bundled:
+                FileTreeRoot(item: $bundledRoot, tracker: tracker) {
+                    Text($0.name)
+                } label: {
+                    Text($0.name)
                 }
-            } label: {
-                Text("内置作业")
-                    .font(.subheadline)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .contentShape(Rectangle())
-                    .onTapGesture {
-                        withAnimation {
-                            expanded.toggle()
-                        }
-                    }
+            case .external:
+                FileTreeRoot(item: $externalRoot, tracker: tracker) {
+                    Text($0.name)
+                } label: {
+                    Text($0.name)
+                }
+            case .list:
+                CopilotListContent(context: context)
             }
+        }
+        .contextMenu(forSelectionType: CopilotContext.ItemID.self) { _ in
+            EmptyView()
+        } primaryAction: { ids in
+            if category == .list {
+                context.selection = nil
+                return
+            }
+            if let url = ids.first?.url {
+                tracker.sendURLAction(of: url)
+            }
+        }
+        .safeAreaInset(edge: .top) {
+            CapsulePicker(Category.allCases, selection: $category, color: \.color) {
+                Image(systemName: $0.systemImage)
+            } text: {
+                Text($0.title)
+            } action: {
+                context.selection = nil
+            }
+            .padding(.horizontal)
+        }
+        .toolbar {
+            CopilotListToolbar(externalRoot: $externalRoot)
+        }
+        .task(id: category) {
+            switch category {
+            case .bundled:
+                context.isListMode = false
+                bundledRoot.children = (try? await bundledRoot.children()) ?? []
+            case .external:
+                context.isListMode = false
+                externalRoot.children = (try? await externalRoot.children()) ?? []
+            case .list:
+                context.isListMode = true
+            }
+        }
+        .onChange(of: context.isListMode, initial: true) {
+            if context.isListMode, category != .list {
+                category = .list
+            }
+        }
+        .task(id: newModel.lastImportedCopilot) {
+            guard let url = newModel.lastImportedCopilot else {
+                return
+            }
+            context.selection = .init(url: url, isRaid: nil)
+            if url.isDirectory {
+                context.updateCopilotSet()
+                category = .list
+            } else {
+                let children = try? await externalRoot.children()
+                externalRoot.children = children ?? []
+                category = .external
+            }
+        }
+        .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
+    }
 
-            Section {
-                ForEach(copilots.urls, id: \.self) { url in
-                    Text(url.lastPathComponent)
-                }
-            } header: {
-                HStack {
-                    Text("外部作业（可拖入文件）")
-                    if downloading {
-                        Spacer()
-                        ProgressView().controlSize(.small)
-                    }
+    // MARK: - Actions
+
+    private func addCopilots(_ providers: [NSItemProvider]) -> Bool {
+        let canLoadAll = providers.allSatisfy { $0.canLoadObject(ofClass: URL.self) }
+        guard !providers.isEmpty, canLoadAll else { return false }
+
+        let (stream, continuation) = AsyncStream<Result<URL, Error>>.makeStream()
+
+        for provider in providers {
+            _ = provider.loadObject(ofClass: URL.self) { url, error in
+                if let error {
+                    continuation.yield(.failure(error))
+                } else {
+                    continuation.yield(.success(url!))
                 }
             }
         }
-        .toolbar(content: listToolbar)
-        .animation(.default, value: copilots)
-        .animation(.default, value: downloading)
-        .onAppear(perform: loadUserCopilots)
-        .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
-        .onReceive(viewModel.$copilotDetailMode, perform: deselectCopilot)
-        .onReceive(viewModel.$downloadCopilot, perform: downloadCopilot)
-        .onReceive(viewModel.$videoRecoginition, perform: selectNewCopilot)
-        .fileImporter(
-            isPresented: $viewModel.showImportCopilot,
-            allowedContentTypes: [.json],
-            allowsMultipleSelection: true,
-            onCompletion: addCopilots)
+
+        Task.detached { [total = providers.count] in
+            var count = 0
+
+            for await result in stream {
+                count += 1
+                if count == total {
+                    continuation.finish()
+                }
+
+                do {
+                    let url = try result.get()
+                    try await addCopilot(url: url)
+                } catch {
+                    print(error)
+                }
+            }
+        }
+
+        return true
     }
 
-    // MARK: - Toolbar
+    private nonisolated func addCopilot(url: URL) async throws {
+        guard url.isFileURL, let type = url.contentType else {
+            return
+        }
+        switch type {
+        case _ where type.conforms(to: .json):
+            let dest = try FileManager.default.copyCopilotToExternalDirectory(at: url)
+            await MainActor.run {
+                newModel.lastImportedCopilot = dest
+            }
+        case _ where type.conforms(to: .movie):
+            try await newModel.recognizeVideo(url: url)
+        default:
+            break
+        }
+    }
+}
 
-    @ToolbarContentBuilder private func listToolbar() -> some ToolbarContent {
+// MARK: - Toolbar
+
+private struct CopilotListToolbar: ToolbarContent {
+    @Environment(NewViewModel.self) private var newModel
+    @Binding var externalRoot: CopilotContent.Item
+
+    var body: some ToolbarContent {
         ToolbarItemGroup {
             Button(action: deleteSelectedCopilot) {
                 Label("移除", systemImage: "trash")
             }
             .help("移除作业")
-            .disabled(shouldDisableDeletion)
+            .disabled(!canDeleteCopilot)
             .keyboardShortcut(.delete, modifiers: [.command])
         }
 
         ToolbarItemGroup {
-            switch viewModel.status {
+            switch newModel.status {
             case .pending:
                 Button(action: {}) {
                     ProgressView().controlSize(.small)
@@ -97,245 +212,184 @@ struct CopilotContent: View {
         }
     }
 
+    private var canDeleteCopilot: Bool {
+        if newModel.copilot.isListMode {
+            return false
+        }
+        if let url = newModel.copilot.url {
+            return url.isManagedCopilot
+        } else {
+            return false
+        }
+    }
+
     // MARK: - Actions
 
     private func stop() {
         Task {
-            try await viewModel.stop()
+            try await newModel.stop()
         }
     }
 
     private func start() {
         Task {
-            viewModel.copilotDetailMode = .log
-            try await viewModel.startCopilot()
+            try await newModel.startCopilot()
         }
-    }
-
-    private func loadUserCopilots() {
-        copilots.formUnion(externalDirectory.copilots)
-        copilots.formUnion(recordingDirectory.copilots)
-    }
-
-    private func addCopilots(_ providers: [NSItemProvider]) -> Bool {
-        Task {
-            for provider in providers {
-                if let url = try? await provider.loadURL() {
-                    let value = try? url.resourceValues(forKeys: [.contentTypeKey])
-                    if value?.contentType == .json {
-                        copilots.insert(url)
-                    } else if value?.contentType?.conforms(to: .movie) == true {
-                        try? await viewModel.recognizeVideo(video: url)
-                    }
-                }
-            }
-            self.selection = self.copilots.urls.last
-        }
-
-        return true
-    }
-
-    private func addCopilots(_ results: Result<[URL], Error>) {
-        if case let .success(urls) = results {
-            copilots.formUnion(urls)
-            selection = copilots.urls.last
-        }
-    }
-
-    private func downloadCopilot(id: String?) {
-        guard let id else { return }
-
-        let file =
-            externalDirectory
-            .appendingPathComponent(id)
-            .appendingPathExtension("json")
-
-        let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
-        Task {
-            self.downloading = true
-            do {
-                let data = try await URLSession.shared.data(from: url).0
-                let response = try JSONDecoder().decode(CopilotResponse.self, from: data)
-                try response.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
-                copilots.insert(file)
-                self.selection = file
-            } catch {
-                print(error)
-            }
-            self.downloading = false
-        }
-    }
-
-    private func deleteCopilot(url: URL) {
-        copilots.remove(url)
-        guard canDelete(url) else { return }
-        try? FileManager.default.removeItem(at: url)
     }
 
     private func deleteSelectedCopilot() {
-        guard let selection, let index = copilots.urls.firstIndex(of: selection) else { return }
+        guard let selection = newModel.copilot.url else {
+            return
+        }
 
-        deleteCopilot(url: selection)
+        let nextSelection = externalRoot.possibleSibling(of: selection)
 
-        let urls = copilots.urls
-        if index < urls.count {
-            self.selection = urls[index]
-        } else {
-            self.selection = urls.last
+        Task.detached {
+            deleteCopilot(url: selection)
+            let children = try? await externalRoot.children()
+            await MainActor.run {
+                externalRoot.children = children ?? []
+                if let url = nextSelection?.url {
+                    newModel.copilot.selection = .init(url: url, isRaid: nil)
+                } else {
+                    newModel.copilot.selection = nil
+                }
+            }
         }
     }
 
-    private func deselectCopilot(_ viewMode: MAAViewModel.CopilotDetailMode) {
-        if viewMode != .copilotConfig {
-            selection = nil
+    private nonisolated func deleteCopilot(url: URL) {
+        guard url.isManagedCopilot else { return }
+        try? FileManager.default.removeItem(at: url)
+    }
+}
+
+extension CopilotContent.Category: Identifiable {
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .bundled:
+            String(localized: "内置")
+        case .external:
+            String(localized: "外部")
+        case .list:
+            String(localized: "列表")
         }
     }
 
-    private func selectNewCopilot(url: URL?) {
-        if let url {
-            copilots.insert(url)
-            selection = copilots.urls.last
+    var systemImage: String {
+        switch self {
+        case .bundled:
+            "house"
+        case .external:
+            "doc"
+        case .list:
+            "doc.on.doc"
         }
     }
 
-    // MARK: - State Wrappers
-
-    private var shouldDisableDeletion: Bool {
-        selection == nil || isBundled(selection)
-    }
-
-    private func isBundled(_ url: URL?) -> Bool {
-        return url?.path.starts(with: bundledDirectory.path) ?? false
-    }
-
-    private func canDelete(_ url: URL?) -> Bool {
-        [externalDirectory, recordingDirectory]
-            .compactMap { url?.path.starts(with: $0.path) }
-            .first(where: { $0 })
-            ?? false
-    }
-
-    // MARK: - File Paths
-
-    private var bundledCopilots: [URL] { bundledDirectory.copilots }
-
-    private var bundledDirectory: URL {
-        Bundle.main.resourceURL!
-            .appendingPathComponent("resource")
-            .appendingPathComponent("copilot")
-    }
-
-    private var externalDirectory: URL {
-        let directory = FileManager.default
-            .urls(for: .documentDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("copilot")
-
-        if !FileManager.default.fileExists(atPath: directory.path) {
-            try? FileManager.default.createDirectory(
-                at: directory, withIntermediateDirectories: true)
+    var color: Color {
+        switch self {
+        case .bundled:
+            .copilotBlue
+        case .external:
+            .copilotGreen
+        case .list:
+            .copilotIndigo
         }
-
-        return directory
-    }
-
-    private var recordingDirectory: URL {
-        FileManager.default
-            .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-            .first!
-            .appendingPathComponent("cache")
-            .appendingPathComponent("CombatRecord")
     }
 }
 
 struct CopilotContent_Previews: PreviewProvider {
     static var previews: some View {
-        CopilotContent(selection: .constant(nil))
-            .environmentObject(MAAViewModel())
+        VStack {
+            CopilotContent()
+        }
+        .frame(maxWidth: 300)
+        .environment(NewViewModel(parent: MAAViewModel()))
+    }
+}
+
+// MARK: - File Paths
+
+extension URL {
+    static let bundledCopilotDirectory = Bundle.main.resourceURL!
+        .appending(path: "resource/")
+        .appending(path: "copilot/")
+
+    static let externalCopilotDirectory = FileManager.default
+        .urls(for: .documentDirectory, in: .userDomainMask)
+        .first!
+        .appending(path: "copilot/")
+}
+
+// MARK: - State Wrappers
+
+extension URL {
+    fileprivate var isManagedCopilot: Bool {
+        path.starts(with: URL.externalCopilotDirectory.path)
     }
 }
 
 // MARK: - Value Extensions
 
-extension URL {
-    fileprivate var copilots: [URL] {
-        guard
-            let urls = try? FileManager.default.contentsOfDirectory(
-                at: self,
-                includingPropertiesForKeys: [.contentTypeKey],
-                options: .skipsHiddenFiles)
-        else { return [] }
-
-        return urls.filter { url in
-            let value = try? url.resourceValues(forKeys: [.contentTypeKey])
-            return value?.contentType == .json
+extension CopilotContent.Item {
+    func possibleSibling(of url: URL) -> Self? {
+        if self.url == url {
+            return nil
         }
-        .sorted { lhs, rhs in
-            lhs.lastPathComponent < rhs.lastPathComponent
+        var searchStack = [self]
+
+        while !searchStack.isEmpty {
+            let current = searchStack.removeLast()
+
+            if let children = current.children {
+                for index in children.indices {
+                    let item = children[index]
+
+                    if item.url == url {
+                        let nextIndex = children.index(after: index)
+
+                        if nextIndex != children.endIndex {
+                            return children[nextIndex]
+                        } else if index != children.startIndex {
+                            let prevIndex = children.index(before: index)
+                            return children[prevIndex]
+                        }
+
+                        return nil
+                    }
+
+                    if item.children != nil {
+                        searchStack.append(item)
+                    }
+                }
+            }
         }
-    }
-}
-
-extension Set where Element == URL {
-    fileprivate var urls: [URL] { sorted { $0.lastPathComponent < $1.lastPathComponent } }
-}
-
-// MARK: - Download Model
-
-private struct CopilotResponse: Codable {
-    let data: CopilotData
-
-    struct CopilotData: Codable {
-        let content: String
+        return nil
     }
 }
 
 // MARK: - Convenience Methods
 
-extension NSItemProvider {
-    @MainActor fileprivate func loadURL() async throws -> URL {
-        let handle = ProgressActor()
-
-        return try await withTaskCancellationHandler {
-            try await withCheckedThrowingContinuation { continuation in
-                let progress = loadObject(ofClass: URL.self) { object, error in
-                    if let error {
-                        continuation.resume(throwing: error)
-                        return
-                    }
-
-                    guard let object else {
-                        continuation.resume(throwing: MAAError.emptyItemObject)
-                        return
-                    }
-
-                    continuation.resume(returning: object)
-                }
-
-                Task {
-                    await handle.bind(progress: progress)
-                }
-            }
-        } onCancel: {
-            Task {
-                await handle.cancel()
-            }
-        }
-    }
-}
-
-private actor ProgressActor {
-    private var progress: Progress?
-    private var cancelled = false
-
-    func bind(progress: Progress) {
-        guard !cancelled else { return }
-        self.progress = progress
-        progress.resume()
+extension FileManager {
+    func copyCopilotToExternalDirectory(at url: URL) throws -> URL {
+        let dest = prepareDestination(for: url)
+        try FileManager.default.copyItem(at: url, to: dest)
+        return dest
     }
 
-    func cancel() {
-        cancelled = true
-        progress?.cancel()
+    func moveCopilotToExternalDirectory(at url: URL) throws -> URL {
+        let dest = prepareDestination(for: url)
+        try FileManager.default.moveItem(at: url, to: dest)
+        return dest
+    }
+
+    private func prepareDestination(for url: URL) -> URL {
+        let name = url.lastPathComponent
+        let dest = URL.externalCopilotDirectory.appending(path: name)
+        try? FileManager.default.removeItem(at: dest)
+        return dest
     }
 }
