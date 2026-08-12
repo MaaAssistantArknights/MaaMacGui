@@ -5,7 +5,9 @@
 //  Created by hguandl on 2026/8/8.
 //
 
+import Combine
 import Foundation
+import Observation
 
 // TODO: Mirgrate all bridges
 @Observable final class NewViewModel {
@@ -33,49 +35,24 @@ import Foundation
 
     private let parent: MAAViewModel
 
-    private var _status: MAAViewModel.Status
+    @ObservationIgnored private var cancellables = Set<AnyCancellable>()
 
-    @ObservationIgnored private var parentUpdateTask: Task<Void, Never>?
+    @MainActor var status: MAAViewModel.Status {
+        access(keyPath: \.status)
+        let value = parent.status
+        print("Got status", value)
+        return value
+    }
 
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
-        self._status = parent.status
 
-        self.parentUpdateTask = Task {
-            await withTaskGroup { group in
-                group.addTask { [weak self] in
-                    for await status in await parent.$status.values {
-                        guard let self else { return }
-                        self._status = status
-                    }
-                }
-                group.addTask { [weak self] in
-                    for await url in await parent.$videoRecoginition.values {
-                        guard let url else { return }
-                        do {
-                            let dest = try FileManager.default.moveCopilotToExternalDirectory(at: url)
-                            self?.lastImportedCopilot = dest
-                        } catch {
-                            print(error)
-                        }
-                    }
-                }
-                await group.waitForAll()
+        parent.$status.sink { [weak self] newValue in
+            self?.withMutation(keyPath: \.status) {
+                print("Updated status", newValue)
             }
         }
-    }
-
-    deinit {
-        self.parentUpdateTask?.cancel()
-    }
-
-}
-
-// MARK: - Status Bridge
-
-extension NewViewModel {
-    var status: MAAViewModel.Status {
-        return _status
+        .store(in: &cancellables)
     }
 }
 
@@ -93,7 +70,7 @@ extension NewViewModel {
         let type: MAATaskType
 
         if copilot.isListMode {
-            guard let kind = copilot.copilotSetKind else {
+            guard let kind = copilot.copilotSet?.kind else {
                 return
             }
 

@@ -131,6 +131,13 @@ struct VideoRecognitionConfiguration: Codable {
 
     var isListMode = false
 
+    struct CopilotSet {
+        let kind: MAACopilot.Kind
+        let data: CopilotSetData
+    }
+
+    private(set) var copilotSet: CopilotSet?
+
     struct ListItem: Identifiable {
         let url: URL
         let stageName: String
@@ -143,14 +150,10 @@ struct VideoRecognitionConfiguration: Codable {
         }
     }
 
-    private(set) var copilotSet: CopilotSetData?
-    private(set) var copilotSetKind: MAACopilot.Kind?
-
     var copilotList = [ListItem]() {
         didSet {
             if copilotList.isEmpty {
                 copilotSet = nil
-                copilotSetKind = nil
             }
         }
     }
@@ -165,9 +168,8 @@ extension CopilotContext {
             return
         }
 
-        self.copilotSet = set
+        self.copilotSet = .init(kind: kind, data: set)
         self.copilotList = list
-        self.copilotSetKind = kind
     }
 }
 

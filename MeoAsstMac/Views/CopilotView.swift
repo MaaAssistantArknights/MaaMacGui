@@ -13,7 +13,7 @@ struct CopilotView: View {
     var body: some View {
         @Bindable var context = context
         if context.isListMode {
-            if let set = context.copilotSet, let kind = context.copilotSetKind {
+            if let set = context.copilotSet {
                 switch context.content {
                 case .copilot(let copilot):
                     CopilotConfigView(kind: copilot.kind, config: $context.config) {
@@ -22,8 +22,8 @@ struct CopilotView: View {
                 case .invalid:
                     Text("文件格式错误")
                 default:
-                    CopilotConfigView(kind: kind, config: $context.config) {
-                        CopilotSetDescriptionView(set: set)
+                    CopilotConfigView(kind: set.kind, config: $context.config) {
+                        CopilotSetDescriptionView(set: set.data)
                     }
                 }
             } else {
