@@ -74,13 +74,13 @@ struct TaskDetail: View {
         }
 
         ToolbarItemGroup {
-            HStack {
-                Divider()
-
-                ViewDetaiTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(
-                    mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
+            ToolbarItemGroup {
+                Picker("内容", selection: $mode) {
+                    Label("选项", systemImage: "gearshape").tag(DetailMode.taskConfig)
+                    Label("日志", systemImage: "note.text").tag(DetailMode.log)
+                    Label("定时", systemImage: "clock.arrow.2.circlepath").tag(DetailMode.timerConfig)
+                }
+                .pickerStyle(.segmented)
             }
         }
     }
