@@ -29,21 +29,12 @@ struct CopilotContent: View {
     @State private var bundledRoot = Item(url: .bundledCopilotDirectory)
     @State private var externalRoot = Item(url: .externalCopilotDirectory)
 
-    enum Category: String, CaseIterable {
-        case bundled
-        case external
-        case list
-    }
-
-    @AppStorage("CopilotContentCategory")
-    private var category = Category.bundled
-
     @State private var tracker = FileTreeTracker()
 
     var body: some View {
         @Bindable var context = newModel.copilot
         List(selection: $context.selection) {
-            switch category {
+            switch context.category {
             case .bundled:
                 FileTreeRoot(item: $bundledRoot, tracker: tracker) {
                     Text($0.name)
@@ -63,7 +54,7 @@ struct CopilotContent: View {
         .contextMenu(forSelectionType: CopilotContext.ItemID.self) { _ in
             EmptyView()
         } primaryAction: { ids in
-            if category == .list {
+            if context.category == .list {
                 context.selection = nil
                 return
             }
@@ -72,7 +63,7 @@ struct CopilotContent: View {
             }
         }
         .safeAreaInset(edge: .top) {
-            CapsulePicker(Category.allCases, selection: $category, color: \.color) {
+            CapsulePicker(CopilotCategory.allCases, selection: $context.category, color: \.color) {
                 Image(systemName: $0.systemImage)
             } text: {
                 Text($0.title)
@@ -84,21 +75,14 @@ struct CopilotContent: View {
         .toolbar {
             CopilotListToolbar(externalRoot: $externalRoot)
         }
-        .task(id: category) {
-            switch category {
+        .task(id: context.category) {
+            switch context.category {
             case .bundled:
-                context.isListMode = false
                 bundledRoot.children = (try? await bundledRoot.children()) ?? []
             case .external:
-                context.isListMode = false
                 externalRoot.children = (try? await externalRoot.children()) ?? []
             case .list:
-                context.isListMode = true
-            }
-        }
-        .onChange(of: context.isListMode, initial: true) {
-            if context.isListMode, category != .list {
-                category = .list
+                break
             }
         }
         .task(id: newModel.lastImportedCopilot) {
@@ -108,11 +92,11 @@ struct CopilotContent: View {
             context.selection = .init(url: url, isRaid: nil)
             if url.isDirectory {
                 context.updateCopilotSet()
-                category = .list
+                context.category = .list
             } else {
                 let children = try? await externalRoot.children()
                 externalRoot.children = children ?? []
-                category = .external
+                context.category = .external
             }
         }
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
@@ -213,7 +197,7 @@ private struct CopilotListToolbar: ToolbarContent {
     }
 
     private var canDeleteCopilot: Bool {
-        if newModel.copilot.isListMode {
+        if newModel.copilot.category == .list {
             return false
         }
         if let url = newModel.copilot.url {
@@ -264,7 +248,7 @@ private struct CopilotListToolbar: ToolbarContent {
     }
 }
 
-extension CopilotContent.Category: Identifiable {
+extension CopilotCategory: Identifiable {
     var id: String { rawValue }
 
     var title: String {

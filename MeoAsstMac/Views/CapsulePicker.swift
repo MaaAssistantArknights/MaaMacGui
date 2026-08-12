@@ -93,12 +93,12 @@ extension CapsulePicker {
 }
 
 #Preview {
-    @Previewable @State var category = CopilotContent.Category.bundled
+    @Previewable @State var category = CopilotCategory.bundled
     List {
         EmptyView()
     }
     .safeAreaInset(edge: .top) {
-        CapsulePicker(CopilotContent.Category.allCases, selection: $category, color: \.color) {
+        CapsulePicker(CopilotCategory.allCases, selection: $category, color: \.color) {
             Image(systemName: $0.systemImage)
         } text: {
             Text($0.title)

@@ -83,8 +83,53 @@ struct VideoRecognitionConfiguration: Codable {
     }
 }
 
+enum CopilotCategory: String, CaseIterable {
+    case bundled
+    case external
+    case list
+}
+
+extension UserDefaults {
+    @objc dynamic var CopilotContentCategory: String? {
+        get {
+            string(forKey: "CopilotContentCategory")
+        }
+        set {
+            set(newValue, forKey: "CopilotContentCategory")
+        }
+    }
+}
+
 @Observable final class CopilotContext {
     var config = CopilotConfiguration()
+
+    var category: CopilotCategory {
+        get {
+            access(keyPath: \.category)
+            if let value = UserDefaults.standard.CopilotContentCategory {
+                return .init(rawValue: value) ?? .bundled
+            } else {
+                return .bundled
+            }
+        }
+        set {
+            withMutation(keyPath: \.category) {
+                UserDefaults.standard.CopilotContentCategory = newValue.rawValue
+            }
+        }
+    }
+
+    @ObservationIgnored private var categoryObserver: NSKeyValueObservation?
+
+    init() {
+        categoryObserver = UserDefaults.standard.observe(\.CopilotContentCategory) { [weak self] _, _ in
+            self?.withMutation(keyPath: \.category) {}
+        }
+    }
+
+    deinit {
+        categoryObserver?.invalidate()
+    }
 
     struct ItemID: Hashable {
         let url: URL
@@ -128,8 +173,6 @@ struct VideoRecognitionConfiguration: Codable {
     }
 
     private(set) var content: Content?
-
-    var isListMode = false
 
     struct CopilotSet {
         let kind: MAACopilot.Kind

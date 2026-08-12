@@ -39,18 +39,14 @@ import Observation
 
     @MainActor var status: MAAViewModel.Status {
         access(keyPath: \.status)
-        let value = parent.status
-        print("Got status", value)
-        return value
+        return parent.status
     }
 
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
 
-        parent.$status.sink { [weak self] newValue in
-            self?.withMutation(keyPath: \.status) {
-                print("Updated status", newValue)
-            }
+        parent.$status.sink { [weak self] _ in
+            self?.withMutation(keyPath: \.status) {}
         }
         .store(in: &cancellables)
     }
@@ -69,7 +65,7 @@ extension NewViewModel {
         var config = copilot.config
         let type: MAATaskType
 
-        if copilot.isListMode {
+        if copilot.category == .list {
             guard let kind = copilot.copilotSet?.kind else {
                 return
             }

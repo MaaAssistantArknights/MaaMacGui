@@ -12,7 +12,7 @@ struct CopilotView: View {
 
     var body: some View {
         @Bindable var context = context
-        if context.isListMode {
+        if context.category == .list {
             if let set = context.copilotSet {
                 switch context.content {
                 case .copilot(let copilot):
@@ -38,7 +38,7 @@ struct CopilotView: View {
             case .set(let set):
                 Button("激活此作业集") {
                     context.updateCopilotSet()
-                    context.isListMode = true
+                    context.category = .list
                 }
                 .padding()
                 CopilotSetDescriptionView(set: set)
