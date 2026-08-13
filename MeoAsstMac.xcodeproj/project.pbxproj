@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
+		831100C43026440D00554899 /* NewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831100C33026440D00554899 /* NewViewModel.swift */; };
+		831597123028DF98008C7EDF /* CapsulePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831597113028DF98008C7EDF /* CapsulePicker.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -80,6 +82,8 @@
 		838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82629FDD0F9000566A0 /* GachaView.swift */; };
 		838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82829FDE1FA000566A0 /* MAAError.swift */; };
 		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
+		83985BC03025F0CF00D2A789 /* CopilotListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */; };
+		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
@@ -136,6 +140,8 @@
 /* Begin PBXFileReference section */
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		831100C33026440D00554899 /* NewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewModel.swift; sourceTree = "<group>"; };
+		831597113028DF98008C7EDF /* CapsulePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsulePicker.swift; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
 		8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
@@ -208,6 +214,8 @@
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
 		838FF82829FDE1FA000566A0 /* MAAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAError.swift; sourceTree = "<group>"; };
 		8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolClient.swift; sourceTree = "<group>"; };
+		83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotListContent.swift; sourceTree = "<group>"; };
+		83985BC13026055400D2A789 /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
 		83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+KVO.swift"; sourceTree = "<group>"; };
 		83BC250A302E431000080642 /* FileManager+Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Atomic.swift"; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
@@ -321,6 +329,8 @@
 				838FF82629FDD0F9000566A0 /* GachaView.swift */,
 				92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */,
 				8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */,
+				83985BC13026055400D2A789 /* FileTreeView.swift */,
+				831597113028DF98008C7EDF /* CapsulePicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,6 +354,7 @@
 				832985BC29EFA43B009F7ED5 /* MAADetail.swift */,
 				8355E7B329E918A2005D5A1C /* TasksContent.swift */,
 				8341195C29EC719B00044F45 /* CopilotContent.swift */,
+				83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */,
 				832985AD29EEE672009F7ED5 /* UtilityContent.swift */,
 				832985BA29EFA26D009F7ED5 /* TaskDetail.swift */,
 				8329858929ED121A009F7ED5 /* CopilotDetail.swift */,
@@ -437,6 +448,7 @@
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
+				831100C33026440D00554899 /* NewViewModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -599,6 +611,7 @@
 				83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
+				83985BC23026055400D2A789 /* FileTreeView.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
 				8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */,
 				838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */,
@@ -618,6 +631,7 @@
 				8329858C29EDA952009F7ED5 /* OpenLogFileView.swift in Sources */,
 				83D3283728F2FA5B00018D10 /* InfrastSettingsView.swift in Sources */,
 				83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */,
+				83985BC03025F0CF00D2A789 /* CopilotListContent.swift in Sources */,
 				83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */,
 				832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */,
 				838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */,
@@ -629,8 +643,10 @@
 				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
+				831100C43026440D00554899 /* NewViewModel.swift in Sources */,
 				832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */,
 				83264A2D29EBEDD80074E33A /* FightConfiguration.swift in Sources */,
+				831597123028DF98008C7EDF /* CapsulePicker.swift in Sources */,
 				8366DE0129F2F26100F715E8 /* OperBoxView.swift in Sources */,
 				832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */,
 				8352529F2D533F9000C6D6D3 /* MirrorChyan.swift in Sources */,

@@ -8,114 +8,125 @@
 import SwiftUI
 
 struct CopilotView: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
-    let url: URL
+    let context: CopilotContext
 
     var body: some View {
-        if let copilot = MAACopilot(url: url) {
-            VStack(spacing: 20) {
-                CopilotConfigView(config: $viewModel.copilot).padding(.top)
-
-                Divider()
-
-                ScrollView {
+        @Bindable var context = context
+        if context.category == .list {
+            if let set = context.copilotSet {
+                switch context.content {
+                case .copilot(let kind, let copilot):
+                    CopilotConfigView(kind: kind, config: $context.config) {
+                        CopilotDescriptionView(pilot: copilot)
+                    }
+                case .invalid:
+                    Text("文件格式错误")
+                default:
+                    CopilotConfigView(kind: set.kind, config: $context.config) {
+                        CopilotSetDescriptionView(set: set.data)
+                    }
+                }
+            } else {
+                Text("请选择作业项目")
+            }
+        } else {
+            switch context.content {
+            case .copilot(let kind, let copilot):
+                CopilotConfigView(kind: kind, config: $context.config) {
                     CopilotDescriptionView(pilot: copilot)
                 }
+            case .set(let set):
+                Button("激活此作业集") {
+                    Task {
+                        await context.updateCopilotSet()
+                        context.category = .list
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                Divider().padding(.vertical)
+                CopilotSetDescriptionView(set: set)
+            case .directory, nil:
+                Text("请选择作业项目")
+            case .invalid:
+                Text("文件格式错误")
             }
-            .task(id: url) { updateCopilot() }
-            .animation(.default, value: formation)
-        } else {
-            Text("文件格式错误")
-        }
-    }
-
-    private func updateCopilot() {
-        guard let copilot = MAACopilot(url: url) else { return }
-        if copilot.type == "SSS" {
-            viewModel.copilot = .sss(.init(filename: url.path))
-        } else {
-            viewModel.copilot = .regular(.init(filename: url.path))
-        }
-    }
-
-    private var copilot: MAACopilot? {
-        MAACopilot(url: url)
-    }
-
-    private var formation: Bool {
-        switch viewModel.copilot {
-        case .regular(let innerConfig):
-            innerConfig.formation
-        default:
-            false
         }
     }
 }
 
 // MARK: - Copilot Config
 
-private struct CopilotConfigView: View {
-    @Binding var config: CopilotConfiguration?
+private struct CopilotConfigView<D: View>: View {
+    let kind: MAACopilot.Kind
+
+    @Binding var config: CopilotConfiguration
+
+    let description: D
+
+    init(kind: MAACopilot.Kind, config: Binding<CopilotConfiguration>, @ViewBuilder description: () -> D) {
+        self.kind = kind
+        self._config = config
+        self.description = description()
+    }
 
     var body: some View {
-        switch config {
-        case .regular(let innerConfig):
-            let binding = Binding {
-                innerConfig
-            } set: { newValue in
-                self.config = .regular(newValue)
+        VStack(spacing: 12) {
+            switch kind {
+            case .regular:
+                RegularCopilotConfigView(config: $config)
+                Divider()
+            case .sss:
+                SSSCopilotConfigView(config: $config)
+                Divider()
+            case .paradox:
+                EmptyView()
             }
-            RegularCopilotConfigView(config: binding)
-        case .sss(let innerConfig):
-            let binding = Binding {
-                innerConfig
-            } set: { newValue in
-                self.config = .sss(newValue)
+            ScrollView {
+                LazyVStack(spacing: 12) {
+                    description
+                }
             }
-            SSSCopilotConfigView(config: binding)
-        case .none:
-            EmptyView()
         }
+        .padding(.top)
+        .animation(.default, value: config.formation)
     }
 }
 
 private struct RegularCopilotConfigView: View {
-    @Binding var config: RegularCopilotConfiguration
+    @Binding var config: CopilotConfiguration
 
     var body: some View {
-        VStack {
-            Toggle("自动编队", isOn: $config.formation)
-            if config.formation {
-                HStack {
-                    Picker("编队栏位", selection: $config.formation_index) {
-                        Text("当前").tag(0)
-                        ForEach(0..<RegularCopilotConfiguration.formationCount, id: \.self) { index in
-                            Text("\(index + 1)").tag(index + 1)
-                        }
-                    }
-                    .pickerStyle(.menu)
-                    Toggle("忽视干员属性要求", isOn: $config.ignore_requirements)
-                    Toggle("补充低信赖干员", isOn: $config.add_trust)
-                }
-                HStack {
-                    Picker("助战模式", selection: $config.support_unit_usage) {
-                        ForEach(RegularCopilotConfiguration.SupportUnitUsage.allCases, id: \.self) {
-                            Text($0.description).tag($0)
-                        }
-                    }
-                    if config.support_unit_usage == .specific {
-                        TextField("干员名称", text: $config.support_unit_name)
-                            .frame(maxWidth: 150)
+        Toggle("自动编队", isOn: $config.formation)
+        if config.formation {
+            HStack {
+                Picker("编队栏位", selection: $config.formation_index) {
+                    Text("当前").tag(0)
+                    ForEach(1...4, id: \.self) { index in
+                        Text("\(index)").tag(index)
                     }
                 }
-                .animation(.default, value: config.support_unit_usage)
+                .pickerStyle(.menu)
+                Toggle("忽视干员属性要求", isOn: $config.ignore_requirements)
+                Toggle("补充低信赖干员", isOn: $config.add_trust)
             }
+            HStack {
+                Picker("助战模式", selection: $config.support_unit_usage) {
+                    ForEach(CopilotConfiguration.SupportUnitUsage.allCases, id: \.self) {
+                        Text($0.description).tag($0)
+                    }
+                }
+                if config.support_unit_usage == .specific {
+                    TextField("干员名称", text: $config.support_unit_name)
+                        .frame(maxWidth: 150)
+                }
+            }
+            .animation(.default, value: config.support_unit_usage)
         }
     }
 }
 
 private struct SSSCopilotConfigView: View {
-    @Binding var config: SSSCopilotConfiguration
+    @Binding var config: CopilotConfiguration
 
     var body: some View {
         HStack {
@@ -170,30 +181,37 @@ private struct CopilotDescriptionView: View {
     }
 }
 
-#Preview("Regular Copilot Config") {
-    let url = Bundle.main.resourceURL!
-        .appendingPathComponent("resource")
-        .appendingPathComponent("copilot")
-        .appendingPathComponent("OF-1_credit_fight")
-        .appendingPathExtension("json")
+private struct CopilotSetDescriptionView: View {
+    let set: CopilotSetData
 
-    VStack {
-        CopilotView(url: url)
+    var body: some View {
+        Text(set.name).font(.title2)
+        Text(set.description)
     }
-    .environmentObject(MAAViewModel())
+}
+
+#Preview("Regular Copilot Config") {
+    let context = CopilotContext()
+    let url = URL.bundledCopilotDirectory
+        .appending(path: "OF-1_credit_fight")
+        .appendingPathExtension("json")
+    context.selection = .init(url: url, isRaid: nil)
+
+    return VStack {
+        CopilotView(context: context)
+    }
 }
 
 #Preview("SSS Copilot Config") {
-    let url = Bundle.main.resourceURL!
-        .appendingPathComponent("resource")
-        .appendingPathComponent("copilot")
-        .appendingPathComponent("old")
-        .appendingPathComponent("约翰老妈新建地块_Mama_Johns_New_Plate")
-        .appendingPathComponent("SSS_约翰老妈新建地块")
+    let context = CopilotContext()
+    let url = URL.bundledCopilotDirectory
+        .appending(path: "old/")
+        .appending(path: "约翰老妈新建地块_Mama_Johns_New_Plate/")
+        .appending(path: "SSS_约翰老妈新建地块")
         .appendingPathExtension("json")
+    context.selection = .init(url: url, isRaid: nil)
 
-    VStack {
-        CopilotView(url: url)
+    return VStack {
+        CopilotView(context: context)
     }
-    .environmentObject(MAAViewModel())
 }

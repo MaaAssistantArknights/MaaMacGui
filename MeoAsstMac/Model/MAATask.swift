@@ -54,6 +54,8 @@ extension MAATaskType: Codable, CustomStringConvertible {
             return String(localized: "自动抄作业")
         case .SSSCopilot:
             return String(localized: "自动抄保全作业")
+        case .ParadoxCopilot:
+            return String(localized: "自动抄悖论模拟作业")
         case .Depot:
             return String(localized: "仓库识别")
         case .Reclamation:

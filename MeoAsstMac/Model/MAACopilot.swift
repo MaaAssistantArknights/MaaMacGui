@@ -13,6 +13,7 @@ struct MAACopilot: Codable, Equatable {
     let groups: [Group]?
     let minimum_required: String
     let doc: Documentation?
+    let difficulty: Int?
 
     // MARK: SSS
 
@@ -57,5 +58,84 @@ extension MAACopilot {
         } catch {
             return nil
         }
+    }
+
+    static func download(id: Int, toDirectory directory: URL) async throws -> URL {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+
+        let file = directory.appending(path: "\(id)")
+            .appendingPathExtension("json")
+
+        let url = URL(string: "https://prts.maa.plus/copilot/get/\(id)")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+
+        struct Content: Codable {
+            let data: CopilotData
+
+            struct CopilotData: Codable {
+                let content: String
+            }
+        }
+
+        let content = try JSONDecoder().decode(Content.self, from: data)
+        try content.data.content.write(toFile: file.path, atomically: true, encoding: .utf8)
+
+        return file
+    }
+}
+
+struct CopilotSetData: Codable {
+    let name: String
+    let description: String
+    let copilot_ids: [Int]
+}
+
+extension CopilotSetData {
+    init?(atDirectory url: URL) {
+        guard url.isDirectory else { return nil }
+        let setID = url.lastPathComponent
+        let metaURL = url.appending(path: ".\(setID).json")
+        do {
+            let data = try Data(contentsOf: metaURL)
+            self = try JSONDecoder().decode(CopilotSetData.self, from: data)
+        } catch {
+            return nil
+        }
+    }
+
+    static func download(id setID: Int, progress: Progress?) async throws -> URL {
+        let url = URL(string: "https://prts.maa.plus/set/get?id=\(setID)")!
+        let (data, _) = try await URLSession.shared.data(from: url)
+
+        struct Content: Codable {
+            let data: CopilotSetData
+        }
+
+        let content = try JSONDecoder().decode(Content.self, from: data)
+
+        let directory = URL.externalCopilotDirectory
+            .appending(path: "s\(setID)/")
+
+        progress?.totalUnitCount = Int64(content.data.copilot_ids.count)
+        progress?.completedUnitCount = 0
+
+        try await withThrowingTaskGroup { group in
+            for id in content.data.copilot_ids {
+                group.addTask {
+                    try await MAACopilot.download(id: id, toDirectory: directory)
+                }
+            }
+            for try await _ in group {
+                progress?.completedUnitCount += 1
+            }
+        }
+
+        let file = directory.appending(path: ".s\(setID)")
+            .appendingPathExtension("json")
+
+        let contentData = try JSONEncoder().encode(content.data)
+        try contentData.write(to: file, options: .atomic)
+
+        return directory
     }
 }

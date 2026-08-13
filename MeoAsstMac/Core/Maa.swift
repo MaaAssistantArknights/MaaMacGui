@@ -28,6 +28,16 @@ actor MAAProvider {
             throw MaaCoreError.setUserDirectoryFailed
         }
     }
+
+    func mapLevelCode(matching key: String) -> String? {
+        let mapLevelKey = key.withCString {
+            AsstGetMapLevelKey($0)
+        }
+        guard let code = mapLevelKey.code else {
+            return nil
+        }
+        return String(cString: code)
+    }
 }
 
 private func handleAsst(msg: AsstId, detailsPtr: UnsafePointer<CChar>?, handlePtr: UnsafeMutableRawPointer?) {
@@ -190,6 +200,7 @@ enum MAATaskType: String {
     case Roguelike
     case Copilot
     case SSSCopilot
+    case ParadoxCopilot
     case Depot
     case Reclamation
     case VideoRecognition

@@ -40,6 +40,5 @@ struct MAAContent_Previews: PreviewProvider {
 
 struct ContentEntry: Codable {
     var task: UUID?
-    var copilot: URL?
     var utility: UtilityEntry?
 }
