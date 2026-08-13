@@ -89,14 +89,20 @@ enum CopilotCategory: String, CaseIterable {
     case list
 }
 
-extension UserDefaults {
-    @objc dynamic var CopilotContentCategory: String? {
-        get {
-            string(forKey: "CopilotContentCategory")
+extension CopilotCategory {
+    static let userDefaultsKey = "CopilotContentCategory"
+
+    static func userDefaultsValue(defaults: UserDefaults = .standard) -> Self {
+        let rawValue = defaults.string(forKey: userDefaultsKey)
+        if let rawValue {
+            return .init(rawValue: rawValue) ?? .bundled
+        } else {
+            return .bundled
         }
-        set {
-            set(newValue, forKey: "CopilotContentCategory")
-        }
+    }
+
+    func setUserDefaults(defaults: UserDefaults = .standard) {
+        defaults.set(rawValue, forKey: Self.userDefaultsKey)
     }
 }
 
@@ -106,29 +112,27 @@ extension UserDefaults {
     var category: CopilotCategory {
         get {
             access(keyPath: \.category)
-            if let value = UserDefaults.standard.CopilotContentCategory {
-                return .init(rawValue: value) ?? .bundled
-            } else {
-                return .bundled
-            }
+            return .userDefaultsValue()
         }
         set {
             withMutation(keyPath: \.category) {
-                UserDefaults.standard.CopilotContentCategory = newValue.rawValue
+                newValue.setUserDefaults()
             }
         }
     }
 
-    @ObservationIgnored private var categoryObserver: NSKeyValueObservation?
+    @ObservationIgnored private var categoryObserver: UserDefaultsObserver<String>?
 
     init() {
-        categoryObserver = UserDefaults.standard.observe(\.CopilotContentCategory) { [weak self] _, _ in
+        categoryObserver = UserDefaults.standard.observeKey(CopilotCategory.userDefaultsKey) { [weak self] _ in
             self?.withMutation(keyPath: \.category) {}
         }
     }
 
     deinit {
-        categoryObserver?.invalidate()
+        if let categoryObserver {
+            UserDefaults.standard.removeObserver(categoryObserver, forKeyPath: CopilotCategory.userDefaultsKey)
+        }
     }
 
     struct ItemID: Hashable {

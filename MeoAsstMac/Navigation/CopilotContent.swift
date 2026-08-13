@@ -100,7 +100,7 @@ struct CopilotContent: View {
             }
         }
         .onChange(of: context.copilotList.isEmpty, initial: true) {
-            if $1 {
+            if $1, context.category == .list {
                 context.category = .external
             }
         }
