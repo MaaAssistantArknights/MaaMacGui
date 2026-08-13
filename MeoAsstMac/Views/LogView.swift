@@ -34,15 +34,15 @@ struct LogView: View {
                     .help("自动滚动到底部")
                 }
             }
-            .onChange(of: viewModel.logs) { _ in
+            .onChange(of: viewModel.logs) {
                 if viewModel.trackTail {
                     withAnimation {
                         proxy.scrollTo(viewModel.logs.last?.id ?? UUID())
                     }
                 }
             }
-            .onChange(of: viewModel.trackTail) { newValue in
-                if newValue {
+            .onChange(of: viewModel.trackTail) {
+                if $1 {
                     withAnimation {
                         proxy.scrollTo(viewModel.logs.last?.id ?? UUID())
                     }

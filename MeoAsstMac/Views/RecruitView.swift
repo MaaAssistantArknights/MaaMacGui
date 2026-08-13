@@ -47,8 +47,8 @@ struct RecruitView: View {
                 }
             }
         }
-        .onChange(of: lv3ShortTime) { newValue in
-            viewModel.recruitConfig.recruitment_time["3"] = newValue ? 460 : 540
+        .onChange(of: lv3ShortTime) {
+            viewModel.recruitConfig.recruitment_time["3"] = $1 ? 460 : 540
         }
     }
 

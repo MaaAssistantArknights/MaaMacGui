@@ -29,14 +29,14 @@ struct UpdaterSettingsView: View {
             Toggle("接收开发版更新", isOn: $useBetaChannel)
 
             Toggle("自动检查更新", isOn: $automaticallyChecksForUpdates)
-                .onChange(of: automaticallyChecksForUpdates) { newValue in
-                    updater.automaticallyChecksForUpdates = newValue
+                .onChange(of: automaticallyChecksForUpdates) {
+                    updater.automaticallyChecksForUpdates = $1
                 }
 
             Toggle("自动下载更新", isOn: $automaticallyDownloadsUpdates)
                 .disabled(!automaticallyChecksForUpdates)
-                .onChange(of: automaticallyDownloadsUpdates) { newValue in
-                    updater.automaticallyDownloadsUpdates = newValue
+                .onChange(of: automaticallyDownloadsUpdates) {
+                    updater.automaticallyDownloadsUpdates = $1
                 }
 
             Divider()

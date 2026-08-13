@@ -84,7 +84,7 @@ struct TaskTimerItem: View {
             })
             .toggleStyle(.switch)
             .onChange(of: taskTimer.isEnabled) {
-                if $0 {
+                if $1 {
                     onEnabled()
                 }
             }
