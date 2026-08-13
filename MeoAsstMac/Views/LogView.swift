@@ -25,14 +25,10 @@ struct LogView: View {
             }
             .animation(.default, value: viewModel.logs)
             .toolbar {
-                HStack {
-                    Divider()
-
-                    Toggle(isOn: $viewModel.trackTail) {
-                        Label("现在", systemImage: "arrow.down.to.line")
-                    }
-                    .help("自动滚动到底部")
+                Toggle(isOn: $viewModel.trackTail) {
+                    Label("现在", systemImage: "arrow.down.to.line")
                 }
+                .help("自动滚动到底部")
             }
             .onChange(of: viewModel.logs) {
                 if viewModel.trackTail {
