@@ -23,6 +23,7 @@
 		83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */; };
 		83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3A29EC0F2E0074E33A /* LogView.swift */; };
 		83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3D29EC22DE0074E33A /* MAAViewModel.swift */; };
+		832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832903A8302C9802008E1DC6 /* URL+contentType.swift */; };
 		8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8329858929ED121A009F7ED5 /* CopilotDetail.swift */; };
 		8329858C29EDA952009F7ED5 /* OpenLogFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */; };
 		8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8329859429EDB9EB009F7ED5 /* SwiftyJSON */; };
@@ -79,6 +80,8 @@
 		838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82629FDD0F9000566A0 /* GachaView.swift */; };
 		838FF82929FDE1FA000566A0 /* MAAError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 838FF82829FDE1FA000566A0 /* MAAError.swift */; };
 		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
+		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
+		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D061F62CF81519008F0140 /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D061F52CF81519008F0140 /* FileLogger.swift */; };
@@ -146,6 +149,7 @@
 		83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardConfiguration.swift; sourceTree = "<group>"; };
 		83264A3A29EC0F2E0074E33A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		83264A3D29EC22DE0074E33A /* MAAViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAViewModel.swift; sourceTree = "<group>"; };
+		832903A8302C9802008E1DC6 /* URL+contentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+contentType.swift"; sourceTree = "<group>"; };
 		8329858929ED121A009F7ED5 /* CopilotDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotDetail.swift; sourceTree = "<group>"; };
 		8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenLogFileView.swift; sourceTree = "<group>"; };
 		832985A929EE9958009F7ED5 /* RecruitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitView.swift; sourceTree = "<group>"; };
@@ -204,6 +208,8 @@
 		838FF82629FDD0F9000566A0 /* GachaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GachaView.swift; sourceTree = "<group>"; };
 		838FF82829FDE1FA000566A0 /* MAAError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAError.swift; sourceTree = "<group>"; };
 		8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolClient.swift; sourceTree = "<group>"; };
+		83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+KVO.swift"; sourceTree = "<group>"; };
+		83BC250A302E431000080642 /* FileManager+Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Atomic.swift"; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
 		83D061F52CF81519008F0140 /* FileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
@@ -475,6 +481,9 @@
 				835252A02D534A9E00C6D6D3 /* GitHub.swift */,
 				83812ED12D5B0B8100CB39D6 /* Binding+semicolonString.swift */,
 				83E9ED962DF693B20069CFE9 /* OTAFetcher.swift */,
+				832903A8302C9802008E1DC6 /* URL+contentType.swift */,
+				83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */,
+				83BC250A302E431000080642 /* FileManager+Atomic.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -577,6 +586,7 @@
 				832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */,
 				834DEC122C4D94BD0073B5D4 /* ClosedownConfiguration.swift in Sources */,
 				83477CB429FEA7A500A5FF99 /* TaskButtons.swift in Sources */,
+				83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */,
 				8355E7B829E9E2B2005D5A1C /* Sidebar.swift in Sources */,
 				83661E2C29F77CFF007793CA /* VideoRecogView.swift in Sources */,
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
@@ -586,6 +596,7 @@
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
 				8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */,
+				83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
@@ -632,6 +643,7 @@
 				8341195729EC58CF00044F45 /* MAACopilot.swift in Sources */,
 				8347B5A82CDF85A000AEB627 /* ResourceUpdateView.swift in Sources */,
 				8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */,
+				832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */,
 				835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
