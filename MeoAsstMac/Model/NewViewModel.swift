@@ -74,8 +74,8 @@ extension NewViewModel {
             config.copilot_list = copilot.copilotList.filter(\.isOn).map {
                 .init(
                     filename: $0.url.path(percentEncoded: false),
-                    stage_name: $0.stageName, is_raid: $0.isRaid ?? false
-                )
+                    nav_name_override: nil,
+                    is_raid: $0.isRaid ?? false)
             }
 
             switch kind {

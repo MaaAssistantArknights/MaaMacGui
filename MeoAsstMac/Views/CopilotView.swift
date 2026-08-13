@@ -37,10 +37,13 @@ struct CopilotView: View {
                 }
             case .set(let set):
                 Button("激活此作业集") {
-                    context.updateCopilotSet()
-                    context.category = .list
+                    Task {
+                        await context.updateCopilotSet()
+                        context.category = .list
+                    }
                 }
-                .padding()
+                .buttonStyle(.borderedProminent)
+                Divider().padding(.vertical)
                 CopilotSetDescriptionView(set: set)
             case .directory, nil:
                 Text("请选择作业项目")

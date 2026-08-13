@@ -91,11 +91,16 @@ struct CopilotContent: View {
             }
             context.selection = .init(url: url, isRaid: nil)
             if url.isDirectory {
-                context.updateCopilotSet()
+                await context.updateCopilotSet()
                 context.category = .list
             } else {
                 let children = try? await externalRoot.children()
                 externalRoot.children = children ?? []
+                context.category = .external
+            }
+        }
+        .onChange(of: context.copilotList.isEmpty, initial: true) {
+            if $1 {
                 context.category = .external
             }
         }

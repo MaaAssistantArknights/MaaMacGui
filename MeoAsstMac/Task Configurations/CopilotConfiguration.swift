@@ -15,7 +15,7 @@ struct CopilotConfiguration: Codable, Hashable {
 
     struct CopilotItem: Codable, Hashable {
         let filename: String
-        let stage_name: String
+        let nav_name_override: String?
         let is_raid: Bool
     }
 
@@ -183,7 +183,7 @@ extension UserDefaults {
 
     struct ListItem: Identifiable {
         let url: URL
-        let stageName: String
+        let stageCode: String
         var isRaid: Bool?
 
         var isOn = false
@@ -203,11 +203,11 @@ extension UserDefaults {
 }
 
 extension CopilotContext {
-    func updateCopilotSet() {
+    func updateCopilotSet() async {
         guard let url, case .set(let set) = content else {
             return
         }
-        guard let (kind, list) = set.copilotList(at: url) else {
+        guard let (kind, list) = await set.copilotList(at: url) else {
             return
         }
 
@@ -217,7 +217,7 @@ extension CopilotContext {
 }
 
 extension CopilotSetData {
-    func copilotList(at url: URL) -> (MAACopilot.Kind, [CopilotContext.ListItem])? {
+    func copilotList(at url: URL) async -> (MAACopilot.Kind, [CopilotContext.ListItem])? {
         guard url.isDirectory else { return nil }
 
         var copilotList = [CopilotContext.ListItem]()
@@ -226,7 +226,11 @@ extension CopilotSetData {
 
         for copilotID in copilot_ids {
             let url = url.appending(path: "\(copilotID).json")
-            guard let copilot = MAACopilot(url: url) else { return nil }
+            guard let copilot = MAACopilot(url: url),
+                let code = await MAAProvider.shared.mapLevelCode(matching: copilot.stage_name)
+            else {
+                return nil
+            }
 
             if lastCopilotKind == nil {
                 lastCopilotKind = copilot.kind
@@ -235,17 +239,16 @@ extension CopilotSetData {
                 return nil
             }
 
-            let stageName = copilot.stage_name
             switch copilot.difficulty {
             case nil, 0:
-                copilotList.append(.init(url: url, stageName: stageName, isOn: true))
+                copilotList.append(.init(url: url, stageCode: code, isOn: true))
             case 1:
-                copilotList.append(.init(url: url, stageName: stageName, isRaid: false, isOn: true))
+                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
             case 2:
-                copilotList.append(.init(url: url, stageName: stageName, isRaid: true, isOn: true))
+                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
             case 3:
-                copilotList.append(.init(url: url, stageName: stageName, isRaid: false, isOn: true))
-                copilotList.append(.init(url: url, stageName: stageName, isRaid: true, isOn: true))
+                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
+                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
             default:
                 continue
             }

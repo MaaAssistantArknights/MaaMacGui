@@ -35,9 +35,9 @@ struct CopilotListContent: View {
 extension CopilotContext.ListItem: CustomStringConvertible {
     var description: String {
         if isRaid == true {
-            return "\(stageName)\(String(localized: "（突袭）"))"
+            return "\(stageCode)\(String(localized: "（突袭）"))"
         } else {
-            return stageName
+            return stageCode
         }
     }
 }
