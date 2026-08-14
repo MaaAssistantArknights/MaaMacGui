@@ -253,16 +253,6 @@ extension MiniGameOption {
         )
     }
 
-    /// Entries that remain available even when no event-specific item is
-    /// present in StageActivityV2.json.
-    var isPermanent: Bool {
-        switch self {
-        case .greenTicketStore, .yellowTickerStore, .sideStoryStore, .reclamationStore:
-            return true
-        default:
-            return false
-        }
-    }
 }
 
 struct MiniGameView_Previews: PreviewProvider {

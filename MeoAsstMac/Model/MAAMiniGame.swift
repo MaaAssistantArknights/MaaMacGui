@@ -237,15 +237,14 @@ enum MAAMiniGameCatalog {
     }
 
     private static func merge(dynamicEntries: [MAAMiniGameEntry]) -> [MAAMiniGameEntry] {
-        // Store entries are permanent in the Mac UI. Activity-specific entries
-        // come from StageActivityV2 and are intentionally not hard-coded here.
-        let permanentEntries = MiniGameOption.allCases
-            .filter(\.isPermanent)
-            .map(\.catalogEntry)
-
+        // Keep every entry that the Mac GUI historically exposed. Dynamic
+        // entries are inserted first so that a resource-provided display/tip
+        // replaces the built-in copy for the same task, while older task
+        // buttons remain available even after an activity leaves the API.
+        let builtInEntries = fallbackEntries
         var result = dynamicEntries
         var seenValues = Set(dynamicEntries.map(\.value))
-        for entry in permanentEntries where seenValues.insert(entry.value).inserted {
+        for entry in builtInEntries where seenValues.insert(entry.value).inserted {
             result.append(entry)
         }
         return result
