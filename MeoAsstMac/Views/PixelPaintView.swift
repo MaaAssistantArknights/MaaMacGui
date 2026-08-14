@@ -26,7 +26,7 @@ struct PixelPaintView: View {
             Toggle("启用滑动绘制", isOn: $swipe)
 
             Slider(value: $delay, in: 0...500) {
-                Text("绘制间隔")
+                Text("额外绘制间隔")
             } minimumValueLabel: {
                 Text(verbatim: "0")
             } maximumValueLabel: {
