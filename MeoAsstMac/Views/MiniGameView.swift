@@ -9,44 +9,62 @@ import SwiftUI
 
 struct MiniGameView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
-    @SceneStorage("selectedMiniGame") private var selectedGame = MiniGameOption.greenTicketStore
+    @SceneStorage("selectedMiniGame") private var selectedGame = MiniGameOption.greenTicketStore.taskName
 
     var body: some View {
         VStack(spacing: 20) {
-            Picker("选择小游戏", selection: $selectedGame) {
-                ForEach(MiniGameOption.allCases, id: \.self) { game in
-                    Text(game.displayName).tag(game)
+            Picker("选择小游戏", selection: selectedGameBinding) {
+                ForEach(viewModel.miniGameEntries) { game in
+                    Text(game.localizedDisplay).tag(game.value)
                 }
             }
             .pickerStyle(.menu)
 
             VStack {
-                Text(selectedGame.displayName)
-                    .font(.title2)
-                    .bold()
-                    .padding()
-                Text(selectedGame.instructions)
+                if let selectedEntry {
+                    Text(selectedEntry.localizedDisplay)
+                        .font(.title2)
+                        .bold()
+                        .padding()
+                    Text(selectedEntry.localizedTip)
+                } else {
+                    Text("暂无可用小游戏")
+                }
             }
             .animation(.easeInOut(duration: 0.2), value: selectedGame)
 
             Button("开始游戏") {
                 startMiniGame()
             }
-            .disabled(viewModel.status != .idle)
+            .disabled(viewModel.status != .idle || selectedEntry == nil)
             .buttonStyle(.borderedProminent)
         }
         .padding()
     }
 
+    private var selectedEntry: MAAMiniGameEntry? {
+        viewModel.miniGameEntries.first { $0.value == selectedGame }
+            ?? viewModel.miniGameEntries.first
+    }
+
+    private var selectedGameBinding: Binding<String> {
+        Binding(
+            get: { selectedEntry?.value ?? selectedGame },
+            set: { selectedGame = $0 }
+        )
+    }
+
     private func startMiniGame() {
+        guard let selectedEntry else { return }
         Task {
-            try await viewModel.miniGame(name: selectedGame.taskName)
+            try await viewModel.miniGame(name: selectedEntry.value)
         }
     }
 }
 
 enum MiniGameOption: String, CaseIterable {
     case blackFlowTemporary
+    case interactiveExhibition
     case positionalFootballTournament
     case rebuildingMandate
     case honeyFruit
@@ -64,6 +82,8 @@ enum MiniGameOption: String, CaseIterable {
         switch self {
         case .blackFlowTemporary:
             return "BlackFlowTemporary@Begin"
+        case .interactiveExhibition:
+            return "MiniGame@InteractiveExhibition@Begin"
         case .positionalFootballTournament:
             return "MiniGame@PF@Begin"
         case .rebuildingMandate:
@@ -95,6 +115,8 @@ enum MiniGameOption: String, CaseIterable {
         switch self {
         case .blackFlowTemporary:
             return String(localized: "黑流树海刷钱")
+        case .interactiveExhibition:
+            return String(localized: "奇象巡展-找未收录生物")
         case .positionalFootballTournament:
             return String(localized: "阵地足球锦标赛")
         case .rebuildingMandate:
@@ -131,6 +153,13 @@ enum MiniGameOption: String, CaseIterable {
                 在右下角有开始探索的界面开始。
                 使用特勤分队 + 开局给的结构性原理（鹿精二后卖 10 个零件解锁的招募精通II 效果提升II，不是天赋的召唤物）跳节点。
                 之前有手动刷过开局低保或者有襁褓生灵的自己开一把直接放弃。
+                """)
+        case .interactiveExhibition:
+            String(localized:
+                """
+                请先手动进入“奇象巡展”，选择地图并进入高级区。
+                走到右下角草地后开始任务。
+                MAA 会在草地来回走动，遇到未收录生物后停止，战斗请手动完成。
                 """)
         case .positionalFootballTournament:
             String(localized:
@@ -206,6 +235,32 @@ enum MiniGameOption: String, CaseIterable {
                 手动通关“标准模拟”可以更快的刷分
                 只能刷等级奖励，拿蚀刻章得打完所有的“关键目标”
                 """)
+        }
+    }
+}
+
+extension MiniGameOption {
+    var catalogEntry: MAAMiniGameEntry {
+        MAAMiniGameEntry(
+            display: displayName,
+            displayKey: nil,
+            value: taskName,
+            tip: instructions,
+            tipKey: nil,
+            minimumRequired: nil,
+            utcStartTime: nil,
+            utcExpireTime: nil
+        )
+    }
+
+    /// Entries that remain available even when no event-specific item is
+    /// present in StageActivityV2.json.
+    var isPermanent: Bool {
+        switch self {
+        case .greenTicketStore, .yellowTickerStore, .sideStoryStore, .reclamationStore:
+            return true
+        default:
+            return false
         }
     }
 }

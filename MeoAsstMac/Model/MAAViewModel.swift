@@ -120,6 +120,8 @@ import SwiftUI
         }
     }
 
+    @Published private(set) var miniGameEntries: [MAAMiniGameEntry] = MAAMiniGameCatalog.fallbackEntries
+
     // MARK: - Update Settings
 
     @AppStorage("AutoResourceUpdate") var autoResourceUpdate = false
@@ -175,6 +177,7 @@ import SwiftUI
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
         initScheduledDailyTaskTimer()
+        refreshMiniGameEntries()
     }
 
     deinit {
@@ -268,6 +271,7 @@ extension MAAViewModel {
     func reloadResources(channel: MAAClientChannel) async throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         try await loadResource(url: documentsDirectory, channel: channel)
+        refreshMiniGameEntries()
     }
 
     /// Load base resources and channel-specific resources.
@@ -305,24 +309,39 @@ extension MAAViewModel {
     /// Fetches OTA resources for the specified channel.
     private func fetchOTAResource(channel: MAAClientChannel) async throws {
         let otaFetcher = OTAFetcher()
-        var files = [
+        var requiredFiles = [
             (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
-            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
         ]
         if channel.isGlobal {
-            files.append(
+            requiredFiles.append(
                 (
                     path: "resource/global/\(channel.rawValue)/resource/tasks.json",
                     name: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json"
                 ))
         }
+
+        let activityFiles = [
+            (path: "gui/StageActivityV2.json", name: "gui/StageActivityV2.json"),
+            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
+        ]
+
         try await withThrowingTaskGroup(of: Void.self) { group in
-            for (path, name) in files {
+            for (path, name) in requiredFiles {
                 group.addTask {
                     try await otaFetcher.download(path: path, name: name)
                 }
             }
             try await group.waitForAll()
+        }
+
+        // Activity metadata is optional. Keep an older V1 cache usable if the
+        // V2 endpoint is temporarily unavailable (or vice versa).
+        await withTaskGroup(of: Void.self) { group in
+            for (path, name) in activityFiles {
+                group.addTask {
+                    try? await otaFetcher.download(path: path, name: name)
+                }
+            }
         }
     }
 
@@ -359,6 +378,8 @@ extension MAAViewModel {
             logError("关卡数据获取失败: \(error.localizedDescription)")
         }
 
+        refreshMiniGameEntries()
+
         #if DEBUG
         guard false else { return }
         #endif
@@ -394,6 +415,10 @@ extension MAAViewModel {
         Task {
             try await loadResource(channel: channel)
         }
+    }
+
+    func refreshMiniGameEntries() {
+        miniGameEntries = MAAMiniGameCatalog.load(client: clientChannel)
     }
 
     private func handleEarlyReturn(backTo: Status) {
