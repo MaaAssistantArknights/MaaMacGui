@@ -100,6 +100,8 @@ extension FightConfiguration {
         self.server = config.server
         self.client_type = config.client_type
         self.DrGrandet = config.DrGrandet
+        self.useWeeklySchedule = false
+        self.weeklySchedule = WeeklySchedule()
     }
 }
 
