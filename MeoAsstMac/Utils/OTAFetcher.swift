@@ -49,6 +49,11 @@ struct OTAFetcher: Sendable {
         }
     }
 
+    func data(name: String) throws -> Data {
+        let url = cacheURL.appending(path: name)
+        return try Data(contentsOf: url)
+    }
+
     private func cachedETag(path: String, at url: URL) async -> String? {
         guard FileManager.default.fileExists(atPath: url.path) else {
             return nil

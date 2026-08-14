@@ -273,3 +273,44 @@ extension MAAResourceVersion {
         }
     }
 }
+
+struct MAAStageActivity: Decodable, Hashable {
+    let miniGame: [MiniGame]
+
+    struct MiniGame: Decodable, Hashable {
+        let Display: String
+        let DisplayKey: String?
+        let Value: String
+        let Tip: String?
+        let TipKey: String?
+        let MinimumRequired: String?
+        private let UtcStartTime: String?
+        private let UtcExpireTime: String?
+        private let TimeZone: Double
+    }
+}
+
+extension MAAStageActivity.MiniGame {
+    var startTime: Date {
+        if let value = UtcStartTime, let date = try? dateParser.parse(value) {
+            return date
+        } else {
+            return .distantPast
+        }
+    }
+
+    var expireTime: Date {
+        if let value = UtcExpireTime, let date = try? dateParser.parse(value) {
+            return date
+        } else {
+            return .distantFuture
+        }
+    }
+
+    private var dateParser: Date.ParseStrategy {
+        .init(
+            format:
+                "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
+            timeZone: .init(secondsFromGMT: Int(TimeZone * 3600))!)
+    }
+}

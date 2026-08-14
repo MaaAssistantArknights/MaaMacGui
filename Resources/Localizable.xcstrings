@@ -226,16 +226,6 @@
         }
       }
     },
-    "AT-相谈室" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AT-상담실"
-          }
-        }
-      }
-    },
     "BattleFormation: %@" : {
       "localizations" : {
         "ko" : {
@@ -1177,9 +1167,6 @@
         }
       }
     },
-    "OS-喀兰贸易技术研发部" : {
-
-    },
     "PlayCover 链接…" : {
       "localizations" : {
         "ko" : {
@@ -1233,9 +1220,6 @@
       }
     },
     "prts://" : {
-
-    },
-    "PV-烟花筹委会" : {
 
     },
     "RA-1" : {
@@ -1390,9 +1374,6 @@
           }
         }
       }
-    },
-    "RM-次生预案" : {
-
     },
     "RoguelikeGamePass" : {
       "localizations" : {
@@ -1879,37 +1860,6 @@
         }
       }
     },
-    "争锋频道：蜜果城" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "듀얼 채널: 허니프루트 시티"
-          }
-        }
-      }
-    },
-    "争锋频道：青草城" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "듀얼 채널: 그린 그래스"
-          }
-        }
-      }
-    },
-    "从剪贴板读取" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "클립보드에서 읽기"
-          }
-        }
-      }
-    },
     "仓库材料" : {
       "localizations" : {
         "ko" : {
@@ -2062,17 +2012,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "크레딧 쇼핑"
-          }
-        }
-      }
-    },
-    "信赖干员" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "신뢰 오퍼레이터"
           }
         }
       }
@@ -2252,17 +2191,6 @@
     },
     "内置" : {
 
-    },
-    "内置作业" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내장 작업"
-          }
-        }
-      }
     },
     "内置排班" : {
       "localizations" : {
@@ -2640,9 +2568,6 @@
         }
       }
     },
-    "卫戍协议：盟约" : {
-
-    },
     "发现新资源版本：%@" : {
       "localizations" : {
         "ko" : {
@@ -2743,25 +2668,6 @@
         }
       }
     },
-    "在活动主界面（右下角有“开始营业/继续营业”处）开始任务。\n等待自动完成相谈室对话。" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이벤트 메인 화면 (오른쪽 하단에 \"영업 시작/계속\" 버튼이 있는 곳)에서 작업을 시작합니다.\n상담실 대화가 자동으로 완료될 때까지 기다립니다."
-          }
-        }
-      }
-    },
-    "在活动主界面（右下角有“开始重建”处）开始任务。" : {
-
-    },
-    "在活动主界面（有“独立模拟”处开始任务）\n手动通关“标准模拟”可以更快的刷分\n只能刷等级奖励，拿蚀刻章得打完所有的“关键目标”" : {
-
-    },
-    "在活动页面最左侧开始" : {
-
-    },
     "在第五层BOSS前暂停" : {
       "localizations" : {
         "ko" : {
@@ -2771,9 +2677,6 @@
           }
         }
       }
-    },
-    "地图太复杂了，先整个简单的刷钱脚本。\n在右下角有开始探索的界面开始。\n使用特勤分队 + 开局给的结构性原理（鹿精二后卖 10 个零件解锁的招募精通II 效果提升II，不是天赋的召唤物）跳节点。\n之前有手动刷过开局低保或者有襁褓生灵的自己开一把直接放弃。" : {
-
     },
     "基建工作心情阈值: %.0f%%" : {
       "localizations" : {
@@ -2817,17 +2720,6 @@
     },
     "外部" : {
 
-    },
-    "外部作业（可拖入文件）" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "외부 작업 (파일 드래그 가능)"
-          }
-        }
-      }
     },
     "外部资源版本：%@\n更新时间：%@" : {
       "localizations" : {
@@ -3019,6 +2911,9 @@
         }
       }
     },
+    "常驻活动" : {
+
+    },
     "干员列表" : {
       "localizations" : {
         "ko" : {
@@ -3165,6 +3060,9 @@
         }
       }
     },
+    "当期活动" : {
+
+    },
     "待刷坍缩范式" : {
       "localizations" : {
         "ko" : {
@@ -3211,16 +3109,6 @@
         }
       }
     },
-    "手动跳过教程对话，然后可以直接退出。\n在活动主界面（右下角有“加入赛事”处）开始任务。\n\n跟着鸭总喝口汤。" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "튜토리얼 대화를 수동으로 건너뛴 후 바로 종료할 수 있습니다.\n이벤트 메인 화면 (오른쪽 하단에 \"대회 참가\" 버튼이 있는 곳)에서 작업을 시작합니다.\n\n오리 사장님을 따라 한 모금 마시자."
-          }
-        }
-      }
-    },
     "手动输入关卡名" : {
       "localizations" : {
         "ko" : {
@@ -3230,9 +3118,6 @@
           }
         }
       }
-    },
-    "手动通过教程关卡后，进入 PF-1 进行手动编队，\n要求仅编入 ｢克洛丝｣ 单个干员，\n并回到在活动关卡界面点击 PF-1 后开始任务。" : {
-
     },
     "打开录屏权限设置" : {
 
@@ -4069,17 +3954,6 @@
         }
       }
     },
-    "神秘代码 [作业站链接](https://prts.plus)" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "미스터리 코드 [작업 스테이션 링크](https://prts.plus)"
-          }
-        }
-      }
-    },
     "移除" : {
       "localizations" : {
         "ko" : {
@@ -4717,9 +4591,6 @@
         }
       }
     },
-    "过完新手教程后进入前哨支点，滑动到界面最左侧。" : {
-
-    },
     "运行日志" : {
       "localizations" : {
         "ko" : {
@@ -4842,9 +4713,6 @@
           }
         }
       }
-    },
-    "阵地足球锦标赛" : {
-
     },
     "阻止系统睡眠" : {
       "localizations" : {
@@ -4998,9 +4866,6 @@
           }
         }
       }
-    },
-    "黑流树海刷钱" : {
-
     },
     "默认兼容模式" : {
 

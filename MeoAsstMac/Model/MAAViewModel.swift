@@ -85,6 +85,14 @@ import SwiftUI
 
     @Published var scheduledDailyTaskTimers: [DailyTaskTimer] = []
 
+    // MARK: - OTA Resources
+
+    @Published private var stageActivities = [String: MAAStageActivity]()
+
+    var stageActivity: MAAStageActivity? {
+        stageActivities[clientChannel.rawValue]
+    }
+
     // MARK: - Recognition
 
     @Published var recruitConfig = RecruitConfiguration.recognition
@@ -307,7 +315,7 @@ extension MAAViewModel {
         let otaFetcher = OTAFetcher()
         var files = [
             (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
-            (path: "gui/StageActivity.json", name: "gui/StageActivity.json"),
+            (path: "gui/StageActivityV2.json", name: "gui/StageActivityV2.json"),
         ]
         if channel.isGlobal {
             files.append(
@@ -324,6 +332,9 @@ extension MAAViewModel {
             }
             try await group.waitForAll()
         }
+        let data = try otaFetcher.data(name: "gui/StageActivityV2.json")
+        let decoder = JSONDecoder()
+        stageActivities = try decoder.decode([String: MAAStageActivity].self, from: data)
     }
 
     /// Load resources from bundled, user, and remote resources.

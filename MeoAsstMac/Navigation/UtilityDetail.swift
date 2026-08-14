@@ -31,8 +31,9 @@ struct UtilityDetail: View {
         }
         .padding()
         .toolbar {
-            Text(entry?.description ?? " ")
+            Text(entry?.description ?? String(localized: "实用工具"))
                 .font(.headline)
+                .padding()
         }
     }
 }

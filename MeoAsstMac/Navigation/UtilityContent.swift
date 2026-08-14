@@ -34,10 +34,18 @@ struct UtilityContent: View {
                 }
                 .help("停止")
             case .idle:
-                Button(action: start) {
-                    Label("开始", systemImage: "play.fill")
+                switch selection {
+                case .recruit, .depot, .oper:
+                    Button(action: start) {
+                        Label("开始", systemImage: "play.fill")
+                    }
+                    .help("开始")
+                case .video, .gacha, .minigame, nil:
+                    Button(action: {}) {
+                        Label("停止", systemImage: "stop.fill")
+                    }
+                    .disabled(true)
                 }
-                .help("开始")
             }
         }
     }
