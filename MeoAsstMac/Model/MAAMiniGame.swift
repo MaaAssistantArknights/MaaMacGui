@@ -75,6 +75,26 @@ struct MAAMiniGameEntry: Hashable, Identifiable {
 enum MAAMiniGameCatalog {
     private static let stageFileNames = ["StageActivityV2.json", "StageActivity.json"]
 
+    // Activity timestamps use a local wall-clock value together with a
+    // separate hour offset. Keep the parser fixed to GMT so it can be shared
+    // without mutating a formatter's time zone on every entry.
+    private static let activityDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
+        return formatter
+    }()
+
+    private static let iso8601DateFormatter = ISO8601DateFormatter()
+
+    private static let iso8601FractionalDateFormatter: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return formatter
+    }()
+
     private struct ParsedCatalog {
         let openEntries: [MAAMiniGameEntry]
         let expiredValues: Set<String>
@@ -308,17 +328,14 @@ enum MAAMiniGameCatalog {
     private static func date(in object: [String: Any], key: String, timeZone: Int) -> Date? {
         guard let string = string(in: object, key: key), !string.isEmpty else { return nil }
 
-        let formatter = DateFormatter()
-        formatter.calendar = Calendar(identifier: .gregorian)
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: timeZone * 60 * 60)
-        formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-        if let date = formatter.date(from: string) {
-            return date
+        if let date = activityDateFormatter.date(from: string) {
+            // The activity file stores the wall-clock value in `timeZone`,
+            // while Date represents an absolute UTC instant.
+            return date.addingTimeInterval(-TimeInterval(timeZone) * 60 * 60)
         }
 
         // Be liberal with hand-written/local fixture files.
-        let isoFormatter = ISO8601DateFormatter()
-        return isoFormatter.date(from: string)
+        return iso8601DateFormatter.date(from: string)
+            ?? iso8601FractionalDateFormatter.date(from: string)
     }
 }

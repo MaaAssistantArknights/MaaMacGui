@@ -48,12 +48,11 @@ struct MiniGameView: View {
 
     private var selectedEntry: MAAMiniGameEntry? {
         viewModel.miniGameEntries.first { $0.value == selectedGame }
-            ?? viewModel.miniGameEntries.first
     }
 
     private var selectedGameBinding: Binding<String> {
         Binding(
-            get: { selectedEntry?.value ?? selectedGame },
+            get: { selectedGame },
             set: { selectedGame = $0 }
         )
     }
