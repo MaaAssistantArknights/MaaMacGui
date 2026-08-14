@@ -86,6 +86,7 @@
 		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
+		83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250C302F02B000080642 /* PixelPaintView.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D061F62CF81519008F0140 /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D061F52CF81519008F0140 /* FileLogger.swift */; };
@@ -218,6 +219,7 @@
 		83985BC13026055400D2A789 /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
 		83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+KVO.swift"; sourceTree = "<group>"; };
 		83BC250A302E431000080642 /* FileManager+Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Atomic.swift"; sourceTree = "<group>"; };
+		83BC250C302F02B000080642 /* PixelPaintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPaintView.swift; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
 		83D061F52CF81519008F0140 /* FileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
@@ -319,6 +321,7 @@
 			children = (
 				83264A3A29EC0F2E0074E33A /* LogView.swift */,
 				9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */,
+				83BC250C302F02B000080642 /* PixelPaintView.swift */,
 				83477CB329FEA7A500A5FF99 /* TaskButtons.swift */,
 				8355E7AF29E8722E005D5A1C /* TaskCell.swift */,
 				832985A929EE9958009F7ED5 /* RecruitView.swift */,
@@ -611,6 +614,7 @@
 				83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
+				83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */,
 				83985BC23026055400D2A789 /* FileTreeView.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
 				8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */,
