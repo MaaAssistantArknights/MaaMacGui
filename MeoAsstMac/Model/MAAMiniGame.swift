@@ -42,10 +42,16 @@ struct MAAMiniGameEntry: Hashable, Identifiable {
         if let utcStartTime, date <= utcStartTime {
             return false
         }
-        if let utcExpireTime, date >= utcExpireTime {
-            return false
-        }
-        return true
+        return !isExpired(at: date)
+    }
+
+    /// Returns true only when the activity has an explicit expiry timestamp
+    /// and that timestamp has passed. Missing metadata is deliberately not
+    /// treated as expired, so an old built-in Mac entry is not removed merely
+    /// because a newer activity file omitted it.
+    func isExpired(at date: Date = Date()) -> Bool {
+        guard let utcExpireTime else { return false }
+        return date >= utcExpireTime
     }
 
     private static func localized(key: String?, fallback: String) -> String {
@@ -69,6 +75,11 @@ struct MAAMiniGameEntry: Hashable, Identifiable {
 enum MAAMiniGameCatalog {
     private static let stageFileNames = ["StageActivityV2.json", "StageActivity.json"]
 
+    private struct ParsedCatalog {
+        let openEntries: [MAAMiniGameEntry]
+        let expiredValues: Set<String>
+    }
+
     static var fallbackEntries: [MAAMiniGameEntry] {
         var seenValues = Set<String>()
         return MiniGameOption.allCases.compactMap { option in
@@ -80,10 +91,10 @@ enum MAAMiniGameCatalog {
     static func load(client: MAAClientChannel, now: Date = Date()) -> [MAAMiniGameEntry] {
         for url in resourceURLs {
             guard let data = try? Data(contentsOf: url) else { continue }
-            guard let dynamicEntries = parse(data: data, clientKeys: clientKeys(for: client), now: now) else {
+            guard let catalog = parseCatalog(data: data, clientKeys: clientKeys(for: client), now: now) else {
                 continue
             }
-            return merge(dynamicEntries: dynamicEntries)
+            return merge(dynamicEntries: catalog.openEntries, hiddenValues: catalog.expiredValues)
         }
 
         return fallbackEntries
@@ -98,6 +109,14 @@ enum MAAMiniGameCatalog {
         clientKeys: [String],
         now: Date = Date()
     ) -> [MAAMiniGameEntry]? {
+        parseCatalog(data: data, clientKeys: clientKeys, now: now)?.openEntries
+    }
+
+    private static func parseCatalog(
+        data: Data,
+        clientKeys: [String],
+        now: Date
+    ) -> ParsedCatalog? {
         guard let root = try? JSONSerialization.jsonObject(with: data),
             let rootObject = root as? [String: Any]
         else {
@@ -122,12 +141,19 @@ enum MAAMiniGameCatalog {
         var entries = [MAAMiniGameEntry]()
         var seenValues = Set<String>()
         for token in tokens {
-            guard let entry = parseEntry(token), entry.isOpen(at: now), seenValues.insert(entry.value).inserted else {
+            guard let entry = parseEntry(token), seenValues.insert(entry.value).inserted else {
                 continue
             }
             entries.append(entry)
         }
-        return entries
+
+        let openEntries = entries.filter { $0.isOpen(at: now) }
+        let expiredValues = Set(
+            entries
+                .filter { $0.isExpired(at: now) }
+                .map(\.value)
+        )
+        return ParsedCatalog(openEntries: openEntries, expiredValues: expiredValues)
     }
 
     private static var resourceURLs: [URL] {
@@ -236,15 +262,20 @@ enum MAAMiniGameCatalog {
         )
     }
 
-    private static func merge(dynamicEntries: [MAAMiniGameEntry]) -> [MAAMiniGameEntry] {
-        // Keep every entry that the Mac GUI historically exposed. Dynamic
-        // entries are inserted first so that a resource-provided display/tip
-        // replaces the built-in copy for the same task, while older task
-        // buttons remain available even after an activity leaves the API.
+    private static func merge(
+        dynamicEntries: [MAAMiniGameEntry],
+        hiddenValues: Set<String>
+    ) -> [MAAMiniGameEntry] {
+        // Dynamic entries are inserted first so that a resource-provided
+        // display/tip replaces the built-in copy for the same task. A built-in
+        // entry is hidden only when the activity resource explicitly marks the
+        // same task as expired; omitted/undated entries stay available.
         let builtInEntries = fallbackEntries
         var result = dynamicEntries
         var seenValues = Set(dynamicEntries.map(\.value))
-        for entry in builtInEntries where seenValues.insert(entry.value).inserted {
+        for entry in builtInEntries
+            where !hiddenValues.contains(entry.value) && seenValues.insert(entry.value).inserted
+        {
             result.append(entry)
         }
         return result

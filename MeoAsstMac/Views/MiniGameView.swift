@@ -40,6 +40,10 @@ struct MiniGameView: View {
             .buttonStyle(.borderedProminent)
         }
         .padding()
+        .onAppear(perform: normalizeSelection)
+        .onChange(of: viewModel.miniGameEntries) { _, _ in
+            normalizeSelection()
+        }
     }
 
     private var selectedEntry: MAAMiniGameEntry? {
@@ -52,6 +56,13 @@ struct MiniGameView: View {
             get: { selectedEntry?.value ?? selectedGame },
             set: { selectedGame = $0 }
         )
+    }
+
+    private func normalizeSelection() {
+        guard let firstEntry = viewModel.miniGameEntries.first else { return }
+        if !viewModel.miniGameEntries.contains(where: { $0.value == selectedGame }) {
+            selectedGame = firstEntry.value
+        }
     }
 
     private func startMiniGame() {
