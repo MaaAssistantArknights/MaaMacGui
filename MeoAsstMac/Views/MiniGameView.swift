@@ -11,6 +11,7 @@ struct MiniGameView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     @SceneStorage("selectedMiniGame") private var selection = MiniGameOption.sideStoryStore.taskName
     @State private var selectedGame = MiniGameOption.greenTicketStore.tag
+    @State private var taskParams: Any?
 
     var body: some View {
         VStack(spacing: 20) {
@@ -45,9 +46,14 @@ struct MiniGameView: View {
 
             Divider()
 
-            ScrollView {
-                LazyVStack {
-                    Text(selectedGame.instructions)
+            switch selectedGame.taskName {
+            case "MiniGame@PixelPaint@Begin":
+                PixelPaintView(params: $taskParams)
+            default:
+                ScrollView {
+                    LazyVStack {
+                        Text(selectedGame.instructions)
+                    }
                 }
             }
         }
@@ -78,7 +84,7 @@ struct MiniGameView: View {
 
     private func startMiniGame() {
         Task {
-            try await viewModel.miniGame(name: selectedGame.taskName)
+            try await viewModel.miniGame(name: selectedGame.taskName, params: taskParams)
         }
     }
 }
@@ -146,6 +152,10 @@ enum MiniGameOption: String, CaseIterable {
                     """)
         }
     }
+}
+
+@available(*, unavailable, message: "This type is only for localization key extraction.")
+private enum LocalizableMiniGameKey {
 }
 
 struct MiniGameView_Previews: PreviewProvider {

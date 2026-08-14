@@ -607,13 +607,13 @@ extension MAAViewModel {
         status = .busy
     }
 
-    func miniGame(name: String) async throws {
+    func miniGame(name: String, params: Any? = nil) async throws {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
 
-        let params = ["task_names": [name]]
+        let params = ["task_names": [name], "params": params]
         let data = try JSONSerialization.data(withJSONObject: params)
         let string = String(data: data, encoding: .utf8)
 
