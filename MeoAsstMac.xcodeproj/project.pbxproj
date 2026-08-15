@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
 		831100C43026440D00554899 /* NewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831100C33026440D00554899 /* NewViewModel.swift */; };
@@ -139,6 +140,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		831100C33026440D00554899 /* NewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewModel.swift; sourceTree = "<group>"; };
@@ -499,6 +501,7 @@
 				832903A8302C9802008E1DC6 /* URL+contentType.swift */,
 				83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */,
 				83BC250A302E431000080642 /* FileManager+Atomic.swift */,
+				8307A5CE3030157600A82FF7 /* PixelPainter.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -629,6 +632,7 @@
 				92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */,
 				83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */,
 				92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */,
+				8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */,
 				8383EA2F28F2C5BD007DAB9D /* FightSettingsView.swift in Sources */,
 				83531D5F29F00F0A008A5DF8 /* CopilotView.swift in Sources */,
 				83477CB229FEA12300A5FF99 /* TaskCommands.swift in Sources */,

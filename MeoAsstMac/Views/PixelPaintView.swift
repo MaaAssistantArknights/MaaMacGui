@@ -215,3 +215,119 @@ extension PixelMap.Cell {
     let pixelMap = try! JSONDecoder().decode(PixelMap.self, from: data)
     PixelMapImage(pixelMap: pixelMap)
 }
+
+struct PixelConfigView: View {
+    @Binding var config: PixelPainterConfig
+
+    var body: some View {
+        Form {
+            Picker("缩放算法", selection: $config.scaleFilter) {
+                Text("Lanczos").tag(PixelPainterConfig.ScaleFilter.lanczos)
+                Text("双三次").tag(PixelPainterConfig.ScaleFilter.bicubic)
+            }
+
+            if config.scaleFilter == .bicubic {
+                Slider(value: $config.bicubicSoftness, in: 0...1) {
+                    Text("平滑度")
+                }
+            }
+
+            Slider(value: $config.saturation, in: 0...2) {
+                Text("饱和度")
+            }
+            Slider(value: $config.brightness, in: -1...1) {
+                Text("亮度")
+            }
+            Slider(value: $config.contrast, in: 0...2) {
+                Text("对比度")
+            }
+
+            Toggle("降噪", isOn: $config.noiseReductionEnabled)
+
+            if config.noiseReductionEnabled {
+                Slider(value: $config.noiseLevel, in: 0...0.2) {
+                    Text("强度")
+                }
+                Slider(value: $config.sharpness, in: 0...1) {
+                    Text("锐度")
+                }
+            }
+
+            Toggle("色彩匹配", isOn: $config.perceptual)
+                .toggleStyle(.automatic)
+        }
+        .animation(.default, value: config)
+    }
+}
+
+struct TempView: View {
+    let cells: [(xy: SIMD2<Int>, Color)]?
+
+    var body: some View {
+        Canvas { context, size in
+            let pixelSize = size.width / 24
+            for (xy, color) in cells ?? [] {
+                context.fill(
+                    Path(
+                        CGRect(
+                            x: CGFloat(xy.x) * pixelSize,
+                            y: CGFloat(xy.y) * pixelSize,
+                            width: pixelSize, height: pixelSize)),
+                    with: .color(color))
+            }
+        }
+        .aspectRatio(contentMode: .fit)
+    }
+}
+
+#Preview("PixelConfigView") {
+    @Previewable @State var showConfig = false
+    @Previewable @State var image: CGImage?
+    @Previewable @State var config = PixelPainterConfig()
+    @Previewable @State var fill = false
+
+    let context = CIContext()
+    let bounds = CGRect(x: 0, y: 0, width: 24, height: 24)
+
+    var painting: PixelPainting? {
+        guard let image else { return nil }
+        let painter = PixelPainter(config: config, context: context)
+        return painter.convert(image: image, in: bounds)
+    }
+
+    VStack {
+        if let painting {
+            TempView(cells: painting.cells(fillBlankWithWhite: fill))
+        } else {
+            VStack(spacing: 15) {
+                Text("请拖入图片")
+                    .font(.title2)
+                    .bold()
+            }
+            .aspectRatio(1, contentMode: .fit)
+            .border(.tertiary, width: 5)
+        }
+    }
+    .padding()
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+    .popover(isPresented: $showConfig, attachmentAnchor: .point(.leading), arrowEdge: .leading) {
+        PixelConfigView(config: $config)
+            .animation(.default, value: config)
+            .padding()
+    }
+    .onTapGesture {
+        showConfig.toggle()
+    }
+    .dropDestination(for: Image.self) { items, location in
+        guard let item = items.first else { return false }
+
+        let renderer = ImageRenderer(content: item)
+        renderer.scale = 1
+
+        image = renderer.cgImage
+        return true
+    } isTargeted: { _ in
+    }
+    .animation(.default, value: config)
+    .frame(width: 360)
+}
