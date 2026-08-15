@@ -58,6 +58,7 @@ struct MiniGameView: View {
             }
         }
         .padding()
+        .animation(.default, value: otaMiniGames)
         .animation(.default, value: selectedGame)
         .onChange(of: otaMiniGames, initial: true) {
             for game in $1 {
