@@ -5070,6 +5070,22 @@
           }
         }
       }
+    },
+    "截图" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screenshot"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

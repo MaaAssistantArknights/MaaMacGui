@@ -24,13 +24,6 @@ struct LogView: View {
             .animation(.default, value: viewModel.logs)
             .animation(.default, value: viewModel.logCards)
             .toolbar {
-                Picker("日志样式", selection: $viewModel.useCardLog) {
-                    Text("精简").tag(false)
-                    Text("详细").tag(true)
-                }
-                .pickerStyle(.menu)
-                .help("日志样式")
-
                 Toggle(isOn: $viewModel.trackTail) {
                     Label("现在", systemImage: "arrow.down.to.line")
                 }

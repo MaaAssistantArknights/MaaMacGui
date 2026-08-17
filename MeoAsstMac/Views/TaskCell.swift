@@ -18,13 +18,13 @@ struct TaskCell<Config: MAATaskConfiguration>: View {
     private var statusColor: Color? {
         switch viewModel.taskStatus[id] {
         case .running:
-            Color(hex: 0x20326CF3)
+            return Color(hex: 0x20326CF3)
         case .success:
-            Color(hex: 0x2090EE90)
+            return Color(hex: 0x2090EE90)
         case .failure:
-            Color(hex: 0x20FF4444)
+            return Color(hex: 0x20FF4444)
         default:
-            nil
+            return nil
         }
     }
 
