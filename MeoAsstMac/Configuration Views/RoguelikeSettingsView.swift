@@ -124,7 +124,7 @@ struct RoguelikeSettingsView: View {
             if config.theme != .Phantom {
                 Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
             }
-            if config.mode == .investment {
+            if config.mode == .investment, config.theme != .BlackFlow {
                 Toggle("投资后进二层", isOn: $config.investment_with_more_score)
             }
             if config.mode == .collectible {
@@ -161,6 +161,14 @@ struct RoguelikeSettingsView: View {
 
         if config.theme == .Sarkaz, config.mode == .collectible {
             Toggle("凹2构想开局", isOn: $config.start_with_two_ideas)
+        }
+
+        if config.theme == .BlackFlow, config.mode == .blackFlowBabyAnimal {
+            Picker("目标襁褓动物", selection: $config.blackflow_cultivation_target) {
+                ForEach(RoguelikeConfiguration.BlackFlowCultivationTarget.allCases, id: \.self) {
+                    Text($0.description).tag($0)
+                }
+            }
         }
 
         if config.mode == .squad {
@@ -205,6 +213,23 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "刷月度小队，到达第五层后直接退出")
         case .exploration:
             String(localized: "刷深入调查，尽可能稳定地打更多层数")
+        case .blackFlowBabyAnimal:
+            String(localized: "刷襁褓动物，刷取指定品种后重开")
+        }
+    }
+}
+
+extension RoguelikeConfiguration.BlackFlowCultivationTarget {
+    var description: String {
+        switch self {
+        case .cat:
+            String(localized: "襁褓中的猫")
+        case .featheredSerpent:
+            String(localized: "襁褓羽蛇")
+        case .dog:
+            String(localized: "襁褓中的狗")
+        case .cerberus:
+            String(localized: "襁褓三头犬")
         }
     }
 }
@@ -222,6 +247,8 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
             return String(localized: "萨卡兹的无终奇语")
         case .JieGarden:
             return String(localized: "岁的界园志异")
+        case .BlackFlow:
+            return String(localized: "黑流树海")
         }
     }
 
@@ -236,6 +263,8 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
         case .Sarkaz:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
         case .JieGarden:
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
+        case .BlackFlow:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         }
     }
@@ -279,12 +308,19 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
                 "花团锦簇分队", "棋行险着分队", "岁影回音分队",
                 "知学分队", "商贾分队",
             ]
+        case .BlackFlow:
+            [
+                "特勤分队", "矛头分队", "高台突破分队", "地面突破分队",
+                "本源研修分队", "文明开化分队", "开拓者分队", "多边贸易分队", "地质调查分队",
+                "指挥分队", "后勤分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+            ]
         }
     }
 
     var roles: [String] {
         switch self {
-        case .JieGarden:
+        case .JieGarden, .BlackFlow:
             ["先手必胜", "稳扎稳打", "取长补短", "灵活部署", "坚不可摧", "随心所欲"]
         default:
             ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
