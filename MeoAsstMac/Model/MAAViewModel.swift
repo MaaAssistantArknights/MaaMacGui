@@ -38,6 +38,12 @@ import SwiftUI
 
     private var messageTask: Task<Void, Never>?
     @Published var logs = [MAALog]()
+    /// 详细日志模式下的卡片列表（对应 Windows LogCardViewModels）
+    @Published var logCards = [LogCardItem]()
+    /// 日志样式：true = 详细（卡片），false = 精简（对应 Windows GuiSettings.UseCardLog）
+    @AppStorage("MAAUseCardLog") var useCardLog = true
+    /// 是否已连接模拟器/客户端（对应 Windows AsstProxy.Connected）
+    @Published var isConnected = false
     @Published var trackTail = false
     let fileLogger: FileLogger
 
@@ -61,6 +67,10 @@ import SwiftUI
         case failure
         case running
         case success
+        /// 空闲（未运行），对齐 Windows TaskItemStatus.Idle
+        case idle
+        /// 跳过（任务被禁用），对齐 Windows TaskItemStatus.Skipped
+        case skipped
     }
 
     @Published var taskStatus: [UUID: TaskStatus] = [:]
@@ -221,6 +231,7 @@ extension MAAViewModel {
         }
 
         logs.removeAll()
+        logCards.removeAll()
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
@@ -472,6 +483,11 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
+
+        // 对齐 Windows：开始前把启用任务置为空闲，禁用任务置为跳过
+        for task in tasks {
+            taskStatus[task.id] = task.enabled ? .idle : .skipped
+        }
 
         for task in tasks {
             guard task.enabled else { continue }

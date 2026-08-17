@@ -48,12 +48,14 @@ extension MAAViewModel {
 
         switch what {
         case "Connected":
-            break
+            isConnected = true
 
         case "UnsupportedResolution":
+            isConnected = false
             logError("ResolutionNotSupported")
 
         case "ResolutionError":
+            isConnected = false
             logError("ResolutionAcquisitionFailure")
 
         case "Reconnecting":
@@ -61,9 +63,11 @@ extension MAAViewModel {
             logError("TryToReconnect (\(times))")
 
         case "Reconnected":
+            isConnected = true
             logTrace("ReconnectSuccess")
 
         case "Disconnect":
+            isConnected = false
             logError("ReconnectFailed")
             if status == .idle {
                 break
@@ -77,6 +81,7 @@ extension MAAViewModel {
             logError("ScreencapFailed")
 
         case "TouchModeNotAvailable":
+            isConnected = false
             logError("TouchModeNotAvaiable")
 
         case "FastestWayToScreencap":
@@ -126,7 +131,7 @@ extension MAAViewModel {
                 taskStatus[id] = .cancel
             }
             resetStatus()
-            logTrace("Stopped")
+            log("Stopped", color: .trace, splitMode: .both)
 
         case .TaskChainError:
             if let id = taskID(taskDetails: message.details) {
@@ -175,7 +180,7 @@ extension MAAViewModel {
             break
 
         case .AllTasksCompleted:
-            logTrace("AllTasksComplete")
+            log("AllTasksComplete", color: .trace, splitMode: .both)
             resetStatus()
 
         default:
@@ -247,7 +252,7 @@ extension MAAViewModel {
 
             switch taskName {
             case "StartButton2", "AnnihilationConfirm":
-                logInfo("MissionStart \(execTimes) UnitTime")
+                log("MissionStart \(execTimes) UnitTime", color: .info, splitMode: .before)
 
             case "StoneConfirm":
                 logInfo("StoneUsed \(execTimes) UnitTime")
@@ -266,13 +271,13 @@ extension MAAViewModel {
 
             /// Tag: - 肉鸽相关
             case "StartExplore":
-                logInfo("BegunToExplore \(execTimes) UnitTime")
+                log("BegunToExplore \(execTimes) UnitTime", color: .info, splitMode: .before)
 
             case "StageTraderInvestConfirm":
                 logInfo("HasInvested \(execTimes) UnitTime")
 
             case "ExitThenAbandon":
-                logTrace("ExplorationAbandoned")
+                log("ExplorationAbandoned", color: .explorationAbandonedIS)
 
             case "MissionCompletedFlag":
                 logTrace("FightCompleted")
@@ -281,22 +286,22 @@ extension MAAViewModel {
                 logTrace("FightFailed")
 
             case "StageTraderEnter":
-                logTrace("Trader")
+                log("Trader", color: .traderIS)
 
             case "StageSafeHouseEnter":
-                logTrace("SafeHouse")
+                log("SafeHouse", color: .safehouseIS)
 
             case "StageEncounterEnter":
-                logTrace("Encounter")
+                log("Encounter", color: .eventIS)
 
             case "StageCombatOpsEnter":
-                logTrace("CombatOps")
+                log("CombatOps", color: .combatIS)
 
             case "StageEmergencyOps":
-                logTrace("EmergencyOps")
+                log("EmergencyOps", color: .emergencyIS)
 
             case "StageDreadfulFoe", "StageDreadfulFoe-5Enter":
-                logTrace("DreadfulFoe")
+                log("DreadfulFoe", color: .bossIS)
 
             case "StageTraderInvestSystemFull":
                 logInfo("UpperLimit")
@@ -309,13 +314,13 @@ extension MAAViewModel {
                 logWarn("GameDrop")
 
             case "GamePass":
-                logRare("RoguelikeGamePass")
+                log("RoguelikeGamePass", color: .rareOperator)
 
             case "BattleStartAll":
-                logInfo("MissionStart")
+                log("MissionStart", color: .info, splitMode: .before)
 
             case "StageTraderSpecialShoppingAfterRefresh":
-                logRare("RoguelikeSpecialItemBought")
+                log("RoguelikeSpecialItemBought", color: .rareOperator)
 
             default:
                 break
@@ -366,30 +371,57 @@ extension MAAViewModel {
                 return
             }
 
-            var allDrops = [String]()
-            for item in statistics {
-                guard let name = item["itemName"].string,
-                    let total = item["quantity"].int,
-                    let addition = item["addQuantity"].int
-                else {
-                    continue
-                }
-
-                var drop = "\(name) : \(total)"
-                if addition > 0 {
-                    drop += " (+\(addition))"
-                }
-                allDrops.append(drop)
+            struct DropEntry: Hashable {
+                let name: String
+                let total: Int
+                let add: Int
             }
 
-            if allDrops.count == 0 {
+            var drops = statistics.compactMap { item -> DropEntry? in
+                guard let name = item["itemName"].string,
+                    let total = item["quantity"].int,
+                    let add = item["addQuantity"].int
+                else {
+                    return nil
+                }
+                return DropEntry(name: name == "furni" ? String(localized: "FurnitureDrop") : name, total: total, add: add)
+            }
+
+            // 先按新增数量降序，再按总数量降序（对齐 Windows）
+            drops.sort { a, b in
+                if a.add != b.add { return a.add > b.add }
+                return a.total > b.total
+            }
+
+            var allDrops = drops.map { drop -> String in
+                var line = "\(drop.name) : \(drop.total)"
+                if drop.add > 0 {
+                    line += " (+\(drop.add))"
+                }
+                return line
+            }
+
+            if allDrops.isEmpty {
                 allDrops.append(String(localized: "NoDrop"))
             }
 
+            let stageCode = subTaskDetails["stage"]["stageCode"].string ?? ""
+            var output = "\(stageCode) \(String(localized: "TotalDrop"))\n" + allDrops.joined(separator: "\n")
+            if let curTimes = subTaskDetails["cur_times"].int, curTimes > 0 {
+                output += "\n\(String(localized: "CurTimes")) : \(curTimes)"
+            }
+            if let weekly = subTaskDetails["annihilation_weekly_process"].array, weekly.count == 2 {
+                output += "\n\(String(localized: "AnnihilationMode")) : \(weekly[0].intValue) / \(weekly[1].intValue)"
+            }
+
+            let tooltip = drops
+                .filter { $0.add > 0 }
+                .map { "\($0.name) : \($0.total) (+\($0.add))" }
+                .joined(separator: "\n")
+
             let sanityLeft = self.curSanityBeforeFight - self.sanityCost
-            logTrace(
-                "TotalDrop\n\(allDrops.joined(separator: "\n"))\n\nSanityLeft: \(sanityLeft >= 0 ? String(sanityLeft) : "Error")"
-            )
+            output += "\n" + String(localized: "SanityLeft") + ": \(sanityLeft >= 0 ? String(sanityLeft) : "Error")"
+            writeLog(output, color: .success, toolTip: tooltip, splitMode: .before, updateCardImage: true)
 
         case "EnterFacility":
             guard let facility = subTaskDetails["facility"].string,
@@ -407,7 +439,7 @@ extension MAAViewModel {
                 break
             }
             let tagNames = tags.compactMap(\.string)
-            logTrace("RecruitingResults: \(tagNames.joined(separator: ", "))")
+            log("RecruitingResults: \(tagNames.joined(separator: ", "))", color: .trace, splitMode: .before)
 
         case "RecruitSpecialTag":
             if let special = subTaskDetails["tag"].string {
@@ -425,12 +457,12 @@ extension MAAViewModel {
             guard let level = subTaskDetails["level"].int else {
                 break
             }
+            let tooltip = recruitResultTooltip(details: subTaskDetails)
             if level >= 5 {
                 // TODO: Push Notification
-                // TODO: Bold
-                logRare("\(level) ★ Tags")
+                log("\(level) ★ Tags", color: .rareOperator, weight: .bold, toolTip: tooltip)
             } else {
-                logInfo("\(level) ★ Tags")
+                log("\(level) ★ Tags", color: .info, toolTip: tooltip)
             }
 
         case "RecruitTagsSelect":
@@ -459,7 +491,7 @@ extension MAAViewModel {
             logTrace("StartCombat \(name)")
 
         case "StageInfoError":
-            logError("StageInfoError")
+            log("StageInfoError", color: .error, splitMode: .both, updateCardImage: true)
 
         case "PenguinId":
             if let id = subTaskDetails["id"].string {
@@ -492,7 +524,7 @@ extension MAAViewModel {
             }
 
         case "SSSGamePass":
-            logRare("SSSGamePass")
+            log("SSSGamePass", color: .rareOperator)
 
         case "UnsupportedLevel":
             logError("UnsupportedLevel")
@@ -639,32 +671,143 @@ extension Int {
 
 // MARK: - Convenience Methods
 
+/// 日志卡片拆分模式（对齐 Windows `TaskQueueViewModel.LogCardSplitMode`）
+enum LogCardSplitMode {
+    case none
+    case before
+    case after
+    case both
+}
+
 extension MAAViewModel {
     func logTrace(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .trace, key, comment: comment)
+        writeLog(String(localized: key, comment: comment), color: .trace)
     }
 
     func logInfo(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .info, key, comment: comment)
+        writeLog(String(localized: key, comment: comment), color: .info)
     }
 
     func logWarn(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .warning, key, comment: comment)
+        writeLog(String(localized: key, comment: comment), color: .warning)
     }
 
     func logRare(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .rare, key, comment: comment)
+        writeLog(String(localized: key, comment: comment), color: .rare)
     }
 
     func logError(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .error, key, comment: comment)
+        writeLog(String(localized: key, comment: comment), color: .error)
     }
 
-    private func writeLog(color: MAALog.LogColor, _ key: String.LocalizationValue, comment: StaticString?) {
-        let content = String(localized: key, comment: comment)
-        let entry = MAALog(date: Date(), content: content, color: color)
+    func logSuccess(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(String(localized: key, comment: comment), color: .success)
+    }
+
+    func logMessage(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(String(localized: key, comment: comment), color: .message)
+    }
+
+    func logDownload(_ key: String.LocalizationValue, comment: StaticString? = nil) {
+        writeLog(String(localized: key, comment: comment), color: .download)
+    }
+
+    /// 通用写日志入口，对齐 Windows `AddLog` 的 color/weight/toolTip/splitMode/updateCardImage。
+    private func log(
+        _ key: String.LocalizationValue,
+        color: MAALog.LogColor,
+        weight: MAALog.LogWeight? = nil,
+        toolTip: String? = nil,
+        splitMode: LogCardSplitMode = .none,
+        updateCardImage: Bool = false,
+        comment: StaticString? = nil
+    ) {
+        writeLog(
+            String(localized: key, comment: comment),
+            color: color,
+            weight: weight,
+            toolTip: toolTip,
+            splitMode: splitMode,
+            updateCardImage: updateCardImage)
+    }
+
+    /// 写日志并同步维护卡片列表（对齐 Windows `AddLog` 的卡片逻辑）。
+    private func writeLog(
+        _ content: String,
+        color: MAALog.LogColor,
+        weight: MAALog.LogWeight? = nil,
+        toolTip: String? = nil,
+        showTime: Bool = true,
+        splitMode: LogCardSplitMode = .none,
+        updateCardImage: Bool = false
+    ) {
+        let entry = MAALog(
+            date: Date(),
+            content: content,
+            color: color,
+            weight: weight,
+            toolTip: toolTip,
+            showTime: showTime)
         logs.append(entry)
         fileLogger.write(entry)
+
+        let needsBeforeSplit = splitMode == .before || splitMode == .both
+        let needsAfterSplit = splitMode == .after || splitMode == .both
+
+        if needsBeforeSplit {
+            createNewCard()
+        }
+        if logCards.isEmpty {
+            createNewCard()
+        }
+        if !logCards.isEmpty {
+            let lastIndex = logCards.count - 1
+            logCards[lastIndex].items.append(entry)
+            if updateCardImage {
+                attachThumbnail(toCardAt: lastIndex)
+            }
+        }
+        if needsAfterSplit {
+            createNewCard()
+        }
+    }
+
+    /// 创建新卡片；若当前最后一张为空普通卡片则复用（对齐 Windows `createNewCard`）。
+    private func createNewCard() {
+        if let last = logCards.last, last.items.isEmpty, !last.isDivider {
+            return
+        }
+        logCards.append(LogCardItem())
+    }
+
+    /// 为卡片异步附加截图缩略图（对齐 Windows `AttachThumbnailToCardAsync`）。
+    private func attachThumbnail(toCardAt index: Int) {
+        guard logCards.indices.contains(index) else { return }
+        Task { @MainActor in
+            guard logCards.indices.contains(index) else { return }
+            if let image = try? await screenshot() {
+                logCards[index].thumbnail = image
+            }
+        }
+    }
+
+    /// 构建公招结果的 tooltip（标签 + 可能干员，对齐 Windows `RecruitResultInlines`）。
+    private func recruitResultTooltip(details: JSON) -> String? {
+        guard let results = details["result"].array else {
+            return nil
+        }
+        var lines = [String]()
+        for combo in results {
+            let tags = combo["tags"].array?.compactMap(\.string).joined(separator: "、") ?? ""
+            let opers = combo["opers"].array?.compactMap { $0["name"].string }.joined(separator: "、") ?? ""
+            if !tags.isEmpty {
+                lines.append(tags)
+            }
+            if !opers.isEmpty {
+                lines.append("   " + opers)
+            }
+        }
+        return lines.isEmpty ? nil : lines.joined(separator: "\n")
     }
 
     func taskID(taskDetails: JSON) -> UUID? {

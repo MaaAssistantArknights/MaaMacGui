@@ -14,6 +14,7 @@ struct Sidebar: View {
     let onUpdate: () async throws -> Void
 
     @Environment(\.defaultMinListRowHeight) var rowHeight
+    @EnvironmentObject private var viewModel: MAAViewModel
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -40,6 +41,18 @@ struct Sidebar: View {
             }
             .buttonStyle(.plain)
             .padding()
+
+            // 连接状态指示（对齐 Windows AsstProxy.Connected）
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(viewModel.isConnected ? Color.green : Color.red)
+                    .frame(width: 8, height: 8)
+                Text(viewModel.isConnected ? "已连接" : "未连接")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.horizontal)
+            .padding(.bottom, 8)
         }
         .sheet(isPresented: $showUpdate) {
             ResourceUpdateView(onUpdate: onUpdate)
