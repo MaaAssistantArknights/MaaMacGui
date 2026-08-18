@@ -216,6 +216,8 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "刷月度小队，到达第五层后直接退出")
         case .exploration:
             String(localized: "刷深入调查，尽可能稳定地打更多层数")
+        case .blackFlowBabyAnimal:
+            String(localized: "RoguelikeStrategyBlackFlowBabyAnimal")
         }
     }
 
