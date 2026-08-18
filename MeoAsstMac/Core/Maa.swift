@@ -77,6 +77,11 @@ actor MAAHandle {
         let selfPtr = Unmanaged.passUnretained(self).toOpaque()
         handle = AsstCreateEx(handleAsst, selfPtr)
 
+        try apply(options: options)
+    }
+
+    /// 应用实例选项（触控模式、AdbLite 等）。可在实例创建后随时调用，核心在下次连接时生效。
+    func apply(options: MAAInstanceOptions) throws {
         for (key, value) in options {
             let success = AsstSetInstanceOption(handle, key.rawValue, value)
             guard success.isTrue else {
