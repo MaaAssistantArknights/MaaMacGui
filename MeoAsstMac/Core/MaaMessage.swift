@@ -671,14 +671,6 @@ extension Int {
 
 // MARK: - Convenience Methods
 
-/// 日志卡片拆分模式（对齐 Windows `TaskQueueViewModel.LogCardSplitMode`）
-enum LogCardSplitMode {
-    case none
-    case before
-    case after
-    case both
-}
-
 extension MAAViewModel {
     func logTrace(_ key: String.LocalizationValue, comment: StaticString? = nil) {
         writeLog(String(localized: key, comment: comment), color: .trace)
@@ -710,85 +702,6 @@ extension MAAViewModel {
 
     func logDownload(_ key: String.LocalizationValue, comment: StaticString? = nil) {
         writeLog(String(localized: key, comment: comment), color: .download)
-    }
-
-    /// 通用写日志入口，对齐 Windows `AddLog` 的 color/weight/toolTip/splitMode/updateCardImage。
-    private func log(
-        _ key: String.LocalizationValue,
-        color: MAALog.LogColor,
-        weight: MAALog.LogWeight? = nil,
-        toolTip: String? = nil,
-        splitMode: LogCardSplitMode = .none,
-        updateCardImage: Bool = false,
-        comment: StaticString? = nil
-    ) {
-        writeLog(
-            String(localized: key, comment: comment),
-            color: color,
-            weight: weight,
-            toolTip: toolTip,
-            splitMode: splitMode,
-            updateCardImage: updateCardImage)
-    }
-
-    /// 写日志并同步维护卡片列表（对齐 Windows `AddLog` 的卡片逻辑）。
-    private func writeLog(
-        _ content: String,
-        color: MAALog.LogColor,
-        weight: MAALog.LogWeight? = nil,
-        toolTip: String? = nil,
-        showTime: Bool = true,
-        splitMode: LogCardSplitMode = .none,
-        updateCardImage: Bool = false
-    ) {
-        let entry = MAALog(
-            date: Date(),
-            content: content,
-            color: color,
-            weight: weight,
-            toolTip: toolTip,
-            showTime: showTime)
-        logs.append(entry)
-        fileLogger.write(entry)
-
-        let needsBeforeSplit = splitMode == .before || splitMode == .both
-        let needsAfterSplit = splitMode == .after || splitMode == .both
-
-        if needsBeforeSplit {
-            createNewCard()
-        }
-        if logCards.isEmpty {
-            createNewCard()
-        }
-        if !logCards.isEmpty {
-            let lastIndex = logCards.count - 1
-            logCards[lastIndex].items.append(entry)
-            if updateCardImage {
-                attachThumbnail(toCardAt: lastIndex)
-            }
-        }
-        if needsAfterSplit {
-            createNewCard()
-        }
-    }
-
-    /// 创建新卡片；若当前最后一张为空普通卡片则复用（对齐 Windows `createNewCard`）。
-    private func createNewCard() {
-        if let last = logCards.last, last.items.isEmpty, !last.isDivider {
-            return
-        }
-        logCards.append(LogCardItem())
-    }
-
-    /// 为卡片异步附加截图缩略图（对齐 Windows `AttachThumbnailToCardAsync`）。
-    private func attachThumbnail(toCardAt index: Int) {
-        guard logCards.indices.contains(index) else { return }
-        Task { @MainActor in
-            guard logCards.indices.contains(index) else { return }
-            if let image = try? await screenshot() {
-                logCards[index].thumbnail = image
-            }
-        }
     }
 
     /// 构建公招结果的 tooltip（标签 + 可能干员，对齐 Windows `RecruitResultInlines`）。

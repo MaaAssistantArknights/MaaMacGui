@@ -7,6 +7,18 @@
 
 import SwiftUI
 
+extension View {
+    /// 仅当 tooltip 非空时才安装 `.help`，避免为 nil 生成空提示视图。
+    @ViewBuilder
+    func helpIfNonEmpty(_ toolTip: String?) -> some View {
+        if let toolTip, !toolTip.isEmpty {
+            self.help(toolTip)
+        } else {
+            self
+        }
+    }
+}
+
 /// 日志视图：支持「精简」（时间+信息表格）与「详细」（卡片分组日志）两种样式，
 /// 对齐 Windows 版 `TaskQueueView` 的 plain-text 与 card-log 两种渲染。
 struct LogView: View {
@@ -48,7 +60,7 @@ private struct ConciseLogView: View {
                     .textSelection(.enabled)
                     .foregroundStyle(log.color.textColor)
                     .fontWeight(log.weight?.fontWeight ?? .regular)
-                    .help(log.toolTip ?? "")
+                    .helpIfNonEmpty(log.toolTip)
                     .lineLimit(nil)
             }
             .width(min: 100, ideal: 300)
@@ -57,6 +69,13 @@ private struct ConciseLogView: View {
             if viewModel.trackTail {
                 withAnimation {
                     proxy.scrollTo(viewModel.logs.last?.id ?? UUID())
+                }
+            }
+        }
+        .onChange(of: viewModel.trackTail) {
+            if $1, let last = viewModel.logs.last {
+                withAnimation {
+                    proxy.scrollTo(last.id)
                 }
             }
         }
@@ -144,7 +163,7 @@ private struct LogCardRow: View {
                         .fontWeight(log.weight?.fontWeight ?? .regular)
                         .foregroundStyle(log.color.textColor)
                         .textSelection(.enabled)
-                        .help(log.toolTip ?? "")
+                        .helpIfNonEmpty(log.toolTip)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }

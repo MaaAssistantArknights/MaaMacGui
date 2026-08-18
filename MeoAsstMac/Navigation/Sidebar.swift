@@ -47,7 +47,7 @@ struct Sidebar: View {
                 Circle()
                     .fill(viewModel.isConnected ? Color.green : Color.red)
                     .frame(width: 8, height: 8)
-                Text(viewModel.isConnected ? "已连接" : "未连接")
+                Text(viewModel.isConnected ? String(localized: "已连接") : String(localized: "未连接"))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
