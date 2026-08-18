@@ -25,6 +25,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         case squad = 6
         /// 深入调查，尽可能稳定地打更多层数，不期而遇采用激进策略
         case exploration = 7
+        /// 刷襁褓动物
+        ///
+        /// 黑流树海主题专用模式
+        case babyAnimal = 30001
     }
 
     enum Theme: String, CaseIterable, Codable {
@@ -33,6 +37,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         case Sami
         case Sarkaz
         case JieGarden
+        case BlackFlow
     }
 
     struct Difficulty: Hashable, Identifiable {
@@ -67,6 +72,9 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         didSet {
             use_foldartal = mode != .clpPds
             check_collapsal_paradigms = mode == .clpPds
+            blackflowStrategy = mode == .babyAnimal ? .babyAnimal : nil
+            if mode == .investment { investment_enabled = true }
+            if theme == .BlackFlow { investment_with_more_score = false }
         }
     }
     var squad: String
@@ -76,8 +84,6 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     var use_nonfriend_support: Bool
     var starts_count: Int
     /// 指定难度等级，可选，默认值 `0`
-    ///
-    /// 仅适用于**除 `Phantom` 以外**的主题
     var difficulty: Difficulty
     /// 是否在第 5 层险路恶敌节点前停止任务，可选，默认值 `false`
     ///
@@ -152,6 +158,21 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
     /// 仅在模式为 `collectible` 时有效
     var collectible_mode_start_list: StartCollectibles
 
+    enum BlackflowStrategy: String, Codable, CaseIterable {
+        case babyAnimal = "baby_animal"
+    }
+
+    enum BlackflowCultivation: String, Codable, CaseIterable {
+        case swaddledCat = "swaddled_cat"
+        case swaddledFeatheredSerpent = "swaddled_feathered_serpent"
+        case swaddledDog = "swaddled_dog"
+        case swaddledCerberus = "swaddled_cerberus"
+    }
+
+    var blackflowStrategy: BlackflowStrategy?
+
+    var blackflowCultivationTarget = BlackflowCultivation.swaddledCat
+
     var title: String {
         type.description
     }
@@ -199,6 +220,8 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let collectible_mode_shopping: Bool?
         let collectible_mode_squad: String?
         let collectible_mode_start_list: StartCollectibles?
+        let blackflow_strategy: String?
+        let blackflow_cultivation_target: String?
     }
 
     var params: Params {
@@ -219,14 +242,19 @@ extension RoguelikeConfiguration.Theme {
             return String(localized: "萨卡兹")
         case .JieGarden:
             return String(localized: "界园")
+        case .BlackFlow:
+            return String(localized: "黑流树海")
         }
     }
 
     var modes: [RoguelikeConfiguration.Mode] {
         let commonModes = [RoguelikeConfiguration.Mode.exp, .investment, .collectible, .squad, .exploration]
-        if self == .Sami {
+        switch self {
+        case .Sami:
             return commonModes + [.clpPds]
-        } else {
+        case .BlackFlow:
+            return [.exp, .investment, .babyAnimal]
+        default:
             return commonModes
         }
     }
@@ -247,6 +275,8 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "月度小队")
         case .exploration:
             String(localized: "深入调查")
+        case .babyAnimal:
+            String(localized: "刷襁褓动物")
         }
     }
 }
@@ -281,6 +311,21 @@ extension RoguelikeConfiguration.Difficulty: Codable, CustomStringConvertible {
     }
 }
 
+extension RoguelikeConfiguration.BlackflowCultivation: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .swaddledCat:
+            String(localized: "襁褓中的猫")
+        case .swaddledFeatheredSerpent:
+            String(localized: "襁褓羽蛇")
+        case .swaddledDog:
+            String(localized: "襁褓中的狗")
+        case .swaddledCerberus:
+            String(localized: "襁褓三头犬")
+        }
+    }
+}
+
 extension RoguelikeConfiguration.Params {
     init(config: RoguelikeConfiguration) {
         self.theme = config.theme.rawValue
@@ -291,13 +336,14 @@ extension RoguelikeConfiguration.Params {
         self.use_support = config.use_support
         self.use_nonfriend_support = config.use_support ? config.use_nonfriend_support : nil
         self.starts_count = config.starts_count
-        self.difficulty = config.theme != .Phantom ? config.difficulty.id : nil
-        self.stop_at_final_boss = config.theme != .Phantom ? config.stop_at_final_boss : nil
-        self.stop_at_max_level = config.stop_at_max_level
-        self.investment_enabled = config.investment_enabled
+        self.difficulty = config.difficulty.id
+        self.stop_at_final_boss = config.mode == .exp && config.theme != .Phantom ? config.stop_at_final_boss : nil
+        self.stop_at_max_level = config.mode == .exp ? config.stop_at_max_level : nil
+        self.investment_enabled = config.mode == .investment || config.investment_enabled
         self.investments_count = config.investments_count
         self.stop_when_investment_full = config.stop_when_investment_full
-        self.investment_with_more_score = config.mode == .investment ? config.investment_with_more_score : nil
+        self.investment_with_more_score =
+            config.mode == .investment && config.theme != .BlackFlow ? config.investment_with_more_score : nil
         self.start_with_elite_two = config.mode == .collectible ? config.start_with_elite_two : nil
         self.only_start_with_elite_two =
             config.mode == .collectible && config.start_with_elite_two ? config.only_start_with_elite_two : nil
@@ -319,6 +365,9 @@ extension RoguelikeConfiguration.Params {
         self.collectible_mode_shopping = config.mode == .collectible ? config.collectible_mode_shopping : nil
         self.collectible_mode_squad = config.mode == .collectible ? config.collectible_mode_squad : nil
         self.collectible_mode_start_list = config.mode == .collectible ? config.collectible_mode_start_list : nil
+        self.blackflow_strategy = config.theme == .BlackFlow ? config.blackflowStrategy?.rawValue : nil
+        self.blackflow_cultivation_target =
+            config.mode == .babyAnimal ? config.blackflowCultivationTarget.rawValue : nil
     }
 }
 
@@ -370,5 +419,9 @@ extension RoguelikeConfiguration {
         self.collectible_mode_start_list =
             try container.decodeIfPresent(StartCollectibles.self, forKey: .collectible_mode_start_list)
             ?? StartCollectibles()
+        self.blackflowStrategy = try container.decodeIfPresent(BlackflowStrategy.self, forKey: .blackflowStrategy)
+        self.blackflowCultivationTarget =
+            try container.decodeIfPresent(BlackflowCultivation.self, forKey: .blackflowCultivationTarget)
+            ?? .swaddledCat
     }
 }

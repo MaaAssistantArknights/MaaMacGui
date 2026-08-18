@@ -35,11 +35,9 @@ struct RoguelikeSettingsView: View {
             }
         }
 
-        if config.theme != .Phantom {
-            Picker("难度", selection: $config.difficulty) {
-                ForEach(config.theme.difficulties) {
-                    Text($0.description).tag($0)
-                }
+        Picker("难度", selection: $config.difficulty) {
+            ForEach(config.theme.difficulties) {
+                Text($0.description).tag($0)
             }
         }
 
@@ -49,6 +47,7 @@ struct RoguelikeSettingsView: View {
     @ViewBuilder private func goldSettings() -> some View {
         HStack {
             Toggle("投资源石锭", isOn: $config.investment_enabled)
+                .disabled(config.mode == .investment)
             if config.investment_enabled {
                 Toggle("储备源石锭达到上限时停止", isOn: $config.stop_when_investment_full)
             }
@@ -102,7 +101,7 @@ struct RoguelikeSettingsView: View {
     @ViewBuilder private func strategySettings() -> some View {
         Picker("策略", selection: $config.mode) {
             ForEach(config.theme.modes, id: \.self) {
-                Text($0.description).tag($0)
+                Text($0.description(theme: config.theme)).tag($0)
             }
         }
 
@@ -119,20 +118,21 @@ struct RoguelikeSettingsView: View {
             Divider()
         }
 
-        HStack {
-            Toggle("满级后自动停止", isOn: $config.stop_at_max_level)
-            if config.theme != .Phantom {
-                Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
-            }
-            if config.mode == .investment {
-                Toggle("投资后进二层", isOn: $config.investment_with_more_score)
-            }
-            if config.mode == .collectible {
-                Toggle("刷开局启用购物", isOn: $config.collectible_mode_shopping)
+        if config.mode == .exp {
+            HStack {
+                Toggle("满级后自动停止", isOn: $config.stop_at_max_level)
+                if config.theme != .Phantom {
+                    Toggle("在第五层BOSS前暂停", isOn: $config.stop_at_final_boss)
+                }
             }
         }
 
+        if config.mode == .investment, config.theme != .BlackFlow {
+            Toggle("投资后进二层", isOn: $config.investment_with_more_score)
+        }
+
         if config.mode == .collectible {
+            Toggle("刷开局启用购物", isOn: $config.collectible_mode_shopping)
             HStack {
                 Toggle("凹开局干员精二直升", isOn: $config.start_with_elite_two)
                 if config.start_with_elite_two {
@@ -175,6 +175,14 @@ struct RoguelikeSettingsView: View {
         if config.mode == .exploration {
             Toggle("深度调查自动切换", isOn: $config.deep_exploration_auto_iterate)
         }
+
+        if config.theme == .BlackFlow, config.mode == .babyAnimal {
+            Picker("目标襁褓动物", selection: $config.blackflowCultivationTarget) {
+                ForEach(RoguelikeConfiguration.BlackflowCultivation.allCases, id: \.self) {
+                    Text($0.description).tag($0)
+                }
+            }
+        }
     }
 }
 
@@ -191,20 +199,26 @@ struct RoguelikeSettingsView: View {
 // MARK: - Constants
 
 extension RoguelikeConfiguration.Mode {
-    var description: String {
-        switch self {
-        case .exp:
+    func description(theme: RoguelikeConfiguration.Theme) -> String {
+        switch (self, theme) {
+        case (.exp, .BlackFlow):
+            String(localized: "刷等级，快速飞三层")
+        case (.investment, .BlackFlow):
+            String(localized: "刷源石锭，投资完成后自动退出")
+        case (.exp, _):
             String(localized: "刷分/奖励点数，尽可能稳定地打更多层数")
-        case .investment:
+        case (.investment, _):
             String(localized: "刷源石锭，到达第二层后直接退出")
-        case .collectible:
+        case (.collectible, _):
             String(localized: "刷开局，刷取热水壶或精二干员开局")
-        case .clpPds:
+        case (.clpPds, _):
             String(localized: "刷坍缩范式，遇到非稀有坍缩范式后重开")
-        case .squad:
+        case (.squad, _):
             String(localized: "刷月度小队，到达第五层后直接退出")
-        case .exploration:
+        case (.exploration, _):
             String(localized: "刷深入调查，尽可能稳定地打更多层数")
+        case (.babyAnimal, _):
+            String(localized: "刷襁褓动物")
         }
     }
 }
@@ -222,20 +236,24 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
             return String(localized: "萨卡兹的无终奇语")
         case .JieGarden:
             return String(localized: "岁的界园志异")
+        case .BlackFlow:
+            return String(localized: "沉沦者的黑流树海")
         }
     }
 
     var difficulties: [RoguelikeConfiguration.Difficulty] {
         switch self {
         case .Phantom:
-            return []
-        case .Mizuki:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
+        case .Mizuki:
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
         case .Sami:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         case .Sarkaz:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
         case .JieGarden:
+            return RoguelikeConfiguration.Difficulty.upto(maximum: 18)
+        case .BlackFlow:
             return RoguelikeConfiguration.Difficulty.upto(maximum: 15)
         }
     }
@@ -279,12 +297,19 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
                 "花团锦簇分队", "棋行险着分队", "岁影回音分队",
                 "知学分队", "商贾分队",
             ]
+        case .BlackFlow:
+            [
+                "特勤分队", "矛头分队", "高台突破分队", "地面突破分队",
+                "本源研修分队", "文明开化分队", "开拓者分队", "多边贸易分队",
+                "地质调查分队", "指挥分队", "后勤分队",
+                "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
+            ]
         }
     }
 
     var roles: [String] {
         switch self {
-        case .JieGarden:
+        case .JieGarden, .BlackFlow:
             ["先手必胜", "稳扎稳打", "取长补短", "灵活部署", "坚不可摧", "随心所欲"]
         default:
             ["先手必胜", "稳扎稳打", "取长补短", "随心所欲"]
