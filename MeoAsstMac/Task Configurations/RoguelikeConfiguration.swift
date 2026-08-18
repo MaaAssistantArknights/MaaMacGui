@@ -25,6 +25,10 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         case squad = 6
         /// 深入调查，尽可能稳定地打更多层数，不期而遇采用激进策略
         case exploration = 7
+        /// 刷襁褓动物
+        ///
+        /// 黑流树海主题专用模式
+        case blackFlowBabyAnimal = 30001
     }
 
     enum Theme: String, CaseIterable, Codable {
@@ -33,6 +37,14 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         case Sami
         case Sarkaz
         case JieGarden
+        case BlackFlow
+    }
+
+    enum BlackFlowCultivationTarget: Int, CaseIterable, Codable, Hashable {
+        case cat
+        case featheredSerpent
+        case dog
+        case cerberus
     }
 
     struct Difficulty: Hashable, Identifiable {
@@ -69,6 +81,7 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
             check_collapsal_paradigms = mode == .clpPds
         }
     }
+    var blackflow_cultivation_target: BlackFlowCultivationTarget
     var squad: String
     var roles: String
     var core_char: String
@@ -199,6 +212,8 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let collectible_mode_shopping: Bool?
         let collectible_mode_squad: String?
         let collectible_mode_start_list: StartCollectibles?
+        let blackflow_strategy: String?
+        let blackflow_cultivation_target: String?
     }
 
     var params: Params {
@@ -219,10 +234,15 @@ extension RoguelikeConfiguration.Theme {
             return String(localized: "萨卡兹")
         case .JieGarden:
             return String(localized: "界园")
+        case .BlackFlow:
+            return String(localized: "RoguelikeThemeBlackFlow")
         }
     }
 
     var modes: [RoguelikeConfiguration.Mode] {
+        if self == .BlackFlow {
+            return [.exp, .investment, .blackFlowBabyAnimal]
+        }
         let commonModes = [RoguelikeConfiguration.Mode.exp, .investment, .collectible, .squad, .exploration]
         if self == .Sami {
             return commonModes + [.clpPds]
@@ -247,6 +267,36 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "月度小队")
         case .exploration:
             String(localized: "深入调查")
+        case .blackFlowBabyAnimal:
+            String(localized: "RoguelikeStrategyBlackFlowBabyAnimal")
+        }
+    }
+}
+
+extension RoguelikeConfiguration.BlackFlowCultivationTarget {
+    var description: String {
+        switch self {
+        case .cat:
+            String(localized: "RoguelikeBlackFlowCultivationTargetCat")
+        case .featheredSerpent:
+            String(localized: "RoguelikeBlackFlowCultivationTargetFeatheredSerpent")
+        case .dog:
+            String(localized: "RoguelikeBlackFlowCultivationTargetDog")
+        case .cerberus:
+            String(localized: "RoguelikeBlackFlowCultivationTargetCerberus")
+        }
+    }
+
+    var parameterValue: String {
+        switch self {
+        case .cat:
+            "swaddled_cat"
+        case .featheredSerpent:
+            "swaddled_feathered_serpent"
+        case .dog:
+            "swaddled_dog"
+        case .cerberus:
+            "swaddled_cerberus"
         }
     }
 }
@@ -297,7 +347,8 @@ extension RoguelikeConfiguration.Params {
         self.investment_enabled = config.investment_enabled
         self.investments_count = config.investments_count
         self.stop_when_investment_full = config.stop_when_investment_full
-        self.investment_with_more_score = config.mode == .investment ? config.investment_with_more_score : nil
+        self.investment_with_more_score =
+            config.mode == .investment && config.theme != .BlackFlow ? config.investment_with_more_score : nil
         self.start_with_elite_two = config.mode == .collectible ? config.start_with_elite_two : nil
         self.only_start_with_elite_two =
             config.mode == .collectible && config.start_with_elite_two ? config.only_start_with_elite_two : nil
@@ -319,6 +370,11 @@ extension RoguelikeConfiguration.Params {
         self.collectible_mode_shopping = config.mode == .collectible ? config.collectible_mode_shopping : nil
         self.collectible_mode_squad = config.mode == .collectible ? config.collectible_mode_squad : nil
         self.collectible_mode_start_list = config.mode == .collectible ? config.collectible_mode_start_list : nil
+        self.blackflow_strategy =
+            config.theme == .BlackFlow && config.mode == .blackFlowBabyAnimal ? "baby_animal" : nil
+        self.blackflow_cultivation_target = config.theme == .BlackFlow && config.mode == .blackFlowBabyAnimal
+            ? config.blackflow_cultivation_target.parameterValue
+            : nil
     }
 }
 
@@ -327,6 +383,9 @@ extension RoguelikeConfiguration {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.theme = try container.decodeIfPresent(Theme.self, forKey: .theme) ?? .Phantom
         self.mode = try container.decodeIfPresent(Mode.self, forKey: .mode) ?? .exp
+        self.blackflow_cultivation_target =
+            try container.decodeIfPresent(BlackFlowCultivationTarget.self, forKey: .blackflow_cultivation_target)
+            ?? .cat
         self.squad = try container.decodeIfPresent(String.self, forKey: .squad) ?? "指挥分队"
         self.roles = try container.decodeIfPresent(String.self, forKey: .roles) ?? "取长补短"
         self.core_char = try container.decodeIfPresent(String.self, forKey: .core_char) ?? ""

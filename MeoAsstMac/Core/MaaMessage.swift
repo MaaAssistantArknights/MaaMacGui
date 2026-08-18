@@ -13,6 +13,190 @@ struct MaaMessage {
     let details: JSON
 }
 
+private let blackFlowWarningKeys = [
+    "map_rebuild_failed": "BlackFlowWarningMapRebuildFailed",
+    "page_recovery_failed": "BlackFlowWarningPageRecoveryFailed",
+    "preview_cost_changed": "BlackFlowWarningPreviewCostChanged",
+    "route_blocked": "BlackFlowWarningRouteBlocked",
+    "insufficient_action_points": "BlackFlowWarningInsufficientActionPoints",
+    "target_state_changed": "BlackFlowWarningTargetStateChanged",
+    "target_unreachable": "BlackFlowWarningTargetUnreachable",
+    "inferred_edge_selected": "BlackFlowWarningInferredEdge",
+    "post_move_mismatch": "BlackFlowWarningPostMoveMismatch",
+    "identity_conflict": "BlackFlowWarningIdentityConflict",
+]
+
+private let blackFlowNodeKeys = [
+    "empty": "BlackFlowNodeEmpty",
+    "battle_normal": "BlackFlowNodeCombat",
+    "combat": "BlackFlowNodeCombat",
+    "battle_elite": "BlackFlowNodeEmergencyCombat",
+    "emergency_combat": "BlackFlowNodeEmergencyCombat",
+    "battle_boss": "BlackFlowNodeBoss",
+    "boss": "BlackFlowNodeBoss",
+    "shop": "BlackFlowNodeBattleShop",
+    "battle_shop": "BlackFlowNodeBattleShop",
+    "scrap_shop": "BlackFlowNodeScrapShop",
+    "incident": "BlackFlowNodeEncounter",
+    "encounter": "BlackFlowNodeEncounter",
+    "hide_invisible": "BlackFlowNodeMysteriousPresage",
+    "mysterious_presage": "BlackFlowNodeMysteriousPresage",
+    "hide_battle": "BlackFlowNodeFerociousPresage",
+    "ferocious_presage": "BlackFlowNodeFerociousPresage",
+    "expedition": "BlackFlowNodeScout",
+    "scout": "BlackFlowNodeScout",
+    "battle_savage": "BlackFlowNodeResidentStronghold",
+    "duel": "BlackFlowNodeDuel",
+    "face_off": "BlackFlowNodeDuel",
+    "employ": "BlackFlowNodeEmergencyAid",
+    "emergency_aid": "BlackFlowNodeEmergencyAid",
+    "rest": "BlackFlowNodeRest",
+    "light": "BlackFlowNodeFeatherPoint",
+    "feather_point": "BlackFlowNodeFeatherPoint",
+    "door": "BlackFlowNodeWindingPassage",
+    "winding_passage": "BlackFlowNodeWindingPassage",
+    "sacrifice": "BlackFlowNodeSacrifice",
+    "wish": "BlackFlowNodeWish",
+    "portal": "BlackFlowNodeBoskyPassage",
+    "bosky_passage": "BlackFlowNodeBoskyPassage",
+    "resident_stronghold": "BlackFlowNodeResidentStronghold",
+    "final": "BlackFlowNodeFinal",
+    "fate": "BlackFlowNodeFate",
+    "evacuate": "BlackFlowNodeEvacuate",
+    "teleporter": "BlackFlowNodeTeleporter",
+    "unclassified": "BlackFlowNodeUnknown",
+    "other": "BlackFlowNodeOther",
+]
+
+private let blackFlowReasonKeys = [
+    "mandatory_goal": "BlackFlowReasonMandatoryGoal",
+    "resource_reserve": "BlackFlowReasonResourceReserve",
+    "preferred_goal": "BlackFlowReasonPreferredGoal",
+    "development": "BlackFlowReasonDevelopment",
+    "risk_avoidance": "BlackFlowReasonRiskAvoidance",
+    "safety_fallback": "BlackFlowReasonSafetyFallback",
+]
+
+private let blackFlowMilestoneStatusKeys = [
+    "available": "BlackFlowMilestoneStatusAvailable",
+    "satisfied": "BlackFlowMilestoneStatusSatisfied",
+    "missed": "BlackFlowMilestoneStatusMissed",
+    "impossible": "BlackFlowMilestoneStatusImpossible",
+]
+
+private let blackFlowOutcomeKeys = [
+    "investment_completed": "BlackFlowOutcomeInvestmentCompleted",
+    "investment_missed": "BlackFlowOutcomeInvestmentMissed",
+    "burn_completed": "BlackFlowOutcomeFloor3RouteCompleted",
+    "baby_cultivation_completed": "BlackFlowOutcomeBabyCultivationCompleted",
+    "baby_cultivation_target_missed": "BlackFlowOutcomeBabyCultivationTargetMissed",
+    "ending_prerequisite_failed": "BlackFlowOutcomeEndingPrerequisiteFailed",
+    "strategy_completed": "BlackFlowOutcomeStrategyCompleted",
+    "page_recovery_failed": "BlackFlowOutcomePageRecoveryFailed",
+    "ending2_completed": "BlackFlowOutcomeEnding2Completed",
+    "ending3_completed": "BlackFlowOutcomeEnding3Completed",
+    "ending2_prerequisite_failed": "BlackFlowOutcomeEnding2PrerequisiteFailed",
+    "ending3_prerequisite_failed": "BlackFlowOutcomeEnding3PrerequisiteFailed",
+    "baby_cultivation_unfinished": "BlackFlowOutcomeBabyCultivationUnfinished",
+    "task_event_failed": "BlackFlowOutcomeTaskEventFailed",
+    "perception_port_missing": "BlackFlowOutcomePerceptionPortMissing",
+    "map_rebuild_failed": "BlackFlowOutcomeMapRebuildFailed",
+    "planning_failed": "BlackFlowOutcomePlanningFailed",
+    "transaction_proposal_failed": "BlackFlowOutcomeTransactionProposalFailed",
+    "move_preview_failed": "BlackFlowOutcomeMovePreviewFailed",
+    "move_preview_rejected": "BlackFlowOutcomeMovePreviewRejected",
+    "move_confirmation_failed": "BlackFlowOutcomeMoveConfirmationFailed",
+    "post_move_validation_failed": "BlackFlowOutcomePostMoveValidationFailed",
+    "planning_retry_exhausted": "BlackFlowOutcomePlanningRetryExhausted",
+    "state_machine_dead_end": "BlackFlowOutcomeStateMachineDeadEnd",
+    "map_recovery_exhausted": "BlackFlowOutcomeMapRecoveryExhausted",
+    "floor_recognition_failed": "BlackFlowOutcomeFloorRecognitionFailed",
+    "movement_inventory_observation_failed": "BlackFlowOutcomeMovementInventoryFailed",
+    "movement_selection_failed": "BlackFlowOutcomeMovementSelectionFailed",
+    "node_dispatch_failed": "BlackFlowOutcomeNodeDispatchFailed",
+    "node_result_failed": "BlackFlowOutcomeNodeResultFailed",
+    "internal_failure": "BlackFlowOutcomeInternalFailure",
+]
+
+private let blackFlowTerminationKeys = [
+    "investment_finished": "BlackFlowTerminationInvestmentFinished",
+    "investment_shop_window_closed": "BlackFlowTerminationInvestmentShopWindowClosed",
+    "third_floor_reached": "BlackFlowTerminationFloor3Reached",
+    "cultivation_result_reported": "BlackFlowTerminationCultivationReported",
+    "cultivation_target_obtained": "BlackFlowTerminationCultivationTargetObtained",
+    "cultivation_target_not_obtained": "BlackFlowTerminationCultivationTargetNotObtained",
+    "floor1_shop_has_no_seed": "BlackFlowTerminationFloor1ShopNoSeed",
+    "mandatory_prerequisite_missed": "BlackFlowTerminationMandatoryPrerequisiteMissed",
+    "strategy_terminal_reached": "BlackFlowTerminationStrategyTerminalReached",
+    "node_page_recovery_failed": "BlackFlowTerminationNodePageRecoveryFailed",
+    "ending2_completed": "BlackFlowTerminationEnding2Completed",
+    "ending3_completed": "BlackFlowTerminationEnding3Completed",
+    "ending2_prerequisite_missing": "BlackFlowTerminationEnding2PrerequisiteMissing",
+    "ending3_relic_missing": "BlackFlowTerminationEnding3RelicMissing",
+    "no_bosky_passage": "BlackFlowTerminationNoBoskyPassage",
+    "action_points_exhausted_before_cultivation": "BlackFlowTerminationActionPointsExhaustedBeforeCultivation",
+    "scrap_shop_never_reached": "BlackFlowTerminationScrapShopNeverReached",
+    "recovery_port_unavailable": "BlackFlowTerminationRecoveryPortUnavailable",
+    "perception_port_unavailable": "BlackFlowTerminationPerceptionPortUnavailable",
+    "map_rebuild_failed_twice": "BlackFlowTerminationMapRebuildFailedTwice",
+    "planning_retry_exhausted": "BlackFlowTerminationPlanningRetryExhausted",
+]
+
+private let localizedBlackFlowKeys: Set<String> = Set(
+    [
+        "BlackFlowRuleAvoidEmptyScrapShop",
+        "BlackFlowRulePreserveWhiteModelBird",
+        "BlackFlowRuleTriggerBossProcessingBonus",
+        "BlackFlowRuleExitWhenRequired",
+        "BlackFlowRuleEnding1AvoidLateCombat",
+        "BlackFlowRuleBabyUseProcessingItemForFloor1Shop",
+        "BlackFlowRuleBabyWalkAfterFloor1Shop",
+        "BlackFlowRuleBabyDelayExitBeforeFloor3",
+        "BlackFlowRuleBabyExitBeforeFloor3WhenRequired",
+        "BlackFlowRuleBabyAvoidCombat",
+        "BlackFlowRuleLightRevealsThree",
+        "BlackFlowRuleInvestmentKeepShortWalk",
+        "BlackFlowRuleInvestmentUseM11ForDirectShop",
+        "BlackFlowRuleBurnRequireShopWhenFlightGuaranteed",
+        "BlackFlowRuleBurnRequireFlightOnFloor2",
+        "BlackFlowMilestoneEnding1Floor1Battles",
+        "BlackFlowMilestoneEnding1Floor1Hidden",
+        "BlackFlowMilestoneEnding1Floor2Expedition",
+        "BlackFlowMilestoneEnding1Floor2ScrapShop",
+        "BlackFlowMilestoneEnding1Floor2Hidden",
+        "BlackFlowMilestoneEnding1Floor2Employ",
+        "BlackFlowMilestoneEnding1Floor2Light",
+        "BlackFlowMilestoneEnding1Floor2Wish",
+        "BlackFlowMilestoneEnding1LateDuel",
+        "BlackFlowMilestoneEnding1LateExpedition",
+        "BlackFlowMilestoneEnding1LateScrapShop",
+        "BlackFlowMilestoneEnding1LateEmploy",
+        "BlackFlowMilestoneEnding1LateHidden",
+        "BlackFlowMilestoneEnding1LateIncident",
+        "BlackFlowMilestoneEnding1LateCombat",
+        "BlackFlowMilestoneEnding1LateLight",
+        "BlackFlowMilestoneEnding1LateWish",
+        "BlackFlowMilestoneInvestmentShop",
+        "BlackFlowMilestoneBurnFloor1Shop",
+        "BlackFlowMilestoneBurnFloor1Final",
+        "BlackFlowMilestoneBurnFloor2Final",
+        "BlackFlowMilestoneBabyCheckSeedShop",
+        "BlackFlowMilestoneBabyCultivateScrapShop",
+        "BlackFlowMilestoneBabyExploreHidden",
+        "BlackFlowMilestoneBabyVisitIncident",
+        "BlackFlowMilestoneBabyVisitLight",
+        "BlackFlowMilestoneBabyFloor2Shops",
+        "BlackFlowMilestoneBabyFloor3Shops",
+        "BlackFlowMilestoneEnding2SandtableA",
+        "BlackFlowMilestoneEnding2SandtableB",
+        "BlackFlowMilestoneEnding2Fate",
+        "BlackFlowMilestoneEnding3DeviceOption2",
+        "BlackFlowMilestoneEnding3Relics",
+        "BlackFlowMilestoneEnding3Floor5Boss",
+        "BlackFlowMilestoneEnding3Floor6",
+    ]
+)
+
 extension MAAViewModel {
     // MARK: - Process Message
 
@@ -452,6 +636,70 @@ extension MAAViewModel {
             logError("NotEnoughStaff")
 
         /// Tag: - Roguelike
+        case "BlackFlowRoutingDecision":
+            let floor = subTaskDetails["floor"].int ?? 0
+            let before = subTaskDetails["action_points_before"].int ?? 0
+            let after = subTaskDetails["action_points_after"].int ?? 0
+            let movement = subTaskDetails["movement"].string == "walk"
+                ? localizedBlackFlow("BlackFlowMovementWalk")
+                : localizedBlackFlow("BlackFlowMovementProcessing")
+            let nodeName = subTaskDetails["node_name"].string.flatMap { $0.isEmpty ? nil : $0 }
+                ?? localizedBlackFlowNode(subTaskDetails["node_type"].string)
+            let category = localizedBlackFlowReasonCategory(subTaskDetails["reason_category"].string)
+            let reason = localizedBlackFlowDecisionDetail(subTaskDetails)
+            let route = localizedBlackFlowFormat(
+                "BlackFlowRoutingDecision",
+                defaultValue: "第 \(floor) 层｜行动力 \(before)→\(after)｜\(movement)至 \(nodeName)｜安全余量 \(subTaskDetails["safety_margin"].int ?? 0)",
+                arguments: [
+                    "\(floor)", "\(before)", "\(after)", movement, nodeName,
+                    "\(subTaskDetails["safety_margin"].int ?? 0)",
+                ])
+            let reasonLine = localizedBlackFlowFormat(
+                "BlackFlowRoutingReason",
+                defaultValue: "原因：\(category)｜说明：\(reason)",
+                arguments: [category, reason])
+            logLocalizedInfo("\(route)\n\(reasonLine)")
+
+        case "BlackFlowRoutingWarning":
+            let key = blackFlowWarningKeys[subTaskDetails["code"].string ?? ""] ?? "BlackFlowWarningUnknown"
+            logLocalizedWarning(localizedBlackFlow(key))
+
+        case "BlackFlowMilestoneChanged":
+            guard subTaskDetails["status"].string != "inactive" else {
+                break
+            }
+            let milestone = localizedBlackFlowIdentifier(
+                prefix: "BlackFlowMilestone",
+                identifier: subTaskDetails["milestone_id"].string,
+                fallback: "BlackFlowMilestoneUnknown")
+            let status = localizedBlackFlowMilestoneStatus(subTaskDetails["status"].string)
+            logLocalizedInfo(
+                localizedBlackFlowFormat(
+                    "BlackFlowMilestoneChanged",
+                    defaultValue: "阶段目标：\(milestone)（\(status)）",
+                    arguments: [milestone, status]))
+
+        case "BlackFlowStrategyStarted":
+            let profile = localizedBlackFlowProfile(subTaskDetails["profile"].string)
+            logLocalizedInfo(
+                localizedBlackFlowFormat(
+                    "BlackFlowStrategyStarted",
+                    defaultValue: "黑流策略已启动：\(profile)",
+                    arguments: [profile]))
+
+        case "BlackFlowStrategyResult":
+            let outcome = localizedBlackFlowOutcome(subTaskDetails["outcome"].string)
+            let reason = localizedBlackFlowTerminationReason(subTaskDetails["termination_reason"].string)
+            let message = localizedBlackFlowFormat(
+                "BlackFlowStrategyResult",
+                defaultValue: "肉鸽策略结束：\(outcome)（\(reason)）",
+                arguments: [outcome, reason])
+            if subTaskDetails["succeeded"].bool == true {
+                logLocalizedInfo(message)
+            } else {
+                logLocalizedWarning(message)
+            }
+
         case "StageInfo":
             guard let name = subTaskDetails["name"].string else {
                 break
@@ -551,6 +799,107 @@ extension MAAViewModel {
         default:
             break
         }
+    }
+
+    private func logLocalizedInfo(_ content: String) {
+        writeLog(color: .info, content: content)
+    }
+
+    private func logLocalizedWarning(_ content: String) {
+        writeLog(color: .warning, content: content)
+    }
+
+    private func writeLog(color: MAALog.LogColor, content: String) {
+        let entry = MAALog(date: Date(), content: content, color: color)
+        logs.append(entry)
+        fileLogger.write(entry)
+    }
+
+    private func localizedBlackFlow(_ key: String) -> String {
+        String(localized: String.LocalizationValue(stringLiteral: key))
+    }
+
+    private func localizedBlackFlowFormat(_ key: String, defaultValue: String, arguments: [String]) -> String {
+        var localized = localizedBlackFlow(key)
+        if localized == key {
+            localized = defaultValue
+        }
+        for (index, argument) in arguments.enumerated() {
+            localized = localized.replacingOccurrences(of: "{\(index)}", with: argument)
+        }
+        return localized
+    }
+
+    private func localizedBlackFlowProfile(_ profile: String?) -> String {
+        switch profile {
+        case "investment":
+            return localizedBlackFlow("RoguelikeStrategyBlackFlowInvestment")
+        case "burn", "burn_with_investment":
+            return localizedBlackFlow("RoguelikeStrategyBlackFlowExp")
+        case "baby_animal":
+            return localizedBlackFlow("RoguelikeStrategyBlackFlowBabyAnimal")
+        default:
+            return localizedBlackFlow("BlackFlowStrategyUnknown")
+        }
+    }
+
+    private func localizedBlackFlowIdentifier(prefix: String, identifier: String?, fallback: String) -> String {
+        guard let identifier, !identifier.isEmpty else {
+            return localizedBlackFlow(fallback)
+        }
+        let suffix = identifier.split(separator: "_").map {
+            $0.prefix(1).uppercased() + $0.dropFirst()
+        }.joined()
+        let key = prefix + suffix
+        return localizedBlackFlowKeys.contains(key) ? localizedBlackFlow(key) : localizedBlackFlow(fallback)
+    }
+
+    private func localizedBlackFlowDecisionDetail(_ details: JSON) -> String {
+        if let rule = details["decisive_rule_id"].string, !rule.isEmpty {
+            return localizedBlackFlowIdentifier(
+                prefix: "BlackFlowRule",
+                identifier: rule,
+                fallback: "BlackFlowDecisionDetailUnknown")
+        }
+        if let milestone = details["decisive_milestone_id"].string, !milestone.isEmpty {
+            return localizedBlackFlowIdentifier(
+                prefix: "BlackFlowMilestone",
+                identifier: milestone,
+                fallback: "BlackFlowDecisionDetailUnknown")
+        }
+        switch details["reason_detail"].string {
+        case "selected unclassified frontier probe":
+            return localizedBlackFlow("BlackFlowDecisionProbeUnknownNode")
+        case "selected by lexicographic policy order":
+            return localizedBlackFlow("BlackFlowDecisionPolicyOrder")
+        default:
+            return localizedBlackFlow("BlackFlowDecisionDetailUnknown")
+        }
+    }
+
+    private func localizedBlackFlowNode(_ nodeType: String?) -> String {
+        let key = blackFlowNodeKeys[nodeType ?? ""] ?? "BlackFlowNodeUnknown"
+        return localizedBlackFlow(key)
+    }
+
+    private func localizedBlackFlowReasonCategory(_ category: String?) -> String {
+        let key = blackFlowReasonKeys[category ?? ""] ?? "BlackFlowReasonTieBreak"
+        return localizedBlackFlow(key)
+    }
+
+    private func localizedBlackFlowMilestoneStatus(_ status: String?) -> String {
+        let key = blackFlowMilestoneStatusKeys[status ?? ""] ?? "BlackFlowMilestoneStatusUnknown"
+        return localizedBlackFlow(key)
+    }
+
+    private func localizedBlackFlowOutcome(_ outcome: String?) -> String {
+        let key = blackFlowOutcomeKeys[outcome ?? ""] ?? "BlackFlowOutcomeUnknown"
+        return localizedBlackFlow(key)
+    }
+
+    private func localizedBlackFlowTerminationReason(_ reason: String?) -> String {
+        let key = blackFlowTerminationKeys[reason ?? ""] ?? "BlackFlowTerminationUnknown"
+        return localizedBlackFlow(key)
     }
 
     // MARK: Recruit Recoginition

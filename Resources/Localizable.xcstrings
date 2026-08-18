@@ -1410,6 +1410,2790 @@
         }
       }
     },
+    "BlackFlowDecisionDetailUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "판단 근거를 알 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "决策依据未知"
+          }
+        }
+      }
+    },
+    "BlackFlowDecisionPolicyOrder" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전략에 설정된 우선순위대로 선택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按照策略设定的优先顺序选择"
+          }
+        }
+      }
+    },
+    "BlackFlowDecisionProbeUnknownNode" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경로상 가장 가까운 미분류 노드 탐색"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "探测路线前方最近的未分类节点"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyCheckSeedShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역 상점에서 종자 확인"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层检查商店中的种子"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyCultivateScrapShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1~3구역 신비한 상인에 들어가 종자 육성"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一至三层进入秘境行商培育种子"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyExploreHidden" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신비한 상인을 발견할 때까지 미지의 괴이를 최대한 개척"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未发现秘境行商时尽量多开未知的诡秘"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyFloor2Shops" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 교활한 상인 경유 시 종자 계속 획득"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层经过普通商店时继续获取种子"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyFloor3Shops" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역은 교활한 상인 경유 시 판매·진열 갱신 후 종자 최대한 구매"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层经过普通商店时卖货、刷新并尽量购买种子"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyVisitIncident" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가는 길에 우연한 만남 진입"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顺路进入不期而遇"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBabyVisitLight" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가는 길에 깃털 조망점 진입"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顺路进入羽瞰点"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBurnFloor1Final" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역 험로의 끝 도달"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层抵达险路尽头"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBurnFloor1Shop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역 상점 진입"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层进入商店"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneBurnFloor2Final" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역 험로의 끝 도달"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层抵达险路尽头"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneChanged" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단계 목표 {0}: {1}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "阶段目标：{0}（{1}）"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor1Battles" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역은 작전 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层优先作战"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor1Hidden" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역은 미지의 괴이를 최대한 탐색"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层尽量探索未知的诡秘"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2Employ" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 가는 길에 응급 조력 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层顺路经过应急助力"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2Expedition" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 앞서 출발 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层优先先行一步"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2Hidden" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 미지의 괴이를 최대한 탐색"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层尽量探索未知的诡秘"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2Light" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 가는 길에 깃털 조망점 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层顺路经过羽瞰点"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2ScrapShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 신비한 상인 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层优先秘境行商"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1Floor2Wish" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2구역은 가는 길에 소원성취 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二层顺路经过得偿所愿"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateCombat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 가는 길에 작전 노드 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层顺路经过作战"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateDuel" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 외나무다리 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层优先狭路相逢"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateEmploy" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 응급 조력 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层优先应急助力"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateExpedition" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 앞서 출발 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层优先先行一步"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateHidden" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 미지의 괴이를 최대한 탐색"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层尽量探索未知的诡秘"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateIncident" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 우연한 만남을 최대한 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层尽量经过不期而遇"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateLight" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 가는 길에 깃털 조망점 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层顺路经过羽瞰点"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateScrapShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 신비한 상인 우선"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层优先秘境行商"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding1LateWish" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3~5구역은 가는 길에 소원성취 경유"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三至五层顺路经过得偿所愿"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding2Fate" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5구역 운명의 암시 진입 후 제2 엔딩 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第五层进入命运所指并完成二结局"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding2SandtableA" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사판 A 획득"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获得沙盘 A"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding2SandtableB" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사판 B 획득"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获得沙盘 B"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding3DeviceOption2" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞서 출발에서 두 번째 선택지를 골라 제3 엔딩용 소장품 획득"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在先行一步选择第二项并获得三结局所需藏品"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding3Floor5Boss" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5구역 보스 전투 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成第五层首领战斗"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding3Floor6" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "6구역에서 제3 엔딩 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在第六层完成三结局"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneEnding3Relics" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제3 엔딩 난이도를 낮추는 특수 소장품 3개 획득"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获得三件降低三结局难度的特殊藏品"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneInvestmentShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역 고정 상점에 들어가 투자 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "进入第一层固定商店并完成投资"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneStatusAvailable" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 가능"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可以执行"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneStatusImpossible" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료 불가능"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法完成"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneStatusMissed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "놓침"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经错过"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneStatusSatisfied" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료됨"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经完成"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneStatusUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상태 알 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "状态未知"
+          }
+        }
+      }
+    },
+    "BlackFlowMilestoneUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 단계 목표"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知阶段目标"
+          }
+        }
+      }
+    },
+    "BlackFlowMovementProcessing" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가공품 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加工品移动"
+          }
+        }
+      }
+    },
+    "BlackFlowMovementWalk" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도보 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "徒步移动"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeBattleShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "교활한 상인"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "普通商店"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeBoskyPassage" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잘못 들어선 비경"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "误入奇境"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeBoss" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "험로의 난적"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "险路恶敌"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeCombat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반 작전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作战"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeDuel" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "외나무다리"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "狭路相逢"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeEmergencyAid" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "응급 조력"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应急助力"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeEmergencyCombat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "긴급 작전"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "紧急作战"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeEmpty" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "빈 노드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空节点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeEncounter" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "우연한 만남"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不期而遇"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeEvacuate" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "철수 지점"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "撤离点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeFate" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "운명의 암시"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命运所指"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeFeatherPoint" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "깃털 조망점"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "羽瞰点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeFerociousPresage" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미지의 흉포"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知的凶戾"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeFinal" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "험로의 끝"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "险路尽头"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeMysteriousPresage" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미지의 괴이"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知的诡秘"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeOther" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기타 노드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "其他节点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeResidentStronghold" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'주민'의 거점"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“居民”据点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeRest" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "휴식 노드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "休整节点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeSacrifice" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "봉헌 노드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "奉献节点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeScout" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞서 출발"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先行一步"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeScrapShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신비한 상인"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "秘境行商"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeTeleporter" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전송 지점"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "传送点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미확인 노드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知节点"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeWindingPassage" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "굽이진 비밀 통로"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "曲折密道"
+          }
+        }
+      }
+    },
+    "BlackFlowNodeWish" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소원성취"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "得偿所愿"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeBabyCultivationCompleted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 포대기 동물 육성 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标襁褓动物培育完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeBabyCultivationTargetMissed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 포대기 동물을 획득하지 못함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未获得目标襁褓动物"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeBabyCultivationUnfinished" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 동물 육성 미완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓动物培育未完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeBabyNoSeed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "종자를 획득하지 못함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有获得种子"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeEnding2Completed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제2 엔딩 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二结局已经完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeEnding2PrerequisiteFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제2 엔딩 선행 조건 미충족"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "二结局前置条件未完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeEnding3Completed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제3 엔딩 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三结局已经完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeEnding3PrerequisiteFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제3 엔딩 선행 조건 미충족"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三结局前置条件未完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeEndingPrerequisiteFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "엔딩 선행 조건 미충족"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "结局前置条件未完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeFloor3RouteCompleted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역 속달 경로 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层速通路线完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeFloorRecognitionFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구역 인식 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "楼层识别失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeInternalFailure" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내부 상태 오류"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "内部状态异常"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeInvestmentCompleted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "투자 경로 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "投资路线完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeInvestmentMissed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "투자 경로 놓침"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "投资路线错过"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMapRebuildFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 재구축 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图重建失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMapRecoveryExhausted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 복구 재시도 횟수를 모두 소진함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图恢复重试次数已经用尽"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMoveConfirmationFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 이동을 확정할 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法确认本次移动"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMovePreviewFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 미리보기를 열 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法打开移动预览"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMovePreviewRejected" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 미리보기가 현재 경로를 거부함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动预览拒绝当前路线"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMovementInventoryFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 가공품 인식 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动加工品识别失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeMovementSelectionFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 가공품 선택 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动加工品选择失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeNodeDispatchFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노드 배치 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "节点分派失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeNodeResultFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노드 결과 처리 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "节点结果处理失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomePageRecoveryFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도로 돌아갈 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法返回地图"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomePerceptionPortMissing" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 인식 인터페이스를 사용할 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图识别接口不可用"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomePlanningFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경로 계획 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "路线规划失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomePlanningRetryExhausted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경로 재계획 횟수를 모두 소진함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "路线重新规划次数已经用尽"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomePostMoveValidationFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 후 상태 검증 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动后的状态校验失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeStateMachineDeadEnd" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 진행이 더 이상 불가능함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "界面流程走不下去了"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeStrategyCompleted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 판 전략 목표 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本局策略目标已经完成"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeTaskEventFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노드 결과 처리 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "节点结果处理失败"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeTransactionProposalFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 이동을 준비할 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法准备本次移动"
+          }
+        }
+      }
+    },
+    "BlackFlowOutcomeUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그라이크에서 오류가 발생했습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肉鸽出现异常"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonDevelopment" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성장"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发育"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonMandatoryGoal" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "필수 목표"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "强制目标"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonPreferredGoal" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선호 목표"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偏好目标"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonResourceReserve" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자원 보존"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "资源保留"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonRiskAvoidance" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위험 회피"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "风险规避"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonSafetyFallback" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "안전 퇴로"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "安全退路"
+          }
+        }
+      }
+    },
+    "BlackFlowReasonTieBreak" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동률 비교"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次级比较"
+          }
+        }
+      }
+    },
+    "BlackFlowRoutingDecision" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "{0}구역 | 행동력 {1}→{2} | {4}까지 {3} | 안전 여유 {5}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 {0} 层｜行动力 {1}→{2}｜{3}至 {4}｜安全余量 {5}"
+          }
+        }
+      }
+    },
+    "BlackFlowRoutingReason" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이유: {0} | 설명: {1}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "原因：{0}｜说明：{1}"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleAvoidEmptyScrapShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오리지늄각뿔·종자·판매 가능한 부품이 없을 때는 신비한 상인을 피함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有源石锭、种子及可出售零件时避开秘境行商"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBabyAvoidCombat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 안전한 선택지가 있는 동안은 작전 노드를 피함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仍有其他安全走法，避开作战节点"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBabyDelayExitBeforeFloor3" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역 전까지 성장 여지가 있어 출구 이동을 보류"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层前仍有发育空间，暂缓前往出口"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBabyExitBeforeFloor3WhenRequired" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역 전에 성장이 끝났거나 안전 여유가 부족해 출구로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层前发育已经完成或安全余量不足，前往出口"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBabyUseProcessingItemForFloor1Shop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역에서 가공품을 사용해 교활한 상인으로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层使用加工品前往普通商店"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBabyWalkAfterFloor1Shop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역은 교활한 상인 확인 후 도보로 탐색하고 가공품을 보존"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层检查普通商店后徒步探索并保留加工品"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBurnRequireFlightOnFloor2" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 시작 구성에서는 2구역을 구조적 원리로 출구까지 직행"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "该开局配置下第二层直接用结构性原理飞向出口"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleBurnRequireShopWhenFlightGuaranteed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "2차 정예화 메커니스트가 확정되는 시작 구성에서는 1구역 경로가 상점을 지나야 함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开局配置保证精二机械师时，第一层路线必须经过商店"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleEnding1AvoidLateCombat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기본 2차 정예화 편성이 갖춰져 불필요한 전투를 피함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经形成基本精二队伍，避开非必要战斗"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleExitWhenRequired" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "성장이 끝났거나 안전 여유가 부족해 출구로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发育已经完成或安全余量不足，前往出口"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleInvestmentKeepShortWalk" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상점이 2칸 이내면 도보 유지"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "商店距离不超过两格时保持徒步"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleInvestmentUseM11ForDirectShop" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "짧은 도보 경로가 없으면 구조적 원리로 상점에 직행"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有短途徒步方案时使用结构性原理直达商店"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleLightRevealsThree" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "깃털 조망점에서 미확인 대형 노드 3개 이상을 밝힐 것으로 예상"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "羽瞰点预计可以揭示至少三个未知大节点"
+          }
+        }
+      }
+    },
+    "BlackFlowRulePreserveWhiteModelBird" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "하얀 새 모형을 보존하고 가공품 이동이 필요한 선택적 전투를 피함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留白模鸟，避开需要加工品移动的可选战斗"
+          }
+        }
+      }
+    },
+    "BlackFlowRuleTriggerBossProcessingBonus" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가공품을 사용해 보스 노드에 진입해 전투 보너스 발동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用加工品进入首领节点并触发战斗加成"
+          }
+        }
+      }
+    },
+    "BlackFlowStrategyResult" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그라이크 전략 종료: {0} ({1})"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肉鸽策略结束：{0}（{1}）"
+          }
+        }
+      }
+    },
+    "BlackFlowStrategyStarted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블랙 플로우 전략 시작: {0}"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑流策略已启动：{0}"
+          }
+        }
+      }
+    },
+    "BlackFlowStrategyUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 전략"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知策略"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationActionPointsExhaustedBeforeCultivation" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역에서 행동력이 소진되어 육성을 완료하지 못함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层行动力耗尽，未完成培育"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationCultivationReported" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "육성 결과를 받아 이번 판 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经取得培育结果，本局结束"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationCultivationTargetNotObtained" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "육성 결과에 목표 품종이 없어 이번 판 재시작"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "培育结果未包含目标品种，本局重开"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationCultivationTargetObtained" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "육성 결과에 목표 품종이 포함되어 작업 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "培育结果包含目标品种，任务结束"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationEnding2Completed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제2 엔딩 전투 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成二结局战斗"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationEnding2PrerequisiteMissing" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5구역 전까지 제2 엔딩 사판 요건을 충족하지 못함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第五层前仍未满足二结局的沙盘要求"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationEnding3Completed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제3 엔딩 전투 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已完成三结局战斗"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationEnding3RelicMissing" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "5구역 전까지 제3 엔딩용 소장품을 획득하지 못함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第五层前仍未取得三结局所需藏品"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationFloor1ShopNoSeed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역 상점에 종자가 없어 이번 판 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一层商店没有种子，本局结束"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationFloor3Reached" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역에 도달해 이번 경로 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已抵达第三层，本局路线完成"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationInvestmentFinished" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "투자가 완료되어 이번 판 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "投资已经完成，本局结束"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationInvestmentShopWindowClosed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1구역을 떠났는데 투자하지 않아 이번 판 재시작"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经离开第一层且尚未投资，本局重开"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationMandatoryPrerequisiteMissed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "반드시 필요한 엔딩 선행 조건을 놓침"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "必须完成的结局前置条件已经错过"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationMapRebuildFailedTwice" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 재구축 2회 연속 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连续两次地图重建失败"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationNoBoskyPassage" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3구역에서 잘못 들어선 비경을 발견하지 못해 이번 경로 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三层未发现误入奇境，本局路线完成"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationNodePageRecoveryFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노드 화면에서 지도로 돌아갈 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法从节点页面返回地图"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationPerceptionPortUnavailable" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 인식·작업 인터페이스를 사용할 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图识别与任务接口不可用"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationPlanningRetryExhausted" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기가 경로를 계속 바꿔 재계획 횟수 초과"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览反复改变可选路线，已经超过重新规划次数"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationRecoveryPortUnavailable" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 복구 인터페이스를 사용할 수 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图恢复接口不可用"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationScrapShopNeverReached" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "신비한 상인에 도달하지 못해 이번 판 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有到达秘境行商，本局结束"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationStrategyTerminalReached" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전략 종점에 도달함"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已经抵达策略终点"
+          }
+        }
+      }
+    },
+    "BlackFlowTerminationUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자세한 내용은 파일 로그를 확인하세요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "详细原因请查看文件日志"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningIdentityConflict" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기의 노드 유형이 현재 지도와 일치하지 않습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "预览显示的节点类型与当前地图不一致"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningInferredEdge" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "낮은 신뢰도의 연결을 사용합니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本次移动使用了低证据连线"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningInsufficientActionPoints" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "행동력이 부족합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前行动力不足"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningMapRebuildFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지도 재구축 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "地图重建失败"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningPageRecoveryFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "노드 화면에서 지도로 돌아갈 수 없습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法从节点页面返回地图"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningPostMoveMismatch" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이동 후 노드 또는 행동력 상태가 일치하지 않습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动后的节点或行动力状态不一致"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningPreviewCostChanged" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미리보기 행동력 소모가 변경되어 다시 계획합니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移动预览显示的行动力消耗发生变化，正在重新规划"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningRouteBlocked" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경로가 차단되었습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "路线被阻断"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningTargetStateChanged" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 상태가 변경되었습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标状态已变化"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningTargetUnreachable" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표에 도달할 수 없어 미확인 노드를 탐색하고 다시 계획합니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标当前不可达，正在探测未知节点并重新规划"
+          }
+        }
+      }
+    },
+    "BlackFlowWarningUnknown" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그라이크에서 오류가 발생했습니다"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肉鸽出现异常"
+          }
+        }
+      }
+    },
+    "RoguelikeStrategyBlackFlowBabyAnimal" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 동물 육성"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷襁褓动物"
+          }
+        }
+      }
+    },
+    "RoguelikeStrategyBlackFlowExp" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "레벨 우선, 빠르게 3구역으로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷等级，快速飞三层"
+          }
+        }
+      }
+    },
+    "RoguelikeStrategyBlackFlowInvestment" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오리지늄각뿔 투자, 투자 완료 후 자동 종료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷源石锭，投资完成后自动退出"
+          }
+        }
+      }
+    },
+    "RoguelikeBlackFlowCultivationTarget" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 포대기 동물"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标襁褓动物"
+          }
+        }
+      }
+    },
+    "RoguelikeBlackFlowCultivationTargetCat" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기의 고양이"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓中的猫"
+          }
+        }
+      }
+    },
+    "RoguelikeBlackFlowCultivationTargetCerberus" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기의 케르베로스"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓三头犬"
+          }
+        }
+      }
+    },
+    "RoguelikeBlackFlowCultivationTargetDog" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기의 개"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓中的狗"
+          }
+        }
+      }
+    },
+    "RoguelikeBlackFlowCultivationTargetFeatheredSerpent" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기의 깃털 뱀"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓羽蛇"
+          }
+        }
+      }
+    },
+    "RoguelikeThemeBlackFlow" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "블랙 플로우"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑流树海"
+          }
+        }
+      }
+    },
     "Running" : {
       "localizations" : {
         "ko" : {
