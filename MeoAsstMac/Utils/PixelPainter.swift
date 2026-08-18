@@ -22,6 +22,8 @@ struct PixelPainterConfig: Hashable {
     var brightness = 0.0
     var contrast = 1.0
 
+    var dithering = 0.0
+
     var perceptual = true
 }
 
@@ -62,6 +64,13 @@ struct PixelPainter {
             filter.saturation = Float(config.saturation)
             filter.brightness = Float(config.brightness)
             filter.contrast = Float(config.contrast)
+            ciImage = filter.outputImage!
+        }
+
+        if config.dithering > 0 {
+            let filter = CIFilter.dither()
+            filter.inputImage = ciImage
+            filter.intensity = Float(config.dithering)
             ciImage = filter.outputImage!
         }
 

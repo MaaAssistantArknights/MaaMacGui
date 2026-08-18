@@ -114,6 +114,7 @@ private struct PixelMapImage: View {
             }
         }
         .aspectRatio(contentMode: .fit)
+        .background(Color.white)
     }
 }
 
@@ -141,6 +142,10 @@ struct PixelConfigView: View {
             }
             Slider(value: $config.contrast, in: 0...2) {
                 Text("对比度")
+            }
+
+            Slider(value: $config.dithering, in: 0...0.2, step: 0.05) {
+                Text("抖动")
             }
 
             Toggle("色彩匹配", isOn: $config.perceptual)
