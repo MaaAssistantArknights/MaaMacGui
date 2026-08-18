@@ -96,7 +96,10 @@ private struct RegularCopilotConfigView: View {
     @Binding var config: CopilotConfiguration
 
     var body: some View {
-        Toggle("自动编队", isOn: $config.formation)
+        HStack {
+            Toggle("自动编队", isOn: $config.formation)
+            Toggle("吃理智药", isOn: $config.use_sanity_potion)
+        }
         if config.formation {
             HStack {
                 Picker("编队栏位", selection: $config.formation_index) {
