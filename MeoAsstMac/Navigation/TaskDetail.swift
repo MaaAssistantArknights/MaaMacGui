@@ -73,14 +73,19 @@ struct TaskDetail: View {
             .help("添加任务")
         }
 
-        ToolbarItemGroup {
-            HStack {
-                Divider()
-
-                ViewDetaiTabButton(mode: .taskConfig, icon: "gearshape", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(mode: .log, icon: "note.text", selection: $viewModel.dailyTasksDetailMode)
-                ViewDetaiTabButton(
-                    mode: .timerConfig, icon: "clock.arrow.2.circlepath", selection: $viewModel.dailyTasksDetailMode)
+        ToolbarItem {
+            ControlGroup {
+                ViewDetaiTabButton(mode: .taskConfig, selection: $viewModel.dailyTasksDetailMode) {
+                    Label("选项", systemImage: "gearshape")
+                }
+                ViewDetaiTabButton(mode: .log, selection: $viewModel.dailyTasksDetailMode) {
+                    Label("日志", systemImage: "note.text")
+                }
+                ViewDetaiTabButton(mode: .timerConfig, selection: $viewModel.dailyTasksDetailMode) {
+                    Label("定时", systemImage: "clock.arrow.2.circlepath")
+                }
+            } label: {
+                Label("内容", systemImage: "menucard")
             }
         }
     }
@@ -93,16 +98,25 @@ struct TaskDetail: View {
     }
 }
 
-struct ViewDetaiTabButton: View {
+struct ViewDetaiTabButton<L: View>: View {
     let mode: MAAViewModel.DailyTasksDetailMode
-    let icon: String
     @Binding var selection: MAAViewModel.DailyTasksDetailMode
+    let label: L
+
+    init(
+        mode: MAAViewModel.DailyTasksDetailMode, selection: Binding<MAAViewModel.DailyTasksDetailMode>,
+        @ViewBuilder label: () -> L
+    ) {
+        self.mode = mode
+        self._selection = selection.animation(.default)
+        self.label = label()
+    }
 
     var body: some View {
         Button {
             selection = mode
         } label: {
-            Image(systemName: icon)
+            label
                 .foregroundColor(mode == selection ? Color.accentColor : nil)
         }
     }
