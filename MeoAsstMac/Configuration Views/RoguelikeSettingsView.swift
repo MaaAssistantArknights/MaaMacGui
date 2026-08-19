@@ -48,11 +48,11 @@ struct RoguelikeSettingsView: View {
         HStack {
             Toggle("投资源石锭", isOn: $config.investment_enabled)
                 .disabled(config.mode == .investment)
-            if config.investment_enabled {
+            if config.mode == .investment {
                 Toggle("储备源石锭达到上限时停止", isOn: $config.stop_when_investment_full)
             }
         }
-        if config.investment_enabled {
+        if config.mode == .investment {
             TextField("最多投资数量", value: $config.investments_count, format: .number)
         }
     }
@@ -74,6 +74,7 @@ struct RoguelikeSettingsView: View {
 
         HStack {
             Toggle("“开局干员”使用助战", isOn: $config.use_support)
+                .disabled(config.start_with_elite_two)
             if config.use_support {
                 Toggle("可以使用非好友助战", isOn: $config.use_nonfriend_support)
             }
@@ -86,7 +87,9 @@ struct RoguelikeSettingsView: View {
             Toggle("热水壶", isOn: $config.collectible_mode_start_list.hot_water)
             Toggle("盾", isOn: $config.collectible_mode_start_list.shield)
             Toggle("源石锭", isOn: $config.collectible_mode_start_list.ingot)
-            Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
+            if config.theme != .JieGarden {
+                Toggle("希望", isOn: $config.collectible_mode_start_list.hope)
+            }
             Toggle("随机奖励", isOn: $config.collectible_mode_start_list.random)
             if config.theme == .Mizuki {
                 Toggle("钥匙", isOn: $config.collectible_mode_start_list.key)
@@ -94,6 +97,9 @@ struct RoguelikeSettingsView: View {
             }
             if config.theme == .Sarkaz {
                 Toggle("构想", isOn: $config.collectible_mode_start_list.ideas)
+            }
+            if config.theme == .JieGarden {
+                Toggle("票券", isOn: $config.collectible_mode_start_list.ticket)
             }
         }
     }
@@ -133,10 +139,13 @@ struct RoguelikeSettingsView: View {
 
         if config.mode == .collectible {
             Toggle("刷开局启用购物", isOn: $config.collectible_mode_shopping)
-            HStack {
-                Toggle("凹开局干员精二直升", isOn: $config.start_with_elite_two)
-                if config.start_with_elite_two {
-                    Toggle("只凹直升不凹其他", isOn: $config.only_start_with_elite_two)
+            if config.supportsStartWithEliteTwo {
+                HStack {
+                    Toggle("凹开局干员精二直升", isOn: $config.start_with_elite_two)
+                        .disabled(config.use_support)
+                    if config.start_with_elite_two {
+                        Toggle("只凹直升不凹其他", isOn: $config.only_start_with_elite_two)
+                    }
                 }
             }
         }
@@ -150,17 +159,15 @@ struct RoguelikeSettingsView: View {
                 Toggle("使用密文板", isOn: $config.use_foldartal)
                 Toggle("检测获取的坍缩范式", isOn: $config.check_collapsal_paradigms)
             }
-            TextField("一层远见密文板", text: $config.first_floor_foldartal)
-            if config.mode == .collectible, config.squad == "生活至上分队" {
-                TextField("分队开局密文板", text: $config.semicolonString(for: \.start_foldartal_list))
+            if config.mode == .collectible {
+                TextField("一层远见密文板", text: $config.first_floor_foldartal)
+                if config.squad == "生活至上分队" {
+                    TextField("分队开局密文板", text: $config.semicolonString(for: \.start_foldartal_list))
+                }
             }
             if config.mode == .clpPds {
                 TextField("待刷坍缩范式", text: $config.semicolonString(for: \.expected_collapsal_paradigms))
             }
-        }
-
-        if config.theme == .Sarkaz, config.mode == .collectible {
-            Toggle("凹2构想开局", isOn: $config.start_with_two_ideas)
         }
 
         if config.mode == .squad {
@@ -173,7 +180,15 @@ struct RoguelikeSettingsView: View {
         }
 
         if config.mode == .exploration {
-            Toggle("深度调查自动切换", isOn: $config.deep_exploration_auto_iterate)
+            Toggle("深入调查自动切换", isOn: $config.deep_exploration_auto_iterate)
+        }
+
+        if config.mode == .findPlaytime {
+            Picker("目标常乐节点", selection: $config.jieFindPlaytimeTarget) {
+                ForEach(RoguelikeConfiguration.JiePlaytimeTarget.allCases, id: \.self) {
+                    Text($0.description).tag($0)
+                }
+            }
         }
 
         if config.theme == .BlackFlow, config.mode == .babyAnimal {
@@ -206,17 +221,19 @@ extension RoguelikeConfiguration.Mode {
         case (.investment, .BlackFlow):
             String(localized: "刷源石锭，投资完成后自动退出")
         case (.exp, _):
-            String(localized: "刷分/奖励点数，尽可能稳定地打更多层数")
+            String(localized: "刷等级，尽可能稳定地打更多层数")
         case (.investment, _):
-            String(localized: "刷源石锭，到达第二层后直接退出")
+            String(localized: "刷源石锭，投资完成后自动退出")
         case (.collectible, _):
             String(localized: "刷开局，刷取热水壶或精二干员开局")
         case (.clpPds, _):
             String(localized: "刷坍缩范式，遇到非稀有坍缩范式后重开")
         case (.squad, _):
-            String(localized: "刷月度小队，到达第五层后直接退出")
+            String(localized: "刷月度小队，尽可能稳定地打更多层数")
         case (.exploration, _):
             String(localized: "刷深入调查，尽可能稳定地打更多层数")
+        case (.findPlaytime, _):
+            String(localized: "刷常乐节点，第一层进洞，找不到需要的节点就重开")
         case (.babyAnimal, _):
             String(localized: "刷襁褓动物")
         }
@@ -282,7 +299,7 @@ extension RoguelikeConfiguration.Theme: CustomStringConvertible {
             ]
         case .Sarkaz:
             [
-                "魂灵护送分队", "博闻广记分队", "蓝图测绘分队",
+                "魂灵护送分队", "博闻广记分队", "蓝图测绘分队", "专业人士分队",
                 "指挥分队", "集群分队", "后勤分队", "矛头分队",
                 "突击战术分队", "堡垒战术分队", "远程战术分队", "破坏战术分队",
                 "高规格分队", "因地制宜分队",
