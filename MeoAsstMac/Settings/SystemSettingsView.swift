@@ -4,7 +4,18 @@ struct SystemSettingsView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
     var body: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 12) {
+            Picker(String(localized: "日志样式"), selection: $viewModel.useCardLog) {
+                Text(String(localized: "精简")).tag(false)
+                Text(String(localized: "详细")).tag(true)
+            }
+            .pickerStyle(.segmented)
+
+            Text(String(localized: "详细：以卡片分组展示日志，包含掉落截图缩略图；精简：以表格逐行展示"))
+                .font(.caption).foregroundStyle(.secondary)
+
+            Divider()
+
             Toggle(isOn: $viewModel.preventSystemSleeping) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("阻止系统睡眠")

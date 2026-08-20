@@ -12,6 +12,26 @@ struct TaskCell<Config: MAATaskConfiguration>: View {
     let config: Config
 
     @Binding var enabled: Bool
+    @EnvironmentObject private var viewModel: MAAViewModel
+
+    /// 状态背景色（对齐 Windows Dark.xaml 的 12.5% 透明度刷子）
+    private var statusColor: Color? {
+        switch viewModel.taskStatus[id] {
+        case .running:
+            return Color(hex: 0x20326CF3)
+        case .success:
+            return Color(hex: 0x2090EE90)
+        case .failure:
+            return Color(hex: 0x20FF4444)
+        default:
+            return nil
+        }
+    }
+
+    /// 禁用的任务：整行半透明（对齐 Windows Skipped）
+    private var isSkipped: Bool {
+        viewModel.taskStatus[id] == .skipped
+    }
 
     var body: some View {
         HStack {
@@ -34,6 +54,11 @@ struct TaskCell<Config: MAATaskConfiguration>: View {
             TaskIndicator(id: id)
         }
         .padding(.vertical, 6)
+        .background(
+            RoundedRectangle(cornerRadius: 6)
+                .fill(statusColor ?? Color.clear)
+        )
+        .opacity(isSkipped ? 0.5 : 1)
         .contextMenu {
             TaskButtons()
         }
@@ -54,7 +79,7 @@ private struct TaskIndicator: View {
             ProgressView().controlSize(.small)
         case .success:
             Image(systemName: "checkmark.circle").foregroundStyle(.green)
-        case .none:
+        case .idle, .skipped, .none:
             EmptyView()
         }
     }
