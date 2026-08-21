@@ -31,6 +31,11 @@ import Observation
     /// Observe this value to update and select the corresponding list entry after an import.
     var lastImportedCopilot: URL?
 
+    private(set) var logs = [MAALog]()
+    var trackTail = false
+    @ObservationIgnored private var logStoreContinuation: AsyncStream<MAALog>.Continuation?
+    @ObservationIgnored private var logStoreTask: Task<Void, Never>?
+
     // MARK: - Bridges to Old View Model
 
     private let parent: MAAViewModel
@@ -45,10 +50,41 @@ import Observation
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
 
+        do {
+            let url = FileManager.default
+                .urls(for: .applicationSupportDirectory, in: .userDomainMask)
+                .first!
+                .appending(path: "debug/")
+                .appending(path: "gui.log")
+            let fileLogger = try FileLogger(url: url)
+
+            let (stream, continuation) = AsyncStream<MAALog>.makeStream()
+            logStoreContinuation = continuation
+
+            logStoreTask = Task.detached(name: "LogStore") {
+                for await entry in stream {
+                    fileLogger.write(entry)
+                }
+            }
+        } catch {
+            let content = String(localized: "日志文件出错: \(error.localizedDescription)")
+            logs.append(.init(date: .now, content: content, color: .error))
+        }
+
         parent.$status.sink { [weak self] _ in
             self?.withMutation(keyPath: \.status) {}
         }
         .store(in: &cancellables)
+    }
+
+    deinit {
+        logStoreContinuation?.finish()
+    }
+
+    func waitLogStoreToFinish() async {
+        logStoreContinuation?.finish()
+        logStoreContinuation = nil
+        await logStoreTask?.value
     }
 }
 
@@ -138,5 +174,23 @@ extension NewViewModel {
         } catch {
             print(error)
         }
+    }
+}
+
+// MARK: - Log Store
+
+protocol LogStore: AnyObject {
+    func appendLog(_ entry: MAALog)
+    func clearLogs()
+}
+
+extension NewViewModel: LogStore {
+    func appendLog(_ entry: MAALog) {
+        logs.append(entry)
+        logStoreContinuation?.yield(entry)
+    }
+
+    func clearLogs() {
+        logs.removeAll()
     }
 }

@@ -19,14 +19,19 @@ struct MeoAsstMacApp: App {
 
     init() {
         let viewModel = MAAViewModel()
+        let newModel = NewViewModel(parent: viewModel)
+        viewModel.logStore = newModel
         _appViewModel = StateObject(wrappedValue: viewModel)
-        _newViewModel = State(wrappedValue: NewViewModel(parent: viewModel))
+        _newViewModel = State(wrappedValue: newModel)
         #if DEBUG
         let isRelease = false
         #else
         let isRelease = true
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        appDelegate.beforeTermination = {
+            await newModel.waitLogStoreToFinish()
+        }
     }
 
     var body: some Scene {
@@ -90,8 +95,23 @@ final class MaaUpdaterDelegate: NSObject, SPUUpdaterDelegate {
 }
 
 private class AppDelegate: NSObject, NSApplicationDelegate {
+    fileprivate var beforeTermination: (() async -> Void)?
+    private var terminationTask: Task<Void, Never>?
+
     func applicationWillFinishLaunching(_ notification: Notification) {
         NSWindow.allowsAutomaticWindowTabbing = false
+    }
+
+    func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
+        guard let beforeTermination else { return .terminateNow }
+        if terminationTask != nil { return .terminateLater }
+
+        terminationTask = Task {
+            await beforeTermination()
+            sender.reply(toApplicationShouldTerminate: true)
+        }
+
+        return .terminateLater
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {

@@ -147,7 +147,7 @@ extension MAAViewModel {
             if taskChain == "Infrast" {
                 if let id = taskID(taskDetails: message.details),
                     let task = tasks[id],
-                    case let .infrast(config) = task,
+                    case .infrast(let config) = task,
                     let plan = try? MAAInfrast(path: config.filename),
                     plan.plans.count > 0
                 {
@@ -663,8 +663,7 @@ extension MAAViewModel {
     private func writeLog(color: MAALog.LogColor, _ key: String.LocalizationValue, comment: StaticString?) {
         let content = String(localized: key, comment: comment)
         let entry = MAALog(date: Date(), content: content, color: color)
-        logs.append(entry)
-        fileLogger.write(entry)
+        logStore?.appendLog(entry)
     }
 
     func taskID(taskDetails: JSON) -> UUID? {

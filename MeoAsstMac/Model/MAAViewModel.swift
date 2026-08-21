@@ -37,9 +37,7 @@ import SwiftUI
     // MARK: - Core Callback
 
     private var messageTask: Task<Void, Never>?
-    @Published var logs = [MAALog]()
-    @Published var trackTail = false
-    let fileLogger: FileLogger
+    weak var logStore: (any LogStore)?
 
     // MARK: - Daily Tasks
 
@@ -148,15 +146,6 @@ import SwiftUI
 
     init() {
         do {
-            fileLogger = try FileLogger(
-                url: Self.userDirectory.appendingPathComponent("debug", isDirectory: true)
-                    .appendingPathComponent("gui.log", isDirectory: false))
-        } catch {
-            fileLogger = FileLogger()
-            logError("日志文件出错: \(error.localizedDescription)")
-        }
-
-        do {
             let data = try Data(contentsOf: tasksURL)
             tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
         } catch {
@@ -220,7 +209,7 @@ extension MAAViewModel {
             throw MAAError.handleNotRunning
         }
 
-        logs.removeAll()
+        logStore?.clearLogs()
         taskIDMap.removeAll()
         taskStatus.removeAll()
 

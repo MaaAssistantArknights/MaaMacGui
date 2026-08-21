@@ -8,11 +8,11 @@
 import SwiftUI
 
 struct LogView: View {
-    @EnvironmentObject private var viewModel: MAAViewModel
+    @Environment(NewViewModel.self) private var newModel
 
     var body: some View {
         ScrollViewReader { proxy in
-            Table(viewModel.logs) {
+            Table(newModel.logs) {
                 TableColumn("时间", value: \.date.maaGuiLogFormat)
                     .width(min: 100, ideal: 125, max: 150)
                 TableColumn("信息") { log in
@@ -23,24 +23,25 @@ struct LogView: View {
                 }
                 .width(min: 100, ideal: 300)
             }
-            .animation(.default, value: viewModel.logs)
+            .animation(.default, value: newModel.logs)
             .toolbar {
-                Toggle(isOn: $viewModel.trackTail) {
+                @Bindable var newModel = newModel
+                Toggle(isOn: $newModel.trackTail) {
                     Label("现在", systemImage: "arrow.down.to.line")
                 }
                 .help("自动滚动到底部")
             }
-            .onChange(of: viewModel.logs) {
-                if viewModel.trackTail {
+            .onChange(of: newModel.logs) { _, newValue in
+                if newModel.trackTail {
                     withAnimation {
-                        proxy.scrollTo(viewModel.logs.last?.id ?? UUID())
+                        proxy.scrollTo(newValue.last?.id ?? UUID())
                     }
                 }
             }
-            .onChange(of: viewModel.trackTail) {
+            .onChange(of: newModel.trackTail) {
                 if $1 {
                     withAnimation {
-                        proxy.scrollTo(viewModel.logs.last?.id ?? UUID())
+                        proxy.scrollTo(newModel.logs.last?.id ?? UUID())
                     }
                 }
             }
@@ -50,6 +51,6 @@ struct LogView: View {
 
 struct LogView_Previews: PreviewProvider {
     static var previews: some View {
-        LogView().environmentObject(MAAViewModel())
+        LogView().environment(NewViewModel(parent: MAAViewModel()))
     }
 }
