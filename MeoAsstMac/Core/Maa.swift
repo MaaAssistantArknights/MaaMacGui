@@ -40,42 +40,23 @@ actor MAAProvider {
     }
 }
 
-private func handleAsst(msg: AsstId, detailsPtr: UnsafePointer<CChar>?, handlePtr: UnsafeMutableRawPointer?) {
-    guard let handlePtr else {
-        logger.error("handlePtr is nil")
-        return
-    }
-    let handle = Unmanaged<MAAHandle>.fromOpaque(handlePtr).takeUnretainedValue()
-
-    let details = detailsPtr.map(String.init(cString:))
-
-    let json = details.map(JSON.init(parseJSON:)) ?? .null
-    handle.send(message: .init(code: Int(msg), details: json))
-}
-
 actor MAAHandle {
     private var handle: AsstHandle!
 
-    private let callbacks: AsyncStream<MaaMessage>
-    private let callbackContinuation: AsyncStream<MaaMessage>.Continuation
-    private var callbackTask: Task<Void, Never>!
-
     nonisolated let messages: AsyncStream<MaaMessage>
-    private let messageContinuation: AsyncStream<MaaMessage>.Continuation
+    private let continuation: AsyncStream<MaaMessage>.Continuation
     private var pendingCalls = [AsstAsyncCallId: CheckedContinuation<JSON, Error>]()
 
     init(options: MAAInstanceOptions = [:]) async throws {
-        (self.callbacks, self.callbackContinuation) = AsyncStream<MaaMessage>.makeStream()
-        (self.messages, self.messageContinuation) = AsyncStream<MaaMessage>.makeStream()
-
-        self.callbackTask = Task { [weak self, callbacks] in
-            for await callback in callbacks {
-                await self?.process(callback)
-            }
-        }
+        (messages, continuation) = AsyncStream<MaaMessage>.makeStream()
 
         let selfPtr = Unmanaged.passUnretained(self).toOpaque()
-        handle = AsstCreateEx(handleAsst, selfPtr)
+        handle = AsstCreateEx(
+            { msg, details, context in
+                let data = details.map { Data(bytes: $0, count: strlen($0)) } ?? Data()
+                let handle = Unmanaged<MAAHandle>.fromOpaque(context!).takeUnretainedValue()
+                handle.process(msg: msg, details: data)
+            }, selfPtr)
 
         for (key, value) in options {
             let success = AsstSetInstanceOption(handle, key.rawValue, value)
@@ -87,32 +68,38 @@ actor MAAHandle {
 
     deinit {
         AsstDestroy(handle)
-        callbackTask?.cancel()
-        callbackContinuation.finish()
         pendingCalls.forEach { $1.resume(throwing: CancellationError()) }
-        messageContinuation.finish()
+        continuation.finish()
     }
 
-    nonisolated func send(message: MaaMessage) {
-        self.callbackContinuation.yield(message)
-    }
-
-    private func process(_ message: MaaMessage) {
-        if message.code == 4 {
+    private nonisolated func process(msg: AsstId, details: Data) {
+        let info: JSON
+        do {
+            info = try JSON(data: details)
+        } catch {
+            logger.error("Failed to parse details: \(error)")
+            return
+        }
+        if msg == 4 {
             // AsyncCallInfo
-            let info = message.details
             guard let callID = info["async_call_id"].int32 else {
                 logger.error("Invalid `async_call_id` in AsyncCallInfo: \(info)")
                 return
             }
-            guard let continuation = pendingCalls.removeValue(forKey: callID) else {
-                logger.error("No pending call with ID: \(callID)")
-                return
+            Task {
+                await resumeCall(for: callID, info: info)
             }
-            continuation.resume(returning: info)
             return
         }
-        messageContinuation.yield(message)
+        continuation.yield(.init(code: Int(msg), details: info))
+    }
+
+    private func resumeCall(for id: AsstAsyncCallId, info: JSON) {
+        guard let continuation = pendingCalls.removeValue(forKey: id) else {
+            logger.error("No pending call with ID: \(id)")
+            return
+        }
+        continuation.resume(returning: info)
     }
 
     private func waitFor(_ call: @autoclosure () -> AsstAsyncCallId) async throws -> JSON {
@@ -121,6 +108,9 @@ actor MAAHandle {
             guard callID != 0 else {
                 continuation.resume(throwing: MaaCoreError.asyncCallFailed)
                 return
+            }
+            guard !pendingCalls.keys.contains(callID) else {
+                fatalError("Duplicated pending calls")
             }
             pendingCalls[callID] = continuation
         }
