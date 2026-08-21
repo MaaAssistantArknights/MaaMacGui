@@ -214,6 +214,9 @@ extension MAAViewModel {
                     self?.processMessage(message)
                 }
             }
+        } else {
+            // 实例已存在时重新应用选项（如触控模式），使设置变更在下次连接即生效，无需重启应用。
+            try await handle?.apply(options: instanceOptions)
         }
 
         guard await handle?.running == false else {
