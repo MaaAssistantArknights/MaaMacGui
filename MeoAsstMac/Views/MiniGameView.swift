@@ -190,10 +190,11 @@ extension MiniGameOption {
 
 extension MAAStageActivity.MiniGame {
     var displayName: String {
+        let defaultDisplay = Display ?? Value
         if let DisplayKey {
-            return NSLocalizedString(DisplayKey, value: Display, comment: "")
+            return NSLocalizedString(DisplayKey, value: defaultDisplay, comment: "")
         } else {
-            return Display
+            return defaultDisplay
         }
     }
 

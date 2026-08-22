@@ -268,7 +268,7 @@ struct MAAStageActivity: Decodable, Hashable {
     let miniGame: [MiniGame]
 
     struct MiniGame: Decodable, Hashable {
-        let Display: String
+        let Display: String?
         let DisplayKey: String?
         let Value: String
         let Tip: String?
@@ -276,13 +276,13 @@ struct MAAStageActivity: Decodable, Hashable {
         let MinimumRequired: String?
         private let UtcStartTime: String?
         private let UtcExpireTime: String?
-        private let TimeZone: Double
+        private let TimeZone: Double?
     }
 }
 
 extension MAAStageActivity.MiniGame {
     var startTime: Date {
-        if let value = UtcStartTime, let date = try? dateParser.parse(value) {
+        if let value = UtcStartTime, let date = try? dateParser?.parse(value) {
             return date
         } else {
             return .distantPast
@@ -290,15 +290,16 @@ extension MAAStageActivity.MiniGame {
     }
 
     var expireTime: Date {
-        if let value = UtcExpireTime, let date = try? dateParser.parse(value) {
+        if let value = UtcExpireTime, let date = try? dateParser?.parse(value) {
             return date
         } else {
             return .distantFuture
         }
     }
 
-    private var dateParser: Date.ParseStrategy {
-        .init(
+    private var dateParser: Date.ParseStrategy? {
+        guard let TimeZone else { return nil }
+        return .init(
             format:
                 "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
             timeZone: .init(secondsFromGMT: Int(TimeZone * 3600))!)
