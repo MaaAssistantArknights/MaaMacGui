@@ -157,8 +157,8 @@ struct CopilotContent: View {
         }
         switch type {
         case _ where type.conforms(to: .json):
-            let dest = try FileManager.default.copyCopilotToExternalDirectory(at: url)
-            newModel.lastImportedCopilot = dest
+            async let dest = try FileManager.default.copyCopilotToExternalDirectory(at: url)
+            newModel.lastImportedCopilot = try await dest
         case _ where type.conforms(to: .movie):
             try await newModel.recognizeVideo(url: url)
         default:
@@ -238,7 +238,7 @@ private struct CopilotListToolbar: ToolbarContent {
         let nextSelection = externalRoot.possibleSibling(of: selection)
 
         Task.detached {
-            deleteCopilot(url: selection)
+            await deleteCopilot(url: selection)
             let children = try? await externalRoot.children()
             await MainActor.run {
                 externalRoot.children = children ?? []
@@ -251,7 +251,7 @@ private struct CopilotListToolbar: ToolbarContent {
         }
     }
 
-    private nonisolated func deleteCopilot(url: URL) {
+    @concurrent private func deleteCopilot(url: URL) async {
         guard url.isManagedCopilot else { return }
         try? FileManager.default.removeItem(at: url)
     }
