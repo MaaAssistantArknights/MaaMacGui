@@ -100,6 +100,7 @@ struct CopilotContent: View {
         .onChange(of: context.copilotList.isEmpty, initial: true) {
             if $1, context.category == .list {
                 context.category = .external
+                context.selection = nil
             }
         }
         .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
@@ -199,6 +200,7 @@ private struct CopilotListToolbar: ToolbarContent {
                     Label("开始", systemImage: "play.fill")
                 }
                 .help("开始")
+                .disabled(!newModel.copilot.isReady)
             }
         }
     }
@@ -320,6 +322,18 @@ extension URL {
 extension URL {
     fileprivate var isManagedCopilot: Bool {
         path.starts(with: URL.externalCopilotDirectory.path)
+    }
+}
+
+extension CopilotContext {
+    var isReady: Bool {
+        if category == .list {
+            return copilotSet != nil && !copilotList.isEmpty
+        }
+        if case .copilot = content {
+            return true
+        }
+        return false
     }
 }
 
