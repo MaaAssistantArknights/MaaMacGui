@@ -75,6 +75,17 @@ import Observation
             self?.withMutation(keyPath: \.status) {}
         }
         .store(in: &cancellables)
+
+        parent.$videoRecoginition.sink { [weak self] url in
+            guard let url else { return }
+            do {
+                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
+                self?.lastImportedCopilot = dst
+            } catch {
+                print(error)
+            }
+        }
+        .store(in: &cancellables)
     }
 
     deinit {
