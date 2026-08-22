@@ -84,7 +84,7 @@ extension MAACopilot {
     }
 }
 
-struct CopilotSetData: Codable {
+struct CopilotSetData: Codable, Hashable {
     let name: String
     let description: String
     let copilot_ids: [Int]

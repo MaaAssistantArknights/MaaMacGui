@@ -15,7 +15,7 @@ struct CopilotView: View {
         if context.category == .list {
             if let set = context.copilotSet {
                 switch context.content {
-                case .copilot(let kind, let copilot):
+                case .copilot(_, let kind, let copilot):
                     CopilotConfigView(kind: kind, config: $context.config) {
                         CopilotDescriptionView(pilot: copilot)
                     }
@@ -31,14 +31,14 @@ struct CopilotView: View {
             }
         } else {
             switch context.content {
-            case .copilot(let kind, let copilot):
+            case .copilot(_, let kind, let copilot):
                 CopilotConfigView(kind: kind, config: $context.config) {
                     CopilotDescriptionView(pilot: copilot)
                 }
-            case .set(let set):
+            case .set(let url, let set):
                 Button("激活此作业集") {
                     Task {
-                        await context.updateCopilotSet()
+                        await context.updateSet(at: url, set: set)
                         context.category = .list
                     }
                 }
@@ -49,6 +49,8 @@ struct CopilotView: View {
                 Text("请选择作业项目")
             case .invalid:
                 Text("文件格式错误")
+            case .pending:
+                ProgressView().controlSize(.small)
             }
         }
     }

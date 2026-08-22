@@ -96,9 +96,27 @@ struct ResourceUpdateView: View {
 
     private func extractResource() async throws {
         removeExtracts()
-        for try await progress in FileManager.default.unzipItemAt(localURL, to: tmpURL) {
-            try Task.checkCancellation()
-            self.progress = (String(localized: "正在解压…"), progress.fractionCompleted)
+
+        let progress = Progress()
+        let title = String(localized: "正在解压…")
+
+        let observation = progress.observe(\.fractionCompleted) { p, _ in
+            Task { @MainActor in
+                self.progress = (title, p.fractionCompleted)
+            }
+        }
+        defer {
+            observation.invalidate()
+        }
+
+        let task = Task.detached {
+            try FileManager.default.unzipItem(at: localURL, to: tmpURL, progress: progress)
+        }
+
+        try await withTaskCancellationHandler {
+            try await task.value
+        } onCancel: {
+            progress.cancel()
         }
     }
 

@@ -81,7 +81,7 @@ import Observation
         logStoreContinuation?.finish()
     }
 
-    func waitLogStoreToFinish() async {
+    nonisolated(nonsending) func waitLogStoreToFinish() async {
         logStoreContinuation?.finish()
         logStoreContinuation = nil
         await logStoreTask?.value
@@ -91,11 +91,11 @@ import Observation
 // MARK: - Copilot Bridges
 
 extension NewViewModel {
-    func stop() async throws {
+    nonisolated(nonsending) func stop() async throws {
         try await parent.stop()
     }
 
-    func startCopilot() async throws {
+    nonisolated(nonsending) func startCopilot() async throws {
         copilotStartToken = UUID()
 
         var config = copilot.config
@@ -123,14 +123,9 @@ extension NewViewModel {
                 type = .ParadoxCopilot
             }
         } else {
-            guard let url = copilot.url else {
-                return
-            }
-
-            config.filename = url.path(percentEncoded: false)
-
             switch copilot.content {
-            case .copilot(let kind, _):
+            case .copilot(let url, let kind, _):
+                config.filename = url.path(percentEncoded: false)
                 switch kind {
                 case .regular:
                     type = .Copilot
@@ -151,7 +146,7 @@ extension NewViewModel {
         try await parent.startCopilot(type: type, params: params)
     }
 
-    func recognizeVideo(url: URL) async throws {
+    nonisolated(nonsending) func recognizeVideo(url: URL) async throws {
         try await parent.recognizeVideo(video: url)
     }
 }
@@ -159,7 +154,7 @@ extension NewViewModel {
 // MARK: - PRTS Copilot Downloader
 
 extension NewViewModel {
-    func downloadCopilot(code: PRTSCode) async {
+    nonisolated(nonsending) func downloadCopilot(code: PRTSCode) async {
         let progress = Progress()
         copilotDownloadProgress = progress
         defer { copilotDownloadProgress = nil }

@@ -140,7 +140,7 @@ extension CopilotCategory {
         let isRaid: Bool?
     }
 
-    var selection: ItemID? {
+    @MainActor var selection: ItemID? {
         didSet {
             guard oldValue != selection else {
                 return
@@ -149,32 +149,17 @@ extension CopilotCategory {
                 content = nil
                 return
             }
-            if url.isDirectory {
-                if let set = CopilotSetData(atDirectory: url) {
-                    content = .set(set)
-                } else {
-                    content = .directory
-                }
-            } else {
-                if let copilot = MAACopilot(url: url) {
-                    Task {
-                        let kind = await copilot.kind
-                        content = .copilot(kind, copilot)
-                    }
-                } else {
-                    content = .invalid
-                }
+            content = .pending
+            Task {
+                content = await Content(url: url)
             }
         }
     }
 
-    var url: URL? {
-        selection?.url
-    }
-
-    enum Content {
-        case copilot(MAACopilot.Kind, MAACopilot)
-        case set(CopilotSetData)
+    enum Content: Equatable {
+        case pending
+        case copilot(URL, MAACopilot.Kind, MAACopilot)
+        case set(URL, CopilotSetData)
         case directory
         case invalid
     }
@@ -210,16 +195,39 @@ extension CopilotCategory {
 }
 
 extension CopilotContext {
-    func updateCopilotSet() async {
-        guard let url, case .set(let set) = content else {
-            return
-        }
+    nonisolated(nonsending) func updateSet(at url: URL, set: CopilotSetData) async {
         guard let (kind, list) = await set.copilotList(at: url) else {
             return
         }
 
         self.copilotSet = .init(kind: kind, data: set)
         self.copilotList = list
+    }
+
+    nonisolated(nonsending) func updateSet(at url: URL) async {
+        guard let set = CopilotSetData(atDirectory: url) else {
+            return
+        }
+        await updateSet(at: url, set: set)
+    }
+}
+
+extension CopilotContext.Content {
+    @concurrent init(url: URL) async {
+        if url.isDirectory {
+            if let set = CopilotSetData(atDirectory: url) {
+                self = .set(url, set)
+            } else {
+                self = .directory
+            }
+        } else {
+            if let copilot = MAACopilot(url: url) {
+                let kind = await copilot.kind
+                self = .copilot(url, kind, copilot)
+            } else {
+                self = .invalid
+            }
+        }
     }
 }
 
@@ -267,7 +275,7 @@ extension CopilotSetData {
 }
 
 extension MAACopilot {
-    enum Kind {
+    enum Kind: Hashable {
         case regular
         case sss
         case paradox

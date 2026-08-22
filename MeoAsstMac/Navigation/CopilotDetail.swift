@@ -23,7 +23,7 @@ struct CopilotDetail: View {
         .toolbar {
             DetailToolbar(showInfo: $showInfo)
         }
-        .onChange(of: newModel.copilot.url, initial: true) {
+        .onChange(of: newModel.copilot.content, initial: true) {
             if $1 != nil {
                 showInfo = true
             }

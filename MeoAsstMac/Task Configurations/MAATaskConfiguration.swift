@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol MAATaskConfiguration: Codable & Hashable {
+protocol MAATaskConfiguration: Codable, Hashable, Sendable {
     var type: MAATaskType { get }
 
     var title: String { get }

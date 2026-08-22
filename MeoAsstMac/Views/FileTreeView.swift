@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-protocol FileTreeItem: Identifiable {
+protocol FileTreeItem: Identifiable, Sendable {
     var url: URL { get }
     var children: [Self]? { get set }
     init(url: URL)
@@ -95,22 +95,24 @@ struct FileTreeNode<Item: FileTreeItem, Label: View>: View {
 }
 
 extension FileTreeItem {
-    func children(fileManager: FileManager = .default) async throws -> [Self] {
-        let task = Task.detached {
-            try fileManager.contentsOfDirectory(
-                at: url,
-                includingPropertiesForKeys: [.contentTypeKey],
-                options: .skipsHiddenFiles
-            )
+    func children(fileManager: sending FileManager = .default) async throws -> [Self] {
+        let (stream, continuation) = AsyncThrowingStream<[URL], Error>.makeStream()
+        Task.detached {
+            do {
+                let urls = try fileManager.contentsOfDirectory(
+                    at: url,
+                    includingPropertiesForKeys: [.contentTypeKey],
+                    options: .skipsHiddenFiles)
+                continuation.yield(urls)
+            } catch {
+                continuation.yield(with: .failure(error))
+            }
+            continuation.finish()
         }
-
-        let urls = try await withTaskCancellationHandler {
-            try await task.value
-        } onCancel: {
-            task.cancel()
+        var iterator = stream.makeAsyncIterator()
+        guard let urls = try await iterator.next() else {
+            throw CancellationError()
         }
-
-        try Task.checkCancellation()
 
         return urls.filter {
             guard let type = $0.contentType else { return false }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 extension Binding {
-    func semicolonString(for keyPath: WritableKeyPath<Value, [String]>) -> Binding<String> {
+    @MainActor func semicolonString(for keyPath: WritableKeyPath<Value, [String]>) -> Binding<String> {
         Binding<String> {
             wrappedValue[keyPath: keyPath].joined(separator: "; ")
         } set: { newValue in

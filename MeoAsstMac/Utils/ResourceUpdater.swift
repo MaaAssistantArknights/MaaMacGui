@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum MAAResourceChannel: String, CaseIterable {
+public enum MAAResourceChannel: String, CaseIterable, Sendable {
     case github
     case mirrorChyan
 

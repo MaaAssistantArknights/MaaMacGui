@@ -41,7 +41,7 @@ actor MAAProvider {
 }
 
 actor MAAHandle {
-    private var handle: AsstHandle!
+    private nonisolated(unsafe) var handle: AsstHandle!
 
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation

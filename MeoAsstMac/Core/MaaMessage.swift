@@ -8,6 +8,9 @@
 import Foundation
 import SwiftyJSON
 
+extension JSON: @unchecked @retroactive Sendable {
+}
+
 struct MaaMessage {
     let code: Int
     let details: JSON

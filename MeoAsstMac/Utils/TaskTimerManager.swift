@@ -2,7 +2,7 @@ import AppKit
 import Combine
 import Foundation
 
-final class TaskTimerManager {
+@MainActor final class TaskTimerManager {
     static let shared = TaskTimerManager()
 
     struct RunningTimer {
@@ -23,51 +23,47 @@ final class TaskTimerManager {
     func connectToModel(viewModel: MAAViewModel) {
         self.viewModel = viewModel
 
-        Task {
-            await viewModel.$scheduledDailyTaskTimers
-                .sink { [weak self] in
-                    self?.updateRunningTimers(timerConfigs: $0)
-                }
-                .store(in: &cancellables)
+        viewModel.$scheduledDailyTaskTimers
+            .sink { [weak self] in
+                self?.updateRunningTimers(timerConfigs: $0)
+            }
+            .store(in: &cancellables)
 
-            NotificationCenter.default
-                .publisher(for: .MAAPreventSystemSleepingChanged)
-                .sink { [weak self] in
-                    self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false)
-                }
-                .store(in: &cancellables)
+        NotificationCenter.default
+            .publisher(for: .MAAPreventSystemSleepingChanged)
+            .sink { [weak self] in
+                self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false)
+            }
+            .store(in: &cancellables)
 
-            NSWorkspace.shared.notificationCenter
-                .publisher(for: NSWorkspace.screensDidWakeNotification)
-                .sink { [weak self] _ in
-                    print("System wakes up, try to refresh timer")
-                    self?.refreshRunningTimersIfNecessary()
-                }
-                .store(in: &cancellables)
-            // Call it manually for the first time
-            preventSystemFromSleepingIfNeeded(await viewModel.preventSystemSleeping)
-        }
+        NSWorkspace.shared.notificationCenter
+            .publisher(for: NSWorkspace.screensDidWakeNotification)
+            .sink { [weak self] _ in
+                print("System wakes up, try to refresh timer")
+                self?.refreshRunningTimersIfNecessary()
+            }
+            .store(in: &cancellables)
+        // Call it manually for the first time
+        preventSystemFromSleepingIfNeeded(viewModel.preventSystemSleeping)
 
         print("TaskTimerManager connected")
     }
 
     func refreshRunningTimersIfNecessary() {
-        Task {
-            guard let viewModel else {
-                print("Skip refreshing daily task timer, due to missing viewModel.")
-                return
-            }
-            let isDailyTaskRunning = await viewModel.status != .idle
-            guard !isDailyTaskRunning else {
-                print("Skip refreshing daily task timer, due to running daily task.")
-                return
-            }
+        guard let viewModel else {
+            print("Skip refreshing daily task timer, due to missing viewModel.")
+            return
+        }
+        let isDailyTaskRunning = viewModel.status != .idle
+        guard !isDailyTaskRunning else {
+            print("Skip refreshing daily task timer, due to running daily task.")
+            return
+        }
 
-            print("Refresing Daily Tasks Timers")
-            for (key, runningTimer) in runningTimers {
-                runningTimer.stop()
-                runningTimers[key] = setupNewTimer(for: runningTimer.config)
-            }
+        print("Refresing Daily Tasks Timers")
+        for (key, runningTimer) in runningTimers {
+            runningTimer.stop()
+            runningTimers[key] = setupNewTimer(for: runningTimer.config)
         }
     }
 
@@ -100,8 +96,10 @@ final class TaskTimerManager {
     private func setupNewTimer(for timerConfig: MAAViewModel.DailyTaskTimer) -> RunningTimer {
         let nextScheduledDate = createScheduledDate(hour: timerConfig.hour, minute: timerConfig.minute)
         let oneDayInterval = TimeInterval(24 * 3600)
-        let timer = Timer(fire: nextScheduledDate, interval: oneDayInterval, repeats: true) { [weak self] timer in
-            self?.startDailyTaskIfNeeded(timer: timer, config: timerConfig)
+        let timer = Timer(fire: nextScheduledDate, interval: oneDayInterval, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.startDailyTaskIfNeeded(config: timerConfig)
+            }
         }
         DispatchQueue.main.async {
             RunLoop.current.add(timer, forMode: .common)
@@ -128,18 +126,18 @@ final class TaskTimerManager {
         }
     }
 
-    private func startDailyTaskIfNeeded(timer: Timer, config: MAAViewModel.DailyTaskTimer) {
-        Task {
-            guard let viewModel else {
-                print("Skip scheduled daily task timer, due to missing viewModel. Timer id: \(config.id)")
-                return
-            }
-            let isDailyTaskRunning = await viewModel.status != .idle
-            guard !isDailyTaskRunning else {
-                print("Skip scheduled daily task timer, due to running daily task. Timer id: \(config.id)")
-                return
-            }
+    private func startDailyTaskIfNeeded(config: MAAViewModel.DailyTaskTimer) {
+        guard let viewModel else {
+            print("Skip scheduled daily task timer, due to missing viewModel. Timer id: \(config.id)")
+            return
+        }
+        let isDailyTaskRunning = viewModel.status != .idle
+        guard !isDailyTaskRunning else {
+            print("Skip scheduled daily task timer, due to running daily task. Timer id: \(config.id)")
+            return
+        }
 
+        Task {
             await viewModel.tryStartTasks()
             print("Started daily task by shcedmed timer (\(config.uniqueKey)")
         }

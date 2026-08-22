@@ -46,11 +46,11 @@ extension MAAOperBox.OwnedOper: Comparable {
         return false
     }
 
-    private static let sortPredicates: [(Self, Self) -> Bool] = [
+    private static let sortPredicates: [@Sendable (Self, Self) -> Bool] = [
         { $0.elite > $1.elite },
         { $0.level > $1.level },
         { $0.rarity > $1.rarity },
-        { $0.id < $1.id }
+        { $0.id < $1.id },
     ]
 }
 

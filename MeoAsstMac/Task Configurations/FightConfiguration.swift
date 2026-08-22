@@ -65,8 +65,8 @@ struct FightConfiguration: MAATaskConfiguration {
     }
 
     // 掉落物品列表
-    static var dropItems: [(id: String, item: DropItem)] = []
-    static var id2index: [String: Int] = [:]  // (id -> idx of dropItems)
+    @MainActor static var dropItems: [(id: String, item: DropItem)] = []
+    @MainActor static var id2index: [String: Int] = [:]  // (id -> idx of dropItems)
     static let _excludedValues = Set([
         3213, 3223, 3233, 3243,  // 双芯片
         3253, 3263, 3273, 3283,  // 双芯片
@@ -82,7 +82,7 @@ struct FightConfiguration: MAATaskConfiguration {
         30155,  // 烧结核凝晶
     ])
 
-    static func initDropItems(_ language: String) throws {
+    @MainActor static func initDropItems(_ language: String) throws {
         if !dropItems.isEmpty { return }
         let local: String? =
             switch language {

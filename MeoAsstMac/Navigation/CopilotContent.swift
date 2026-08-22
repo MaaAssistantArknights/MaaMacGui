@@ -90,7 +90,7 @@ struct CopilotContent: View {
             }
             context.selection = .init(url: url, isRaid: nil)
             if url.isDirectory {
-                await context.updateCopilotSet()
+                await context.updateSet(at: url)
                 context.category = .list
             } else {
                 await refreshItem(at: \.$externalRoot)
@@ -150,16 +150,14 @@ struct CopilotContent: View {
         return true
     }
 
-    private nonisolated func addCopilot(url: URL) async throws {
+    private func addCopilot(url: URL) async throws {
         guard url.isFileURL, let type = url.contentType else {
             return
         }
         switch type {
         case _ where type.conforms(to: .json):
             let dest = try FileManager.default.copyCopilotToExternalDirectory(at: url)
-            await MainActor.run {
-                newModel.lastImportedCopilot = dest
-            }
+            newModel.lastImportedCopilot = dest
         case _ where type.conforms(to: .movie):
             try await newModel.recognizeVideo(url: url)
         default:
@@ -209,7 +207,7 @@ private struct CopilotListToolbar: ToolbarContent {
         if newModel.copilot.category == .list {
             return false
         }
-        if let url = newModel.copilot.url {
+        if let url = newModel.copilot.selection?.url {
             return url.isManagedCopilot
         } else {
             return false
@@ -231,7 +229,7 @@ private struct CopilotListToolbar: ToolbarContent {
     }
 
     private func deleteSelectedCopilot() {
-        guard let selection = newModel.copilot.url else {
+        guard let selection = newModel.copilot.selection?.url else {
             return
         }
 
