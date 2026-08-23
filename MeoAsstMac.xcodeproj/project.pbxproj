@@ -29,7 +29,6 @@
 		832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832903A8302C9802008E1DC6 /* URL+contentType.swift */; };
 		8329858A29ED121A009F7ED5 /* CopilotDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8329858929ED121A009F7ED5 /* CopilotDetail.swift */; };
 		8329858C29EDA952009F7ED5 /* OpenLogFileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */; };
-		8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */ = {isa = PBXBuildFile; productRef = 8329859429EDB9EB009F7ED5 /* SwiftyJSON */; };
 		832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985A929EE9958009F7ED5 /* RecruitView.swift */; };
 		832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AB29EE9977009F7ED5 /* DepotView.swift */; };
 		832985AE29EEE672009F7ED5 /* UtilityContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985AD29EEE672009F7ED5 /* UtilityContent.swift */; };
@@ -84,6 +83,7 @@
 		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
 		83985BC03025F0CF00D2A789 /* CopilotListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */; };
 		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
+		83A0F4B7303AFC9A00C81B05 /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 83A0F4B6303AFC9A00C81B05 /* JBird */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
 		83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250C302F02B000080642 /* PixelPaintView.swift */; };
@@ -245,7 +245,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8329859529EDB9EB009F7ED5 /* SwiftyJSON in Frameworks */,
+				83A0F4B7303AFC9A00C81B05 /* JBird in Frameworks */,
 				83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */,
 				834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
@@ -523,9 +523,9 @@
 			name = MAA;
 			packageProductDependencies = (
 				830C3D1B29BC7D8600B13A9F /* Sparkle */,
-				8329859429EDB9EB009F7ED5 /* SwiftyJSON */,
 				8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */,
 				83782A2C2CFFB00000A32BDD /* LegacyUserTasks */,
+				83A0F4B6303AFC9A00C81B05 /* JBird */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -558,8 +558,8 @@
 			mainGroup = 833786C228F188D800D39D6F;
 			packageReferences = (
 				830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */,
-				8329859329EDB9EB009F7ED5 /* XCRemoteSwiftPackageReference "SwiftyJSON" */,
 				8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
+				83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -897,20 +897,20 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		8329859329EDB9EB009F7ED5 /* XCRemoteSwiftPackageReference "SwiftyJSON" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftyJSON/SwiftyJSON.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.0;
-			};
-		};
 		8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 0.9.19;
+			};
+		};
+		83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vsanthanam/JBird";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -921,11 +921,6 @@
 			package = 830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
 		};
-		8329859429EDB9EB009F7ED5 /* SwiftyJSON */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8329859329EDB9EB009F7ED5 /* XCRemoteSwiftPackageReference "SwiftyJSON" */;
-			productName = SwiftyJSON;
-		};
 		8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
@@ -934,6 +929,11 @@
 		83782A2C2CFFB00000A32BDD /* LegacyUserTasks */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LegacyUserTasks;
+		};
+		83A0F4B6303AFC9A00C81B05 /* JBird */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */;
+			productName = JBird;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
