@@ -20,7 +20,6 @@ struct MeoAsstMacApp: App {
     init() {
         let viewModel = MAAViewModel()
         let newModel = NewViewModel(parent: viewModel)
-        viewModel.logStore = newModel
         _appViewModel = StateObject(wrappedValue: viewModel)
         _newViewModel = State(wrappedValue: newModel)
         #if DEBUG

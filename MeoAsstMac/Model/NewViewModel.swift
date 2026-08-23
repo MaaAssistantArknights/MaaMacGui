@@ -49,14 +49,15 @@ import Observation
 
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
+        parent.logStore = self
 
         do {
-            let url = FileManager.default
+            let dir = FileManager.default
                 .urls(for: .applicationSupportDirectory, in: .userDomainMask)
-                .first!
-                .appending(path: "debug/")
-                .appending(path: "gui.log")
-            let fileLogger = try FileLogger(url: url)
+                .first!.appending(path: "debug/")
+            try FileManager.default.createDirectory(
+                at: dir, withIntermediateDirectories: true)
+            let fileLogger = try FileLogger(url: dir.appending(path: "gui.log"))
 
             let (stream, continuation) = AsyncStream<MAALog>.makeStream()
             logStoreContinuation = continuation
