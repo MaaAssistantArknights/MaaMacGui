@@ -120,13 +120,24 @@ extension CopilotSetData {
         progress?.completedUnitCount = 0
 
         try await withThrowingTaskGroup { group in
-            for id in content.data.copilot_ids {
+            var ids = content.data.copilot_ids.makeIterator()
+            // Limit to 8 concurrent downloads
+            for _ in 0..<8 {
+                guard let id = ids.next() else { break }
                 group.addTask {
                     try await MAACopilot.download(id: id, toDirectory: directory)
                 }
             }
-            for try await _ in group {
+            while (try await group.next()) != nil {
                 progress?.completedUnitCount += 1
+                if let id = ids.next() {
+                    let added = group.addTaskUnlessCancelled {
+                        try await MAACopilot.download(id: id, toDirectory: directory)
+                    }
+                    if !added {
+                        throw CancellationError()
+                    }
+                }
             }
         }
 
