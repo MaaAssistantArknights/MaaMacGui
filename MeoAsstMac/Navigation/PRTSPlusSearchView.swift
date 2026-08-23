@@ -12,7 +12,7 @@ struct PRTSPlusSearchView: View {
     @State private var stage = ""
     @State private var results = [PRTSPlusSearchResult]()
     @State private var searching = false
-    @State private var importingID: Int?
+    @State private var importingIDs = Set<Int>()
     @State private var importedIDs = Set<Int>()
     @State private var errorMessage: String?
 
@@ -117,7 +117,7 @@ struct PRTSPlusSearchView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if importingID == result.id {
+            if importingIDs.contains(result.id) {
                 ProgressView()
                     .controlSize(.small)
                     .frame(width: 92, height: 56)
@@ -180,10 +180,10 @@ struct PRTSPlusSearchView: View {
     }
 
     private func importCopilot(_ result: PRTSPlusSearchResult, addToList: Bool) {
-        importingID = result.id
+        guard importingIDs.insert(result.id).inserted else { return }
         errorMessage = nil
         Task {
-            defer { importingID = nil }
+            defer { importingIDs.remove(result.id) }
             do {
                 let url = try await MAACopilot.download(id: result.id, toDirectory: .externalCopilotDirectory)
                 if addToList {
