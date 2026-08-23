@@ -192,7 +192,7 @@ extension MAAStageActivity.MiniGame {
     var displayName: String {
         let defaultDisplay = Display ?? Value
         if let DisplayKey {
-            return NSLocalizedString(DisplayKey, value: defaultDisplay, comment: "")
+            return Bundle.main.localizedString(forKey: DisplayKey, value: defaultDisplay, table: nil)
         } else {
             return defaultDisplay
         }
@@ -202,7 +202,7 @@ extension MAAStageActivity.MiniGame {
         let defaultTip = Tip ?? ""
         let tip: String
         if let TipKey {
-            tip = NSLocalizedString(TipKey, value: defaultTip, comment: "")
+            tip = Bundle.main.localizedString(forKey: TipKey, value: defaultTip, table: nil)
         } else {
             tip = defaultTip
         }

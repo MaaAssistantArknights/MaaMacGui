@@ -31,10 +31,19 @@ import Observation
     /// Observe this value to update and select the corresponding list entry after an import.
     var lastImportedCopilot: URL?
 
+    // MARK: - Log
+
     private(set) var logs = [MAALog]()
     var trackTail = false
     @ObservationIgnored private var logStoreContinuation: AsyncStream<MAALog>.Continuation?
     @ObservationIgnored private var logStoreTask: Task<Void, Never>?
+
+    var screencapCost: (min: Int, max: Int, avg: Int)?
+    @ObservationIgnored var lastScreencapWarningLevel = 0
+    @ObservationIgnored var hasPrintedFPSHighTip = false
+    @ObservationIgnored var taskStartTime: Date?
+    @ObservationIgnored var stoneUsedTimes = 0
+    @ObservationIgnored var recruitConfirmTimes = 0
 
     // MARK: - Bridges to Old View Model
 
@@ -189,6 +198,13 @@ extension NewViewModel {
 protocol LogStore: AnyObject {
     func appendLog(_ entry: MAALog)
     func clearLogs()
+
+    var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
+    var lastScreencapWarningLevel: Int { get set }
+    var hasPrintedFPSHighTip: Bool { get set }
+    var recruitConfirmTimes: Int { get set }
+    var stoneUsedTimes: Int { get set }
+    var taskStartTime: Date? { get set }
 }
 
 extension NewViewModel: LogStore {
