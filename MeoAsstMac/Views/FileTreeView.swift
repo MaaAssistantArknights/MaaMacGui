@@ -95,25 +95,12 @@ struct FileTreeNode<Item: FileTreeItem, Label: View>: View {
 }
 
 extension FileTreeItem {
-    func children(fileManager: sending FileManager = .default) async throws -> [Self] {
-        let (stream, continuation) = AsyncThrowingStream<[URL], Error>.makeStream()
-        Task.detached {
-            do {
-                let urls = try fileManager.contentsOfDirectory(
-                    at: url,
-                    includingPropertiesForKeys: [.contentTypeKey],
-                    options: .skipsHiddenFiles)
-                continuation.yield(urls)
-            } catch {
-                continuation.yield(with: .failure(error))
-            }
-            continuation.finish()
-        }
-        var iterator = stream.makeAsyncIterator()
-        guard let urls = try await iterator.next() else {
-            throw CancellationError()
-        }
-
+    @concurrent func children(fileManager: FileManager = .default) async throws -> [Self] {
+        let urls = try fileManager.contentsOfDirectory(
+            at: url,
+            includingPropertiesForKeys: [.contentTypeKey],
+            options: .skipsHiddenFiles)
+        try Task.checkCancellation()
         return urls.filter {
             guard let type = $0.contentType else { return false }
             return type.conforms(to: .directory) || type.conforms(to: .json)
