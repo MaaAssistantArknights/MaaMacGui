@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct CopilotContent: View {
     @Environment(NewViewModel.self) var newModel
@@ -103,7 +104,7 @@ struct CopilotContent: View {
                 context.selection = nil
             }
         }
-        .onDrop(of: [.fileURL], isTargeted: .none, perform: addCopilots)
+        .onDrop(of: [.json], isTargeted: .none, perform: addCopilots)
     }
 
     // MARK: - Actions
@@ -115,17 +116,21 @@ struct CopilotContent: View {
     }
 
     private func addCopilots(_ providers: [NSItemProvider]) -> Bool {
-        let canLoadAll = providers.allSatisfy { $0.canLoadObject(ofClass: URL.self) }
+        let canLoadAll = providers.allSatisfy {
+            $0.hasItemConformingToTypeIdentifier(UTType.json.identifier)
+        }
         guard !providers.isEmpty, canLoadAll else { return false }
 
         let (stream, continuation) = AsyncStream<Result<URL, Error>>.makeStream()
 
         for provider in providers {
-            _ = provider.loadObject(ofClass: URL.self) { url, error in
+            provider.loadItem(forTypeIdentifier: UTType.json.identifier) { item, error in
                 if let error {
                     continuation.yield(.failure(error))
+                } else if let url = item as? URL {
+                    continuation.yield(.success(url))
                 } else {
-                    continuation.yield(.success(url!))
+                    continuation.yield(.failure(CocoaError(.fileReadUnknown)))
                 }
             }
         }

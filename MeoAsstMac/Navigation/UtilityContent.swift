@@ -13,7 +13,9 @@ struct UtilityContent: View {
 
     var body: some View {
         List(UtilityEntry.allCases, selection: $selection) { entry in
-            entry.label
+            if entry != .video {
+                entry.label
+            }
         }
         .toolbar(content: listToolbar)
     }
