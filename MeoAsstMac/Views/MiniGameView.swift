@@ -10,7 +10,7 @@ import SwiftUI
 struct MiniGameView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     @SceneStorage("selectedMiniGame") private var selection = MiniGameOption.sideStoryStore.taskName
-    @State private var selectedGame = MiniGameOption.greenTicketStore.tag
+    @State private var selectedGame = MiniGameOption.sideStoryStore.tag
     @State private var taskParams: Any?
 
     var body: some View {
