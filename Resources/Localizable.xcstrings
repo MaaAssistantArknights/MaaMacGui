@@ -17,6 +17,26 @@
     "（突袭）" : {
 
     },
+    "[%@] %@\n%@: %lld\n%@: %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "[%1$@] %2$@\n%3$@: %4$lld\n%5$@: %6$@"
+          }
+        }
+      }
+    },
+    "[%@] %@\n%@: %lld %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "[%1$@] %2$@\n%3$@: %4$lld %5$@"
+          }
+        }
+      }
+    },
     "[前往作业站…](https://prts.plus)" : {
 
     },
@@ -26,7 +46,48 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%@\n%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@"
+          }
+        }
+      }
+    },
+    "%@\n%@: %lld(+%lld)\n%@: %lld(+%lld)" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@\n%2$@: %3$lld(+%4$lld)\n%5$@: %6$lld(+%7$lld)"
+          }
+        }
+      }
+    },
+    "%@ %@\n%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@\n%3$@"
+          }
+        }
+      }
+    },
+    "%@ %@\n%@\n%@ : %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@\n%3$@\n%4$@ : %5$lld"
+          }
+        }
+      }
+    },
     "%@ GiveUpUploadingPenguins" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -43,6 +104,7 @@
       }
     },
     "%@ HasReturned" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -162,6 +224,9 @@
         }
       }
     },
+    "AccountSwitch %@" : {
+
+    },
     "ActingCommandError" : {
       "localizations" : {
         "ko" : {
@@ -178,7 +243,17 @@
         }
       }
     },
+    "AlgorithmBadge" : {
+
+    },
+    "AlgorithmConstructionPoint" : {
+
+    },
+    "AlgorithmDoneSmeltGold %lld" : {
+
+    },
     "AlgorithmDoneSmeltGold %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -193,6 +268,9 @@
           }
         }
       }
+    },
+    "AlgorithmFinish" : {
+
     },
     "AllTasksComplete" : {
       "localizations" : {
@@ -226,7 +304,11 @@
         }
       }
     },
+    "BattleFormation %@" : {
+
+    },
     "BattleFormation: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -241,6 +323,19 @@
           }
         }
       }
+    },
+    "BattleFormationOperUnavailable %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BattleFormationOperUnavailable %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "BattleFormationParseFailed" : {
+
     },
     "BattleFormationSelected %@" : {
       "localizations" : {
@@ -258,7 +353,11 @@
         }
       }
     },
+    "BegunToExplore %lld" : {
+
+    },
     "BegunToExplore %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -283,6 +382,106 @@
           }
         }
       }
+    },
+    "BlackFlowMilestoneChanged %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BlackFlowMilestoneChanged %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "BlackFlowRoutingDecision %lld %lld %lld %@ %@ %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BlackFlowRoutingDecision %1$lld %2$lld %3$lld %4$@ %5$@ %6$lld"
+          }
+        }
+      }
+    },
+    "BlackFlowRoutingReason %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BlackFlowRoutingReason %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "BlackFlowStrategyResult %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "BlackFlowStrategyResult %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "BlackFlowStrategyStarted %@" : {
+
+    },
+    "BlackFlowWarningIdentityConflict" : {
+
+    },
+    "BlackFlowWarningInferredEdge" : {
+
+    },
+    "BlackFlowWarningInsufficientActionPoints" : {
+
+    },
+    "BlackFlowWarningMapRebuildFailed" : {
+
+    },
+    "BlackFlowWarningPageRecoveryFailed" : {
+
+    },
+    "BlackFlowWarningPostMoveMismatch" : {
+
+    },
+    "BlackFlowWarningPreviewCostChanged" : {
+
+    },
+    "BlackFlowWarningRouteBlocked" : {
+
+    },
+    "BlackFlowWarningTargetStateChanged" : {
+
+    },
+    "BlackFlowWarningTargetUnreachable" : {
+
+    },
+    "BlackFlowWarningUnknown" : {
+
+    },
+    "BoskyDisaster" : {
+
+    },
+    "BoskyDoubts" : {
+
+    },
+    "BoskyLegend" : {
+
+    },
+    "BoskyOldShop" : {
+
+    },
+    "BoskyOmissions" : {
+
+    },
+    "BoskyPlaytime" : {
+
+    },
+    "BoskyScheme" : {
+
+    },
+    "BoskyYiTrader" : {
+
     },
     "CA-5" : {
       "localizations" : {
@@ -335,7 +534,11 @@
         }
       }
     },
+    "Choose %@" : {
+
+    },
     "Choose Tags: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -350,6 +553,12 @@
           }
         }
       }
+    },
+    "CloseArknightsFailed" : {
+
+    },
+    "ClueExchangeUnlocked" : {
+
     },
     "CombatError" : {
       "localizations" : {
@@ -447,6 +656,18 @@
         }
       }
     },
+    "ContinueRefresh" : {
+
+    },
+    "CopilotUserAdditionalNameInvalid %@" : {
+
+    },
+    "CreditFight" : {
+
+    },
+    "CreditFullOnlyBuyDiscount %lld" : {
+
+    },
     "CurrentStage %@" : {
       "localizations" : {
         "ko" : {
@@ -462,6 +683,25 @@
           }
         }
       }
+    },
+    "CurrentSteps %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CurrentSteps %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "CurTimes" : {
+
+    },
+    "DeepExplorationCompleted" : {
+
+    },
+    "DeepExplorationNotUnlockedComplain" : {
+
     },
     "DreadfulFoe" : {
       "localizations" : {
@@ -495,6 +735,9 @@
         }
       }
     },
+    "ElapsedTime %lld" : {
+
+    },
     "EmergencyOps" : {
       "localizations" : {
         "ko" : {
@@ -511,7 +754,17 @@
         }
       }
     },
+    "EmulatorFpsErrorTip %lld" : {
+
+    },
+    "EmulatorFpsHighTip %lld" : {
+
+    },
+    "EmulatorFpsWarningTip %lld" : {
+
+    },
     "Encounter" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -526,6 +779,12 @@
           }
         }
       }
+    },
+    "EncounterOcrError" : {
+
+    },
+    "Error" : {
+
     },
     "ErrorOccurred" : {
       "localizations" : {
@@ -543,7 +802,18 @@
         }
       }
     },
+    "ExpiringMedicineUsed %@ %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ExpiringMedicineUsed %1$@ %2$lld %3$lld"
+          }
+        }
+      }
+    },
     "ExpiringMedicineUsed %lld(+%lld) UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -591,7 +861,18 @@
         }
       }
     },
+    "FastestWayToScreencap %lld %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "FastestWayToScreencap %1$lld %2$@"
+          }
+        }
+      }
+    },
     "FastestWayToScreencap: %@ms (%@)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -606,6 +887,12 @@
           }
         }
       }
+    },
+    "FastestWayToScreencapErrorTip %lld" : {
+
+    },
+    "FastestWayToScreencapWarningTip %lld" : {
+
     },
     "FightCompleted" : {
       "localizations" : {
@@ -638,6 +925,15 @@
           }
         }
       }
+    },
+    "FightMissionFailedAndStop" : {
+
+    },
+    "FilterTruth" : {
+
+    },
+    "FoldartalGainOcrNextLevel %@" : {
+
     },
     "GachaInitTip" : {
       "localizations" : {
@@ -928,6 +1224,7 @@
       }
     },
     "GainParadigm %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -944,6 +1241,7 @@
       }
     },
     "GameCrash" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -978,7 +1276,11 @@
     "GitHub" : {
       "shouldTranslate" : false
     },
+    "GiveUpUploadingPenguins %@" : {
+
+    },
     "HasInvested %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -993,6 +1295,9 @@
           }
         }
       }
+    },
+    "HasReturned %@" : {
+
     },
     "IdentifyTheMistakes" : {
       "localizations" : {
@@ -1074,7 +1379,18 @@
         }
       }
     },
+    "MedicineUsed %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "MedicineUsed %1$lld %2$lld"
+          }
+        }
+      }
+    },
     "MedicineUsed %lld(+%lld) UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1086,6 +1402,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已使用理智药 %1$lld(+%2$lld) 次"
+          }
+        }
+      }
+    },
+    "MiniGame@InteractiveExhibition@UncollectedNotificationContent" : {
+
+    },
+    "MiniGame@PixelPaint@DoneLog" : {
+
+    },
+    "MiniGame@PixelPaint@ProgressLog %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "MiniGame@PixelPaint@ProgressLog %1$lld %2$lld"
           }
         }
       }
@@ -1122,7 +1454,11 @@
         }
       }
     },
+    "MissionStart %lld" : {
+
+    },
     "MissionStart %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1137,6 +1473,19 @@
           }
         }
       }
+    },
+    "MissionStart.FightTask %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "MissionStart.FightTask %1$lld %2$lld"
+          }
+        }
+      }
+    },
+    "MonthlySquadCompleted" : {
+
     },
     "NoDrop" : {
       "localizations" : {
@@ -1154,6 +1503,9 @@
         }
       }
     },
+    "NoRecruitmentPermit" : {
+
+    },
     "NotEnoughStaff" : {
       "localizations" : {
         "ko" : {
@@ -1166,6 +1518,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "可用干员不足"
+          }
+        }
+      }
+    },
+    "Parse %@[%@] Success" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Parse %1$@[%2$@] Success"
           }
         }
       }
@@ -1206,6 +1568,12 @@
         }
       }
     },
+    "ProductChanged" : {
+
+    },
+    "ProductChangeFail" : {
+
+    },
     "ProductIncorrect" : {
       "localizations" : {
         "ko" : {
@@ -1221,6 +1589,9 @@
           }
         }
       }
+    },
+    "ProductUnknown" : {
+
     },
     "prts://" : {
 
@@ -1249,6 +1620,12 @@
           }
         }
       }
+    },
+    "ReclamationPisModeError" : {
+
+    },
+    "ReclamationPnsModeError" : {
+
     },
     "ReconnectFailed" : {
       "localizations" : {
@@ -1298,7 +1675,11 @@
         }
       }
     },
+    "RecruitingResults %@" : {
+
+    },
     "RecruitingResults: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1313,6 +1694,9 @@
           }
         }
       }
+    },
+    "RecruitingTips %@" : {
+
     },
     "RecruitmentRecognitionTip" : {
       "localizations" : {
@@ -1330,7 +1714,14 @@
         }
       }
     },
+    "RecruitSupportOperator %@" : {
+
+    },
+    "Refreshed %lld" : {
+
+    },
     "Refreshed %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1362,6 +1753,9 @@
         }
       }
     },
+    "ResolutionInfoYoStarEN" : {
+
+    },
     "ResolutionNotSupported" : {
       "localizations" : {
         "ko" : {
@@ -1378,6 +1772,54 @@
         }
       }
     },
+    "ResolutionNotSupportedCurrentResolution %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ResolutionNotSupportedCurrentResolution %1$lld %2$lld"
+          }
+        }
+      }
+    },
+    "RoguelikeCoppersExchange %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeCoppersExchange %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "RoguelikeCoppersRecognitionError %@" : {
+
+    },
+    "RoguelikeDeepenParadigm %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeDeepenParadigm %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "RoguelikeEncounterDisabledOption %@" : {
+
+    },
+    "RoguelikeEncounterEnabledOption %@" : {
+
+    },
+    "RoguelikeEncounterOptions %lld" : {
+
+    },
+    "RoguelikeEvent %@" : {
+
+    },
+    "RoguelikeGainParadigm %@" : {
+
+    },
     "RoguelikeGamePass" : {
       "localizations" : {
         "ko" : {
@@ -1390,6 +1832,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "肉鸽通关啦！"
+          }
+        }
+      }
+    },
+    "RoguelikeInvestment %lld %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeInvestment %1$lld %2$lld %3$lld"
+          }
+        }
+      }
+    },
+    "RoguelikeInvestmentReachFull" : {
+
+    },
+    "RoguelikeInvestmentReachLimit %lld" : {
+
+    },
+    "RoguelikeJieGardenTargetFound %@" : {
+
+    },
+    "RoguelikeLoseParadigm %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeLoseParadigm %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "RoguelikePlaytimeLing" : {
+
+    },
+    "RoguelikePlaytimeNian" : {
+
+    },
+    "RoguelikePlaytimeShu" : {
+
+    },
+    "RoguelikeSettlement %@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeSettlement %1$@ %2$@ %3$@ %4$@ %5$@ %6$@ %7$@ %8$@ %9$@ %10$@ %11$@ %12$@"
           }
         }
       }
@@ -1409,6 +1899,28 @@
           }
         }
       }
+    },
+    "RoguelikeWeakenParadigm %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "RoguelikeWeakenParadigm %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "RoomGroupsMatch %@" : {
+
+    },
+    "RoomGroupsMatchFailed %@" : {
+
+    },
+    "RoomOperators %@" : {
+
+    },
+    "RoutingRestartTooManyBattles %@" : {
+
     },
     "Running" : {
       "localizations" : {
@@ -1443,6 +1955,7 @@
       }
     },
     "Save to %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1458,7 +1971,11 @@
         }
       }
     },
+    "Save to: %@" : {
+
+    },
     "ScreencapCost: %@ / %@ / %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1522,6 +2039,26 @@
         }
       }
     },
+    "StageQueue %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "StageQueue %1$@ %2$@"
+          }
+        }
+      }
+    },
+    "StageQueue %@ %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "StageQueue %1$@ %2$lld"
+          }
+        }
+      }
+    },
     "StartCombat %@" : {
       "localizations" : {
         "ko" : {
@@ -1554,7 +2091,11 @@
         }
       }
     },
+    "StoneUsed %lld" : {
+
+    },
     "StoneUsed %lld UnitTime" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1602,7 +2143,11 @@
         }
       }
     },
+    "TheEx" : {
+
+    },
     "TheEX" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1618,7 +2163,18 @@
         }
       }
     },
+    "ThisFacility %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ThisFacility %1$@ %2$@"
+          }
+        }
+      }
+    },
     "ThisFacility %@ %lld" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1634,7 +2190,11 @@
         }
       }
     },
+    "TotalDrop" : {
+
+    },
     "TotalDrop\n%@\n\nSanityLeft: %@" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1651,6 +2211,7 @@
       }
     },
     "TouchModeNotAvaiable" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1665,6 +2226,9 @@
           }
         }
       }
+    },
+    "TouchModeNotAvailable" : {
+
     },
     "Trader" : {
       "localizations" : {
@@ -1682,7 +2246,20 @@
         }
       }
     },
+    "TrainingCompleted" : {
+
+    },
+    "TrainingIdle" : {
+
+    },
+    "TrainingLevel" : {
+
+    },
+    "TrainingTimeLeft" : {
+
+    },
     "TryToReconnect (%lld)" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1698,7 +2275,14 @@
         }
       }
     },
+    "TryToReconnect %lld" : {
+
+    },
+    "UnableToAgent" : {
+
+    },
     "UnsupportedLevel" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1713,6 +2297,9 @@
           }
         }
       }
+    },
+    "UnsupportedLevel %@" : {
+
     },
     "UpperLimit" : {
       "localizations" : {
@@ -1729,6 +2316,19 @@
           }
         }
       }
+    },
+    "UseMedicine.MedicineInfo %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "UseMedicine.MedicineInfo %1$lld %2$lld"
+          }
+        }
+      }
+    },
+    "Visiting" : {
+
     },
     "一层远见密文板" : {
       "localizations" : {
@@ -2898,6 +3498,9 @@
           }
         }
       }
+    },
+    "已连接至 %@" : {
+
     },
     "希望" : {
       "localizations" : {
