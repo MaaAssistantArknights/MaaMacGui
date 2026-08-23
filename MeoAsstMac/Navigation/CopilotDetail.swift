@@ -76,6 +76,7 @@ private struct AddPopover: View {
     @Environment(NewViewModel.self) var newModel
     @Binding var showAdd: Bool
     @State private var showImportCopilot = false
+    @State private var showSearchCopilot = false
     @State private var prtsCode = ""
 
     var body: some View {
@@ -137,6 +138,14 @@ private struct AddPopover: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.bordered)
+
+            Button {
+                showSearchCopilot = true
+            } label: {
+                Label("按关卡搜索…", systemImage: "doc.text.magnifyingglass")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
         }
         .disabled(newModel.copilotDownloadProgress != nil)
         .fileImporter(
@@ -145,6 +154,11 @@ private struct AddPopover: View {
             allowsMultipleSelection: true,
             onCompletion: addCopilots
         )
+        .sheet(isPresented: $showSearchCopilot) {
+            NavigationStack {
+                PRTSPlusSearchView()
+            }
+        }
     }
 
     private func addCopilots(_ results: Result<[URL], Error>) {
