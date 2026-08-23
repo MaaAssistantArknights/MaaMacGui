@@ -59,7 +59,7 @@ struct CopilotContent: View {
                 tracker.sendURLAction(of: url)
             }
         }
-        .safeAreaInset(edge: .top) {
+        .safeAreaInset(edge: .top, spacing: 6) {
             CapsulePicker(CopilotCategory.allCases, selection: $context.category, color: \.color) {
                 Image(systemName: $0.systemImage)
             } text: {
@@ -68,6 +68,16 @@ struct CopilotContent: View {
                 context.selection = nil
             }
             .padding(.horizontal)
+            .padding(.top, 6)
+            .background(.background)
+        }
+        .safeAreaInset(edge: .bottom) {
+            if context.category == .list {
+                CopilotListControls(context: context)
+                    .padding(.vertical, 6)
+                    .frame(maxWidth: .infinity)
+                    .background(.background)
+            }
         }
         .toolbar {
             CopilotListToolbar(externalRoot: $externalRoot)

@@ -21,6 +21,8 @@ struct CopilotView: View {
                     }
                 case .invalid:
                     Text("文件格式错误")
+                case .pending:
+                    ProgressView().controlSize(.small)
                 default:
                     CopilotConfigView(kind: set.kind, config: $context.config) {
                         CopilotSetDescriptionView(set: set.data)

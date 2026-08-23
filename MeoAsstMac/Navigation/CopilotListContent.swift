@@ -8,14 +8,20 @@
 import SwiftUI
 
 struct CopilotListContent: View {
-    let context: CopilotContext
+    @Bindable var context: CopilotContext
 
     var body: some View {
-        @Bindable var context = context
         ForEach($context.copilotList) { $item in
             Toggle(item.description, isOn: $item.isOn)
         }
-        HStack {
+    }
+}
+
+struct CopilotListControls: View {
+    @Bindable var context: CopilotContext
+
+    var body: some View {
+        HStack(spacing: 12) {
             Button("全选") {
                 $context.copilotList.forEach { $i in i.isOn = true }
             }
@@ -29,6 +35,11 @@ struct CopilotListContent: View {
             .tint(.red)
         }
         .controlSize(.small)
+        .frame(maxWidth: .infinity)
+        .contentShape(.rect)
+        .onTapGesture {
+            context.selection = nil
+        }
     }
 }
 
@@ -44,11 +55,15 @@ extension CopilotContext.ListItem: CustomStringConvertible {
 
 #Preview {
     @Previewable @State var selection = URL?.none
+    @Previewable @State var context = CopilotContext()
     NavigationSplitView {
         EmptyView()
     } content: {
         List(selection: $selection) {
-            CopilotListContent(context: .init())
+            CopilotListContent(context: context)
+        }
+        .safeAreaInset(edge: .bottom) {
+            CopilotListControls(context: context)
         }
     } detail: {
         EmptyView()

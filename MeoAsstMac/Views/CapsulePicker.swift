@@ -37,7 +37,7 @@ struct CapsulePicker<Item: Identifiable, L1: View, L2: View>: View {
                         }
                     }
                     .font(.headline)
-                    .padding(.vertical, 8)
+                    .padding(.vertical, 6)
                     .padding(.horizontal, 16)
                     if selected {
                         label.frame(maxWidth: .infinity)
