@@ -41,6 +41,9 @@ import Observation
     var screencapCost: (min: Int, max: Int, avg: Int)?
     @ObservationIgnored var lastScreencapWarningLevel = 0
     @ObservationIgnored var hasPrintedFPSHighTip = false
+    @ObservationIgnored var taskStartTime: Date?
+    @ObservationIgnored var stoneUsedTimes = 0
+    @ObservationIgnored var recruitConfirmTimes = 0
 
     // MARK: - Bridges to Old View Model
 
@@ -199,7 +202,9 @@ protocol LogStore: AnyObject {
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
     var hasPrintedFPSHighTip: Bool { get set }
-    
+    var recruitConfirmTimes: Int { get set }
+    var stoneUsedTimes: Int { get set }
+    var taskStartTime: Date? { get set }
 }
 
 extension NewViewModel: LogStore {
