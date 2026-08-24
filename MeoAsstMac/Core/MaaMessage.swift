@@ -229,22 +229,27 @@ private struct TaskChainMessage {
 extension MAAViewModel {
     private func processTaskChainMessage(_ message: MaaMessage) {
         if message.code == .AllTasksCompleted {
-            resetStatus()
+            defer {
+                resetStatus()
+            }
             guard let ids: [Int32] = try? message.details["finished_tasks"] else {
                 return
             }
-
             for id in ids {
-                if let uuid = taskID(coreID: id), let task = tasks[uuid] {
-                    if case .closedown = task {
-                        continue
-                    }
-                    logTrace("AllTasksComplete")
-                    // TODO: Align elapsed time, sanity report, notifications, and post-task actions.
+                guard let task = dailyTask(coreID: id) else {
+                    continue
+                }
+                if case .closedown = task {
+                    continue
+                }
+                guard let start = logStore?.taskStartTime else {
                     break
                 }
+                let duration = (start ..< .now).formatted(.timeDuration)
+                logTrace(.allTasksComplete(duration: duration))
+                // TODO: Align sanity report, notifications, and post-task actions.
+                break
             }
-
             return
         }
 
@@ -299,19 +304,35 @@ extension MAAViewModel {
                     case .infrast(let config) = task,
                     config.mode == .custom,
                     let plan = try? MAAInfrast(path: config.filename),
-                    plan.plans.count > 0
+                    plan.plans.indices.contains(config.plan_index)
                 {
+                    let currentPlan = plan.plans[config.plan_index]
+                    logInfo("CustomInfrastPlanIndexAutoSwitch")
+                    if let description = currentPlan.description_post, !description.isEmpty {
+                        logTrace("\(description)")
+                    }
                     var newConfig = config
                     newConfig.plan_index = (config.plan_index + 1) % plan.plans.count
                     tasks[id] = .infrast(newConfig)
+                    let nextPlan = plan.plans[newConfig.plan_index]
+                    if let name = nextPlan.name, !name.isEmpty {
+                        logInfo("\(name)")
+                    }
+                    let periods = nextPlan.period?.compactMap { period in
+                        guard period.count >= 2 else { return String?.none }
+                        return "[ \(period[0]) – \(period[1]) ]"
+                    }
+                    if let periods, !periods.isEmpty {
+                        logTrace("\(periods.joined(separator: ", "))")
+                    }
+                    if let description = nextPlan.description, !description.isEmpty {
+                        logTrace("\(description)")
+                    }
                 }
             }
-            // TODO: Align WPF plan-index validation and custom-plan switch logs.
-
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .success
             }
-
             logTrace("CompleteTask \(taskChain)")
         // TODO: Align the sanity report.
 
@@ -364,6 +385,18 @@ private struct SubTaskErrorMessage {
     let taskid: Int32?
 }
 
+@JSONRepresentable
+private struct MissingOperatorDetails {
+    let name: String
+}
+
+@JSONRepresentable
+private struct BattleFormationErrorDetails {
+    let opers: [String: [MissingOperatorDetails]]
+}
+
+typealias LSR = LocalizedStringResource
+
 extension MAAViewModel {
     private func processSubTaskError(_ details: JSON) {
         guard let info = SubTaskErrorMessage(json: details, context: "SubTaskError") else {
@@ -385,16 +418,30 @@ extension MAAViewModel {
             logError("DropRecognitionError")
 
         case "ReportToPenguinStats":
-            let why = info.why ?? String(localized: "ErrorOccurred")
-            logWarn("GiveUpUploadingPenguins \(why)")
-        // TODO: Use the annihilation-specific message when the failed task is an annihilation fight.
+            if case .fight(let config) = dailyTask(coreID: info.taskid), config.stage == "Annihilation" {
+                let why = String(localized: "AnnihilationStage")
+                logTrace("GiveUpUploadingPenguins \(why)")
+            } else {
+                let why = info.why ?? String(localized: "ErrorOccurred")
+                logWarn("GiveUpUploadingPenguins \(why)")
+            }
 
         case "CheckStageValid":
             logError("TheEx")
 
         case "BattleFormationTask":
-            if info.why == "OperatorMissing" {
-                // TODO: Parse grouped missing operators and output MissingOperators.
+            if info.why == "OperatorMissing", let payload = info.details,
+                let formation = BattleFormationErrorDetails(json: payload, context: "BattleFormationError")
+            {
+                let groups = formation.opers.map { group, opers in
+                    if opers.count == 1 {
+                        return group
+                    } else {
+                        let names = opers.map(\.name).joined(separator: "/")
+                        return "\(group) => \(names)"
+                    }
+                }.joined(separator: "\n")
+                logError(.missingOperators(groups: groups))
             }
 
         case "CopilotTask":
@@ -446,7 +493,7 @@ extension MAAViewModel {
 
             case "StoneConfirm":
                 logInfo("StoneUsed \(process.exec_times)")
-            // TODO: Track the stone-use count.
+                logStore?.stoneUsedTimes += 1
 
             case "AbandonAction":
                 logError("ActingCommandError")
@@ -463,8 +510,11 @@ extension MAAViewModel {
                 logInfo("LabelsRefreshed")
 
             case "RecruitConfirm":
-                logInfo("RecruitConfirm")
-            // TODO: Track recruit confirmations and update the screenshot card.
+                if let logStore {
+                    logStore.recruitConfirmTimes += 1
+                    logInfo("RecruitConfirm \(logStore.recruitConfirmTimes)")
+                }
+            // TODO: Update the screenshot card.
 
             case "InfrastDormDoubleConfirmButton":
                 logError("InfrastDormDoubleConfirmed")
@@ -1303,13 +1353,22 @@ extension MAAViewModel {
         writeLog(color: .error, resource)
     }
 
+    func logError(_ resourceBuilder: () -> LocalizedStringResource) {
+        writeLog(color: .error, resourceBuilder())
+    }
+
     private func writeLog(color: MAALog.LogColor, _ resource: LocalizedStringResource) {
         let content = String(localized: resource)
         let entry = MAALog(date: Date(), content: content, color: color)
         logStore?.appendLog(entry)
     }
 
-    func taskID(coreID: Int32?) -> UUID? {
+    func dailyTask(coreID: Int32?) -> MAATask? {
+        guard let id = taskID(coreID: coreID) else { return nil }
+        return tasks[id]
+    }
+
+    private func taskID(coreID: Int32?) -> UUID? {
         if let coreID,
             let id = taskIDMap[coreID]
         {

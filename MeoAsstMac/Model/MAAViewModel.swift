@@ -254,6 +254,13 @@ extension MAAViewModel {
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
+
+        logStore?.screencapCost = nil
+        logStore?.lastScreencapWarningLevel = 0
+        logStore?.hasPrintedFPSHighTip = false
+        logStore?.taskStartTime = nil
+        logStore?.stoneUsedTimes = 0
+        logStore?.recruitConfirmTimes = 0
     }
 
     func screenshot() async throws -> NSImage {
@@ -474,6 +481,7 @@ extension MAAViewModel {
         }
 
         try await handle?.start()
+        logStore?.taskStartTime = .now
 
         status = .busy
     }

@@ -273,6 +273,7 @@
 
     },
     "AllTasksComplete" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -287,6 +288,20 @@
           }
         }
       }
+    },
+    "AllTasksComplete %@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务已全部完成！（用时%(duration)@）"
+          }
+        }
+      }
+    },
+    "AnnihilationStage" : {
+
     },
     "AP-5" : {
       "localizations" : {
@@ -695,6 +710,9 @@
       }
     },
     "CurTimes" : {
+
+    },
+    "CustomInfrastPlanIndexAutoSwitch" : {
 
     },
     "DeepExplorationCompleted" : {
@@ -1438,6 +1456,17 @@
         }
       }
     },
+    "MissingOperators" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "以下干员组内的干员均未拥有（每组只需其一）：\n%(groups)@\n“特别关注”可能影响干员识别，若实际已拥有，可移除“特别关注”后重试，或关闭“自动编队”手动补充；若确实未拥有，仅缺一组时可从“助战模式”中选择合适项目，缺两组以上请更换作业。"
+          }
+        }
+      }
+    },
     "MissionStart" : {
       "localizations" : {
         "ko" : {
@@ -1660,6 +1689,7 @@
       }
     },
     "RecruitConfirm" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1674,6 +1704,9 @@
           }
         }
       }
+    },
+    "RecruitConfirm %lld" : {
+
     },
     "RecruitingResults %@" : {
 
@@ -1919,7 +1952,7 @@
     "RoomOperators %@" : {
 
     },
-    "RoutingRestartTooManyBattles %@" : {
+    "RoutingRestartTooManyBattles %lld" : {
 
     },
     "Running" : {
