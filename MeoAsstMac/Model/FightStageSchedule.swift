@@ -100,7 +100,8 @@ struct FightStageSchedule: Sendable {
     func serverWeekday(_ server: Server, at date: Date) -> Int {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = server.timeZone
-        let serverDay = calendar.date(byAdding: .hour, value: -4, to: date)!
-        return calendar.component(.weekday, from: serverDay)
+        let weekday = calendar.component(.weekday, from: date)
+        guard calendar.component(.hour, from: date) < 4 else { return weekday }
+        return weekday == 1 ? 7 : weekday - 1
     }
 }

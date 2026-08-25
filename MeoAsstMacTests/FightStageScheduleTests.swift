@@ -67,6 +67,14 @@ final class FightStageScheduleTests: XCTestCase {
         }
     }
 
+    func testServerDayAtFourAcrossSpringDaylightSavingTransition() throws {
+        let before = try date("2026-03-08 03:59:59", timeZone: "America/Los_Angeles")
+        let boundary = try date("2026-03-08 04:00:00", timeZone: "America/Los_Angeles")
+
+        XCTAssertEqual(schedule.serverWeekday(.yoStarEN, at: before), 7)
+        XCTAssertEqual(schedule.serverWeekday(.yoStarEN, at: boundary), 1)
+    }
+
     func testPermanentStageBlocksFollowingStages() {
         XCTAssertTrue(schedule.blocksFollowingStages("1-7", activities: nil))
         XCTAssertTrue(schedule.blocksFollowingStages("Annihilation", activities: nil))
