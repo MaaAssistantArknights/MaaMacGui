@@ -38,6 +38,7 @@ import SwiftUI
     var isExecutingDailyQueue = false
     private var dailyQueueStopRequested = false
     private var stageAPCosts: [String: Int]?
+    var legacyStageDropItemIDsByName: [String: String]?
 
     @Published private(set) var status = Status.idle
 
@@ -589,8 +590,9 @@ extension MAAViewModel {
         for (offset, plan) in config.plans.enumerated() {
             guard !dailyQueueStopRequested else { break }
             let index = offset + 1
+            let stage = FightStageSchedule.normalizedStage(plan.stage)
 
-            guard !plan.stage.isEmpty else {
+            guard !stage.isEmpty else {
                 hadFailure = true
                 logError("库存保持计划 \(index) 未选择关卡，已跳过。")
                 continue
@@ -605,6 +607,11 @@ extension MAAViewModel {
                 logError("库存保持计划 \(index) 的目标库存必须大于 0，已跳过。")
                 continue
             }
+            guard let stageAPCost = apCost(for: stage) else {
+                hadFailure = true
+                logError("库存保持计划 \(index) 的关卡 \(stage) 无效或缺少理智消耗数据，已跳过。")
+                continue
+            }
 
             let current = depot?.count(of: plan.dropID) ?? 0
             let need = plan.target - current
@@ -615,31 +622,30 @@ extension MAAViewModel {
 
             guard
                 schedule.isOpen(
-                    plan.stage,
+                    stage,
                     server: clientChannel.fightStageServer,
                     activities: activities,
                     at: Date())
             else {
-                logInfo("库存保持计划 \(index) 的关卡 \(plan.stage) 今日未开放，已跳过。")
+                logInfo("库存保持计划 \(index) 的关卡 \(stage) 今日未开放，已跳过。")
                 continue
             }
 
             let medicine = config.enableMedicine && plan.useMedicine ? max(0, plan.medicineCount) : 0
             let stone = config.enableStone && plan.useStone ? max(0, plan.stoneCount) : 0
             if shouldSkipForInsufficientSanity(
-                stage: plan.stage,
+                cost: stageAPCost,
                 medicine: medicine,
                 stone: stone,
                 useExpiringMedicine: config.useExpiringMedicine)
             {
                 let estimated = estimatedSanity() ?? 0
-                let cost = apCost(for: plan.stage) ?? 0
-                logInfo("库存保持计划 \(index) 预估理智不足（\(estimated)/\(cost)），已跳过。")
+                logInfo("库存保持计划 \(index) 预估理智不足（\(estimated)/\(stageAPCost)），已跳过。")
                 continue
             }
 
             let params = DepotMaintainFightParameters(
-                stage: plan.stage,
+                stage: stage,
                 medicine: medicine,
                 medicineExpireDays: config.useExpiringMedicine ? 2 : 0,
                 stone: stone,
@@ -692,15 +698,14 @@ extension MAAViewModel {
     }
 
     private func shouldSkipForInsufficientSanity(
-        stage: String,
+        cost: Int,
         medicine: Int,
         stone: Int,
         useExpiringMedicine: Bool
     ) -> Bool {
         guard medicine <= 0, stone <= 0,
             !useExpiringMedicine || provenExhaustedMedicineDays >= 2,
-            let estimated = estimatedSanity(),
-            let cost = apCost(for: stage)
+            let estimated = estimatedSanity()
         else { return false }
         return estimated < cost
     }
@@ -708,7 +713,7 @@ extension MAAViewModel {
     private func estimatedSanity(at date: Date = Date()) -> Int? {
         guard let report = sanityReport else { return nil }
         let elapsed = max(0, date.timeIntervalSince(report.reportedAt))
-        let regeneration = report.current < report.maximum ? Int(ceil(elapsed / 360)) : 0
+        let regeneration = report.current < report.maximum ? Int(floor(elapsed / 360)) : 0
         return min(report.current + regeneration, report.maximum)
     }
 
@@ -727,10 +732,10 @@ extension MAAViewModel {
                 try? JSONDecoder().decode([StageRecord].self, from: $0)
             }
             stageAPCosts = Dictionary(
-                (records ?? []).map { ($0.code, $0.apCost) },
+                (records ?? []).map { (FightStageSchedule.normalizedStage($0.code), $0.apCost) },
                 uniquingKeysWith: { first, _ in first })
         }
-        return stageAPCosts?[stage]
+        return stageAPCosts?[FightStageSchedule.normalizedStage(stage)]
     }
 
     private var penguinServer: String {

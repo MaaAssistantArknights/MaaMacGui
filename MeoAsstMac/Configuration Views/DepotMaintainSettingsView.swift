@@ -250,21 +250,18 @@ struct DepotMaintainSettingsView: View {
         Binding {
             plan.wrappedValue.stage
         } set: { stage in
+            let stage = FightStageSchedule.normalizedStage(stage)
             plan.wrappedValue.stage = stage
             let dropID = plan.wrappedValue.dropID
-            if !dropID.isEmpty, stageDropIDs[normalizedStage(stage)]?.contains(dropID) != true {
+            if !dropID.isEmpty, stageDropIDs[stage]?.contains(dropID) != true {
                 plan.wrappedValue.dropID = ""
             }
         }
     }
 
     private func dropItems(for stage: String) -> [(id: String, name: String)] {
-        guard let allowedIDs = stageDropIDs[normalizedStage(stage)] else { return [] }
+        guard let allowedIDs = stageDropIDs[FightStageSchedule.normalizedStage(stage)] else { return [] }
         return dropItems.filter { allowedIDs.contains($0.id) }
-    }
-
-    private func normalizedStage(_ stage: String) -> String {
-        stage.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
     }
 
     private var stageChoices: [String] {
@@ -314,7 +311,7 @@ struct DepotMaintainSettingsView: View {
             let records = try JSONDecoder().decode([StageRecord].self, from: Data(contentsOf: url))
             var result = [String: Set<String>]()
             for record in records {
-                let stage = normalizedStage(record.code)
+                let stage = FightStageSchedule.normalizedStage(record.code)
                 result[stage, default: []].formUnion(record.dropInfos.map(\.itemId))
 
                 // stages.json does not list the fixed currencies from these resource stages.
@@ -326,7 +323,8 @@ struct DepotMaintainSettingsView: View {
             }
             stageDropIDs = result
             for index in config.plans.indices {
-                let stage = normalizedStage(config.plans[index].stage)
+                let stage = FightStageSchedule.normalizedStage(config.plans[index].stage)
+                config.plans[index].stage = stage
                 let dropID = config.plans[index].dropID
                 if let allowedIDs = result[stage], !dropID.isEmpty, !allowedIDs.contains(dropID) {
                     config.plans[index].dropID = ""

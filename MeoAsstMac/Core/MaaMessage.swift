@@ -374,8 +374,7 @@ extension MAAViewModel {
             var allDrops = [String]()
             var depotDrops = [(id: String, name: String, quantity: Int)]()
             for item in statistics {
-                guard let itemID = item["itemId"].string,
-                    let name = item["itemName"].string,
+                guard let name = item["itemName"].string,
                     let total = item["quantity"].int,
                     let addition = item["addQuantity"].int
                 else {
@@ -387,7 +386,10 @@ extension MAAViewModel {
                     drop += " (+\(addition))"
                 }
                 allDrops.append(drop)
-                depotDrops.append((itemID, name, addition))
+                let reportedItemID = item["itemId"].string.flatMap { $0.isEmpty ? nil : $0 }
+                if let itemID = reportedItemID ?? stageDropItemID(named: name) {
+                    depotDrops.append((itemID, name, addition))
+                }
             }
 
             if var depot {
@@ -573,6 +575,55 @@ extension MAAViewModel {
         default:
             break
         }
+    }
+
+    private func stageDropItemID(named name: String) -> String? {
+        if let itemID = depot?.itemID(named: name) {
+            return itemID
+        }
+        if legacyStageDropItemIDsByName == nil {
+            legacyStageDropItemIDsByName = loadStageDropItemIDsByName()
+        }
+        return legacyStageDropItemIDsByName?[name]
+    }
+
+    private func loadStageDropItemIDsByName() -> [String: String] {
+        struct ItemRecord: Decodable {
+            let name: String
+        }
+
+        let resourcePaths = [
+            clientChannel.isGlobal
+                ? "resource/global/\(clientChannel.rawValue)/resource/item_index.json"
+                : "resource/item_index.json",
+            "resource/item_index.json",
+            "resource/global/txwy/resource/item_index.json",
+            "resource/global/YoStarEN/resource/item_index.json",
+            "resource/global/YoStarJP/resource/item_index.json",
+            "resource/global/YoStarKR/resource/item_index.json",
+        ]
+        var roots = [URL]()
+        if let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+            roots.append(documents)
+        }
+        if let bundled = Bundle.main.resourceURL {
+            roots.append(bundled)
+        }
+
+        var result = [String: String]()
+        for root in roots {
+            for path in resourcePaths {
+                let url = root.appendingPathComponent(path)
+                guard let data = try? Data(contentsOf: url),
+                    let items = try? JSONDecoder().decode([String: ItemRecord].self, from: data)
+                else { continue }
+
+                for (itemID, item) in items where result[item.name] == nil {
+                    result[item.name] = itemID
+                }
+            }
+        }
+        return result
     }
 
     // MARK: Recruit Recoginition

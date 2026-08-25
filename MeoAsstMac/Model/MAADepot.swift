@@ -94,6 +94,10 @@ struct MAADepot: Codable {
         cachedInventory[itemID]
     }
 
+    func itemID(named name: String) -> String? {
+        arkplanner.object.items.first { $0.name == name }?.id
+    }
+
     mutating func addDrops(_ drops: [(id: String, name: String, quantity: Int)]) {
         for drop in drops where drop.quantity > 0 && Int(drop.id) != nil {
             let newCount = (cachedInventory[drop.id] ?? 0) + drop.quantity

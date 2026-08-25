@@ -41,7 +41,9 @@ struct FightStageSchedule: Sendable {
 
         init(resourceCollection: ActivityWindow? = nil, stageWindows: [String: ActivityWindow] = [:]) {
             self.resourceCollection = resourceCollection
-            self.stageWindows = stageWindows
+            self.stageWindows = Dictionary(
+                stageWindows.map { (FightStageSchedule.normalizedStage($0.key), $0.value) },
+                uniquingKeysWith: { first, _ in first })
         }
 
         func activeStageValues(at date: Date) -> [String] {
@@ -64,7 +66,12 @@ struct FightStageSchedule: Sendable {
         "PR-D-1": [1, 3, 4, 7], "PR-D-2": [1, 3, 4, 7],
     ]
 
+    static func normalizedStage(_ stage: String) -> String {
+        stage.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+    }
+
     func isOpen(_ stage: String, server: Server, activities: ActivityData?, at date: Date = Date()) -> Bool {
+        let stage = Self.normalizedStage(stage)
         if let window = activities?.stageWindows[stage] {
             return window.contains(date)
         }
