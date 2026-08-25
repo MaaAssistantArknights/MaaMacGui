@@ -163,7 +163,7 @@ struct PRTSPlusSearchView: View {
             List(filteredResults) { result in
                 PRTSPlusSearchResultRow(
                     result: result,
-                    ownedOperators: ownedOperators,
+                    match: result.match(ownedOperators: ownedOperators),
                     importing: importingIDs.contains(result.id),
                     imported: importedIDs.contains(result.id),
                     canAddToList: newModel.copilot.copilotSet != nil
@@ -311,15 +311,11 @@ struct PRTSPlusSearchView: View {
 
 private struct PRTSPlusSearchResultRow: View {
     let result: PRTSPlusSearchResult
-    let ownedOperators: [MAAOperBox.OwnedOper]?
+    let match: PRTSPlusSearchResult.RosterMatch
     let importing: Bool
     let imported: Bool
     let canAddToList: Bool
     let importCopilot: (Bool) -> Void
-
-    private var match: PRTSPlusSearchResult.RosterMatch {
-        result.match(ownedOperators: ownedOperators)
-    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 16) {
