@@ -16,8 +16,8 @@ struct PRTSPlusSearchResult: Identifiable, Hashable, Sendable {
     let hotScore: Double
     let minimumRequired: String?
     let difficulty: Int?
-    let operators: [PRTSPlusOperatorRequirement]
-    let groups: [PRTSPlusOperatorGroup]
+    let operators: [OperatorRequirement]
+    let groups: [OperatorGroup]
 
     var operatorCount: Int {
         operators.count + groups.count
@@ -31,7 +31,7 @@ struct PRTSPlusSearchResult: Identifiable, Hashable, Sendable {
             }
     }
 
-    func match(ownedOperators: [MAAOperBox.OwnedOper]?) -> PRTSPlusRosterMatch {
+    func match(ownedOperators: [MAAOperBox.OwnedOper]?) -> RosterMatch {
         guard let ownedOperators else {
             return .unknown
         }
@@ -41,7 +41,7 @@ struct PRTSPlusSearchResult: Identifiable, Hashable, Sendable {
         var groupSelections = [String: String]()
 
         for requirement in operators {
-            guard let owned = ownedByName[requirement.name], requirement.meetsKnownRequirements(owned) else {
+            guard let owned = ownedByName[requirement.name], requirement.meets(owned) else {
                 missingSlots.append(requirement.name)
                 continue
             }
@@ -49,8 +49,8 @@ struct PRTSPlusSearchResult: Identifiable, Hashable, Sendable {
 
         for group in groups {
             let matched = group.operators
-                .compactMap { requirement -> (PRTSPlusOperatorRequirement, MAAOperBox.OwnedOper)? in
-                    guard let owned = ownedByName[requirement.name], requirement.meetsKnownRequirements(owned) else {
+                .compactMap { requirement -> (OperatorRequirement, MAAOperBox.OwnedOper)? in
+                    guard let owned = ownedByName[requirement.name], requirement.meets(owned) else {
                         return nil
                     }
                     return (requirement, owned)
@@ -64,120 +64,93 @@ struct PRTSPlusSearchResult: Identifiable, Hashable, Sendable {
             }
         }
 
-        return PRTSPlusRosterMatch(
+        return RosterMatch(
             state: missingSlots.isEmpty ? .matched : .missing,
             missingSlots: missingSlots,
             groupSelections: groupSelections
         )
     }
-}
 
-struct PRTSPlusOperatorRequirement: Hashable, Sendable {
-    let name: String
-    let skill: Int?
-    let elite: Int?
-    let level: Int?
-    let skillLevel: Int?
-    let module: Int?
-    let moduleLevel: Int?
-    let potential: Int?
+    struct OperatorRequirement: CustomStringConvertible, Hashable, Sendable {
+        let name: String
+        let skill: Int?
+        let elite: Int?
+        let level: Int?
+        let skillLevel: Int?
+        let module: Int?
+        let moduleLevel: Int?
+        let potential: Int?
 
-    var summary: String {
-        var parts = [String]()
-        if let skill {
-            parts.append("S\(skill)")
-        }
-        if let elite, elite > 0 {
-            parts.append("精\(elite)")
-        }
-        if let level, level > 1 {
-            parts.append("Lv.\(level)")
-        }
-        if let skillLevel {
-            if skillLevel > 7 {
-                parts.append("专\(skillLevel - 7)")
-            } else if skillLevel > 1 {
-                parts.append("技能\(skillLevel)")
+        var summary: String {
+            var parts = [String]()
+            if let skill {
+                parts.append("S\(skill)")
             }
-        }
-        if let module, module > 0 {
-            if let moduleLevel, moduleLevel > 0 {
-                parts.append("模组\(module) Lv.\(moduleLevel)")
-            } else {
-                parts.append("模组\(module)")
+            if let elite, elite > 0 {
+                parts.append("精\(elite)")
             }
+            if let level, level > 1 {
+                parts.append("Lv.\(level)")
+            }
+            if let skillLevel {
+                if skillLevel > 7 {
+                    parts.append("专\(skillLevel - 7)")
+                } else if skillLevel > 1 {
+                    parts.append("技能\(skillLevel)")
+                }
+            }
+            if let module, module > 0 {
+                if let moduleLevel, moduleLevel > 0 {
+                    parts.append("模组\(module) Lv.\(moduleLevel)")
+                } else {
+                    parts.append("模组\(module)")
+                }
+            }
+            if let potential, potential > 1 {
+                parts.append("潜能\(potential)")
+            }
+            return parts.joined(separator: " ")
         }
-        if let potential, potential > 1 {
-            parts.append("潜能\(potential)")
-        }
-        return parts.joined(separator: " ")
-    }
 
-    var displayName: String {
-        summary.isEmpty ? name : "\(name) \(summary)"
-    }
-
-    fileprivate func meetsKnownRequirements(_ owned: MAAOperBox.OwnedOper) -> Bool {
-        if let elite, owned.elite < elite {
-            return false
+        var description: String {
+            summary.isEmpty ? name : "\(name) \(summary)"
         }
-        if let level, let elite {
-            if owned.elite == elite && owned.level < level {
+
+        fileprivate func meets(_ owned: MAAOperBox.OwnedOper) -> Bool {
+            if let elite, owned.elite < elite {
                 return false
             }
-        } else if let level, owned.level < level {
-            return false
+            if let level, let elite {
+                if owned.elite == elite && owned.level < level {
+                    return false
+                }
+            } else if let level, owned.level < level {
+                return false
+            }
+            if let potential, owned.potential < potential {
+                return false
+            }
+            return true
         }
-        if let potential, owned.potential < potential {
-            return false
-        }
-        return true
-    }
-}
-
-struct PRTSPlusOperatorGroup: Hashable, Sendable {
-    let name: String
-    let operators: [PRTSPlusOperatorRequirement]
-}
-
-struct PRTSPlusRosterMatch {
-    enum State: Int {
-        case matched
-        case unknown
-        case missing
     }
 
-    let state: State
-    let missingSlots: [String]
-    let groupSelections: [String: String]
+    struct OperatorGroup: Hashable, Sendable {
+        let name: String
+        let operators: [OperatorRequirement]
+    }
 
-    static let unknown = PRTSPlusRosterMatch(
-        state: .unknown,
-        missingSlots: [],
-        groupSelections: [:]
-    )
-}
-
-enum PRTSPlusSearchError: LocalizedError {
-    case emptyStage
-    case httpStatus(Int)
-    case invalidResponse
-    case server(String)
-    case incompatibleList
-
-    var errorDescription: String? {
-        switch self {
-        case .emptyStage:
-            String(localized: "请输入关卡代号")
-        case .httpStatus(let status):
-            String(localized: "PRTS.plus 请求失败（HTTP \(status)）")
-        case .invalidResponse:
-            String(localized: "PRTS.plus 返回了无法识别的数据")
-        case .server(let message):
-            message
-        case .incompatibleList:
-            String(localized: "当前作业与已激活的作业列表类型不一致")
+    struct RosterMatch {
+        enum State: Int {
+            case matched
+            case unknown
+            case missing
         }
+
+        let state: State
+        let missingSlots: [String]
+        let groupSelections: [String: String]
+
+        static let unknown = RosterMatch(state: .unknown, missingSlots: [], groupSelections: [:])
     }
 }
 
@@ -185,10 +158,33 @@ enum PRTSPlusSearchClient {
     private static let endpoint = URL(string: "https://prts.maa.plus/copilot/query")!
     private static let pageSize = 50
 
+    enum Error: LocalizedError {
+        case emptyStage
+        case httpStatus(Int)
+        case invalidResponse
+        case server(String)
+        case incompatibleList
+
+        var errorDescription: String? {
+            switch self {
+            case .emptyStage:
+                String(localized: "请输入关卡代号")
+            case .httpStatus(let status):
+                String(localized: "PRTS.plus 请求失败（HTTP \(status)）")
+            case .invalidResponse:
+                String(localized: "PRTS.plus 返回了无法识别的数据")
+            case .server(let message):
+                message
+            case .incompatibleList:
+                String(localized: "当前作业与已激活的作业列表类型不一致")
+            }
+        }
+    }
+
     static func search(stage input: String) async throws -> [PRTSPlusSearchResult] {
         let stage = input.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !stage.isEmpty else {
-            throw PRTSPlusSearchError.emptyStage
+            throw Error.emptyStage
         }
 
         let stageNames = resolveStageNames(stage)
@@ -204,7 +200,7 @@ enum PRTSPlusSearchClient {
                 for summary in response.data where seenIDs.insert(summary.id).inserted {
                     summaries.append(summary)
                 }
-                guard response.hasNext, !response.data.isEmpty, fetchedCount < response.total else { break }
+                guard response.has_next, !response.data.isEmpty, fetchedCount < response.total else { break }
                 page += 1
             }
         }
@@ -218,8 +214,8 @@ enum PRTSPlusSearchClient {
                 return nil
             }
 
-            let title = content.doc?.title ?? content.stageName
-            let matchesStageName = normalizedStageNames.contains(content.stageName.lowercased())
+            let title = content.doc?.title ?? content.stage_name
+            let matchesStageName = normalizedStageNames.contains(content.stage_name.lowercased())
             let matchesVisibleCode =
                 title.caseInsensitiveCompare(stage) == .orderedSame
                 || title.lowercased().hasPrefix(stage.lowercased() + " ")
@@ -227,18 +223,18 @@ enum PRTSPlusSearchClient {
 
             return PRTSPlusSearchResult(
                 id: summary.id,
-                stageName: content.stageName,
+                stageName: content.stage_name,
                 title: title,
                 details: content.doc?.details,
                 uploader: summary.uploader,
                 views: summary.views,
-                likes: summary.likes,
-                hotScore: summary.hotScore ?? 0,
-                minimumRequired: content.minimumRequired,
+                likes: summary.like,
+                hotScore: summary.hot_score ?? 0,
+                minimumRequired: content.minimum_required,
                 difficulty: content.difficulty,
                 operators: (content.opers ?? []).map(\.searchRequirement),
                 groups: (content.groups ?? []).map { group in
-                    PRTSPlusOperatorGroup(
+                    PRTSPlusSearchResult.OperatorGroup(
                         name: group.name,
                         operators: group.opers.map(\.searchRequirement)
                     )
@@ -273,20 +269,20 @@ enum PRTSPlusSearchClient {
         request.timeoutInterval = 20
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let response = response as? HTTPURLResponse else {
-            throw PRTSPlusSearchError.invalidResponse
+            throw Error.invalidResponse
         }
         guard (200..<300).contains(response.statusCode) else {
-            throw PRTSPlusSearchError.httpStatus(response.statusCode)
+            throw Error.httpStatus(response.statusCode)
         }
 
         let payload: QueryResponse
         do {
             payload = try JSONDecoder().decode(QueryResponse.self, from: data)
         } catch {
-            throw PRTSPlusSearchError.invalidResponse
+            throw Error.invalidResponse
         }
-        guard payload.statusCode == 200, let queryData = payload.data else {
-            throw PRTSPlusSearchError.server(payload.message ?? String(localized: "搜索作业失败"))
+        guard payload.status_code == 200, let queryData = payload.data else {
+            throw Error.server(payload.message ?? String(localized: "搜索作业失败"))
         }
         return queryData
     }
@@ -320,27 +316,15 @@ enum PRTSPlusSearchClient {
 
 extension PRTSPlusSearchClient {
     fileprivate struct QueryResponse: Decodable {
-        let statusCode: Int?
+        let status_code: Int?
         let message: String?
         let data: QueryData?
-
-        enum CodingKeys: String, CodingKey {
-            case statusCode = "status_code"
-            case message
-            case data
-        }
     }
 
     fileprivate struct QueryData: Decodable {
         let data: [Summary]
-        let hasNext: Bool
+        let has_next: Bool
         let total: Int
-
-        enum CodingKeys: String, CodingKey {
-            case data
-            case hasNext = "has_next"
-            case total
-        }
     }
 
     fileprivate struct Summary: Decodable {
@@ -348,39 +332,19 @@ extension PRTSPlusSearchClient {
         let type: String
         let uploader: String
         let views: Int
-        let hotScore: Double?
+        let hot_score: Double?
         let available: Bool
         let content: String
-        let likes: Int
-
-        enum CodingKeys: String, CodingKey {
-            case id
-            case type
-            case uploader
-            case views
-            case hotScore = "hot_score"
-            case available
-            case content
-            case likes = "like"
-        }
+        let like: Int
     }
 
     fileprivate struct Content: Decodable {
-        let stageName: String
+        let stage_name: String
         let doc: Documentation?
         let opers: [Operator]?
         let groups: [Group]?
-        let minimumRequired: String?
+        let minimum_required: String?
         let difficulty: Int?
-
-        enum CodingKeys: String, CodingKey {
-            case stageName = "stage_name"
-            case doc
-            case opers
-            case groups
-            case minimumRequired = "minimum_required"
-            case difficulty
-        }
 
         struct Documentation: Decodable {
             let title: String?
@@ -395,30 +359,21 @@ extension PRTSPlusSearchClient {
             struct Requirements: Decodable {
                 let elite: Int?
                 let level: Int?
-                let skillLevel: Int?
+                let skill_level: Int?
                 let module: Int?
-                let moduleLevel: Int?
+                let module_level: Int?
                 let potential: Int?
-
-                enum CodingKeys: String, CodingKey {
-                    case elite
-                    case level
-                    case skillLevel = "skill_level"
-                    case module
-                    case moduleLevel = "module_level"
-                    case potential
-                }
             }
 
-            var searchRequirement: PRTSPlusOperatorRequirement {
-                PRTSPlusOperatorRequirement(
+            var searchRequirement: PRTSPlusSearchResult.OperatorRequirement {
+                PRTSPlusSearchResult.OperatorRequirement(
                     name: name,
                     skill: skill,
                     elite: requirements?.elite,
                     level: requirements?.level,
-                    skillLevel: requirements?.skillLevel,
+                    skillLevel: requirements?.skill_level,
                     module: requirements?.module,
-                    moduleLevel: requirements?.moduleLevel,
+                    moduleLevel: requirements?.module_level,
                     potential: requirements?.potential
                 )
             }

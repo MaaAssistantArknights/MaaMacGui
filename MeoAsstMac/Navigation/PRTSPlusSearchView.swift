@@ -78,7 +78,7 @@ struct PRTSPlusSearchView: View {
                     .frame(minWidth: 180, maxWidth: .infinity)
 
                 Picker("干员条件", selection: $operatorQueryMode) {
-                    ForEach(OperatorQueryMode.allCases) { mode in
+                    ForEach(OperatorQueryMode.allCases, id: \.self) { mode in
                         Text(mode.title).tag(mode)
                     }
                 }
@@ -86,7 +86,7 @@ struct PRTSPlusSearchView: View {
                 .fixedSize()
 
                 Picker("匹配", selection: $matchFilter) {
-                    ForEach(MatchFilter.allCases) { filter in
+                    ForEach(MatchFilter.allCases, id: \.self) { filter in
                         Text(filter.title).tag(filter)
                     }
                 }
@@ -98,7 +98,7 @@ struct PRTSPlusSearchView: View {
 
             HStack(spacing: 12) {
                 Picker("编队位", selection: $squadFilter) {
-                    ForEach(SquadFilter.allCases) { filter in
+                    ForEach(SquadFilter.allCases, id: \.self) { filter in
                         Text(filter.title).tag(filter)
                     }
                 }
@@ -106,7 +106,7 @@ struct PRTSPlusSearchView: View {
                 .fixedSize()
 
                 Picker("排序", selection: $sortOrder) {
-                    ForEach(SortOrder.allCases) { order in
+                    ForEach(SortOrder.allCases, id: \.self) { order in
                         Text(order.title).tag(order)
                     }
                 }
@@ -161,166 +161,17 @@ struct PRTSPlusSearchView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             List(filteredResults) { result in
-                resultRow(result)
+                PRTSPlusSearchResultRow(
+                    result: result,
+                    ownedOperators: ownedOperators,
+                    importing: importingIDs.contains(result.id),
+                    imported: importedIDs.contains(result.id),
+                    canAddToList: newModel.copilot.copilotSet != nil
+                ) {
+                    importCopilot(result, addToList: $0)
+                }
             }
             .listStyle(.inset)
-        }
-    }
-
-    @ViewBuilder private func resultRow(_ result: PRTSPlusSearchResult) -> some View {
-        let match = result.match(ownedOperators: ownedOperators)
-
-        HStack(alignment: .top, spacing: 16) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(alignment: .firstTextBaseline, spacing: 12) {
-                    Text(result.title)
-                        .font(.headline)
-                        .lineLimit(2)
-                    Spacer(minLength: 8)
-                    matchStatus(match)
-                }
-
-                metadata(for: result)
-
-                if !result.operators.isEmpty {
-                    requirementLine(
-                        title: "固定干员",
-                        systemImage: "person.2.fill",
-                        text: result.operators.map(\.displayName).joined(separator: " · ")
-                    )
-                }
-
-                ForEach(result.groups, id: \.name) { group in
-                    groupLine(group, match: match)
-                }
-
-                if match.state == .missing {
-                    Label("缺少：\(match.missingSlots.joined(separator: "、"))", systemImage: "exclamationmark.circle")
-                        .font(.caption)
-                        .foregroundStyle(.orange)
-                        .textSelection(.enabled)
-                }
-
-                if let details = result.details, !details.isEmpty {
-                    Text(details)
-                        .font(.callout)
-                        .foregroundStyle(.secondary)
-                        .lineLimit(2)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            importControls(for: result)
-        }
-        .padding(.vertical, 6)
-    }
-
-    private func metadata(for result: PRTSPlusSearchResult) -> some View {
-        HStack(spacing: 12) {
-            Label {
-                Text(verbatim: result.uploader)
-            } icon: {
-                Image(systemName: "person")
-            }
-            Label("\(result.operatorCount) 位", systemImage: "person.2")
-            Label {
-                Text(verbatim: String(result.likes))
-            } icon: {
-                Image(systemName: "hand.thumbsup")
-            }
-            Label {
-                Text(verbatim: String(result.views))
-            } icon: {
-                Image(systemName: "eye")
-            }
-            if let difficulty = result.difficulty {
-                Label("难度 \(difficulty)", systemImage: "gauge.with.dots.needle.33percent")
-            }
-            if let version = result.minimumRequired, !version.isEmpty {
-                Label(version, systemImage: "shippingbox")
-            }
-            Text(verbatim: "#\(result.id)")
-        }
-        .font(.caption)
-        .foregroundStyle(.secondary)
-        .lineLimit(1)
-        .help(result.stageName)
-    }
-
-    private func requirementLine(title: String, systemImage: String, text: String) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 7) {
-            Label(title, systemImage: systemImage)
-                .foregroundStyle(.secondary)
-                .frame(width: 82, alignment: .leading)
-            Text(text)
-                .textSelection(.enabled)
-        }
-        .font(.caption)
-    }
-
-    private func groupLine(_ group: PRTSPlusOperatorGroup, match: PRTSPlusRosterMatch) -> some View {
-        let text: String
-        if let selectedName = match.groupSelections[group.name],
-            let selected = group.operators.first(where: { $0.name == selectedName })
-        {
-            text = selected.displayName
-        } else {
-            let visible = group.operators.prefix(3).map(\.displayName).joined(separator: "、")
-            let remaining = group.operators.count - min(group.operators.count, 3)
-            text = remaining > 0 ? "\(visible) 等 \(group.operators.count) 名" : visible
-        }
-
-        return requirementLine(
-            title: group.name,
-            systemImage: match.groupSelections[group.name] == nil ? "person.2.badge.questionmark" : "checkmark.circle",
-            text: text
-        )
-        .help(group.operators.map(\.displayName).joined(separator: "\n"))
-    }
-
-    @ViewBuilder private func matchStatus(_ match: PRTSPlusRosterMatch) -> some View {
-        switch match.state {
-        case .matched:
-            Label("干员齐全", systemImage: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-        case .missing:
-            Label("缺 \(match.missingSlots.count) 项", systemImage: "exclamationmark.circle.fill")
-                .foregroundStyle(.orange)
-        case .unknown:
-            Label("未匹配", systemImage: "circle.dashed")
-                .foregroundStyle(.secondary)
-        }
-    }
-
-    @ViewBuilder private func importControls(for result: PRTSPlusSearchResult) -> some View {
-        if importingIDs.contains(result.id) {
-            ProgressView()
-                .controlSize(.small)
-                .frame(width: 92, height: 56)
-        } else if importedIDs.contains(result.id) {
-            Label("已导入", systemImage: "checkmark.circle.fill")
-                .foregroundStyle(.green)
-                .frame(width: 92, height: 56)
-        } else {
-            VStack(alignment: .trailing) {
-                Button {
-                    importCopilot(result, addToList: false)
-                } label: {
-                    Label("下载", systemImage: "arrow.down.doc")
-                }
-                Button {
-                    importCopilot(result, addToList: true)
-                } label: {
-                    Label("加入列表", systemImage: "text.badge.plus")
-                }
-                .disabled(newModel.copilot.copilotSet == nil)
-                .help(
-                    newModel.copilot.copilotSet == nil
-                        ? "需要先激活一个作业集"
-                        : "加入列表"
-                )
-            }
-            .frame(width: 92)
         }
     }
 
@@ -443,7 +294,7 @@ struct PRTSPlusSearchView: View {
                 let url = try await MAACopilot.download(id: result.id, toDirectory: .externalCopilotDirectory)
                 if addToList {
                     guard await newModel.copilot.appendCopilot(at: url) else {
-                        throw PRTSPlusSearchError.incompatibleList
+                        throw PRTSPlusSearchClient.Error.incompatibleList
                     }
                 } else {
                     newModel.lastImportedCopilot = url
@@ -456,12 +307,175 @@ struct PRTSPlusSearchView: View {
     }
 }
 
+// MARK: - SearchResultRow
+
+private struct PRTSPlusSearchResultRow: View {
+    let result: PRTSPlusSearchResult
+    let ownedOperators: [MAAOperBox.OwnedOper]?
+    let importing: Bool
+    let imported: Bool
+    let canAddToList: Bool
+    let importCopilot: (Bool) -> Void
+
+    private var match: PRTSPlusSearchResult.RosterMatch {
+        result.match(ownedOperators: ownedOperators)
+    }
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 16) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .firstTextBaseline, spacing: 12) {
+                    Text(result.title)
+                        .font(.headline)
+                        .lineLimit(2)
+                    Spacer(minLength: 8)
+                    matchStatus
+                }
+
+                metadata
+
+                if !result.operators.isEmpty {
+                    requirementLine(
+                        title: "固定干员",
+                        systemImage: "person.2.fill",
+                        text: result.operators.map(\.description).joined(separator: " · "))
+                }
+
+                ForEach(result.groups, id: \.name) { group in
+                    groupLine(group)
+                }
+
+                if match.state == .missing {
+                    Label("缺少：\(match.missingSlots.joined(separator: "、"))", systemImage: "exclamationmark.circle")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                        .textSelection(.enabled)
+                }
+
+                if let details = result.details, !details.isEmpty {
+                    Text(details)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .lineLimit(2)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            importControls
+        }
+        .padding(.vertical, 6)
+    }
+
+    private var metadata: some View {
+        HStack(spacing: 12) {
+            Label {
+                Text(verbatim: result.uploader)
+            } icon: {
+                Image(systemName: "person")
+            }
+            Label("\(result.operatorCount) 位", systemImage: "person.2")
+            Label {
+                Text(verbatim: String(result.likes))
+            } icon: {
+                Image(systemName: "hand.thumbsup")
+            }
+            Label {
+                Text(verbatim: String(result.views))
+            } icon: {
+                Image(systemName: "eye")
+            }
+            if let difficulty = result.difficulty {
+                Label("难度 \(difficulty)", systemImage: "gauge.with.dots.needle.33percent")
+            }
+            if let version = result.minimumRequired, !version.isEmpty {
+                Label(version, systemImage: "shippingbox")
+            }
+            Text(verbatim: "#\(result.id)")
+        }
+        .font(.caption)
+        .foregroundStyle(.secondary)
+        .lineLimit(1)
+        .help(result.stageName)
+    }
+
+    private func requirementLine(title: String, systemImage: String, text: String) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 7) {
+            Label(title, systemImage: systemImage)
+                .foregroundStyle(.secondary)
+                .frame(width: 82, alignment: .leading)
+            Text(text)
+                .textSelection(.enabled)
+        }
+        .font(.caption)
+    }
+
+    private func groupLine(_ group: PRTSPlusSearchResult.OperatorGroup) -> some View {
+        let text: String
+        if let selectedName = match.groupSelections[group.name],
+            let selected = group.operators.first(where: { $0.name == selectedName })
+        {
+            text = selected.description
+        } else {
+            let visible = group.operators.prefix(3).map(\.description).joined(separator: "、")
+            let remaining = group.operators.count - min(group.operators.count, 3)
+            text = remaining > 0 ? "\(visible) 等 \(group.operators.count) 名" : visible
+        }
+
+        return requirementLine(
+            title: group.name,
+            systemImage: match.groupSelections[group.name] == nil ? "person.2.badge.questionmark" : "checkmark.circle",
+            text: text
+        )
+        .help(group.operators.map(\.description).joined(separator: "\n"))
+    }
+
+    @ViewBuilder private var matchStatus: some View {
+        switch match.state {
+        case .matched:
+            Label("干员齐全", systemImage: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+        case .missing:
+            Label("缺 \(match.missingSlots.count) 项", systemImage: "exclamationmark.circle.fill")
+                .foregroundStyle(.orange)
+        case .unknown:
+            Label("未匹配", systemImage: "circle.dashed")
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    @ViewBuilder private var importControls: some View {
+        if importing {
+            ProgressView()
+                .controlSize(.small)
+                .frame(width: 92, height: 56)
+        } else if imported {
+            Label("已导入", systemImage: "checkmark.circle.fill")
+                .foregroundStyle(.green)
+                .frame(width: 92, height: 56)
+        } else {
+            VStack(alignment: .trailing) {
+                Button {
+                    importCopilot(false)
+                } label: {
+                    Label("下载", systemImage: "arrow.down.doc")
+                }
+                Button {
+                    importCopilot(true)
+                } label: {
+                    Label("加入列表", systemImage: "text.badge.plus")
+                }
+                .disabled(!canAddToList)
+                .help(canAddToList ? "加入列表" : "需要先激活一个作业集")
+            }
+            .frame(width: 92)
+        }
+    }
+}
+
 extension PRTSPlusSearchView {
-    fileprivate enum OperatorQueryMode: CaseIterable, Identifiable {
+    fileprivate enum OperatorQueryMode: CaseIterable {
         case all
         case any
-
-        var id: Self { self }
 
         var title: String {
             switch self {
@@ -471,12 +485,10 @@ extension PRTSPlusSearchView {
         }
     }
 
-    fileprivate enum MatchFilter: CaseIterable, Identifiable {
+    fileprivate enum MatchFilter: CaseIterable {
         case all
         case matched
         case missing
-
-        var id: Self { self }
 
         var title: String {
             switch self {
@@ -487,13 +499,11 @@ extension PRTSPlusSearchView {
         }
     }
 
-    fileprivate enum SquadFilter: CaseIterable, Identifiable {
+    fileprivate enum SquadFilter: CaseIterable {
         case all
         case upToThree
         case upToSix
         case upToTwelve
-
-        var id: Self { self }
 
         var maximum: Int? {
             switch self {
@@ -514,13 +524,11 @@ extension PRTSPlusSearchView {
         }
     }
 
-    fileprivate enum SortOrder: CaseIterable, Identifiable {
+    fileprivate enum SortOrder: CaseIterable {
         case recommended
         case hot
         case likes
         case fewestOperators
-
-        var id: Self { self }
 
         var title: String {
             switch self {
