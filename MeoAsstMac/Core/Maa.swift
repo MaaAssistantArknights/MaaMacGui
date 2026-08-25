@@ -270,20 +270,14 @@ struct MAAStageActivity: Decodable, Hashable {
     let sideStoryStage: [String: SideStory]?
 
     struct TimedActivity: Decodable, Hashable {
-        private let utcStartTime: String
-        private let utcExpireTime: String
-        private let timeZoneOffset: Double
-
-        private enum CodingKeys: String, CodingKey {
-            case utcStartTime = "UtcStartTime"
-            case utcExpireTime = "UtcExpireTime"
-            case timeZoneOffset = "TimeZone"
-        }
+        private let UtcStartTime: String
+        private let UtcExpireTime: String
+        private let TimeZone: Double
 
         var window: FightStageSchedule.ActivityWindow? {
             guard let parser = dateParser,
-                let start = try? parser.parse(utcStartTime),
-                let expire = try? parser.parse(utcExpireTime)
+                let start = try? parser.parse(UtcStartTime),
+                let expire = try? parser.parse(UtcExpireTime)
             else {
                 return nil
             }
@@ -291,25 +285,16 @@ struct MAAStageActivity: Decodable, Hashable {
         }
 
         private var dateParser: Date.ParseStrategy? {
-            .maaActivity(timeZone: timeZoneOffset)
+            .maaActivity(timeZone: TimeZone)
         }
     }
 
     struct SideStory: Decodable, Hashable {
-        let activity: TimedActivity
-        let stages: [Stage]
-
-        private enum CodingKeys: String, CodingKey {
-            case activity = "Activity"
-            case stages = "Stages"
-        }
+        let Activity: TimedActivity
+        let Stages: [Stage]
 
         struct Stage: Decodable, Hashable {
-            let value: String
-
-            private enum CodingKeys: String, CodingKey {
-                case value = "Value"
-            }
+            let Value: String
         }
     }
 
@@ -354,9 +339,9 @@ extension MAAStageActivity {
         var stageWindows = [String: FightStageSchedule.ActivityWindow]()
         if let sideStoryStage {
             for sideStory in sideStoryStage.values {
-                guard let window = sideStory.activity.window else { continue }
-                for stage in sideStory.stages {
-                    stageWindows[stage.value] = window
+                guard let window = sideStory.Activity.window else { continue }
+                for stage in sideStory.Stages {
+                    stageWindows[stage.Value] = window
                 }
             }
         }

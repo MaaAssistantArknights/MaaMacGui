@@ -470,24 +470,16 @@ extension MAAViewModel {
             guard task.enabled else { continue }
 
             let taskToAppend: MAATask
-            if case .fight(let config) = task.task {
-                let selectedStage =
-                    config.useOptionalStage
-                    ? schedule.firstOpenStage(
-                        in: config.stagePlan,
-                        server: clientChannel.fightStageServer,
-                        activities: activities,
-                        at: now)
-                    : config.stage
-                let resolved = config.resolvedForExecution(
+            if case .fight(var config) = task.task {
+                if !config.resolveStage(
                     schedule: schedule,
                     server: clientChannel.fightStageServer,
                     activities: activities,
                     at: now)
-                if config.useOptionalStage && selectedStage == nil {
+                {
                     logWarn("备选关卡均未开放，跳过理智作战任务")
                 }
-                taskToAppend = .fight(resolved)
+                taskToAppend = .fight(config)
             } else {
                 taskToAppend = task.task
             }

@@ -13,7 +13,6 @@ struct FightSettingsView: View {
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
-    @State private var selectedPlanIndex: Int?
 
     var body: some View {
         Form {
@@ -29,7 +28,11 @@ struct FightSettingsView: View {
                     }
 
                 if config.useOptionalStage {
-                    stagePlanEditor
+                    StagePlanEditor(
+                        stages: $config.stagePlan,
+                        server: viewModel.clientChannel.fightStageServer,
+                        activities: scheduleActivities,
+                        choices: stageChoices)
                 } else {
                     HStack(spacing: 20) {
                         if useCustomStage || stageNotListed {
@@ -222,16 +225,11 @@ struct FightSettingsView: View {
         }
     }
 
-    private var stageNotListed: Bool { !listedStages.contains(config.stage) }
-    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
-
-    private struct StageChoice: Identifiable {
-        let value: String
-        let title: String
-        var id: String { value }
+    private var stageNotListed: Bool {
+        !baseStageChoices.contains { $0.value == config.stage }
     }
 
-    private var baseStageChoices: [StageChoice] {
+    private var baseStageChoices: [FightStageChoice] {
         [
             .init(value: "", title: String(localized: "当前/上次")),
             .init(value: "1-7", title: "1-7"),
@@ -244,13 +242,13 @@ struct FightSettingsView: View {
         ]
     }
 
-    private var stageChoices: [StageChoice] {
+    private var stageChoices: [FightStageChoice] {
         let known = Set(baseStageChoices.map(\.value))
         let activities = viewModel.stageActivity?.fightScheduleData
         let activityChoices =
             activities?.activeStageValues(at: Date())
             .filter { !known.contains($0) }
-            .map { StageChoice(value: $0, title: $0) } ?? []
+            .map { FightStageChoice(value: $0, title: $0) } ?? []
         return baseStageChoices + activityChoices
     }
 
@@ -258,81 +256,110 @@ struct FightSettingsView: View {
         viewModel.stageActivity?.fightScheduleData
     }
 
-    @ViewBuilder private var stagePlanEditor: some View {
-        let schedule = FightStageSchedule()
-        List(selection: $selectedPlanIndex) {
-            ForEach(config.stagePlan.indices, id: \.self) { index in
-                let stage = config.stagePlan[index]
-                let isOpen = schedule.isOpen(
-                    stage,
-                    server: viewModel.clientChannel.fightStageServer,
-                    activities: scheduleActivities)
-                HStack(spacing: 8) {
-                    Text("\(index + 1)")
-                        .monospacedDigit()
-                        .foregroundStyle(.secondary)
-                        .frame(width: 20, alignment: .trailing)
-                    TextField("当前/上次", text: $config.stagePlan[index])
-                    Menu {
-                        ForEach(stageChoices) { choice in
-                            Button(choice.title) {
-                                config.stagePlan[index] = choice.value
-                            }
-                        }
-                    } label: {
-                        Image(systemName: "list.bullet")
-                    }
-                    .menuStyle(.borderlessButton)
-                    .help("选择关卡")
-
-                    Image(systemName: isOpen ? "checkmark.circle.fill" : "clock.fill")
-                        .foregroundStyle(isOpen ? .green : .orange)
-                        .help(isOpen ? "今天开放" : "今天不开放")
-
-                    if index < config.stagePlan.count - 1,
-                        schedule.blocksFollowingStages(stage, activities: scheduleActivities)
-                    {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .foregroundStyle(.yellow)
-                            .help("该常驻关卡会使后续备选关卡无法执行")
-                    }
-                }
-                .tag(index)
-            }
-            .onMove { source, destination in
-                config.stagePlan.move(fromOffsets: source, toOffset: destination)
-                selectedPlanIndex = nil
-            }
-        }
-        .frame(height: min(max(CGFloat(config.stagePlan.count) * 34 + 8, 76), 190))
-
-        HStack(spacing: 14) {
-            Button {
-                config.stagePlan.append("")
-                selectedPlanIndex = config.stagePlan.count - 1
-            } label: {
-                Image(systemName: "plus")
-            }
-            .buttonStyle(.plain)
-            .help("添加备选关卡")
-
-            Button {
-                guard let selectedPlanIndex, config.stagePlan.indices.contains(selectedPlanIndex) else { return }
-                config.stagePlan.remove(at: selectedPlanIndex)
-                self.selectedPlanIndex = config.stagePlan.indices.last
-            } label: {
-                Image(systemName: "trash")
-            }
-            .buttonStyle(.plain)
-            .help("删除备选关卡")
-            .disabled(config.stagePlan.count <= 1 || selectedPlanIndex == nil)
-        }
-    }
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         FightSettingsView(config: .constant(.init()))
             .environmentObject(MAAViewModel())
+    }
+}
+
+private struct FightStageChoice: Identifiable {
+    let value: String
+    let title: String
+    var id: String { value }
+}
+
+// MARK: - StagePlanEditor
+
+private struct StagePlanEditor: View {
+    @Environment(\.defaultMinListRowHeight) private var rowHeight
+
+    @Binding var stages: [String]
+    let server: FightStageSchedule.Server
+    let activities: FightStageSchedule.ActivityData?
+    let choices: [FightStageChoice]
+
+    @State private var selection: Int?
+
+    private let schedule = FightStageSchedule()
+
+    var body: some View {
+        List(selection: $selection) {
+            ForEach(stages.indices, id: \.self) { index in
+                stageRow(at: index)
+                    .tag(index)
+            }
+            .onMove(perform: moveStage)
+        }
+        .frame(height: min(max(CGFloat(stages.count + 1) * rowHeight, 2 * rowHeight), 6 * rowHeight))
+
+        HStack {
+            Button(action: addStage) {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(.plain)
+            .help("添加备选关卡")
+
+            Button(action: deleteStage) {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.plain)
+            .help("删除备选关卡")
+            .disabled(stages.count <= 1 || selection == nil)
+        }
+    }
+
+    private func stageRow(at index: Int) -> some View {
+        let stage = stages[index]
+        let isOpen = schedule.isOpen(stage, server: server, activities: activities)
+
+        return HStack(spacing: 8) {
+            Text("\(index + 1)")
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .frame(width: 20, alignment: .trailing)
+            TextField("当前/上次", text: $stages[index])
+            Menu {
+                ForEach(choices) { choice in
+                    Button(choice.title) {
+                        stages[index] = choice.value
+                    }
+                }
+            } label: {
+                Image(systemName: "list.bullet")
+            }
+            .menuStyle(.borderlessButton)
+            .help("选择关卡")
+
+            Image(systemName: isOpen ? "checkmark.circle.fill" : "clock.fill")
+                .foregroundStyle(isOpen ? .green : .orange)
+                .help(isOpen ? "今天开放" : "今天不开放")
+
+            if index < stages.count - 1,
+                schedule.blocksFollowingStages(stage, activities: activities)
+            {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.yellow)
+                    .help("该常驻关卡会使后续备选关卡无法执行")
+            }
+        }
+    }
+
+    private func moveStage(source: IndexSet, destination: Int) {
+        stages.move(fromOffsets: source, toOffset: destination)
+        selection = nil
+    }
+
+    private func addStage() {
+        stages.append("")
+        selection = stages.count - 1
+    }
+
+    private func deleteStage() {
+        guard let selection, stages.indices.contains(selection) else { return }
+        stages.remove(at: selection)
+        self.selection = stages.indices.last
     }
 }

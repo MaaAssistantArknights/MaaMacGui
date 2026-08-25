@@ -66,67 +66,53 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    struct CoreParams: Encodable, Sendable {
+    struct Params: Encodable, Sendable {
         var stage: String
         var medicine: Int?
-        var expiringMedicine: Int?
+        var expiring_medicine: Int?
         var stone: Int?
         var times: Int?
         var series: Int?
         var drops: [String: Int]?
-        var reportToPenguin: Bool
-        var penguinID: String
+        var report_to_penguin: Bool
+        var penguin_id: String
         var server: String
-        var clientType: String
-        var drGrandet: Bool
-
-        private enum CodingKeys: String, CodingKey {
-            case stage, medicine, stone, times, series, drops, server
-            case expiringMedicine = "expiring_medicine"
-            case reportToPenguin = "report_to_penguin"
-            case penguinID = "penguin_id"
-            case clientType = "client_type"
-            case drGrandet = "DrGrandet"
-        }
+        var client_type: String
+        var DrGrandet: Bool
     }
 
-    typealias Params = CoreParams
-
-    var params: CoreParams {
-        CoreParams(
+    var params: Params {
+        Params(
             stage: stage,
             medicine: medicine,
-            expiringMedicine: expiring_medicine,
+            expiring_medicine: expiring_medicine,
             stone: stone,
             times: times,
             series: series,
             drops: drops,
-            reportToPenguin: report_to_penguin,
-            penguinID: penguin_id,
+            report_to_penguin: report_to_penguin,
+            penguin_id: penguin_id,
             server: server,
-            clientType: client_type,
-            drGrandet: DrGrandet)
+            client_type: client_type,
+            DrGrandet: DrGrandet)
     }
 
-    func resolvedForExecution(
+    mutating func resolveStage(
         schedule: FightStageSchedule,
         server: FightStageSchedule.Server,
         activities: FightStageSchedule.ActivityData?,
         at date: Date = Date()
-    ) -> Self {
-        guard useOptionalStage else { return self }
-
-        var resolved = self
-        resolved.useOptionalStage = false
-        if let selected = schedule.firstOpenStage(
+    ) -> Bool {
+        guard useOptionalStage else { return true }
+        guard let stage = schedule.firstOpenStage(
             in: stagePlan, server: server, activities: activities, at: date)
-        {
-            resolved.stage = selected
-        } else {
-            resolved.stage = ""
-            resolved.times = 0
+        else {
+            self.stage = ""
+            times = 0
+            return false
         }
-        return resolved
+        self.stage = stage
+        return true
     }
 
     // 掉落物品列表
