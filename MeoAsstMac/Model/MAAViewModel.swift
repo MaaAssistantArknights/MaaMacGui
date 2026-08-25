@@ -27,6 +27,18 @@ import SwiftUI
     /// Sanity cost of current fight(s)
     var sanityCost = 0
 
+    struct SanityReport {
+        let current: Int
+        let maximum: Int
+        let reportedAt: Date
+    }
+
+    var sanityReport: SanityReport?
+    private var provenExhaustedMedicineDays = 0
+    var isExecutingDailyQueue = false
+    private var dailyQueueStopRequested = false
+    private var stageAPCosts: [String: Int]?
+
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
@@ -72,6 +84,10 @@ import SwiftUI
             .appendingPathExtension("plist")
     }
 
+    var depotURL: URL {
+        Self.userDirectory.appendingPathComponent("depot-cache.plist", isDirectory: false)
+    }
+
     @AppStorage("MAAScheduledDailyTaskTimer") var serializedScheduledDailyTaskTimers: String?
 
     struct DailyTaskTimer: Codable {
@@ -88,14 +104,22 @@ import SwiftUI
     @Published private var stageActivities = [String: MAAStageActivity]()
 
     var stageActivity: MAAStageActivity? {
-        stageActivities[clientChannel.rawValue]
+        let channel = clientChannel == .Bilibili ? MAAClientChannel.Official : clientChannel
+        return stageActivities[channel.rawValue]
     }
 
     // MARK: - Recognition
 
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
-    @Published var depot: MAADepot?
+    @Published var depot: MAADepot? {
+        didSet {
+            guard depot?.done == true, let depot,
+                let data = try? PropertyListEncoder().encode(depot)
+            else { return }
+            try? data.write(to: depotURL, options: .atomic)
+        }
+    }
     @Published var videoRecoginition: URL?
     @Published var operBox: MAAOperBox?
 
@@ -145,6 +169,10 @@ import SwiftUI
     // MARK: - Initializer
 
     init() {
+        if let data = try? Data(contentsOf: depotURL) {
+            depot = try? PropertyListDecoder().decode(MAADepot.self, from: data)
+        }
+
         do {
             let data = try Data(contentsOf: tasksURL)
             tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
@@ -243,6 +271,7 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
+        dailyQueueStopRequested = true
         try await handle?.stop()
         status = .idle
     }
@@ -251,6 +280,8 @@ extension MAAViewModel {
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
+        sanityReport = nil
+        provenExhaustedMedicineDays = 0
     }
 
     func screenshot() async throws -> NSImage {
@@ -434,6 +465,12 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
+        dailyQueueStopRequested = false
+        medicineUsedTimes = 0
+        expiringMedicineUsedTimes = 0
+        sanityReport = nil
+        provenExhaustedMedicineDays = 0
+
         var firstStart = true
         for (index, task) in tasks.enumerated() {
             guard case .startup(var config) = task.task else {
@@ -462,6 +499,17 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        let containsDepotMaintain = tasks.contains { task in
+            guard task.enabled else { return false }
+            if case .depotMaintain = task.task { return true }
+            return false
+        }
+
+        if containsDepotMaintain {
+            try await startTasksSequentially()
+            return
+        }
+
         for task in tasks {
             guard task.enabled else { continue }
 
@@ -473,6 +521,226 @@ extension MAAViewModel {
         try await handle?.start()
 
         status = .busy
+    }
+
+    private func startTasksSequentially() async throws {
+        isExecutingDailyQueue = true
+        defer {
+            isExecutingDailyQueue = false
+            if status != .idle {
+                resetStatus()
+            }
+        }
+
+        for task in tasks where task.enabled {
+            guard !dailyQueueStopRequested else { break }
+
+            switch task.task {
+            case .depotMaintain(let config):
+                try await runDepotMaintain(config, taskID: task.id)
+            default:
+                guard let coreID = try await handle?.appendTask(task.task) else { continue }
+                taskIDMap[coreID] = task.id
+                _ = try await runAppendedTask(parentID: task.id)
+            }
+        }
+
+        if !dailyQueueStopRequested {
+            logTrace("AllTasksComplete")
+        }
+    }
+
+    private func runDepotMaintain(_ config: DepotMaintainConfiguration, taskID: UUID) async throws {
+        let now = Date()
+        let activities = stageActivity?.fightScheduleData
+
+        if config.skipDuringActivity, activities?.hasActiveSideStory(at: now) == true {
+            taskStatus[taskID] = .success
+            logInfo("当前有活动进行中，已跳过库存保持。")
+            return
+        }
+
+        if config.skipDuringResourceCollection, activities?.resourceCollection?.contains(now) == true {
+            taskStatus[taskID] = .success
+            logInfo("当前处于资源收集限时全天开放期间，已跳过库存保持。")
+            return
+        }
+
+        var hadFailure = false
+
+        if config.updateDepot {
+            do {
+                guard let coreID = try await handle?.appendTask(type: .Depot, params: "") else {
+                    throw MaaCoreError.appendTaskFailed
+                }
+                taskIDMap[coreID] = taskID
+                let result = try await runAppendedTask(parentID: taskID)
+                hadFailure = result == .failure
+                if result == .failure {
+                    logError("库存更新失败，将继续使用缓存数据。")
+                }
+            } catch {
+                hadFailure = true
+                logError("库存更新失败，将继续使用缓存数据。")
+            }
+        }
+
+        let schedule = FightStageSchedule()
+        for (offset, plan) in config.plans.enumerated() {
+            guard !dailyQueueStopRequested else { break }
+            let index = offset + 1
+
+            guard !plan.stage.isEmpty else {
+                hadFailure = true
+                logError("库存保持计划 \(index) 未选择关卡，已跳过。")
+                continue
+            }
+            guard !plan.dropID.isEmpty else {
+                hadFailure = true
+                logError("库存保持计划 \(index) 未选择掉落物，已跳过。")
+                continue
+            }
+            guard plan.target > 0 else {
+                hadFailure = true
+                logError("库存保持计划 \(index) 的目标库存必须大于 0，已跳过。")
+                continue
+            }
+
+            let current = depot?.count(of: plan.dropID) ?? 0
+            let need = plan.target - current
+            if need <= 0 {
+                logInfo("库存保持计划 \(index) 已达标（\(current)/\(plan.target)），已跳过。")
+                continue
+            }
+
+            guard
+                schedule.isOpen(
+                    plan.stage,
+                    server: clientChannel.fightStageServer,
+                    activities: activities,
+                    at: Date())
+            else {
+                logInfo("库存保持计划 \(index) 的关卡 \(plan.stage) 今日未开放，已跳过。")
+                continue
+            }
+
+            let medicine = config.enableMedicine && plan.useMedicine ? max(0, plan.medicineCount) : 0
+            let stone = config.enableStone && plan.useStone ? max(0, plan.stoneCount) : 0
+            if shouldSkipForInsufficientSanity(
+                stage: plan.stage,
+                medicine: medicine,
+                stone: stone,
+                useExpiringMedicine: config.useExpiringMedicine)
+            {
+                let estimated = estimatedSanity() ?? 0
+                let cost = apCost(for: plan.stage) ?? 0
+                logInfo("库存保持计划 \(index) 预估理智不足（\(estimated)/\(cost)），已跳过。")
+                continue
+            }
+
+            let params = DepotMaintainFightParameters(
+                stage: plan.stage,
+                medicine: medicine,
+                medicineExpireDays: config.useExpiringMedicine ? 2 : 0,
+                stone: stone,
+                times: Int(Int32.max),
+                series: config.useAutoSeries ? 0 : 1,
+                drops: [plan.dropID: need],
+                server: penguinServer,
+                clientType: clientChannel.rawValue)
+
+            logInfo("库存保持计划 \(index) 开始：当前 \(current)，目标 \(plan.target)，缺口 \(need)。")
+            do {
+                let coreID = try await handle?.appendTask(type: .Fight, params: params.jsonString())
+                guard let coreID else { throw MaaCoreError.appendTaskFailed }
+                taskIDMap[coreID] = taskID
+                let result = try await runAppendedTask(parentID: taskID)
+                if result == .failure { hadFailure = true }
+
+                if result == .success,
+                    config.useExpiringMedicine,
+                    (depot?.count(of: plan.dropID) ?? 0) < plan.target
+                {
+                    provenExhaustedMedicineDays = max(provenExhaustedMedicineDays, 2)
+                }
+            } catch {
+                hadFailure = true
+                logError("库存保持计划 \(index) 添加作战任务失败。")
+            }
+        }
+
+        if dailyQueueStopRequested {
+            taskStatus[taskID] = .cancel
+        } else {
+            taskStatus[taskID] = hadFailure ? .failure : .success
+        }
+    }
+
+    private func runAppendedTask(parentID: UUID) async throws -> TaskStatus {
+        taskStatus[parentID] = .running
+        try await handle?.start()
+        status = .busy
+
+        while await handle?.running == true {
+            try await Task.sleep(nanoseconds: 100_000_000)
+        }
+
+        for _ in 0..<20 where taskStatus[parentID] == .running {
+            try await Task.sleep(nanoseconds: 50_000_000)
+        }
+        return taskStatus[parentID] ?? .failure
+    }
+
+    private func shouldSkipForInsufficientSanity(
+        stage: String,
+        medicine: Int,
+        stone: Int,
+        useExpiringMedicine: Bool
+    ) -> Bool {
+        guard medicine <= 0, stone <= 0,
+            !useExpiringMedicine || provenExhaustedMedicineDays >= 2,
+            let estimated = estimatedSanity(),
+            let cost = apCost(for: stage)
+        else { return false }
+        return estimated < cost
+    }
+
+    private func estimatedSanity(at date: Date = Date()) -> Int? {
+        guard let report = sanityReport else { return nil }
+        let elapsed = max(0, date.timeIntervalSince(report.reportedAt))
+        let regeneration = report.current < report.maximum ? Int(ceil(elapsed / 360)) : 0
+        return min(report.current + regeneration, report.maximum)
+    }
+
+    private func apCost(for stage: String) -> Int? {
+        if stageAPCosts == nil {
+            struct StageRecord: Decodable {
+                let code: String
+                let apCost: Int
+            }
+
+            let external = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+                .appendingPathComponent("resource/stages.json")
+            let bundled = Bundle.main.resourceURL!.appendingPathComponent("resource/stages.json")
+            let url = FileManager.default.fileExists(atPath: external.path) ? external : bundled
+            let records = (try? Data(contentsOf: url)).flatMap {
+                try? JSONDecoder().decode([StageRecord].self, from: $0)
+            }
+            stageAPCosts = Dictionary(
+                (records ?? []).map { ($0.code, $0.apCost) },
+                uniquingKeysWith: { first, _ in first })
+        }
+        return stageAPCosts?[stage]
+    }
+
+    private var penguinServer: String {
+        switch clientChannel {
+        case .Official, .Bilibili: "CN"
+        case .YoStarEN: "US"
+        case .YoStarJP: "JP"
+        case .YoStarKR: "KR"
+        case .txwy: "TW"
+        }
     }
 
     private func initScheduledDailyTaskTimer() {

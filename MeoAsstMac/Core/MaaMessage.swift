@@ -110,7 +110,7 @@ extension MAAViewModel {
 
         let isCopilot = ["Copilot", "VideoRecognition"].contains(taskChain)
 
-        if taskChain == "CloseDown" {
+        if taskChain == "CloseDown", !isExecutingDailyQueue {
             Task {
                 try await stop()
             }
@@ -178,8 +178,10 @@ extension MAAViewModel {
             break
 
         case .AllTasksCompleted:
-            logTrace("AllTasksComplete")
-            resetStatus()
+            if !isExecutingDailyQueue {
+                logTrace("AllTasksComplete")
+                resetStatus()
+            }
 
         default:
             break
@@ -370,8 +372,10 @@ extension MAAViewModel {
             }
 
             var allDrops = [String]()
+            var depotDrops = [(id: String, name: String, quantity: Int)]()
             for item in statistics {
-                guard let name = item["itemName"].string,
+                guard let itemID = item["itemId"].string,
+                    let name = item["itemName"].string,
                     let total = item["quantity"].int,
                     let addition = item["addQuantity"].int
                 else {
@@ -383,6 +387,12 @@ extension MAAViewModel {
                     drop += " (+\(addition))"
                 }
                 allDrops.append(drop)
+                depotDrops.append((itemID, name, addition))
+            }
+
+            if var depot {
+                depot.addDrops(depotDrops)
+                self.depot = depot
             }
 
             if allDrops.count == 0 {
@@ -542,8 +552,17 @@ extension MAAViewModel {
             }
 
         case "SanityBeforeStage":
-            if let curSanityBeforeFight = subTaskDetails["current_sanity"].int {
+            if let curSanityBeforeFight = subTaskDetails["current_sanity"].int,
+                let maximum = subTaskDetails["max_sanity"].int,
+                maximum > 0
+            {
                 self.curSanityBeforeFight = curSanityBeforeFight
+                let formatter = DateFormatter()
+                formatter.locale = Locale(identifier: "en_US_POSIX")
+                formatter.timeZone = .current
+                formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+                let reportedAt = subTaskDetails["report_time"].string.flatMap(formatter.date(from:)) ?? Date()
+                sanityReport = .init(current: curSanityBeforeFight, maximum: maximum, reportedAt: reportedAt)
             }
 
         case "FightTimes":

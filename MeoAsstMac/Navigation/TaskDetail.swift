@@ -25,6 +25,8 @@ struct TaskDetail: View {
                         InfrastSettingsView(config: taskConfigBinding(config, id: id))
                     case .fight(let config):
                         FightSettingsView(config: taskConfigBinding(config, id: id))
+                    case .depotMaintain(let config):
+                        DepotMaintainSettingsView(config: taskConfigBinding(config, id: id))
                     case .mall(let config):
                         MallSettingsView(config: taskConfigBinding(config, id: id))
                     case .award(let config):
