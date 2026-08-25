@@ -11,6 +11,8 @@ struct FightConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Fight }
 
     var stage: String
+    var stagePlan: [String]
+    var useOptionalStage: Bool
     var medicine: Int?
     var expiring_medicine: Int?
     var stone: Int?
@@ -29,6 +31,12 @@ struct FightConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
+        if useOptionalStage {
+            return
+                (stagePlan.isEmpty ? [""] : stagePlan)
+                .map { $0.isEmpty ? String(localized: "当前/上次") : $0 }
+                .joined(separator: " / ")
+        }
         if stage == "" {
             return String(localized: "当前/上次")
         } else {
@@ -58,10 +66,67 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    typealias Params = Self
+    struct CoreParams: Encodable, Sendable {
+        var stage: String
+        var medicine: Int?
+        var expiringMedicine: Int?
+        var stone: Int?
+        var times: Int?
+        var series: Int?
+        var drops: [String: Int]?
+        var reportToPenguin: Bool
+        var penguinID: String
+        var server: String
+        var clientType: String
+        var drGrandet: Bool
 
-    var params: Self {
-        self
+        private enum CodingKeys: String, CodingKey {
+            case stage, medicine, stone, times, series, drops, server
+            case expiringMedicine = "expiring_medicine"
+            case reportToPenguin = "report_to_penguin"
+            case penguinID = "penguin_id"
+            case clientType = "client_type"
+            case drGrandet = "DrGrandet"
+        }
+    }
+
+    typealias Params = CoreParams
+
+    var params: CoreParams {
+        CoreParams(
+            stage: stage,
+            medicine: medicine,
+            expiringMedicine: expiring_medicine,
+            stone: stone,
+            times: times,
+            series: series,
+            drops: drops,
+            reportToPenguin: report_to_penguin,
+            penguinID: penguin_id,
+            server: server,
+            clientType: client_type,
+            drGrandet: DrGrandet)
+    }
+
+    func resolvedForExecution(
+        schedule: FightStageSchedule,
+        server: FightStageSchedule.Server,
+        activities: FightStageSchedule.ActivityData?,
+        at date: Date = Date()
+    ) -> Self {
+        guard useOptionalStage else { return self }
+
+        var resolved = self
+        resolved.useOptionalStage = false
+        if let selected = schedule.firstOpenStage(
+            in: stagePlan, server: server, activities: activities, at: date)
+        {
+            resolved.stage = selected
+        } else {
+            resolved.stage = ""
+            resolved.times = 0
+        }
+        return resolved
     }
 
     // 掉落物品列表
@@ -130,6 +195,8 @@ extension FightConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.stage = try container.decodeIfPresent(String.self, forKey: .stage) ?? ""
+        self.stagePlan = try container.decodeIfPresent([String].self, forKey: .stagePlan) ?? [self.stage]
+        self.useOptionalStage = try container.decodeIfPresent(Bool.self, forKey: .useOptionalStage) ?? false
         self.medicine = try container.decodeIfPresent(Int.self, forKey: .medicine)
         self.expiring_medicine = try container.decodeIfPresent(Int.self, forKey: .expiring_medicine)
         self.stone = try container.decodeIfPresent(Int.self, forKey: .stone)
