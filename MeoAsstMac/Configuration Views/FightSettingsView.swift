@@ -226,8 +226,9 @@ struct FightSettingsView: View {
     }
 
     private var stageNotListed: Bool {
-        !baseStageChoices.contains { $0.value == config.stage }
+        !listedStages.contains(config.stage)
     }
+    private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
 
     private var baseStageChoices: [FightStageChoice] {
         [
@@ -274,8 +275,6 @@ private struct FightStageChoice: Identifiable {
 // MARK: - StagePlanEditor
 
 private struct StagePlanEditor: View {
-    @Environment(\.defaultMinListRowHeight) private var rowHeight
-
     @Binding var stages: [String]
     let server: FightStageSchedule.Server
     let activities: FightStageSchedule.ActivityData?
@@ -293,7 +292,7 @@ private struct StagePlanEditor: View {
             }
             .onMove(perform: moveStage)
         }
-        .frame(height: min(max(CGFloat(stages.count + 1) * rowHeight, 2 * rowHeight), 6 * rowHeight))
+        .frame(height: min(max(CGFloat(stages.count) * 34 + 8, 76), 190))
 
         HStack {
             Button(action: addStage) {
