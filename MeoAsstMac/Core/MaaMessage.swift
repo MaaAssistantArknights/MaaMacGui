@@ -536,13 +536,35 @@ extension MAAViewModel {
 
             switch process.task {
             case "StartButton2", "AnnihilationConfirm":
-                // FIXME: Include the fight run range and sanity cost.
-                // FIXME: Append current sanity.
-                // FIXME: Append regular and expiring medicine usage.
-                // FIXME: Append stone usage.
                 // TODO: (LogCard) Start a new fight log card section.
-                let sanityCost = logStore?.fightReport?.sanityCost ?? 0
-                logInfo("MissionStart.FightTask \(process.exec_times) \(sanityCost)")
+                let sanityCost = logStore?.fightReport?.sanityCost.map { "\($0)" } ?? "???"
+                let times: String
+                if let report = logStore?.fightReport,
+                    let timesFinished = report.timesFinished,
+                    let series = report.series, series > 0
+                {
+                    let next = timesFinished + 1
+                    times = series == 1 ? "\(next)" : "\(next)~\(timesFinished + series)"
+                } else {
+                    times = "???"
+                }
+
+                var statusParts = [LocalizedStringResource]()
+                if let report = logStore?.sanityReport {
+                    statusParts.append("CurrentSanity \(report.current) \(report.maximum)")
+                }
+                if expiringMedicineUsedTimes > 0 {
+                    statusParts.append(
+                        "MedicineUsedTimesWithExpiring \(medicineUsedTimes) \(expiringMedicineUsedTimes)")
+                } else if medicineUsedTimes > 0 {
+                    statusParts.append("MedicineUsedTimes \(medicineUsedTimes)")
+                }
+                if let stoneUsedTimes = logStore?.stoneUsedTimes, stoneUsedTimes > 0 {
+                    statusParts.append("StoneUsedTimes \(stoneUsedTimes)")
+                }
+                let statusString = statusParts.map { String(localized: $0) }.joined(separator: "  ")
+                let statusSuffix = statusParts.isEmpty ? "" : "\n\(statusString)"
+                logInfo(.missionStartFightTask(times: times, cost: sanityCost, using: statusSuffix))
 
             case "StoneConfirm":
                 logInfo("StoneUsed \(process.exec_times)")
