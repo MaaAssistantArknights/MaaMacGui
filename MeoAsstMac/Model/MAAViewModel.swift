@@ -183,6 +183,11 @@ import SwiftUI
 
 // MARK: - MaaCore
 
+private enum MAAUserResourceLoadResult {
+    case loaded
+    case fellBackToBundled
+}
+
 extension MAAViewModel {
     func initialize() async throws {
         status = .pending
@@ -263,7 +268,10 @@ extension MAAViewModel {
 
     /// Reloads the resources from the documents directory after update.
     func reloadResources(channel: MAAClientChannel) async throws {
-        try await loadUserResource(channel: channel)
+        let result = try await loadUserResource(channel: channel)
+        if case .fellBackToBundled = result {
+            throw MaaCoreError.loadResourceFailed
+        }
     }
 
     /// Loads the user resource set and restores the bundled resources when it
@@ -273,25 +281,29 @@ extension MAAViewModel {
     /// core). Keeping the bad directory in place makes every launch fail with
     /// the unhelpful `MaaCoreError 0`; quarantine it so the next launch can use
     /// the known-good bundled resources while preserving the user's files.
-    private func loadUserResource(channel: MAAClientChannel) async throws {
+    private func loadUserResource(channel: MAAClientChannel) async throws -> MAAUserResourceLoadResult {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
 
         do {
             try await loadResource(url: documentsDirectory, channel: channel)
+            return .loaded
         } catch {
+            let userResourceError = error
             let resourceDirectory = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
             quarantineUserResource(at: resourceDirectory)
 
             // The failed load may have partially replaced MaaCore's global
-            // state. Reload the bundled resources before propagating the
-            // original error to callers (the outer loader handles fallback).
+            // state. Reload the bundled resources before reporting fallback
+            // success to callers.
             do {
                 try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
             } catch {
                 logError("恢复内置资源失败: \(error.localizedDescription)")
+                throw error
             }
 
-            throw error
+            logError("外部资源加载失败，已回退内置资源: \(userResourceError.localizedDescription)")
+            return .fellBackToBundled
         }
     }
 
@@ -380,18 +392,14 @@ extension MAAViewModel {
         try await loadResource(url: bundledResourceURL, channel: channel)
 
         if preferUser {
-            do {
-                try await loadUserResource(channel: channel)
+            switch try await loadUserResource(channel: channel) {
+            case .loaded:
                 logTrace(
                     """
                     外部资源版本：\(currentResourceVersion.title)
                     更新时间：\(currentResourceVersion.last_updated)
                     """)
-            } catch {
-                // `loadUserResource` has already restored the bundled set and
-                // quarantined the incompatible external resources. Keep
-                // initialization usable instead of surfacing MaaCoreError 0.
-                logError("外部资源加载失败，已回退内置资源: \(error.localizedDescription)")
+            case .fellBackToBundled:
                 logTrace("已加载内置资源")
             }
         } else {

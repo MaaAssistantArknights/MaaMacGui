@@ -214,23 +214,23 @@ extension MaaCoreError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .loadResourceFailed:
-            return "加载 MAA 资源失败，请检查资源版本或更新 MAA"
+            return String(localized: "MaaCoreLoadResourceFailed")
         case .setUserDirectoryFailed:
-            return "设置 MAA 用户目录失败"
+            return String(localized: "MaaCoreSetUserDirectoryFailed")
         case .setInstanceOptionFailed:
-            return "设置 MAA 实例选项失败"
+            return String(localized: "MaaCoreSetInstanceOptionFailed")
         case .appendTaskFailed:
-            return "添加 MAA 任务失败"
+            return String(localized: "MaaCoreAppendTaskFailed")
         case .startFailed:
-            return "启动 MAA 任务失败"
+            return String(localized: "MaaCoreStartFailed")
         case .stopFailed:
-            return "停止 MAA 任务失败"
+            return String(localized: "MaaCoreStopFailed")
         case .connectFailed:
-            return "连接模拟器失败"
+            return String(localized: "MaaCoreConnectFailed")
         case .getImageFailed:
-            return "获取模拟器截图失败"
+            return String(localized: "MaaCoreGetImageFailed")
         case .asyncCallFailed:
-            return "MAA 异步调用失败"
+            return String(localized: "MaaCoreAsyncCallFailed")
         }
     }
 }
