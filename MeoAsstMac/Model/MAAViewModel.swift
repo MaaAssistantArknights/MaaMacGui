@@ -263,8 +263,52 @@ extension MAAViewModel {
 
     /// Reloads the resources from the documents directory after update.
     func reloadResources(channel: MAAClientChannel) async throws {
+        try await loadUserResource(channel: channel)
+    }
+
+    /// Loads the user resource set and restores the bundled resources when it
+    /// is not compatible with the currently bundled MaaCore. Resource updates
+    /// are published independently from the app, so an older app can receive a
+    /// newer schema (for example, an `infrast.json` with fields unknown to its
+    /// core). Keeping the bad directory in place makes every launch fail with
+    /// the unhelpful `MaaCoreError 0`; quarantine it so the next launch can use
+    /// the known-good bundled resources while preserving the user's files.
+    private func loadUserResource(channel: MAAClientChannel) async throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        try await loadResource(url: documentsDirectory, channel: channel)
+
+        do {
+            try await loadResource(url: documentsDirectory, channel: channel)
+        } catch {
+            let resourceDirectory = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
+            quarantineUserResource(at: resourceDirectory)
+
+            // The failed load may have partially replaced MaaCore's global
+            // state. Reload the bundled resources before propagating the
+            // original error to callers (the outer loader handles fallback).
+            do {
+                try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
+            } catch {
+                logError("恢复内置资源失败: \(error.localizedDescription)")
+            }
+
+            throw error
+        }
+    }
+
+    private func quarantineUserResource(at resourceDirectory: URL) {
+        let fileManager = FileManager.default
+        guard fileManager.fileExists(atPath: resourceDirectory.path) else { return }
+
+        let suffix = UUID().uuidString.prefix(8)
+        let backupURL = resourceDirectory.deletingLastPathComponent()
+            .appendingPathComponent("resource.invalid-\(suffix)", isDirectory: true)
+
+        do {
+            try fileManager.moveItem(at: resourceDirectory, to: backupURL)
+            logError("外部资源与当前 MAA 版本不兼容，已备份至 \(backupURL.lastPathComponent)")
+        } catch {
+            logError("无法备份不兼容的外部资源: \(error.localizedDescription)")
+        }
     }
 
     /// Load base resources and channel-specific resources.
@@ -331,16 +375,25 @@ extension MAAViewModel {
     /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
         let (preferUser, currentResourceVersion) = try resourceChannel.version()
-        try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
-
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        let bundledResourceURL = Bundle.main.resourceURL!
+        try await loadResource(url: bundledResourceURL, channel: channel)
+
         if preferUser {
-            try await reloadResources(channel: channel)
-            logTrace(
-                """
-                外部资源版本：\(currentResourceVersion.title)
-                更新时间：\(currentResourceVersion.last_updated)
-                """)
+            do {
+                try await loadUserResource(channel: channel)
+                logTrace(
+                    """
+                    外部资源版本：\(currentResourceVersion.title)
+                    更新时间：\(currentResourceVersion.last_updated)
+                    """)
+            } catch {
+                // `loadUserResource` has already restored the bundled set and
+                // quarantined the incompatible external resources. Keep
+                // initialization usable instead of surfacing MaaCoreError 0.
+                logError("外部资源加载失败，已回退内置资源: \(error.localizedDescription)")
+                logTrace("已加载内置资源")
+            }
         } else {
             logTrace(
                 """

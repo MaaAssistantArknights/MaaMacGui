@@ -210,6 +210,31 @@ enum MaaCoreError: Error {
     case asyncCallFailed
 }
 
+extension MaaCoreError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .loadResourceFailed:
+            return "加载 MAA 资源失败，请检查资源版本或更新 MAA"
+        case .setUserDirectoryFailed:
+            return "设置 MAA 用户目录失败"
+        case .setInstanceOptionFailed:
+            return "设置 MAA 实例选项失败"
+        case .appendTaskFailed:
+            return "添加 MAA 任务失败"
+        case .startFailed:
+            return "启动 MAA 任务失败"
+        case .stopFailed:
+            return "停止 MAA 任务失败"
+        case .connectFailed:
+            return "连接模拟器失败"
+        case .getImageFailed:
+            return "获取模拟器截图失败"
+        case .asyncCallFailed:
+            return "MAA 异步调用失败"
+        }
+    }
+}
+
 enum MAAInstanceOptionKey: Int32 {
     case Invalid = 0
     case TouchMode = 2
