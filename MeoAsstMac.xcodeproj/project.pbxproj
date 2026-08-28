@@ -13,6 +13,8 @@
 		831100C43026440D00554899 /* NewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831100C33026440D00554899 /* NewViewModel.swift */; };
 		831597123028DF98008C7EDF /* CapsulePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831597113028DF98008C7EDF /* CapsulePicker.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
+		83191C8D3040552100576DC0 /* MaaToolsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83191C8C3040552100576DC0 /* MaaToolsView.swift */; };
+		83191C8F3040AF0D00576DC0 /* TCPConnection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83191C8E3040AF0D00576DC0 /* TCPConnection.swift */; };
 		831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; };
 		831D248A293C9CE3005AC1CE /* MaaCore.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 831D2488293C9CE3005AC1CE /* MaaCore.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8320E6642CFE004D00F4BC95 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */; };
@@ -84,6 +86,8 @@
 		83985BC03025F0CF00D2A789 /* CopilotListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */; };
 		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
 		83A0F4B7303AFC9A00C81B05 /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 83A0F4B6303AFC9A00C81B05 /* JBird */; };
+		83AAF81830416ACF003752BD /* ByteReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81730416ACF003752BD /* ByteReader.swift */; };
+		83AAF81A30417267003752BD /* MaaToolsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81930417267003752BD /* MaaToolsClient.swift */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
 		83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250C302F02B000080642 /* PixelPaintView.swift */; };
@@ -145,6 +149,8 @@
 		831100C33026440D00554899 /* NewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewModel.swift; sourceTree = "<group>"; };
 		831597113028DF98008C7EDF /* CapsulePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsulePicker.swift; sourceTree = "<group>"; };
 		8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupSettingsView.swift; sourceTree = "<group>"; };
+		83191C8C3040552100576DC0 /* MaaToolsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolsView.swift; sourceTree = "<group>"; };
+		83191C8E3040AF0D00576DC0 /* TCPConnection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TCPConnection.swift; sourceTree = "<group>"; };
 		831D2488293C9CE3005AC1CE /* MaaCore.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MaaCore.xcframework; path = ../../build/MaaCore.xcframework; sourceTree = "<group>"; };
 		8320E6632CFE004D00F4BC95 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReclamationSettingsView.swift; sourceTree = "<group>"; };
@@ -217,6 +223,8 @@
 		8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolClient.swift; sourceTree = "<group>"; };
 		83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopilotListContent.swift; sourceTree = "<group>"; };
 		83985BC13026055400D2A789 /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
+		83AAF81730416ACF003752BD /* ByteReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteReader.swift; sourceTree = "<group>"; };
+		83AAF81930417267003752BD /* MaaToolsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolsClient.swift; sourceTree = "<group>"; };
 		83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+KVO.swift"; sourceTree = "<group>"; };
 		83BC250A302E431000080642 /* FileManager+Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Atomic.swift"; sourceTree = "<group>"; };
 		83BC250C302F02B000080642 /* PixelPaintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPaintView.swift; sourceTree = "<group>"; };
@@ -334,6 +342,7 @@
 				8347B5A72CDF85A000AEB627 /* ResourceUpdateView.swift */,
 				83985BC13026055400D2A789 /* FileTreeView.swift */,
 				831597113028DF98008C7EDF /* CapsulePicker.swift */,
+				83191C8C3040552100576DC0 /* MaaToolsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -344,6 +353,7 @@
 				8337870128F1D95F00D39D6F /* Maa.swift */,
 				8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */,
 				8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */,
+				83AAF81930417267003752BD /* MaaToolsClient.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -499,6 +509,8 @@
 				83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */,
 				83BC250A302E431000080642 /* FileManager+Atomic.swift */,
 				8307A5CE3030157600A82FF7 /* PixelPainter.swift */,
+				83191C8E3040AF0D00576DC0 /* TCPConnection.swift */,
+				83AAF81730416ACF003752BD /* ByteReader.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -594,6 +606,7 @@
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,
 				83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */,
+				83191C8D3040552100576DC0 /* MaaToolsView.swift in Sources */,
 				83812ED22D5B0B8100CB39D6 /* Binding+semicolonString.swift in Sources */,
 				8341195329EC25A900044F45 /* MAALog.swift in Sources */,
 				83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */,
@@ -613,7 +626,9 @@
 				8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */,
 				83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,
+				83191C8F3040AF0D00576DC0 /* TCPConnection.swift in Sources */,
 				8341195529EC55C600044F45 /* CopilotConfiguration.swift in Sources */,
+				83AAF81A30417267003752BD /* MaaToolsClient.swift in Sources */,
 				83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */,
 				83985BC23026055400D2A789 /* FileTreeView.swift in Sources */,
 				8366DE0329F2F34100F715E8 /* MAAOperBox.swift in Sources */,
@@ -666,6 +681,7 @@
 				832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */,
 				835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
+				83AAF81830416ACF003752BD /* ByteReader.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,
