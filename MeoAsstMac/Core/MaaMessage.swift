@@ -243,6 +243,16 @@ extension MAAViewModel {
 
 // MARK: - Process TaskChain
 
+private extension NewViewModel.SanityReport {
+    func fullRecoveryTime() -> Date? {
+        guard let reportedAt else {
+            return nil
+        }
+        let missingSanity = max(maximum - current, 0)
+        return reportedAt.addingTimeInterval(TimeInterval(missingSanity * 6 * 60))
+    }
+}
+
 @JSONRepresentable
 private struct TaskChainMessage {
     let taskchain: String
@@ -252,7 +262,6 @@ private struct TaskChainMessage {
 extension MAAViewModel {
     private func processTaskChainMessage(_ message: MaaMessage) {
         if message.code == .AllTasksCompleted {
-            // FIXME: Append the latest sanity and estimated recovery time to the completion log.
             // TODO: (LogCard) Update the all-tasks-completed log card.
             // TODO: (Notification) Show the all-tasks-completed notification.
             // TODO: (ExternalNotification) Send the all-tasks-completed event.
@@ -280,8 +289,18 @@ extension MAAViewModel {
                 guard let start = logStore?.taskStartTime else {
                     break
                 }
-                let duration = (start ..< .now).formatted(.timeDuration)
-                logTrace(.allTasksComplete(duration: duration))
+                let now = Date.now
+                let duration = (start ..< now).formatted(.timeDuration)
+                let sanitySuffix: String
+                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+                    let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
+                    let remaining = (now ..< max(now, recoveryTime)).formatted(.timeDuration)
+                    let sanityReport = String(localized: "SanityReport \(recoveryDate) \(remaining)")
+                    sanitySuffix = "\n\(sanityReport)"
+                } else {
+                    sanitySuffix = ""
+                }
+                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
                 break
             }
             return
