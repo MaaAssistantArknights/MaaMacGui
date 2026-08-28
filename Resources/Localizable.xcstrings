@@ -644,6 +644,16 @@
         }
       }
     },
+    "CompleteTask %@\n%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CompleteTask %1$@\n%2$@"
+          }
+        }
+      }
+    },
     "ConnectFailed" : {
       "localizations" : {
         "ko" : {
