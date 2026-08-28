@@ -277,27 +277,10 @@
     "AllTasksComplete" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "작업을 모두 완료했습니다!"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "任务已全部完成！"
-          }
-        }
-      }
-    },
-    "AllTasksComplete %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "任务已全部完成！（用时%(duration)@）"
+            "value" : "任务已全部完成！（用时%1$(duration)@）%2$(sanity)@"
           }
         }
       }
@@ -2034,6 +2017,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "关卡：安全的角落"
+          }
+        }
+      }
+    },
+    "SanityReport %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "SanityReport %1$@ %2$@"
           }
         }
       }
