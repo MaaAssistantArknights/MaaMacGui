@@ -344,7 +344,6 @@ extension MAAViewModel {
             logTrace("StartTask \(taskChain)")
 
         case .TaskChainCompleted:
-            // FIXME: Append current sanity when a Fight task completes.
             // TODO: (Achievement) Mirror WPF task-completion achievement progress.
             if info.taskchain == "Infrast" {
                 if let id = taskID(coreID: info.taskid),
@@ -381,7 +380,12 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .success
             }
-            logTrace("CompleteTask \(taskChain)")
+            if info.taskchain == "Fight", let report = logStore?.sanityReport {
+                let sanity = LocalizedStringResource("CurrentSanity \(report.current) \(report.maximum)")
+                logTrace("CompleteTask \(taskChain)\n\(sanity)")
+            } else {
+                logTrace("CompleteTask \(taskChain)")
+            }
 
         case .TaskChainExtraInfo:
             let what: String? = try? message.details["what"]
