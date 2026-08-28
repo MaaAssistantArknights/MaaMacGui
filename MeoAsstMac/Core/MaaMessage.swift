@@ -85,20 +85,20 @@ extension MAAViewModel {
 
 // MARK: - Process Connection
 
+private func parseResolution(details: JSON) -> (width: Int, height: Int)? {
+    guard let width: Int = try? details["details"]["width"],
+        let height: Int = try? details["details"]["height"]
+    else {
+        return nil
+    }
+    return (width, height)
+}
+
 extension MAAViewModel {
     private func processConnectionInfo(_ message: MaaMessage) {
         let details = message.details
         guard let what: String = try? details["what"] else {
             return
-        }
-
-        func resolution(details: JSON) -> (width: Int, height: Int)? {
-            guard let width: Int = try? details["details"]["width"],
-                let height: Int = try? details["details"]["height"]
-            else {
-                return nil
-            }
-            return (width, height)
         }
 
         switch what {
@@ -110,7 +110,7 @@ extension MAAViewModel {
 
         case "UnsupportedResolution":
             // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
-            if let (width, height) = resolution(details: details), width > 0, height > 0 {
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
                 logError("ResolutionNotSupportedCurrentResolution \(width) \(height)")
             } else {
                 logError("ResolutionNotSupported")
@@ -118,14 +118,14 @@ extension MAAViewModel {
 
         case "ResolutionChanged":
             // TODO: (ConnectionState) Mark the invalidated connection as unavailable and retain the error message.
-            if let (width, height) = resolution(details: details), width > 0, height > 0 {
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
                 logError("ResolutionChangedCurrentResolution \(width) \(height)")
             } else {
                 logError("ResolutionChanged")
             }
 
         case "ResolutionInfo":
-            if let (width, height) = resolution(details: details) {
+            if let (width, height) = parseResolution(details: details) {
                 if clientChannel == .YoStarEN, width != 1920 || height != 1080 {
                     logError("ResolutionInfoYoStarEN")
                 }
@@ -541,6 +541,7 @@ extension MAAViewModel {
                 // FIXME: Append regular and expiring medicine usage.
                 // FIXME: Append stone usage.
                 // TODO: (LogCard) Start a new fight log card section.
+                let sanityCost = logStore?.fightReport?.sanityCost ?? 0
                 logInfo("MissionStart.FightTask \(process.exec_times) \(sanityCost)")
 
             case "StoneConfirm":
@@ -824,6 +825,27 @@ private struct UseMedicineDetails {
     let count: Int
     let medicines: [MedicineItemDetails]?
 }
+
+@JSONRepresentable
+private struct SanityBeforeStageDetails {
+    let current_sanity: Int?
+    let max_sanity: Int?
+    let report_time: String?
+}
+
+@JSONRepresentable
+private struct FightTimesDetails {
+    let sanity_cost: Int?
+    let series: Int?
+    let times_finished: Int?
+    let finished: Bool?
+}
+
+private let sanityReportTimeParser = Date.ParseStrategy(
+    format:
+        "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
+    locale: Locale(identifier: "en_US_POSIX"),
+    timeZone: .current)
 
 extension MAAViewModel {
     private func processSubTaskExtraInfo(_ details: JSON) {
@@ -1310,20 +1332,40 @@ extension MAAViewModel {
             }
 
         case "SanityBeforeStage":
-            // FIXME: Store the complete sanity report, including max sanity and report time.
-            guard let currentSanity: Int = try? info.details["current_sanity"] else {
+            logStore?.sanityReport = nil
+            guard let details = SanityBeforeStageDetails(json: info.details, context: info.what),
+                let current = details.current_sanity,
+                let maximum = details.max_sanity,
+                maximum > 0
+            else {
                 return
             }
-            curSanityBeforeFight = currentSanity
+            let reportedAt: Date?
+            if let reportTime = details.report_time {
+                do {
+                    reportedAt = try sanityReportTimeParser.parse(reportTime)
+                } catch {
+                    logger.error("Failed to parse SanityBeforeStage report_time: \(error); value: \(reportTime)")
+                    reportedAt = nil
+                }
+            } else {
+                reportedAt = nil
+            }
+            logStore?.sanityReport = NewViewModel.SanityReport(
+                current: current, maximum: maximum, reportedAt: reportedAt)
 
         case "FightTimes":
-            // FIXME: Store the complete fight report.
             // FIXME: Warn when a limited fight task finishes with unused runs.
             // TODO: (Achievement) Record completed fight-count progress.
-            guard let currentSanityCost: Int = try? info.details["sanity_cost"] else {
+            logStore?.fightReport = nil
+            guard let details = FightTimesDetails(json: info.details, context: info.what) else {
                 return
             }
-            sanityCost = currentSanityCost
+            logStore?.fightReport = NewViewModel.FightReport(
+                sanityCost: details.sanity_cost,
+                series: details.series,
+                timesFinished: details.times_finished,
+                finished: details.finished)
 
         case "StageQueueUnableToAgent":
             guard let stageCode: String = try? info.details["stage_code"] else {

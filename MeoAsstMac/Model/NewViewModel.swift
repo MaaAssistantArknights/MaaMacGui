@@ -33,6 +33,19 @@ import Observation
 
     // MARK: - Log
 
+    struct SanityReport: Sendable {
+        let current: Int
+        let maximum: Int
+        let reportedAt: Date?
+    }
+
+    struct FightReport: Sendable {
+        let sanityCost: Int?
+        let series: Int?
+        let timesFinished: Int?
+        let finished: Bool?
+    }
+
     private(set) var logs = [MAALog]()
     var trackTail = false
     @ObservationIgnored private var logStoreContinuation: AsyncStream<MAALog>.Continuation?
@@ -42,6 +55,8 @@ import Observation
     @ObservationIgnored var lastScreencapWarningLevel = 0
     @ObservationIgnored var hasPrintedFPSHighTip = false
     @ObservationIgnored var taskStartTime: Date?
+    @ObservationIgnored var sanityReport: SanityReport?
+    @ObservationIgnored var fightReport: FightReport?
     @ObservationIgnored var stoneUsedTimes = 0
     @ObservationIgnored var recruitConfirmTimes = 0
 
@@ -205,6 +220,8 @@ protocol LogStore: AnyObject {
     var recruitConfirmTimes: Int { get set }
     var stoneUsedTimes: Int { get set }
     var taskStartTime: Date? { get set }
+    var sanityReport: NewViewModel.SanityReport? { get set }
+    var fightReport: NewViewModel.FightReport? { get set }
 }
 
 extension NewViewModel: LogStore {

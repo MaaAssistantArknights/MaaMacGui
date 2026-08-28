@@ -224,6 +224,12 @@
         }
       }
     },
+    "720P" : {
+
+    },
+    "1080P" : {
+
+    },
     "AccountSwitch %@" : {
 
     },
@@ -249,11 +255,7 @@
     "AlgorithmConstructionPoint" : {
 
     },
-    "AlgorithmDoneSmeltGold %lld" : {
-
-    },
     "AlgorithmDoneSmeltGold %lld UnitTime" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -318,6 +320,9 @@
           }
         }
       }
+    },
+    "Arknights Screenshot" : {
+
     },
     "BattleFormation %@" : {
 
@@ -1483,11 +1488,7 @@
         }
       }
     },
-    "MissionStart %lld" : {
-
-    },
     "MissionStart %lld UnitTime" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1550,6 +1551,9 @@
           }
         }
       }
+    },
+    "OutOfMemoryError %@" : {
+
     },
     "Parse %@[%@] Success" : {
       "localizations" : {
@@ -1782,6 +1786,19 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "模拟器分辨率获取失败，建议重启模拟器与 ADB 或重启电脑，或更换模拟器后再次尝试"
+          }
+        }
+      }
+    },
+    "ResolutionChanged" : {
+
+    },
+    "ResolutionChangedCurrentResolution %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ResolutionChangedCurrentResolution %1$lld %2$lld"
           }
         }
       }
@@ -2072,22 +2089,22 @@
         }
       }
     },
+    "StageQueue %@ - %lld ★" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "StageQueue %1$@ - %2$lld ★"
+          }
+        }
+      }
+    },
     "StageQueue %@ %@" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "StageQueue %1$@ %2$@"
-          }
-        }
-      }
-    },
-    "StageQueue %@ %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "StageQueue %1$@ %2$lld"
           }
         }
       }
@@ -2621,6 +2638,9 @@
         }
       }
     },
+    "使用多显示器时，请将本窗口与《明日方舟》放置在同一台显示器上。\n基于当前显示器的设定，建议在PlayCover中，将图像设置调整为以下预设之一：" : {
+
+    },
     "使用密文板" : {
       "localizations" : {
         "ko" : {
@@ -2837,6 +2857,9 @@
     "内容" : {
 
     },
+    "内容大小：" : {
+
+    },
     "内置" : {
 
     },
@@ -2919,6 +2942,15 @@
           }
         }
       }
+    },
+    "分辨率：" : {
+
+    },
+    "分辨率指南" : {
+
+    },
+    "分辨率缩放：" : {
+
     },
     "分队开局密文板" : {
       "localizations" : {
@@ -3197,6 +3229,9 @@
         }
       }
     },
+    "原始分辨率：" : {
+
+    },
     "双三次" : {
 
     },
@@ -3448,6 +3483,9 @@
           }
         }
       }
+    },
+    "宽度：" : {
+
     },
     "宿舍" : {
       "localizations" : {
@@ -3739,6 +3777,9 @@
     "忽视干员属性要求" : {
 
     },
+    "成功！" : {
+
+    },
     "我已知晓，继续" : {
       "localizations" : {
         "ko" : {
@@ -3748,6 +3789,18 @@
           }
         }
       }
+    },
+    "截图与原始分辨率不匹配" : {
+
+    },
+    "截图分辨率：" : {
+
+    },
+    "截图分辨率不足720P" : {
+
+    },
+    "截图宽高比不符合16:9" : {
+
     },
     "截图模式" : {
 
@@ -4191,6 +4244,9 @@
         }
       }
     },
+    "未启用MacPlayTools触控模式" : {
+
+    },
     "未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问" : {
 
     },
@@ -4356,6 +4412,9 @@
           }
         }
       }
+    },
+    "测试" : {
+
     },
     "深入调查" : {
       "localizations" : {
@@ -4634,6 +4693,12 @@
           }
         }
       }
+    },
+    "窗口大小：" : {
+
+    },
+    "等待测试" : {
+
     },
     "策略" : {
       "localizations" : {
@@ -5286,6 +5351,9 @@
         }
       }
     },
+    "运行窗口化的《明日方舟》时，请尝试双击标题栏调整窗口大小，切换并保持为较大的窗口。" : {
+
+    },
     "还原默认" : {
 
     },
@@ -5468,6 +5536,9 @@
         }
       }
     },
+    "预设" : {
+
+    },
     "领取周年庆赠送月卡奖励" : {
       "localizations" : {
         "ko" : {
@@ -5543,6 +5614,9 @@
           }
         }
       }
+    },
+    "高度：" : {
+
     },
     "黄票商店" : {
       "localizations" : {
