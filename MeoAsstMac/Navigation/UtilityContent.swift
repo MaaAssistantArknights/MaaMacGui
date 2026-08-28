@@ -42,7 +42,7 @@ struct UtilityContent: View {
                         Label("开始", systemImage: "play.fill")
                     }
                     .help("开始")
-                case .video, .gacha, .minigame, nil:
+                default:
                     Button(action: {}) {
                         Label("停止", systemImage: "stop.fill")
                     }
@@ -69,11 +69,7 @@ struct UtilityContent: View {
                 try await viewModel.recognizeDepot()
             case .oper:
                 try await viewModel.recognizeOperBox()
-            case .minigame:
-                break
-            case .video, .gacha:
-                break
-            case .none:
+            default:
                 break
             }
         }
@@ -98,6 +94,7 @@ enum UtilityEntry: Int, CaseIterable, Codable, Identifiable {
     case video
     case gacha
     case minigame
+    case maatools
 }
 
 extension UtilityEntry: CustomStringConvertible {
@@ -115,6 +112,8 @@ extension UtilityEntry: CustomStringConvertible {
             return String(localized: "干员寻访")
         case .minigame:
             return String(localized: "小游戏")
+        case .maatools:
+            return String(localized: "分辨率指南")
         }
     }
 
@@ -132,6 +131,8 @@ extension UtilityEntry: CustomStringConvertible {
             return "person.fill.viewfinder"
         case .minigame:
             return "gamecontroller.fill"
+        case .maatools:
+            return "macwindow"
         }
     }
 
