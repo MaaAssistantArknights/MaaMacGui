@@ -90,7 +90,7 @@ extension FightConfiguration {
     fileprivate init(migrating config: LegacyFightConfiguration) {
         self.stage = config.stage
         self.medicine = config.medicine
-        self.expiring_medicine = config.expiring_medicine
+        self.medicine_expire_days = (config.expiring_medicine ?? 0) > 0 ? 2 : 0
         self.stone = config.stone
         self.times = config.times
         self.series = config.series

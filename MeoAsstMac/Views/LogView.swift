@@ -23,7 +23,6 @@ struct LogView: View {
                 }
                 .width(min: 100, ideal: 300)
             }
-            .animation(.default, value: newModel.logs)
             .toolbar {
                 @Bindable var newModel = newModel
                 Toggle(isOn: $newModel.trackTail) {

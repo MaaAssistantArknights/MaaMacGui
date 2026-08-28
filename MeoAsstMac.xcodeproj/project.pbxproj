@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
@@ -41,6 +42,7 @@
 		832985BB29EFA26D009F7ED5 /* TaskDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BA29EFA26D009F7ED5 /* TaskDetail.swift */; };
 		832985BD29EFA43B009F7ED5 /* MAADetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985BC29EFA43B009F7ED5 /* MAADetail.swift */; };
 		832985C129EFB665009F7ED5 /* UtilityDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832985C029EFB665009F7ED5 /* UtilityDetail.swift */; };
+		832D14973042F6C40000C09B /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 832D14963042F6C40000C09B /* JBird */; };
 		8334777A28F3A14A00499D0A /* ConnectionSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8334777928F3A14A00499D0A /* ConnectionSettingsView.swift */; };
 		833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */; };
 		833786D328F188D900D39D6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 833786D228F188D900D39D6F /* Assets.xcassets */; };
@@ -85,7 +87,6 @@
 		8391C9FA2B2746FA0047DB20 /* MaaToolClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */; };
 		83985BC03025F0CF00D2A789 /* CopilotListContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BBF3025F0CF00D2A789 /* CopilotListContent.swift */; };
 		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
-		83A0F4B7303AFC9A00C81B05 /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 83A0F4B6303AFC9A00C81B05 /* JBird */; };
 		83AAF81830416ACF003752BD /* ByteReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81730416ACF003752BD /* ByteReader.swift */; };
 		83AAF81A30417267003752BD /* MaaToolsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81930417267003752BD /* MaaToolsClient.swift */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
@@ -253,7 +254,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				83A0F4B7303AFC9A00C81B05 /* JBird in Frameworks */,
+				832D14973042F6C40000C09B /* JBird in Frameworks */,
+				830565483042DD6C0077CD3D /* JBird in Frameworks */,
 				83782A2D2CFFB00000A32BDD /* LegacyUserTasks in Frameworks */,
 				834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
@@ -537,7 +539,8 @@
 				830C3D1B29BC7D8600B13A9F /* Sparkle */,
 				8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */,
 				83782A2C2CFFB00000A32BDD /* LegacyUserTasks */,
-				83A0F4B6303AFC9A00C81B05 /* JBird */,
+				830565473042DD6C0077CD3D /* JBird */,
+				832D14963042F6C40000C09B /* JBird */,
 			);
 			productName = MeoAsstMac;
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
@@ -571,7 +574,7 @@
 			packageReferences = (
 				830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */,
 				8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
-				83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */,
+				832D14953042F6C40000C09B /* XCRemoteSwiftPackageReference "JBird" */,
 			);
 			productRefGroup = 833786CC28F188D800D39D6F /* Products */;
 			projectDirPath = "";
@@ -913,6 +916,14 @@
 				minimumVersion = 2.0.0;
 			};
 		};
+		832D14953042F6C40000C09B /* XCRemoteSwiftPackageReference "JBird" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/hguandl/JBird.git";
+			requirement = {
+				branch = "xcode-26";
+				kind = branch;
+			};
+		};
 		8347B5A92CDF89CC00AEB627 /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
@@ -921,21 +932,22 @@
 				minimumVersion = 0.9.19;
 			};
 		};
-		83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/vsanthanam/JBird";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.3.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		830565473042DD6C0077CD3D /* JBird */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = JBird;
+		};
 		830C3D1B29BC7D8600B13A9F /* Sparkle */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 830C3D1A29BC7D8600B13A9F /* XCRemoteSwiftPackageReference "Sparkle" */;
 			productName = Sparkle;
+		};
+		832D14963042F6C40000C09B /* JBird */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 832D14953042F6C40000C09B /* XCRemoteSwiftPackageReference "JBird" */;
+			productName = JBird;
 		};
 		8347B5AA2CDF89CC00AEB627 /* ZIPFoundation */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -945,11 +957,6 @@
 		83782A2C2CFFB00000A32BDD /* LegacyUserTasks */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LegacyUserTasks;
-		};
-		83A0F4B6303AFC9A00C81B05 /* JBird */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 83A0F4B5303AFC9900C81B05 /* XCRemoteSwiftPackageReference "JBird" */;
-			productName = JBird;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -27,13 +27,15 @@ extension JSONInitializable {
     }
 }
 
-private func decodeMessage<T: Decodable>(_ type: T.Type, from json: JSON, context: String) -> T? {
-    do {
-        let data = try json.serialize()
-        return try JSON.Decoder().decode(T.self, from: data)
-    } catch {
-        logger.error("Failed to decode \(context): \(error); details: \(json)")
-        return nil
+extension Decodable {
+    fileprivate init?(json: JSON, context: String) {
+        do {
+            let data = try json.serialize()
+            self = try JSONDecoder().decode(Self.self, from: data)
+        } catch {
+            logger.error("Failed to parse \(context): \(error); details: \(json)")
+            return nil
+        }
     }
 }
 
@@ -42,14 +44,21 @@ private func decodeMessage<T: Decodable>(_ type: T.Type, from json: JSON, contex
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
         switch message.code {
-        case .InternalError, .InitFailed:
-            // Currently not emitted by Core.
+        case .InternalError:
+            // WPF retains this callback but currently performs no operation.
+            break
+
+        case .InitFailed:
+            // Core currently does not emit this callback.
+            // TODO: (Dialog) Show the initialization error dialog.
+            // TODO: (ApplicationLifecycle) Terminate the app after initialization fails.
             break
 
         case .ConnectionInfo:
             processConnectionInfo(message)
 
         case .AsyncCallInfo:
+            // MAAHandle consumes async-call callbacks before they reach the ViewModel.
             assert(false, "Should have been processed in MAAHandle")
 
         case .Destroyed:
@@ -67,7 +76,7 @@ extension MAAViewModel {
             break
 
         case .ReportRequest:
-            // TODO: Perform the HTTP data-reporting request provided by Core.
+            // TODO: (NetworkReport) Perform the HTTP data-reporting request provided by Core.
             break
 
         default:
@@ -78,6 +87,15 @@ extension MAAViewModel {
 
 // MARK: - Process Connection
 
+private func parseResolution(details: JSON) -> (width: Int, height: Int)? {
+    guard let width: Int = try? details["details"]["width"],
+        let height: Int = try? details["details"]["height"]
+    else {
+        return nil
+    }
+    return (width, height)
+}
+
 extension MAAViewModel {
     private func processConnectionInfo(_ message: MaaMessage) {
         let details = message.details
@@ -85,30 +103,31 @@ extension MAAViewModel {
             return
         }
 
-        func resolution(details: JSON) -> (width: Int, height: Int)? {
-            guard let width: Int = try? details["details"]["width"],
-                let height: Int = try? details["details"]["height"]
-            else {
-                return nil
-            }
-            return (width, height)
-        }
-
         switch what {
         case "Connected":
+            // TODO: (ConnectionState) Store the connected ADB path and address, then clear the last connection error.
             if let address: String = try? details["details"]["address"] {
                 logInfo("已连接至 \(address)")
             }
 
         case "UnsupportedResolution":
-            if let (width, height) = resolution(details: details), width > 0, height > 0 {
+            // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
                 logError("ResolutionNotSupportedCurrentResolution \(width) \(height)")
             } else {
                 logError("ResolutionNotSupported")
             }
 
+        case "ResolutionChanged":
+            // TODO: (ConnectionState) Mark the invalidated connection as unavailable and retain the error message.
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
+                logError("ResolutionChangedCurrentResolution \(width) \(height)")
+            } else {
+                logError("ResolutionChanged")
+            }
+
         case "ResolutionInfo":
-            if let (width, height) = resolution(details: details) {
+            if let (width, height) = parseResolution(details: details) {
                 if clientChannel == .YoStarEN, width != 1920 || height != 1080 {
                     logError("ResolutionInfoYoStarEN")
                 }
@@ -119,6 +138,7 @@ extension MAAViewModel {
             break
 
         case "ResolutionError":
+            // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
             logError("ResolutionAcquisitionFailure")
 
         case "Reconnecting":
@@ -131,6 +151,7 @@ extension MAAViewModel {
             logTrace("ReconnectSuccess")
 
         case "Disconnect":
+            // TODO: (ConnectionState) Mark the current connection as unavailable.
             logError("ReconnectFailed")
             if status == .idle {
                 break
@@ -147,9 +168,12 @@ extension MAAViewModel {
             logError("ScreencapFailed")
 
         case "TouchModeNotAvailable":
+            // TODO: (ConnectionState) Mark the current connection as unavailable.
             logError("TouchModeNotAvailable")
 
         case "FastestWayToScreencap":
+            // TODO: (ConnectionState) Store the selected screencap method and its summary.
+            // TODO: (Tooltip) Show alternative screencap methods and costs.
             guard let cost: Int = try? details["details"]["cost"],
                 let method: String = try? details["details"]["method"]
             else {
@@ -162,6 +186,7 @@ extension MAAViewModel {
             }
 
         case "ScreencapCost":
+            // TODO: (Achievement) Mirror WPF screenshot-performance achievement progress.
             guard let minimum: Int = try? details["details"]["min"],
                 let maximum: Int = try? details["details"]["max"],
                 let average: Int = try? details["details"]["avg"]
@@ -220,6 +245,16 @@ extension MAAViewModel {
 
 // MARK: - Process TaskChain
 
+extension NewViewModel.SanityReport {
+    fileprivate func fullRecoveryTime() -> Date? {
+        guard let reportedAt else {
+            return nil
+        }
+        let missingSanity = max(maximum - current, 0)
+        return reportedAt.addingTimeInterval(TimeInterval(missingSanity * 6 * 60))
+    }
+}
+
 @JSONRepresentable
 private struct TaskChainMessage {
     let taskchain: String
@@ -229,6 +264,17 @@ private struct TaskChainMessage {
 extension MAAViewModel {
     private func processTaskChainMessage(_ message: MaaMessage) {
         if message.code == .AllTasksCompleted {
+            // TODO: (LogCard) Update the all-tasks-completed log card.
+            // TODO: (Notification) Show the all-tasks-completed notification.
+            // TODO: (ExternalNotification) Send the all-tasks-completed event.
+            // TODO: (Notification) Schedule the sanity-recovery notification.
+            // TODO: (PostAction) Execute the configured completion action.
+            // TODO: (ViewState) Show the April Fools completion animation when applicable.
+            // TODO: (Notification) Show completion feedback for standalone Copilot tasks.
+            // TODO: (Persistence) Record the credit-store easter-egg date when applicable.
+            // TODO: (Dialog) Present the credit-store easter-egg dialog when applicable.
+            // TODO: (ViewState) Apply the easter-egg language after confirmation.
+            // TODO: (Achievement) Mirror WPF all-tasks-completed achievement progress.
             defer {
                 resetStatus()
             }
@@ -245,12 +291,26 @@ extension MAAViewModel {
                 guard let start = logStore?.taskStartTime else {
                     break
                 }
-                let duration = (start ..< .now).formatted(.timeDuration)
-                logTrace(.allTasksComplete(duration: duration))
-                // TODO: Align sanity report, notifications, and post-task actions.
+                let now = Date.now
+                let duration = (start..<now).formatted(.timeDuration)
+                let sanitySuffix: String
+                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+                    let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
+                    let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
+                    let sanityReport = String(localized: "SanityReport \(recoveryDate) \(remaining)")
+                    sanitySuffix = "\n\(sanityReport)"
+                } else {
+                    sanitySuffix = ""
+                }
+                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
                 break
             }
             return
+        }
+
+        if message.code == .TaskChainStopped {
+            resetStatus()
+            logTrace("Stopped")
         }
 
         guard let info = TaskChainMessage(json: message.details, context: "TaskChain") else {
@@ -258,13 +318,14 @@ extension MAAViewModel {
         }
 
         if info.taskchain == "CloseDown" {
+            // WPF retains this task-chain callback but currently performs no operation.
             return
         }
 
         if info.taskchain == "Recruit", message.code == .TaskChainError {
+            // TODO: (Notification) Show the recruit-recognition error notification.
+            // TODO: (ViewState) Show the recruit-recognition error in RecruitView.
             let resource = LocalizedStringResource("IdentifyTheMistakes")
-            // TODO: Push user notification of this error message.
-            // TODO: Show this error message in RecruitView.
             _ = resource
         }
 
@@ -277,27 +338,37 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .cancel
             }
-            resetStatus()
-            logTrace("Stopped")
 
         case .TaskChainError:
+            // TODO: (LogCard) Update the task-error log card.
+            // TODO: (Screenshot) Fetch the latest screenshot for the error card.
+            // TODO: (Tooltip) Use the error screenshot as the log tooltip.
+            // TODO: (Notification) Show the task-error notification.
+            // TODO: (ExternalNotification) Send the task-error event.
+            // TODO: (Achievement) Record Copilot task errors.
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .failure
             }
-            logError("TaskError \(taskChain)")
+            let error: String? = try? message.details["details"]["error"]
+            if error == "OutOfMemory" {
+                logError("OutOfMemoryError \(taskChain)")
+            } else {
+                logError("TaskError \(taskChain)")
+            }
             if isCopilot {
                 logError("CombatError")
             }
-        // TODO: Align screenshot/card updates and notifications.
 
         case .TaskChainStart:
+            // macOS task items do not currently support custom display names.
+            // TODO: (ViewState) Switch the overlay log source for Copilot and daily tasks.
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .running
             }
             logTrace("StartTask \(taskChain)")
-        // TODO: Use the configured task display name.
 
         case .TaskChainCompleted:
+            // TODO: (Achievement) Mirror WPF task-completion achievement progress.
             if info.taskchain == "Infrast" {
                 if let id = taskID(coreID: info.taskid),
                     let task = tasks[id],
@@ -333,8 +404,12 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .success
             }
-            logTrace("CompleteTask \(taskChain)")
-        // TODO: Align the sanity report.
+            if info.taskchain == "Fight", let report = logStore?.sanityReport {
+                let sanity = LocalizedStringResource("CurrentSanity \(report.current) \(report.maximum)")
+                logTrace("CompleteTask \(taskChain)\n\(sanity)")
+            } else {
+                logTrace("CompleteTask \(taskChain)")
+            }
 
         case .TaskChainExtraInfo:
             let what: String? = try? message.details["what"]
@@ -395,8 +470,6 @@ private struct BattleFormationErrorDetails {
     let opers: [String: [MissingOperatorDetails]]
 }
 
-typealias LSR = LocalizedStringResource
-
 extension MAAViewModel {
     private func processSubTaskError(_ details: JSON) {
         guard let info = SubTaskErrorMessage(json: details, context: "SubTaskError") else {
@@ -430,6 +503,7 @@ extension MAAViewModel {
             logError("TheEx")
 
         case "BattleFormationTask":
+            // TODO: (Achievement) Record formations missing multiple operator groups.
             if info.why == "OperatorMissing", let payload = info.details,
                 let formation = BattleFormationErrorDetails(json: payload, context: "BattleFormationError")
             {
@@ -488,8 +562,35 @@ extension MAAViewModel {
 
             switch process.task {
             case "StartButton2", "AnnihilationConfirm":
-                logInfo("MissionStart.FightTask \(process.exec_times) \(sanityCost)")
-            // TODO: Align fight-series, sanity, medicine, stone, and screenshot-card details.
+                // TODO: (LogCard) Start a new fight log card section.
+                let sanityCost = logStore?.fightReport?.sanityCost.map { "\($0)" } ?? "???"
+                let times: String
+                if let report = logStore?.fightReport,
+                    let timesFinished = report.timesFinished,
+                    let series = report.series, series > 0
+                {
+                    let next = timesFinished + 1
+                    times = series == 1 ? "\(next)" : "\(next)~\(timesFinished + series)"
+                } else {
+                    times = "???"
+                }
+
+                var statusParts = [LocalizedStringResource]()
+                if let report = logStore?.sanityReport {
+                    statusParts.append("CurrentSanity \(report.current) \(report.maximum)")
+                }
+                if expiringMedicineUsedTimes > 0 {
+                    statusParts.append(
+                        "MedicineUsedTimesWithExpiring \(medicineUsedTimes) \(expiringMedicineUsedTimes)")
+                } else if medicineUsedTimes > 0 {
+                    statusParts.append("MedicineUsedTimes \(medicineUsedTimes)")
+                }
+                if let stoneUsedTimes = logStore?.stoneUsedTimes, stoneUsedTimes > 0 {
+                    statusParts.append("StoneUsedTimes \(stoneUsedTimes)")
+                }
+                let statusString = statusParts.map { String(localized: $0) }.joined(separator: "  ")
+                let statusSuffix = statusParts.isEmpty ? "" : "\n\(statusString)"
+                logInfo(.missionStartFightTask(times: times, cost: sanityCost, using: statusSuffix))
 
             case "StoneConfirm":
                 logInfo("StoneUsed \(process.exec_times)")
@@ -499,27 +600,31 @@ extension MAAViewModel {
                 logError("ActingCommandError")
 
             case "FightMissionFailedAndStop":
+                // TODO: (Notification) Show the fight-failure notification.
                 logError("FightMissionFailedAndStop")
-            // TODO: Show the matching notification.
 
             case "CheckEncounter-Uncollected":
+                // TODO: (LogCard) Update the uncollected-reward log card.
+                // TODO: (Notification) Show the uncollected-reward notification.
+                // TODO: (ExternalNotification) Send the uncollected-reward event.
                 logWarn("MiniGame@InteractiveExhibition@UncollectedNotificationContent")
-            // TODO: Align screenshot-card, toast, and external notification behavior.
 
             case "RecruitRefreshConfirm":
                 logInfo("LabelsRefreshed")
 
             case "RecruitConfirm":
+                // TODO: (LogCard) Update the recruit-confirmation log card.
+                // TODO: (Achievement) Record recruit-confirmation progress.
                 if let logStore {
                     logStore.recruitConfirmTimes += 1
                     logInfo("RecruitConfirm \(logStore.recruitConfirmTimes)")
                 }
-            // TODO: Update the screenshot card.
 
             case "InfrastDormDoubleConfirmButton":
-                logError("InfrastDormDoubleConfirmed")
+                logInfo("InfrastDormDoubleConfirmed")
 
             case "ExitThenAbandon":
+                // TODO: (Achievement) Record Roguelike retreats.
                 logWarn("ExplorationAbandoned")
 
             case "StartAction":
@@ -527,12 +632,12 @@ extension MAAViewModel {
                 break
 
             case "MissionCompletedFlag":
+                // TODO: (LogCard) Update the Roguelike battle-success log card.
                 logInfo("FightCompleted")
-            // TODO: Update the screenshot card.
 
             case "MissionFailedFlag":
+                // TODO: (LogCard) Update the Roguelike battle-failure log card.
                 logError("FightFailed")
-            // TODO: Update the screenshot card.
 
             case "StageTrader":
                 logInfo("Trader")
@@ -560,6 +665,7 @@ extension MAAViewModel {
                 logInfo("UpperLimit")
 
             case "OfflineConfirm", "OfflineConfirmAfterBattle":
+                // TODO: (Notification) Show the game-disconnection notification.
                 logWarn("GameDrop")
                 Task {
                     do {
@@ -568,17 +674,17 @@ extension MAAViewModel {
                         logger.warning("Failed to stop after game disconnect: \(error)")
                     }
                 }
-            // TODO: Align the toast notification.
 
             case "GamePass":
+                // TODO: (Achievement) Record completed Roguelike runs.
                 logRare("RoguelikeGamePass")
 
             case "BattleStartAll":
                 logInfo("MissionStart")
 
             case "StageDrops-Stars-3", "StageDrops-Stars-Adverse":
+                // TODO: (ViewState) Mark the current Copilot task as successful.
                 logInfo("CompleteCombat")
-            // TODO: Mark the Copilot task successful.
 
             case "StageTraderSpecialShoppingAfterRefresh":
                 logRare("RoguelikeSpecialItemBought")
@@ -632,9 +738,10 @@ extension MAAViewModel {
         case "Infrast":
             switch process.task {
             case "UnlockClues":
+                // TODO: (Achievement) Record clue-exchange progress.
                 logTrace("ClueExchangeUnlocked")
             case "SendClues":
-                // WPF retains this callback branch; macOS deliberately performs no operation.
+                // TODO: (Achievement) Record sent-clue progress as WPF does.
                 break
             default:
                 break
@@ -648,13 +755,27 @@ extension MAAViewModel {
         case "Mall":
             switch process.task {
             case "StageDrops-Stars-3":
+                // TODO: (Achievement) Record completed credit fights.
+                if let id = taskID(coreID: info.taskid),
+                    case .mall(var config) = tasks[id]
+                {
+                    config.creditFightDate = .now
+                    tasks[id] = .mall(config)
+                }
                 let taskName = LocalizedStringResource("CreditFight")
                 logInfo("CompleteTask \(taskName)")
-            // TODO: Persist the credit-fight date.
-            case "VisitLimited", "VisitNextBlack":
+            case "VisitLimited":
+                if let id = taskID(coreID: info.taskid),
+                    case .mall(var config) = tasks[id]
+                {
+                    config.friendVisitDate = .now
+                    tasks[id] = .mall(config)
+                }
                 let taskName = LocalizedStringResource("Visiting")
                 logInfo("CompleteTask \(taskName)")
-            // TODO: Persist the friend-visit date.
+            case "VisitNextBlack":
+                let taskName = LocalizedStringResource("Visiting")
+                logInfo("CompleteTask \(taskName)")
             default:
                 break
             }
@@ -693,6 +814,7 @@ private struct StageDropsDetails {
     let stats: [StageDropItemDetails]
     let stage: StageDropStageDetails?
     let cur_times: Int?
+    let annihilation_weekly_process: [Int]?
 }
 
 @JSONRepresentable
@@ -766,6 +888,27 @@ private struct UseMedicineDetails {
     let medicines: [MedicineItemDetails]?
 }
 
+@JSONRepresentable
+private struct SanityBeforeStageDetails {
+    let current_sanity: Int?
+    let max_sanity: Int?
+    let report_time: String?
+}
+
+@JSONRepresentable
+private struct FightTimesDetails {
+    let sanity_cost: Int?
+    let series: Int?
+    let times_finished: Int?
+    let finished: Bool?
+}
+
+private let sanityReportTimeParser = Date.ParseStrategy(
+    format:
+        "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
+    locale: Locale(identifier: "en_US_POSIX"),
+    timeZone: .current)
+
 extension MAAViewModel {
     private func processSubTaskExtraInfo(_ details: JSON) {
         guard let info = SubTaskExtraInfoMessage(json: details, context: "SubTaskExtraInfo") else {
@@ -774,16 +917,16 @@ extension MAAViewModel {
 
         switch info.taskchain {
         case "Recruit":
-            // TODO: Align WPF's general recruit-calculation state update for every Recruit callback.
+            // TODO: (ViewState) Forward every Recruit callback to the recruit-calculation state.
             break
 
         case "Depot":
-            depot = decodeMessage(MAADepot.self, from: info.details, context: "Depot")
-        // TODO: Record the synchronization time and associate the result with taskid.
+            // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
+            logStore?.setDepot(.init(json: info.details, context: "Depot"))
 
         case "OperBox":
-            operBox = decodeMessage(MAAOperBox.self, from: info.details, context: "OperBox")
-        // TODO: Record the synchronization time and associate the result with taskid.
+            // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
+            logStore?.setOperBox(.init(json: info.details, context: "OperBox"))
 
         default:
             break
@@ -791,6 +934,11 @@ extension MAAViewModel {
 
         switch info.what {
         case "StageDrops":
+            // FIXME: Localize furniture drops before assembling the drop list.
+            // TODO: (Tooltip) Show recognized drop details.
+            // TODO: (LogCard) Update the stage-drop log card.
+            // TODO: (DataSync) Merge recognized drops into Depot data.
+            // TODO: (Achievement) Record sanity-spending progress.
             guard let dropInfo = StageDropsDetails(json: info.details, context: "StageDrops") else {
                 return
             }
@@ -807,20 +955,23 @@ extension MAAViewModel {
             let dropText = drops.isEmpty ? String(localized: noDrop) : drops.joined(separator: "\n")
             let stageCode = dropInfo.stage?.stageCode ?? ""
             let totalDrop = LocalizedStringResource("TotalDrop")
+            var additionInfo = [LocalizedStringResource]()
             if let curTimes = dropInfo.cur_times, curTimes > 0 {
-                let currentTimes = LocalizedStringResource("CurTimes")
-                logTrace("\(stageCode) \(totalDrop)\n\(dropText)\n\(currentTimes) : \(curTimes)")
-            } else {
-                logTrace("\(stageCode) \(totalDrop)\n\(dropText)")
+                additionInfo.append("CurTimes : \(curTimes)")
             }
-        // TODO: Align furniture naming, stage/current-times details, tooltip, screenshot card,
-        // and depot synchronization.
+            if let annihilation = dropInfo.annihilation_weekly_process, annihilation.count == 2 {
+                additionInfo.append("剿灭模式 : \(annihilation[0]) / \(annihilation[1])")
+            }
+            let additionText = additionInfo.map { String(localized: $0) }.joined(separator: "\n")
+            let additionLine = additionInfo.isEmpty ? "" : "\n\(additionText)"
+            logTrace("\(stageCode) \(totalDrop)\n\(dropText)\(additionLine)")
 
         case "EnterFacility":
+            // FIXME: Localize the dynamic facility name.
+            // TODO: (LogCard) Start a new infrastructure-room log card section.
             let facility: String = (try? info.details["facility"]) ?? ""
             let index: Int = (try? info.details["index"]) ?? -2
             logTrace("ThisFacility \(facility) \(String(format: "%02d", index + 1))")
-        // TODO: Align log-card splitting.
 
         case "ProductIncorrect":
             logError("ProductIncorrect")
@@ -835,29 +986,35 @@ extension MAAViewModel {
             logError("ProductChangeFail")
 
         case "InfrastConfirmButton":
-            // TODO: Fetch the latest screenshot and update the log card.
+            // TODO: (Screenshot) Fetch the latest infrastructure screenshot.
+            // TODO: (LogCard) Update the infrastructure-confirmation log card.
             break
 
         case "RecruitTagsDetected":
+            // TODO: (LogCard) Start a new recruit-result log card section.
+            // TODO: (Screenshot) Update the recruit card with the current screenshot.
             let tags: [String] = (try? info.details["tags"]) ?? []
             let tagText = tags.isEmpty ? String(localized: "Error") : tags.joined(separator: "\n")
             logTrace("RecruitingResults \(tagText)")
-        // TODO: Align log-card splitting and screenshot updates.
 
         case "RecruitSpecialTag", "RecruitRobotTag":
+            // TODO: (Notification) Show the matching special-tag recruit notification.
             guard let _: String = try? info.details["tag"] else {
                 return
             }
-        // TODO: Show the corresponding recruit notification.
 
         case "RecruitPreservedTag":
+            // TODO: (Notification) Show the matching preserved-tag recruit notification.
             guard let tag: String = try? info.details["tag"] else {
                 return
             }
             logTrace("RecruitingTips \(tag)")
-        // TODO: Show the corresponding recruit notification.
 
         case "RecruitResult":
+            // TODO: (Tooltip) Show detailed recruit combinations.
+            // TODO: (LogStyle) Emphasize high-rarity recruit results.
+            // TODO: (Notification) Show high-rarity recruit notifications.
+            // TODO: (Achievement) Mirror WPF recruit-result achievement progress.
             guard let level: Int = try? info.details["level"] else {
                 return
             }
@@ -866,8 +1023,7 @@ extension MAAViewModel {
             } else {
                 logInfo("\(level) ★ Tags")
             }
-            recruit = decodeMessage(MAARecruit.self, from: info.details, context: "RecruitResult")
-        // TODO: Align tooltip, emphasis, and notification.
+            recruit = MAARecruit(json: info.details, context: "RecruitResult")
 
         case "RecruitSupportOperator":
             guard let name: String = try? info.details["name"] else {
@@ -881,6 +1037,7 @@ extension MAAViewModel {
             logTrace("Choose \(selected)")
 
         case "RecruitTagsRefreshed":
+            // TODO: (Achievement) Record recruit-tag refreshes.
             guard let count: Int = try? info.details["count"] else {
                 return
             }
@@ -910,38 +1067,45 @@ extension MAAViewModel {
             logTrace("AccountSwitch \(accountName)")
 
         case "StageInfo":
+            // TODO: (ViewState) Mark delayed Roguelike aborts as waiting for combat to finish.
             guard let name: String = try? info.details["name"] else {
                 return
             }
             logTrace("StartCombat \(name)")
-        // TODO: Align delayed roguelike-abort state.
 
         case "StageInfoError":
+            // TODO: (LogCard) Split the stage-error log card.
+            // TODO: (Screenshot) Update the stage-error card with the current screenshot.
             logError("StageInfoError")
-        // TODO: Align log-card splitting and screenshot updates.
 
         case "BattleFormation":
+            // TODO: (Localization) Localize operator names.
             let formation: [String] = (try? info.details["formation"]) ?? []
             logTrace("BattleFormation \(formation.joined(separator: ", "))")
-        // TODO: Localize operator names.
 
         case "BattleFormationParseFailed":
             logTrace("BattleFormationParseFailed")
 
         case "BattleFormationSelected":
+            // TODO: (Localization) Localize the selected operator name.
             let selected: String = (try? info.details["selected"]) ?? ""
             let groupName: String? = try? info.details["group_name"]
             let displayName = groupName.map { "\($0) => \(selected)" } ?? selected
             logTrace("BattleFormationSelected \(displayName)")
-        // TODO: Localize operator names.
 
         case "BattleFormationOperUnavailable":
+            // TODO: (ViewState) Record that Copilot requirements were ignored.
+            // TODO: (Localization) Localize the operator name.
+            // TODO: (Localization) Localize the unavailable requirement type.
+            // TODO: (LogStyle) Use warning or error styling according to requirement settings.
             let operName: String = (try? info.details["oper_name"]) ?? ""
             let requirementType: String = (try? info.details["requirement_type"]) ?? "Unknown Type"
             logError("BattleFormationOperUnavailable \(operName) \(requirementType)")
-        // TODO: Track ignored requirements and localize names/types. Use warning when requirements are ignored.
 
         case "CopilotAction":
+            // TODO: (LogStyle) Apply the callback-provided document color.
+            // TODO: (Localization) Localize Copilot action names.
+            // TODO: (Localization) Localize target operator names.
             guard let action = CopilotActionDetails(json: info.details, context: info.what) else {
                 return
             }
@@ -952,14 +1116,14 @@ extension MAAViewModel {
             if let elapsedTime = action.elapsed_time, elapsedTime >= 0 {
                 logTrace("ElapsedTime \(elapsedTime)")
             }
-        // TODO: Apply doc_color and localize action/operator names.
 
         case "CopilotListLoadTaskFileSuccess":
+            // TODO: (ViewState) Store the current Copilot ID.
+            // TODO: (ViewState) Reset the ignored-requirement state.
             guard let file = CopilotFileDetails(json: info.details, context: info.what) else {
                 return
             }
             logTrace("Parse \(file.file_name)[\(file.stage_name)] Success")
-        // TODO: Store the current Copilot ID and reset ignored-requirement state.
 
         case "SSSStage":
             guard let stage: String = try? info.details["stage"] else {
@@ -976,9 +1140,9 @@ extension MAAViewModel {
             logRare("SSSGamePass")
 
         case "UnsupportedLevel":
+            // TODO: (ResourceUpdate) Update resources and reload them into Core.
             let level: JSON = (try? info.details["level"]) ?? .null
             logError("UnsupportedLevel \(String(describing: level))")
-        // TODO: Trigger resource update and reload.
 
         case "CustomInfrastRoomGroupsMatch":
             guard let group: String = try? info.details["group"] else {
@@ -993,14 +1157,15 @@ extension MAAViewModel {
             logTrace("RoomGroupsMatchFailed \(groups.joined(separator: ", "))")
 
         case "CustomInfrastRoomOperators":
+            // TODO: (Localization) Localize infrastructure operator names.
             let names: [String] = (try? info.details["names"]) ?? []
             logTrace("RoomOperators \(names.joined(separator: ", "))")
-        // TODO: Localize operator names.
 
         case "InfrastTrainingIdle":
             logTrace("TrainingIdle")
 
         case "InfrastTrainingCompleted", "InfrastTrainingTimeLeft":
+            // TODO: (Localization) Localize the training operator name.
             let operatorName: String = (try? info.details["operator"]) ?? "UnKnown"
             let skill: String = (try? info.details["skill"]) ?? "UnKnown"
             let level: Int = (try? info.details["level"]) ?? -1
@@ -1013,7 +1178,6 @@ extension MAAViewModel {
                 let trainingTimeLeft = LocalizedStringResource("TrainingTimeLeft")
                 logInfo("[\(operatorName)] \(skill)\n\(trainingLevel): \(level)\n\(trainingTimeLeft): \(time)")
             }
-        // TODO: Localize operator names.
 
         case "ReclamationReport":
             let totalBadges: Int = (try? info.details["total_badges"]) ?? -1
@@ -1031,13 +1195,13 @@ extension MAAViewModel {
             guard let times: Int = try? info.details["times"] else {
                 return
             }
-            logInfo("MissionStart \(times)")
+            logInfo("MissionStart \(times) UnitTime")
 
         case "ReclamationSmeltGold":
             guard let times: Int = try? info.details["times"] else {
                 return
             }
-            logTrace("AlgorithmDoneSmeltGold \(times)")
+            logTrace("AlgorithmDoneSmeltGold \(times) UnitTime")
 
         case "RoguelikeInvestmentReachFull":
             logInfo("RoguelikeInvestmentReachFull")
@@ -1055,17 +1219,18 @@ extension MAAViewModel {
             logInfo("RoguelikeInvestment \(investment.count) \(investment.total) \(investment.deposit)")
 
         case "RoguelikeSettlement":
+            // TODO: (DataCorrection) Validate and correct difficulty OCR for the selected theme.
+            // TODO: (LogCard) Update the Roguelike settlement log card.
+            // TODO: (Screenshot) Update the settlement card with the current screenshot.
             guard let settlement = RoguelikeSettlementDetails(json: info.details, context: info.what) else {
                 return
             }
             logTrace(
                 "RoguelikeSettlement \(settlement.game_pass ? "✓" : "✗") \(settlement.floor.map(String.init) ?? "") \(settlement.step.map(String.init) ?? "") \(settlement.combat.map(String.init) ?? "") \(settlement.emergency.map(String.init) ?? "") \(settlement.boss.map(String.init) ?? "") \(settlement.recruit.map(String.init) ?? "") \(settlement.collection.map(String.init) ?? "") \(settlement.difficulty.map(String.init) ?? "") \(settlement.score.map(String.init) ?? "") \(settlement.exp ?? "") \(settlement.skill ?? "")"
             )
-        // TODO: Apply the selected theme's difficulty validation/OCR correction and update the
-        // screenshot card.
 
         case "RoguelikeCombatEnd":
-            // TODO: Clear the delayed-abort/in-combat state after Roguelike combat.
+            // TODO: (ViewState) Clear the delayed-abort and in-combat state.
             break
 
         case "RoguelikeEvent":
@@ -1075,6 +1240,8 @@ extension MAAViewModel {
             logInfo("RoguelikeEvent \(name)")
 
         case "RoguelikeEncounterOptions":
+            // TODO: (LogCard) Update the Roguelike encounter-options log card.
+            // TODO: (Screenshot) Update the encounter-options card with the current screenshot.
             let options: [RoguelikeEncounterOptionDetails] = (try? info.details["options"]) ?? []
             let optionLines = options.map { option in
                 let resource: LocalizedStringResource
@@ -1091,9 +1258,12 @@ extension MAAViewModel {
             } else {
                 logInfo("\(optionsTitle)\n\(optionLines)")
             }
-        // TODO: Update the screenshot card.
 
         case "BlackFlowRoutingDecision":
+            // TODO: (Localization) Localize BlackFlow movement values.
+            // TODO: (Localization) Localize BlackFlow node types.
+            // TODO: (Localization) Localize BlackFlow reason categories.
+            // TODO: (Localization) Localize BlackFlow reason details.
             guard let decision = BlackFlowRoutingDecisionDetails(json: info.details, context: info.what) else {
                 return
             }
@@ -1101,7 +1271,6 @@ extension MAAViewModel {
                 "BlackFlowRoutingDecision \(decision.floor) \(decision.action_points_before) \(decision.action_points_after) \(decision.movement) \(decision.node_name ?? decision.node_type) \(decision.safety_margin)"
             )
             logInfo("BlackFlowRoutingReason \(decision.reason_category) \(decision.reason_detail ?? "")")
-        // TODO: Localize BlackFlow movement, node type, reason category, and reason detail values.
 
         case "BlackFlowRoutingWarning":
             let code: String = (try? info.details["code"]) ?? ""
@@ -1120,19 +1289,22 @@ extension MAAViewModel {
             }
 
         case "BlackFlowMilestoneChanged":
+            // TODO: (Localization) Localize BlackFlow milestone identifiers.
+            // TODO: (Localization) Localize BlackFlow milestone status values.
             let status: String = (try? info.details["status"]) ?? ""
             let milestoneId: String = (try? info.details["milestone_id"]) ?? ""
             if status != "inactive" {
                 logInfo("BlackFlowMilestoneChanged \(milestoneId) \(status)")
             }
-        // TODO: Localize BlackFlow milestone identifiers and status values.
 
         case "BlackFlowStrategyStarted":
+            // TODO: (Localization) Localize the BlackFlow profile value.
             let profile: String = (try? info.details["profile"]) ?? ""
             logInfo("BlackFlowStrategyStarted \(profile)")
-        // TODO: Localize the BlackFlow profile value.
 
         case "BlackFlowStrategyResult":
+            // TODO: (Localization) Localize the BlackFlow outcome value.
+            // TODO: (Localization) Localize the BlackFlow termination reason.
             let outcome: String = (try? info.details["outcome"]) ?? ""
             let terminationReason: String = (try? info.details["termination_reason"]) ?? ""
             let succeeded: Bool = (try? info.details["succeeded"]) ?? false
@@ -1141,7 +1313,6 @@ extension MAAViewModel {
             } else {
                 logWarn("BlackFlowStrategyResult \(outcome) \(terminationReason)")
             }
-        // TODO: Localize the outcome and termination reason.
 
         case "BoskyPassageNode":
             guard let nodeType: String = try? info.details["node_type"] else {
@@ -1209,12 +1380,21 @@ extension MAAViewModel {
             }
 
         case "UseMedicine":
+            // TODO: (Achievement) Mirror WPF medicine-usage achievement progress.
             guard let medicine = UseMedicineDetails(json: info.details, context: info.what) else {
                 return
             }
+            let expiry: LocalizedStringResource
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                config.medicine_expire_days > 0
+            {
+                expiry = config.localizedExpiry
+            } else {
+                expiry = "即将"
+            }
             if medicine.is_expiring {
                 expiringMedicineUsedTimes += medicine.count
-                logInfo("ExpiringMedicineUsed \("--") \(expiringMedicineUsedTimes) \(medicine.count)")
+                logInfo("ExpiringMedicineUsed \(expiry) \(expiringMedicineUsedTimes) \(medicine.count)")
             } else {
                 medicineUsedTimes += medicine.count
                 logInfo("MedicineUsed \(medicineUsedTimes) \(medicine.count)")
@@ -1222,21 +1402,48 @@ extension MAAViewModel {
             for item in medicine.medicines ?? [] {
                 logInfo("UseMedicine.MedicineInfo \(item.use) \(item.inventory)")
             }
-        // TODO: Calculate expiring-medicine hours from task settings.
 
         case "SanityBeforeStage":
-            guard let currentSanity: Int = try? info.details["current_sanity"] else {
+            logStore?.sanityReport = nil
+            guard let details = SanityBeforeStageDetails(json: info.details, context: info.what),
+                let current = details.current_sanity,
+                let maximum = details.max_sanity,
+                maximum > 0
+            else {
                 return
             }
-            curSanityBeforeFight = currentSanity
-        // TODO: Store the complete sanity report used by WPF.
+            let reportedAt: Date?
+            if let reportTime = details.report_time {
+                do {
+                    reportedAt = try sanityReportTimeParser.parse(reportTime)
+                } catch {
+                    logger.error("Failed to parse SanityBeforeStage report_time: \(error); value: \(reportTime)")
+                    reportedAt = nil
+                }
+            } else {
+                reportedAt = nil
+            }
+            logStore?.sanityReport = NewViewModel.SanityReport(
+                current: current, maximum: maximum, reportedAt: reportedAt)
 
         case "FightTimes":
-            guard let currentSanityCost: Int = try? info.details["sanity_cost"] else {
+            // TODO: (Achievement) Record completed fight-count progress.
+            logStore?.fightReport = nil
+            guard let details = FightTimesDetails(json: info.details, context: info.what) else {
                 return
             }
-            sanityCost = currentSanityCost
-        // TODO: Store the complete fight report and unused-run warning.
+            logStore?.fightReport = NewViewModel.FightReport(
+                sanityCost: details.sanity_cost,
+                series: details.series,
+                timesFinished: details.times_finished,
+                finished: details.finished)
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                let limit = config.times, let series = details.series,
+                let timesFinished = details.times_finished,
+                timesFinished < limit, details.finished == true
+            {
+                logWarn("FightTimesUnused \(timesFinished) \(series) \(timesFinished + series) \(limit)")
+            }
 
         case "StageQueueUnableToAgent":
             guard let stageCode: String = try? info.details["stage_code"] else {
@@ -1250,9 +1457,10 @@ extension MAAViewModel {
             else {
                 return
             }
-            logInfo("StageQueue \(stageCode) \(stars)")
+            logInfo("StageQueue \(stageCode) - \(stars) ★")
 
         case "PixelPaintProgress":
+            // TODO: (LogStyle) Apply the current palette color to progress logs.
             let done: Int = (try? info.details["done"]) ?? 0
             let total: Int = (try? info.details["total"]) ?? 0
             if done >= total, total > 0 {
@@ -1260,15 +1468,19 @@ extension MAAViewModel {
             } else {
                 logTrace("MiniGame@PixelPaint@ProgressLog \(done) \(total)")
             }
-        // TODO: Apply the current palette color to the progress log.
 
         case "Finished" where info.taskchain == "VideoRecognition":
             guard let filename: String = try? info.details["filename"] else {
                 return
             }
-            videoRecoginition = URL(fileURLWithPath: filename)
-            logInfo("Save to: \(filename)")
-        // TODO: Reveal the generated file in Finder.
+            do {
+                let url = URL(filePath: filename)
+                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
+                logStore?.setLastImportedCopilot(dst)
+                logInfo("Save to: \(dst.deletingPathExtension().lastPathComponent)")
+            } catch {
+                logError("无法添加视频作业：\(error.localizedDescription)")
+            }
 
         default:
             break

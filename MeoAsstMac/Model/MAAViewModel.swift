@@ -21,12 +21,6 @@ import SwiftUI
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
-    /// Current sanity value before this fight(s)
-    var curSanityBeforeFight = 0
-
-    /// Sanity cost of current fight(s)
-    var sanityCost = 0
-
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
@@ -95,9 +89,6 @@ import SwiftUI
 
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
-    @Published var depot: MAADepot?
-    @Published var videoRecoginition: URL?
-    @Published var operBox: MAAOperBox?
 
     // MARK: - Connection Settings
 
@@ -259,6 +250,8 @@ extension MAAViewModel {
         logStore?.lastScreencapWarningLevel = 0
         logStore?.hasPrintedFPSHighTip = false
         logStore?.taskStartTime = nil
+        logStore?.sanityReport = nil
+        logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
     }
@@ -435,7 +428,7 @@ extension MAAViewModel {
         do {
             try await startTasks()
         } catch {
-            logError("ConnectFailed")
+            logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
         }
     }

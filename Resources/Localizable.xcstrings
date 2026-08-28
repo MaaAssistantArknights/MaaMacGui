@@ -66,22 +66,12 @@
         }
       }
     },
-    "%@ %@\n%@" : {
+    "%@ %@\n%@%@" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ %2$@\n%3$@"
-          }
-        }
-      }
-    },
-    "%@ %@\n%@\n%@ : %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@\n%3$@\n%4$@ : %5$lld"
+            "value" : "%1$@ %2$@\n%3$@%4$@"
           }
         }
       }
@@ -120,6 +110,16 @@
         }
       }
     },
+    "%@：%lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@：%2$lld"
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
@@ -141,6 +141,9 @@
     },
     "%lld★ %@" : {
       "shouldTranslate" : false
+    },
+    "%lld天" : {
+
     },
     "<无忧梦呓>请使用特殊关卡名，如AveMujica-8" : {
       "localizations" : {
@@ -224,6 +227,15 @@
         }
       }
     },
+    "24小时内" : {
+
+    },
+    "720P" : {
+
+    },
+    "1080P" : {
+
+    },
     "AccountSwitch %@" : {
 
     },
@@ -249,11 +261,7 @@
     "AlgorithmConstructionPoint" : {
 
     },
-    "AlgorithmDoneSmeltGold %lld" : {
-
-    },
     "AlgorithmDoneSmeltGold %lld UnitTime" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -275,27 +283,10 @@
     "AllTasksComplete" : {
       "extractionState" : "manual",
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "작업을 모두 완료했습니다!"
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "任务已全部完成！"
-          }
-        }
-      }
-    },
-    "AllTasksComplete %@" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "任务已全部完成！（用时%(duration)@）"
+            "value" : "任务已全部完成！（用时%1$(duration)@）%2$(sanity)@"
           }
         }
       }
@@ -318,6 +309,9 @@
           }
         }
       }
+    },
+    "Arknights Screenshot" : {
+
     },
     "BattleFormation %@" : {
 
@@ -639,7 +633,18 @@
         }
       }
     },
+    "CompleteTask %@\n%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CompleteTask %1$@\n%2$@"
+          }
+        }
+      }
+    },
     "ConnectFailed" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -683,6 +688,16 @@
     "CreditFullOnlyBuyDiscount %lld" : {
 
     },
+    "CurrentSanity %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "CurrentSanity %1$lld %2$lld"
+          }
+        }
+      }
+    },
     "CurrentStage %@" : {
       "localizations" : {
         "ko" : {
@@ -709,7 +724,7 @@
         }
       }
     },
-    "CurTimes" : {
+    "CurTimes : %lld" : {
 
     },
     "CustomInfrastPlanIndexAutoSwitch" : {
@@ -946,6 +961,16 @@
     },
     "FightMissionFailedAndStop" : {
 
+    },
+    "FightTimesUnused %lld %lld %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "FightTimesUnused %1$lld %2$lld %3$lld %4$lld"
+          }
+        }
+      }
     },
     "FilterTruth" : {
 
@@ -1424,6 +1449,19 @@
         }
       }
     },
+    "MedicineUsedTimes %lld" : {
+
+    },
+    "MedicineUsedTimesWithExpiring %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "MedicineUsedTimesWithExpiring %1$lld %2$lld"
+          }
+        }
+      }
+    },
     "MiniGame@InteractiveExhibition@UncollectedNotificationContent" : {
 
     },
@@ -1483,11 +1521,7 @@
         }
       }
     },
-    "MissionStart %lld" : {
-
-    },
     "MissionStart %lld UnitTime" : {
-      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1503,12 +1537,13 @@
         }
       }
     },
-    "MissionStart.FightTask %lld %lld" : {
+    "MissionStart.FightTask" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "MissionStart.FightTask %1$lld %2$lld"
+            "state" : "translated",
+            "value" : "开始行动%1$(times)@次，-%2$(cost)@理智%3$(using)@"
           }
         }
       }
@@ -1550,6 +1585,9 @@
           }
         }
       }
+    },
+    "OutOfMemoryError %@" : {
+
     },
     "Parse %@[%@] Success" : {
       "localizations" : {
@@ -1786,6 +1824,19 @@
         }
       }
     },
+    "ResolutionChanged" : {
+
+    },
+    "ResolutionChangedCurrentResolution %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "ResolutionChangedCurrentResolution %1$lld %2$lld"
+          }
+        }
+      }
+    },
     "ResolutionInfoYoStarEN" : {
 
     },
@@ -1987,6 +2038,16 @@
         }
       }
     },
+    "SanityReport %@ %@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "SanityReport %1$@ %2$@"
+          }
+        }
+      }
+    },
     "Save to %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2072,22 +2133,22 @@
         }
       }
     },
+    "StageQueue %@ - %lld ★" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "StageQueue %1$@ - %2$lld ★"
+          }
+        }
+      }
+    },
     "StageQueue %@ %@" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
             "value" : "StageQueue %1$@ %2$@"
-          }
-        }
-      }
-    },
-    "StageQueue %@ %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "StageQueue %1$@ %2$lld"
           }
         }
       }
@@ -2124,6 +2185,9 @@
         }
       }
     },
+    "StartTasksFailed: %@" : {
+
+    },
     "StoneUsed %lld" : {
 
     },
@@ -2143,6 +2207,9 @@
           }
         }
       }
+    },
+    "StoneUsedTimes %lld" : {
+
     },
     "Stopped" : {
       "localizations" : {
@@ -2436,6 +2503,9 @@
         }
       }
     },
+    "不启用" : {
+
+    },
     "不将已进驻的干员放入宿舍" : {
       "localizations" : {
         "ko" : {
@@ -2621,6 +2691,9 @@
         }
       }
     },
+    "使用多显示器时，请将本窗口与《明日方舟》放置在同一台显示器上。\n基于当前显示器的设定，建议在PlayCover中，将图像设置调整为以下预设之一：" : {
+
+    },
     "使用密文板" : {
       "localizations" : {
         "ko" : {
@@ -2650,6 +2723,9 @@
           }
         }
       }
+    },
+    "信用点不溢出后停止购买" : {
+
     },
     "信用购物" : {
       "localizations" : {
@@ -2837,6 +2913,9 @@
     "内容" : {
 
     },
+    "内容大小：" : {
+
+    },
     "内置" : {
 
     },
@@ -2919,6 +2998,15 @@
           }
         }
       }
+    },
+    "分辨率：" : {
+
+    },
+    "分辨率指南" : {
+
+    },
+    "分辨率缩放：" : {
+
     },
     "分队开局密文板" : {
       "localizations" : {
@@ -3144,6 +3232,16 @@
         }
       }
     },
+    "剿灭模式 : %lld / %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "剿灭模式 : %1$lld / %2$lld"
+          }
+        }
+      }
+    },
     "办公室" : {
       "localizations" : {
         "ko" : {
@@ -3197,6 +3295,12 @@
         }
       }
     },
+    "即将" : {
+
+    },
+    "原始分辨率：" : {
+
+    },
     "双三次" : {
 
     },
@@ -3240,6 +3344,9 @@
         }
       }
     },
+    "只购买折扣物品" : {
+
+    },
     "可以使用非好友助战" : {
       "localizations" : {
         "ko" : {
@@ -3259,6 +3366,9 @@
           }
         }
       }
+    },
+    "吃临期理智药" : {
+
     },
     "吃源石" : {
       "localizations" : {
@@ -3448,6 +3558,9 @@
           }
         }
       }
+    },
+    "宽度：" : {
+
     },
     "宿舍" : {
       "localizations" : {
@@ -3739,6 +3852,9 @@
     "忽视干员属性要求" : {
 
     },
+    "成功！" : {
+
+    },
     "我已知晓，继续" : {
       "localizations" : {
         "ko" : {
@@ -3748,6 +3864,18 @@
           }
         }
       }
+    },
+    "截图与原始分辨率不匹配" : {
+
+    },
+    "截图分辨率：" : {
+
+    },
+    "截图分辨率不足720P" : {
+
+    },
+    "截图宽高比不符合16:9" : {
+
     },
     "截图模式" : {
 
@@ -3816,6 +3944,9 @@
       }
     },
     "抖动" : {
+
+    },
+    "拷贝干员列表JSON" : {
 
     },
     "指定" : {
@@ -3991,6 +4122,9 @@
         }
       }
     },
+    "无法添加视频作业：%@" : {
+
+    },
     "无法识别配置" : {
       "localizations" : {
         "ko" : {
@@ -4002,6 +4136,7 @@
       }
     },
     "无限吃48小时内过期的理智药" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -4191,6 +4326,9 @@
         }
       }
     },
+    "未启用MacPlayTools触控模式" : {
+
+    },
     "未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问" : {
 
     },
@@ -4357,6 +4495,9 @@
         }
       }
     },
+    "测试" : {
+
+    },
     "深入调查" : {
       "localizations" : {
         "ko" : {
@@ -4506,6 +4647,9 @@
         }
       }
     },
+    "特别关注会影响干员识别准确率，如有特别关注干员识别错误请自行判断。" : {
+
+    },
     "现在" : {
       "localizations" : {
         "ko" : {
@@ -4634,6 +4778,12 @@
           }
         }
       }
+    },
+    "窗口大小：" : {
+
+    },
+    "等待测试" : {
+
     },
     "策略" : {
       "localizations" : {
@@ -5064,6 +5214,9 @@
         }
       }
     },
+    "访问好友基建" : {
+
+    },
     "访问被禁止，请检查IP或CDK" : {
       "localizations" : {
         "ko" : {
@@ -5088,6 +5241,9 @@
       }
     },
     "请先手动进入游戏内 24×24 像素画编辑页，再开始。" : {
+
+    },
+    "请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。" : {
 
     },
     "请在“设置” > “游戏设置” 中选择客户端类型。" : {
@@ -5121,6 +5277,7 @@
       }
     },
     "请将PlayCover的分辨率设置为1280x720、分辨率缩放设置为1.0。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -5285,6 +5442,9 @@
           }
         }
       }
+    },
+    "运行窗口化的《明日方舟》时，请尝试双击标题栏调整窗口大小，切换并保持为较大的窗口。" : {
+
     },
     "还原默认" : {
 
@@ -5468,6 +5628,9 @@
         }
       }
     },
+    "预设" : {
+
+    },
     "领取周年庆赠送月卡奖励" : {
       "localizations" : {
         "ko" : {
@@ -5543,6 +5706,9 @@
           }
         }
       }
+    },
+    "高度：" : {
+
     },
     "黄票商店" : {
       "localizations" : {

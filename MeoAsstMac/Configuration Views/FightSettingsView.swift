@@ -96,8 +96,12 @@ struct FightSettingsView: View {
             Divider()
 
             Section {
+                LabeledContent {
+                    Text(config.localizedExpiry)
+                } label: {
+                    Stepper("吃临期理智药", value: $config.medicine_expire_days, in: 0...7, step: 1)
+                }
                 Toggle("博朗台碎石模式", isOn: $config.DrGrandet)
-                Toggle("无限吃48小时内过期的理智药", isOn: useExpiringMedicine)
             }
 
             Divider()
@@ -108,14 +112,6 @@ struct FightSettingsView: View {
         }
         .padding()
         .animation(.default, value: useCustomStage)
-    }
-
-    private var useExpiringMedicine: Binding<Bool> {
-        Binding {
-            config.expiring_medicine ?? 0 > 0
-        } set: {
-            config.expiring_medicine = $0 ? 999 : nil
-        }
     }
 
     private var useMedicine: Binding<Bool> {
