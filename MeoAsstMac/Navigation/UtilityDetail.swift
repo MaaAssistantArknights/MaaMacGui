@@ -25,15 +25,15 @@ struct UtilityDetail: View {
                 GachaView()
             case .minigame:
                 MiniGameView()
+            case .maatools:
+                MaaToolsView()
             case .none:
                 Text("请选择识别项目")
             }
         }
         .padding()
         .toolbar {
-            Text(entry?.description ?? String(localized: "实用工具"))
-                .font(.headline)
-                .padding()
+            UtilityTitle(description: entry?.description)
         }
     }
 }
@@ -42,5 +42,22 @@ struct UtilityDetail_Previews: PreviewProvider {
     static var previews: some View {
         UtilityDetail(entry: .recruit)
             .environmentObject(MAAViewModel())
+    }
+}
+
+private struct UtilityTitle: ToolbarContent {
+    let description: String?
+    
+    var body: some ToolbarContent {
+        let item = ToolbarItem {
+            Text(description ?? String(localized: "实用工具"))
+                .padding(.leading, 5)
+                .font(.headline)
+        }
+        if #available(macOS 26.0, *) {
+            item.sharedBackgroundVisibility(.hidden)
+        } else {
+            item
+        }
     }
 }

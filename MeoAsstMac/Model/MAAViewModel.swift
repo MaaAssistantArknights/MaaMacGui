@@ -107,7 +107,7 @@ import SwiftUI
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
 
-    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.RGBA
+    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
