@@ -210,6 +210,31 @@ enum MaaCoreError: Error {
     case asyncCallFailed
 }
 
+extension MaaCoreError: LocalizedError {
+    var errorDescription: String? {
+        switch self {
+        case .loadResourceFailed:
+            return String(localized: "MaaCoreLoadResourceFailed")
+        case .setUserDirectoryFailed:
+            return String(localized: "MaaCoreSetUserDirectoryFailed")
+        case .setInstanceOptionFailed:
+            return String(localized: "MaaCoreSetInstanceOptionFailed")
+        case .appendTaskFailed:
+            return String(localized: "MaaCoreAppendTaskFailed")
+        case .startFailed:
+            return String(localized: "MaaCoreStartFailed")
+        case .stopFailed:
+            return String(localized: "MaaCoreStopFailed")
+        case .connectFailed:
+            return String(localized: "MaaCoreConnectFailed")
+        case .getImageFailed:
+            return String(localized: "MaaCoreGetImageFailed")
+        case .asyncCallFailed:
+            return String(localized: "MaaCoreAsyncCallFailed")
+        }
+    }
+}
+
 enum MAAInstanceOptionKey: Int32 {
     case Invalid = 0
     case TouchMode = 2

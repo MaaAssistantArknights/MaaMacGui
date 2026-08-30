@@ -4931,6 +4931,150 @@
         }
       }
     },
+    "MaaCoreAppendTaskFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 작업을 추가하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加 MAA 任务失败"
+          }
+        }
+      }
+    },
+    "MaaCoreAsyncCallFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 비동기 호출에 실패했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 异步调用失败"
+          }
+        }
+      }
+    },
+    "MaaCoreConnectFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에뮬레이터에 연결하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "连接模拟器失败"
+          }
+        }
+      }
+    },
+    "MaaCoreGetImageFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에뮬레이터 스크린샷을 가져오지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "获取模拟器截图失败"
+          }
+        }
+      }
+    },
+    "MaaCoreLoadResourceFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 리소스를 불러오지 못했습니다. 리소스 버전을 확인하거나 MAA를 업데이트하세요."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载 MAA 资源失败，请检查资源版本或更新 MAA"
+          }
+        }
+      }
+    },
+    "MaaCoreSetInstanceOptionFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 인스턴스 옵션을 설정하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置 MAA 实例选项失败"
+          }
+        }
+      }
+    },
+    "MaaCoreSetUserDirectoryFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 사용자 디렉터리를 설정하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "设置 MAA 用户目录失败"
+          }
+        }
+      }
+    },
+    "MaaCoreStartFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 작업을 시작하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动 MAA 任务失败"
+          }
+        }
+      }
+    },
+    "MaaCoreStopFailed" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 작업을 중지하지 못했습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止 MAA 任务失败"
+          }
+        }
+      }
+    },
     "黑流树海" : {
 
     },
