@@ -22,6 +22,10 @@ struct Sidebar: View {
             }
 
             VStack(alignment: .listRowSeparatorLeading, spacing: 12) {
+                Link(destination: URL(string: "https://docs.maa.plus/zh-cn/mac.html")!) {
+                    Label("帮助与公告…", systemImage: "questionmark.circle")
+                }
+
                 Button {
                     showUpdate.toggle()
                 } label: {
