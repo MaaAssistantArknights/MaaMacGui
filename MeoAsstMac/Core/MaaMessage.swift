@@ -30,7 +30,7 @@ extension JSONInitializable {
 private func decodeMessage<T: Decodable>(_ type: T.Type, from json: JSON, context: String) -> T? {
     do {
         let data = try json.serialize()
-        return try JSON.Decoder().decode(T.self, from: data)
+        return try JSONDecoder().decode(T.self, from: data)
     } catch {
         logger.error("Failed to decode \(context): \(error); details: \(json)")
         return nil
@@ -464,8 +464,6 @@ private struct MissingOperatorDetails {
 private struct BattleFormationErrorDetails {
     let opers: [String: [MissingOperatorDetails]]
 }
-
-typealias LSR = LocalizedStringResource
 
 extension MAAViewModel {
     private func processSubTaskError(_ details: JSON) {
