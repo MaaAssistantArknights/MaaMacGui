@@ -58,3 +58,9 @@ extension MAAHandle {
         try appendTask(type: config.type, params: config.params.jsonString())
     }
 }
+
+extension KeyedDecodingContainer {
+    subscript<T: Decodable>(key: Key, default defaultValue: @autoclosure () -> T) -> T {
+        (try? decode(T.self, forKey: key)) ?? defaultValue()
+    }
+}
