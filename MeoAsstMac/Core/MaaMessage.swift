@@ -753,8 +753,12 @@ extension MAAViewModel {
         case "Mall":
             switch process.task {
             case "StageDrops-Stars-3":
-                // FIXME: Persist the credit-fight completion date.
                 // TODO: (Achievement) Record completed credit fights.
+                if let id = taskID(coreID: info.taskid),
+                   case .mall(var config) = tasks[id] {
+                    config.creditFightDate = .now
+                    tasks[id] = .mall(config)
+                }
                 let taskName = LocalizedStringResource("CreditFight")
                 logInfo("CompleteTask \(taskName)")
             case "VisitLimited", "VisitNextBlack":
