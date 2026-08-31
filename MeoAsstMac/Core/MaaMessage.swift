@@ -755,14 +755,23 @@ extension MAAViewModel {
             case "StageDrops-Stars-3":
                 // TODO: (Achievement) Record completed credit fights.
                 if let id = taskID(coreID: info.taskid),
-                   case .mall(var config) = tasks[id] {
+                    case .mall(var config) = tasks[id]
+                {
                     config.creditFightDate = .now
                     tasks[id] = .mall(config)
                 }
                 let taskName = LocalizedStringResource("CreditFight")
                 logInfo("CompleteTask \(taskName)")
-            case "VisitLimited", "VisitNextBlack":
-                // FIXME: Persist the friend-visit completion date.
+            case "VisitLimited":
+                if let id = taskID(coreID: info.taskid),
+                    case .mall(var config) = tasks[id]
+                {
+                    config.friendVisitDate = .now
+                    tasks[id] = .mall(config)
+                }
+                let taskName = LocalizedStringResource("Visiting")
+                logInfo("CompleteTask \(taskName)")
+            case "VisitNextBlack":
                 let taskName = LocalizedStringResource("Visiting")
                 logInfo("CompleteTask \(taskName)")
             default:
