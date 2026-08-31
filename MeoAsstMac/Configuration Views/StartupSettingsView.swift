@@ -49,7 +49,7 @@ struct StartupSettingsView: View {
             }
 
             if touchMode == .MacPlayTools {
-                Text("请将PlayCover的分辨率设置为1280x720、分辨率缩放设置为1.0。")
+                Text("请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
