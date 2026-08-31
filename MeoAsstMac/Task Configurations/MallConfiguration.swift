@@ -23,6 +23,7 @@ struct MallConfiguration: MAATaskConfiguration {
     var formationIndex: Int
 
     var creditFightDate: Date
+    var friendVisitDate: Date
 
     var title: String {
         type.description
@@ -44,7 +45,8 @@ struct MallConfiguration: MAATaskConfiguration {
         .mall(self)
     }
 
-    // TODO: Credit fight once per day
+    // TODO: Run credit fight at most once per game day.
+    // TODO: Skip friend visits after reaching the daily limit.
     @JSON.Builder var params: JSON {
         "visit_friends" => visitFriends
         "shopping" => shopping
@@ -76,5 +78,6 @@ extension MallConfiguration {
         self.formationIndex = container[.formationIndex, default: 0]
 
         self.creditFightDate = container[.creditFightDate, default: .distantPast]
+        self.friendVisitDate = container[.friendVisitDate, default: .distantPast]
     }
 }
