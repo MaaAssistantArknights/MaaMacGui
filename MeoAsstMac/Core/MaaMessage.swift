@@ -243,8 +243,8 @@ extension MAAViewModel {
 
 // MARK: - Process TaskChain
 
-private extension NewViewModel.SanityReport {
-    func fullRecoveryTime() -> Date? {
+extension NewViewModel.SanityReport {
+    fileprivate func fullRecoveryTime() -> Date? {
         guard let reportedAt else {
             return nil
         }
@@ -290,11 +290,11 @@ extension MAAViewModel {
                     break
                 }
                 let now = Date.now
-                let duration = (start ..< now).formatted(.timeDuration)
+                let duration = (start..<now).formatted(.timeDuration)
                 let sanitySuffix: String
                 if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
                     let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
-                    let remaining = (now ..< max(now, recoveryTime)).formatted(.timeDuration)
+                    let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
                     let sanityReport = String(localized: "SanityReport \(recoveryDate) \(remaining)")
                     sanitySuffix = "\n\(sanityReport)"
                 } else {
@@ -304,6 +304,11 @@ extension MAAViewModel {
                 break
             }
             return
+        }
+
+        if message.code == .TaskChainStopped {
+            resetStatus()
+            logTrace("Stopped")
         }
 
         guard let info = TaskChainMessage(json: message.details, context: "TaskChain") else {
@@ -331,8 +336,6 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .cancel
             }
-            resetStatus()
-            logTrace("Stopped")
 
         case .TaskChainError:
             // TODO: (LogCard) Update the task-error log card.
@@ -344,7 +347,7 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .failure
             }
-            let error: String? = try? message.details["error"]
+            let error: String? = try? message.details["details"]["error"]
             if error == "OutOfMemory" {
                 logError("OutOfMemoryError \(taskChain)")
             } else {
@@ -902,6 +905,7 @@ extension MAAViewModel {
             break
 
         case "Depot":
+            // FIXME: Update MAADepot to decode Core's current `done` and `data` payload.
             // FIXME: Record the synchronization time and source task ID.
             depot = decodeMessage(MAADepot.self, from: info.details, context: "Depot")
 
