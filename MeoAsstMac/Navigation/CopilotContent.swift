@@ -395,18 +395,19 @@ extension CopilotContent.Item {
 
 extension FileManager {
     func copyCopilotToExternalDirectory(at url: URL) throws -> URL {
-        let dest = externalCopilotURL(for: url)
+        let dest = try externalCopilotURL(for: url)
         try FileManager.default.copyItemOverwriting(at: url, to: dest)
         return dest
     }
 
     func moveCopilotToExternalDirectory(at url: URL) throws -> URL {
-        let dest = externalCopilotURL(for: url)
+        let dest = try externalCopilotURL(for: url)
         try FileManager.default.moveItemOverwriting(at: url, to: dest)
         return dest
     }
 
-    private func externalCopilotURL(for url: URL) -> URL {
+    private func externalCopilotURL(for url: URL) throws -> URL {
+        try createDirectory(at: .externalCopilotDirectory, withIntermediateDirectories: true)
         let name = url.lastPathComponent
         return URL.externalCopilotDirectory.appending(path: name)
     }
