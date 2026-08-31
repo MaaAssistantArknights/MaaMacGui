@@ -1452,12 +1452,17 @@ extension MAAViewModel {
             }
 
         case "Finished" where info.taskchain == "VideoRecognition":
-            // FIXME: Reveal the generated file in Finder.
             guard let filename: String = try? info.details["filename"] else {
                 return
             }
-            videoRecoginition = URL(fileURLWithPath: filename)
-            logInfo("Save to: \(filename)")
+            do {
+                let url = URL(filePath: filename)
+                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
+                logStore?.setLastImportedCopilot(dst)
+                logInfo("Save to: \(dst.deletingPathExtension().lastPathComponent)")
+            } catch {
+                logError("无法添加视频作业：\(error.localizedDescription)")
+            }
 
         default:
             break

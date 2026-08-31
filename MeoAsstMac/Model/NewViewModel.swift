@@ -100,17 +100,6 @@ import Observation
             self?.withMutation(keyPath: \.status) {}
         }
         .store(in: &cancellables)
-
-        parent.$videoRecoginition.sink { [weak self] url in
-            guard let url else { return }
-            do {
-                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
-                self?.lastImportedCopilot = dst
-            } catch {
-                print(error)
-            }
-        }
-        .store(in: &cancellables)
     }
 
     deinit {
@@ -213,6 +202,7 @@ extension NewViewModel {
 protocol LogStore: AnyObject {
     func appendLog(_ entry: MAALog)
     func clearLogs()
+    func setLastImportedCopilot(_ url: URL)
 
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
@@ -232,5 +222,9 @@ extension NewViewModel: LogStore {
 
     func clearLogs() {
         logs.removeAll()
+    }
+
+    func setLastImportedCopilot(_ url: URL) {
+        lastImportedCopilot = url
     }
 }
