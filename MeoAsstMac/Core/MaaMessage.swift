@@ -920,11 +920,11 @@ extension MAAViewModel {
 
         case "Depot":
             // FIXME: Update MAADepot to decode Core's current `done` and `data` payload.
-            // FIXME: Record the synchronization time and source task ID.
+            // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
             depot = decodeMessage(MAADepot.self, from: info.details, context: "Depot")
 
         case "OperBox":
-            // FIXME: Record the synchronization time and source task ID.
+            // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
             operBox = decodeMessage(MAAOperBox.self, from: info.details, context: "OperBox")
 
         default:
