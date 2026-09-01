@@ -812,6 +812,7 @@ private struct StageDropsDetails {
     let stats: [StageDropItemDetails]
     let stage: StageDropStageDetails?
     let cur_times: Int?
+    let annihilation_weekly_process: [Int]?
 }
 
 @JSONRepresentable
@@ -933,7 +934,6 @@ extension MAAViewModel {
         switch info.what {
         case "StageDrops":
             // FIXME: Localize furniture drops before assembling the drop list.
-            // FIXME: Append annihilation weekly progress when Core provides it.
             // TODO: (Tooltip) Show recognized drop details.
             // TODO: (LogCard) Update the stage-drop log card.
             // TODO: (DataSync) Merge recognized drops into Depot data.
@@ -954,12 +954,16 @@ extension MAAViewModel {
             let dropText = drops.isEmpty ? String(localized: noDrop) : drops.joined(separator: "\n")
             let stageCode = dropInfo.stage?.stageCode ?? ""
             let totalDrop = LocalizedStringResource("TotalDrop")
+            var additionInfo = [LocalizedStringResource]()
             if let curTimes = dropInfo.cur_times, curTimes > 0 {
-                let currentTimes = LocalizedStringResource("CurTimes")
-                logTrace("\(stageCode) \(totalDrop)\n\(dropText)\n\(currentTimes) : \(curTimes)")
-            } else {
-                logTrace("\(stageCode) \(totalDrop)\n\(dropText)")
+                additionInfo.append("CurTimes : \(curTimes)")
             }
+            if let annihilation = dropInfo.annihilation_weekly_process, annihilation.count == 2 {
+                additionInfo.append("剿灭模式 : \(annihilation[0]) / \(annihilation[1])")
+            }
+            let additionText = additionInfo.map { String(localized: $0) }.joined(separator: "\n")
+            let additionLine = additionInfo.isEmpty ? "" : "\n\(additionText)"
+            logTrace("\(stageCode) \(totalDrop)\n\(dropText)\(additionLine)")
 
         case "EnterFacility":
             // FIXME: Localize the dynamic facility name.
