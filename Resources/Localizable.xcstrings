@@ -66,22 +66,12 @@
         }
       }
     },
-    "%@ %@\n%@" : {
+    "%@ %@\n%@%@" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "%1$@ %2$@\n%3$@"
-          }
-        }
-      }
-    },
-    "%@ %@\n%@\n%@ : %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@\n%3$@\n%4$@ : %5$lld"
+            "value" : "%1$@ %2$@\n%3$@%4$@"
           }
         }
       }
@@ -717,7 +707,7 @@
         }
       }
     },
-    "CurTimes" : {
+    "CurTimes : %lld" : {
 
     },
     "CustomInfrastPlanIndexAutoSwitch" : {
@@ -3205,6 +3195,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "섬멸 모드"
+          }
+        }
+      }
+    },
+    "剿灭模式 : %lld / %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "剿灭模式 : %1$lld / %2$lld"
           }
         }
       }
