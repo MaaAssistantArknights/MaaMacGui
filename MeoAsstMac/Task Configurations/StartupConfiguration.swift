@@ -76,6 +76,16 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
         ![MAAClientChannel.Official, .Bilibili].contains(self)
     }
 
+    var fightStageServer: FightStageSchedule.Server {
+        switch self {
+        case .Official, .Bilibili: .official
+        case .YoStarEN: .yoStarEN
+        case .YoStarJP: .yoStarJP
+        case .YoStarKR: .yoStarKR
+        case .txwy: .txwy
+        }
+    }
+
     var appBundleName: String {
         switch self {
         case .Official, .Bilibili, .txwy:

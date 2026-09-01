@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct FightSettingsView: View {
+    @EnvironmentObject private var viewModel: MAAViewModel
     @Binding var config: FightConfiguration
 
     @State private var useCustomStage = false
@@ -16,26 +17,40 @@ struct FightSettingsView: View {
     var body: some View {
         Form {
             Section {
-                HStack(spacing: 20) {
-                    if useCustomStage || stageNotListed {
-                        TextField("关卡名", text: $config.stage)
-                    } else {
-                        Picker("关卡选择", selection: $config.stage) {
-                            Text("当前/上次").tag("")
-                            Text("1-7").tag("1-7")
-                            Text("CE-6").tag("CE-6")
-                            Text("AP-5").tag("AP-5")
-                            Text("CA-5").tag("CA-5")
-                            Text("LS-6").tag("LS-6")
-                            Text("剿灭模式").tag("Annihilation")
+                Toggle("使用备选关卡", isOn: $config.useOptionalStage)
+                    .help("从上往下选择当天第一个开放的关卡；全部关闭时跳过任务")
+                    .onChange(of: config.useOptionalStage) { _, enabled in
+                        if enabled, config.stagePlan.isEmpty {
+                            config.stagePlan = [config.stage]
+                        } else if !enabled, let first = config.stagePlan.first {
+                            config.stage = first
                         }
                     }
-                    Toggle("手动输入关卡名", isOn: isUsingCustomStage)
+
+                if config.useOptionalStage {
+                    StagePlanEditor(
+                        stages: $config.stagePlan,
+                        server: viewModel.clientChannel.fightStageServer,
+                        activities: scheduleActivities,
+                        choices: stageChoices)
+                } else {
+                    HStack(spacing: 20) {
+                        if useCustomStage || stageNotListed {
+                            TextField("关卡名", text: $config.stage)
+                        } else {
+                            Picker("关卡选择", selection: $config.stage) {
+                                ForEach(baseStageChoices) { choice in
+                                    Text(choice.title).tag(choice.value)
+                                }
+                            }
+                        }
+                        Toggle("手动输入关卡名", isOn: isUsingCustomStage)
+                    }
+                    .animation(.default, value: config.stage)
                 }
-                .animation(.default, value: config.stage)
             }
 
-            if useCustomStage || stageNotListed {
+            if !config.useOptionalStage && (useCustomStage || stageNotListed) {
                 Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
             }
 
@@ -210,12 +225,140 @@ struct FightSettingsView: View {
         }
     }
 
-    private var stageNotListed: Bool { !listedStages.contains(config.stage) }
+    private var stageNotListed: Bool {
+        !listedStages.contains(config.stage)
+    }
     private let listedStages = ["", "1-7", "CE-6", "AP-5", "CA-5", "LS-6", "Annihilation"]
+
+    private var baseStageChoices: [FightStageChoice] {
+        [
+            .init(value: "", title: String(localized: "当前/上次")),
+            .init(value: "1-7", title: "1-7"),
+            .init(value: "CE-6", title: "CE-6"),
+            .init(value: "AP-5", title: "AP-5"),
+            .init(value: "CA-5", title: "CA-5"),
+            .init(value: "LS-6", title: "LS-6"),
+            .init(value: "SK-5", title: "SK-5"),
+            .init(value: "Annihilation", title: String(localized: "剿灭模式")),
+        ]
+    }
+
+    private var stageChoices: [FightStageChoice] {
+        let known = Set(baseStageChoices.map(\.value))
+        let activities = viewModel.stageActivity?.fightScheduleData
+        let activityChoices =
+            activities?.activeStageValues(at: Date())
+            .filter { !known.contains($0) }
+            .map { FightStageChoice(value: $0, title: $0) } ?? []
+        return baseStageChoices + activityChoices
+    }
+
+    private var scheduleActivities: FightStageSchedule.ActivityData? {
+        viewModel.stageActivity?.fightScheduleData
+    }
+
 }
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         FightSettingsView(config: .constant(.init()))
+            .environmentObject(MAAViewModel())
+    }
+}
+
+private struct FightStageChoice: Identifiable {
+    let value: String
+    let title: String
+    var id: String { value }
+}
+
+// MARK: - StagePlanEditor
+
+private struct StagePlanEditor: View {
+    @Binding var stages: [String]
+    let server: FightStageSchedule.Server
+    let activities: FightStageSchedule.ActivityData?
+    let choices: [FightStageChoice]
+
+    @State private var selection: Int?
+
+    private let schedule = FightStageSchedule()
+
+    var body: some View {
+        List(selection: $selection) {
+            ForEach(stages.indices, id: \.self) { index in
+                stageRow(at: index)
+                    .tag(index)
+            }
+            .onMove(perform: moveStage)
+        }
+        .frame(height: min(max(CGFloat(stages.count) * 34 + 8, 76), 190))
+
+        HStack {
+            Button(action: addStage) {
+                Image(systemName: "plus")
+            }
+            .buttonStyle(.plain)
+            .help("添加备选关卡")
+
+            Button(action: deleteStage) {
+                Image(systemName: "trash")
+            }
+            .buttonStyle(.plain)
+            .help("删除备选关卡")
+            .disabled(stages.count <= 1 || selection == nil)
+        }
+    }
+
+    private func stageRow(at index: Int) -> some View {
+        let stage = stages[index]
+        let isOpen = schedule.isOpen(stage, server: server, activities: activities)
+
+        return HStack(spacing: 8) {
+            Text("\(index + 1)")
+                .monospacedDigit()
+                .foregroundStyle(.secondary)
+                .frame(width: 20, alignment: .trailing)
+            TextField("当前/上次", text: $stages[index])
+            Menu {
+                ForEach(choices) { choice in
+                    Button(choice.title) {
+                        stages[index] = choice.value
+                    }
+                }
+            } label: {
+                Image(systemName: "list.bullet")
+            }
+            .menuStyle(.borderlessButton)
+            .help("选择关卡")
+
+            Image(systemName: isOpen ? "checkmark.circle.fill" : "clock.fill")
+                .foregroundStyle(isOpen ? .green : .orange)
+                .help(isOpen ? "今天开放" : "今天不开放")
+
+            if index < stages.count - 1,
+                schedule.blocksFollowingStages(stage, activities: activities)
+            {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .foregroundStyle(.yellow)
+                    .help("该常驻关卡会使后续备选关卡无法执行")
+            }
+        }
+    }
+
+    private func moveStage(source: IndexSet, destination: Int) {
+        stages.move(fromOffsets: source, toOffset: destination)
+        selection = nil
+    }
+
+    private func addStage() {
+        stages.append("")
+        selection = stages.count - 1
+    }
+
+    private func deleteStage() {
+        guard let selection, stages.indices.contains(selection) else { return }
+        stages.remove(at: selection)
+        self.selection = stages.indices.last
     }
 }

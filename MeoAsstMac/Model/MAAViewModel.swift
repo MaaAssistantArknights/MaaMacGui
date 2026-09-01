@@ -88,7 +88,8 @@ import SwiftUI
     @Published private var stageActivities = [String: MAAStageActivity]()
 
     var stageActivity: MAAStageActivity? {
-        stageActivities[clientChannel.rawValue]
+        let channel = clientChannel == .Bilibili ? MAAClientChannel.Official : clientChannel
+        return stageActivities[channel.rawValue]
     }
 
     // MARK: - Recognition
@@ -462,10 +463,28 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        let schedule = FightStageSchedule()
+        let activities = stageActivity?.fightScheduleData
+        let now = Date()
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            let taskToAppend: MAATask
+            if case .fight(var config) = task.task {
+                if !config.resolveStage(
+                    schedule: schedule,
+                    server: clientChannel.fightStageServer,
+                    activities: activities,
+                    at: now)
+                {
+                    logWarn("备选关卡均未开放，跳过理智作战任务")
+                }
+                taskToAppend = .fight(config)
+            } else {
+                taskToAppend = task.task
+            }
+
+            if let coreID = try await handle?.appendTask(taskToAppend) {
                 taskIDMap[coreID] = task.id
             }
         }

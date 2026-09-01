@@ -11,6 +11,8 @@ struct FightConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Fight }
 
     var stage: String
+    var stagePlan: [String]
+    var useOptionalStage: Bool
     var medicine: Int?
     var expiring_medicine: Int?
     var stone: Int?
@@ -29,6 +31,12 @@ struct FightConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
+        if useOptionalStage {
+            return
+                (stagePlan.isEmpty ? [""] : stagePlan)
+                .map { $0.isEmpty ? String(localized: "当前/上次") : $0 }
+                .joined(separator: " / ")
+        }
         if stage == "" {
             return String(localized: "当前/上次")
         } else {
@@ -58,10 +66,53 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    typealias Params = Self
+    struct Params: Encodable, Sendable {
+        var stage: String
+        var medicine: Int?
+        var expiring_medicine: Int?
+        var stone: Int?
+        var times: Int?
+        var series: Int?
+        var drops: [String: Int]?
+        var report_to_penguin: Bool
+        var penguin_id: String
+        var server: String
+        var client_type: String
+        var DrGrandet: Bool
+    }
 
-    var params: Self {
-        self
+    var params: Params {
+        Params(
+            stage: stage,
+            medicine: medicine,
+            expiring_medicine: expiring_medicine,
+            stone: stone,
+            times: times,
+            series: series,
+            drops: drops,
+            report_to_penguin: report_to_penguin,
+            penguin_id: penguin_id,
+            server: server,
+            client_type: client_type,
+            DrGrandet: DrGrandet)
+    }
+
+    mutating func resolveStage(
+        schedule: FightStageSchedule,
+        server: FightStageSchedule.Server,
+        activities: FightStageSchedule.ActivityData?,
+        at date: Date = Date()
+    ) -> Bool {
+        guard useOptionalStage else { return true }
+        guard let stage = schedule.firstOpenStage(
+            in: stagePlan, server: server, activities: activities, at: date)
+        else {
+            self.stage = ""
+            times = 0
+            return false
+        }
+        self.stage = stage
+        return true
     }
 
     // 掉落物品列表
@@ -130,6 +181,8 @@ extension FightConfiguration {
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.stage = try container.decodeIfPresent(String.self, forKey: .stage) ?? ""
+        self.stagePlan = try container.decodeIfPresent([String].self, forKey: .stagePlan) ?? [self.stage]
+        self.useOptionalStage = try container.decodeIfPresent(Bool.self, forKey: .useOptionalStage) ?? false
         self.medicine = try container.decodeIfPresent(Int.self, forKey: .medicine)
         self.expiring_medicine = try container.decodeIfPresent(Int.self, forKey: .expiring_medicine)
         self.stone = try container.decodeIfPresent(Int.self, forKey: .stone)

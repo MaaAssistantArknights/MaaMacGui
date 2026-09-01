@@ -266,6 +266,37 @@ extension MAAResourceVersion {
 
 struct MAAStageActivity: Decodable, Hashable {
     let miniGame: [MiniGame]
+    let resourceCollection: TimedActivity?
+    let sideStoryStage: [String: SideStory]?
+
+    struct TimedActivity: Decodable, Hashable {
+        private let UtcStartTime: String
+        private let UtcExpireTime: String
+        private let TimeZone: Double
+
+        var window: FightStageSchedule.ActivityWindow? {
+            guard let parser = dateParser,
+                let start = try? parser.parse(UtcStartTime),
+                let expire = try? parser.parse(UtcExpireTime)
+            else {
+                return nil
+            }
+            return .init(start: start, expire: expire)
+        }
+
+        private var dateParser: Date.ParseStrategy? {
+            .maaActivity(timeZone: TimeZone)
+        }
+    }
+
+    struct SideStory: Decodable, Hashable {
+        let Activity: TimedActivity
+        let Stages: [Stage]
+
+        struct Stage: Decodable, Hashable {
+            let Value: String
+        }
+    }
 
     struct MiniGame: Decodable, Hashable {
         let Display: String?
@@ -299,9 +330,31 @@ extension MAAStageActivity.MiniGame {
 
     private var dateParser: Date.ParseStrategy? {
         guard let TimeZone else { return nil }
+        return .maaActivity(timeZone: TimeZone)
+    }
+}
+
+extension MAAStageActivity {
+    var fightScheduleData: FightStageSchedule.ActivityData {
+        var stageWindows = [String: FightStageSchedule.ActivityWindow]()
+        if let sideStoryStage {
+            for sideStory in sideStoryStage.values {
+                guard let window = sideStory.Activity.window else { continue }
+                for stage in sideStory.Stages {
+                    stageWindows[stage.Value] = window
+                }
+            }
+        }
+        return .init(resourceCollection: resourceCollection?.window, stageWindows: stageWindows)
+    }
+}
+
+extension Date.ParseStrategy {
+    fileprivate static func maaActivity(timeZone: Double) -> Self? {
+        guard let zone = Foundation.TimeZone(secondsFromGMT: Int(timeZone * 3600)) else { return nil }
         return .init(
             format:
                 "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
-            timeZone: .init(secondsFromGMT: Int(TimeZone * 3600))!)
+            timeZone: zone)
     }
 }

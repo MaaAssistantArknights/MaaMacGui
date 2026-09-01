@@ -89,6 +89,8 @@ extension InfrastConfiguration {
 extension FightConfiguration {
     fileprivate init(migrating config: LegacyFightConfiguration) {
         self.stage = config.stage
+        self.stagePlan = [config.stage]
+        self.useOptionalStage = false
         self.medicine = config.medicine
         self.expiring_medicine = config.expiring_medicine
         self.stone = config.stone
