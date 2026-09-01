@@ -1419,7 +1419,6 @@ extension MAAViewModel {
                 current: current, maximum: maximum, reportedAt: reportedAt)
 
         case "FightTimes":
-            // FIXME: Warn when a limited fight task finishes with unused runs.
             // TODO: (Achievement) Record completed fight-count progress.
             logStore?.fightReport = nil
             guard let details = FightTimesDetails(json: info.details, context: info.what) else {
@@ -1430,6 +1429,13 @@ extension MAAViewModel {
                 series: details.series,
                 timesFinished: details.times_finished,
                 finished: details.finished)
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                let limit = config.times, let series = details.series,
+                let timesFinished = details.times_finished,
+                timesFinished < limit, details.finished == true
+            {
+                logWarn("FightTimesUnused \(timesFinished) \(series) \(timesFinished + series) \(limit)")
+            }
 
         case "StageQueueUnableToAgent":
             guard let stageCode: String = try? info.details["stage_code"] else {

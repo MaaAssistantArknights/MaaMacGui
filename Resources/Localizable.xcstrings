@@ -945,6 +945,16 @@
     "FightMissionFailedAndStop" : {
 
     },
+    "FightTimesUnused %lld %lld %lld %lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "FightTimesUnused %1$lld %2$lld %3$lld %4$lld"
+          }
+        }
+      }
+    },
     "FilterTruth" : {
 
     },
