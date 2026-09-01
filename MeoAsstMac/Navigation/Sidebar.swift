@@ -13,6 +13,9 @@ struct Sidebar: View {
     @Binding var showUpdate: Bool
     let onUpdate: () async throws -> Void
 
+    @EnvironmentObject private var viewModel: MAAViewModel
+    @State private var showStageTip = false
+
     @Environment(\.defaultMinListRowHeight) var rowHeight
 
     var body: some View {
@@ -24,6 +27,15 @@ struct Sidebar: View {
             VStack(alignment: .listRowSeparatorLeading, spacing: 12) {
                 Link(destination: URL(string: "https://docs.maa.plus/zh-cn/mac.html")!) {
                     Label("帮助与公告…", systemImage: "questionmark.circle")
+                }
+
+                Button {
+                    showStageTip.toggle()
+                } label: {
+                    Label("今日关卡…", systemImage: "calendar.day.timeline.left")
+                }
+                .popover(isPresented: $showStageTip, arrowEdge: .trailing) {
+                    DailyStageTipView(channel: viewModel.clientChannel)
                 }
 
                 Button {
@@ -58,6 +70,7 @@ struct SidebarView_Previews: PreviewProvider {
             Sidebar(selection: .constant(.daily), showUpdate: .constant(false)) {
                 print("Resource updated")
             }
+            .environmentObject(MAAViewModel())
         }
     }
 }
