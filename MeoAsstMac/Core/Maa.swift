@@ -185,6 +185,7 @@ enum MAATaskType: String {
     case Recruit
     case Infrast
     case Fight
+    case DepotMaintain
     case Mall
     case Award
     case Roguelike
@@ -208,6 +209,7 @@ enum MaaCoreError: Error {
     case connectFailed
     case getImageFailed
     case asyncCallFailed
+    case uiOnlyTask
 }
 
 enum MAAInstanceOptionKey: Int32 {
@@ -266,6 +268,8 @@ extension MAAResourceVersion {
 
 struct MAAStageActivity: Decodable, Hashable {
     let miniGame: [MiniGame]
+    let resourceCollection: TimedActivity?
+    let sideStoryStage: [String: SideStory]?
 
     struct MiniGame: Decodable, Hashable {
         let Display: String?
@@ -277,6 +281,48 @@ struct MAAStageActivity: Decodable, Hashable {
         private let UtcStartTime: String?
         private let UtcExpireTime: String?
         private let TimeZone: Double?
+    }
+
+    struct TimedActivity: Decodable, Hashable {
+        private let utcStartTime: String
+        private let utcExpireTime: String
+        private let timeZone: Double
+
+        private enum CodingKeys: String, CodingKey {
+            case utcStartTime = "UtcStartTime"
+            case utcExpireTime = "UtcExpireTime"
+            case timeZone = "TimeZone"
+        }
+
+        var window: FightStageSchedule.ActivityWindow? {
+            guard let parser = dateParser,
+                let start = try? parser.parse(utcStartTime),
+                let expire = try? parser.parse(utcExpireTime)
+            else { return nil }
+            return .init(start: start, expire: expire)
+        }
+
+        private var dateParser: Date.ParseStrategy? {
+            .maaActivity(timeZone: timeZone)
+        }
+    }
+
+    struct SideStory: Decodable, Hashable {
+        let activity: TimedActivity
+        let stages: [Stage]
+
+        private enum CodingKeys: String, CodingKey {
+            case activity = "Activity"
+            case stages = "Stages"
+        }
+
+        struct Stage: Decodable, Hashable {
+            let value: String
+
+            private enum CodingKeys: String, CodingKey {
+                case value = "Value"
+            }
+        }
     }
 }
 
@@ -303,5 +349,15 @@ extension MAAStageActivity.MiniGame {
             format:
                 "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
             timeZone: .init(secondsFromGMT: Int(TimeZone * 3600))!)
+    }
+}
+
+extension Date.ParseStrategy {
+    fileprivate static func maaActivity(timeZone: Double) -> Self? {
+        guard let zone = Foundation.TimeZone(secondsFromGMT: Int(timeZone * 3_600)) else { return nil }
+        return .init(
+            format:
+                "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
+            timeZone: zone)
     }
 }

@@ -13,6 +13,7 @@ enum MAATask: Codable, Equatable {
     case recruit(RecruitConfiguration)
     case infrast(InfrastConfiguration)
     case fight(FightConfiguration)
+    case depotMaintain(DepotMaintainConfiguration)
     case mall(MallConfiguration)
     case award(AwardConfiguration)
     case roguelike(RoguelikeConfiguration)
@@ -24,6 +25,7 @@ let defaultTaskConfigurations: [any MAATaskConfiguration] = [
     RecruitConfiguration(),
     InfrastConfiguration(),
     FightConfiguration(),
+    DepotMaintainConfiguration(),
     MallConfiguration(),
     AwardConfiguration(),
     RoguelikeConfiguration(),
@@ -44,6 +46,8 @@ extension MAATaskType: Codable, CustomStringConvertible {
             return String(localized: "基建换班")
         case .Fight:
             return String(localized: "刷理智")
+        case .DepotMaintain:
+            return String(localized: "库存保持")
         case .Mall:
             return String(localized: "收取信用及购物")
         case .Award:
