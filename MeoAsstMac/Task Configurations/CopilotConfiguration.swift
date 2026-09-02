@@ -210,6 +210,24 @@ extension CopilotContext {
         }
         await updateSet(at: url, set: set)
     }
+
+    @MainActor func appendCopilot(at url: URL) async -> Bool {
+        guard let copilotSet,
+            let copilot = MAACopilot(url: url),
+            let code = await MAAProvider.shared.mapLevelCode(matching: copilot.stage_name),
+            copilot.kind(code: code) == copilotSet.kind,
+            let items = copilot.listItems(at: url, stageCode: code)
+        else {
+            return false
+        }
+
+        for item in items where !copilotList.contains(where: { $0.id == item.id }) {
+            copilotList.append(item)
+        }
+        selection = items.first?.id
+        category = .list
+        return true
+    }
 }
 
 extension CopilotContext.Content {
@@ -255,19 +273,8 @@ extension CopilotSetData {
                 return nil
             }
 
-            switch copilot.difficulty {
-            case nil, 0:
-                copilotList.append(.init(url: url, stageCode: code, isOn: true))
-            case 1:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
-            case 2:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
-            case 3:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
-                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
-            default:
-                continue
-            }
+            guard let items = copilot.listItems(at: url, stageCode: code) else { continue }
+            copilotList.append(contentsOf: items)
         }
 
         return (lastCopilotKind ?? .regular, copilotList)
@@ -301,6 +308,24 @@ extension MAACopilot {
                 return .paradox
             }
             return .regular
+        }
+    }
+
+    fileprivate func listItems(at url: URL, stageCode: String) -> [CopilotContext.ListItem]? {
+        switch difficulty {
+        case nil, 0:
+            [.init(url: url, stageCode: stageCode, isOn: true)]
+        case 1:
+            [.init(url: url, stageCode: stageCode, isRaid: false, isOn: true)]
+        case 2:
+            [.init(url: url, stageCode: stageCode, isRaid: true, isOn: true)]
+        case 3:
+            [
+                .init(url: url, stageCode: stageCode, isRaid: false, isOn: true),
+                .init(url: url, stageCode: stageCode, isRaid: true, isOn: true),
+            ]
+        default:
+            nil
         }
     }
 }
