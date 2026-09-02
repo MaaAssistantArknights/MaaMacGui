@@ -9,7 +9,7 @@ import Foundation
 import Network
 
 actor MaaToolClient {
-    private let connection: NWConnection
+    private var connection: NWConnection
 
     init?(address: String) async {
         let parts = address.split(separator: ":")
@@ -21,50 +21,64 @@ actor MaaToolClient {
         }
         let host = NWEndpoint.Host(String(parts[0]))
 
-        connection = NWConnection(host: host, port: port, using: .tcp)
-
-        let states = AsyncStream<NWConnection.State> { continuation in
-            connection.stateUpdateHandler = { state in
-                if state == .ready {
-                    continuation.finish()
-                } else {
-                    continuation.yield(state)
-                }
-            }
-
-            continuation.onTermination = { [weak self] reason in
-                guard reason == .cancelled else { return }
-                self?.connection.cancel()
-            }
-        }
-
-        connection.start(queue: .global())
-
         var retryCount = 0
         let maxRetries = 20
 
-        for await state in states {
-            switch state {
-            case .setup, .preparing, .cancelled:
-                break
-            case .waiting:
-                try? await Task.sleep(for: .seconds(0.5))
-                connection.restart()
-            case .failed:
-                retryCount += 1
-                if retryCount > maxRetries {
-                    connection.cancel()  // 取消连接
-                    return nil  // 达到最大重试次数，初始化失败
+        while retryCount < maxRetries {
+            connection = NWConnection(host: host, port: port, using: .tcp)
+
+            let states = AsyncStream<NWConnection.State> { continuation in
+                connection.stateUpdateHandler = { state in
+                        continuation.yield(state)
                 }
-                try? await Task.sleep(nanoseconds: 500_000_000)
-                connection.restart()
-            case .ready:
-                return
-            @unknown default:
-                fatalError()
+
+                continuation.onTermination = { [weak self] reason in
+                    guard reason == .cancelled else { return }
+                    Task {
+                        await self?.cancelActorConnection()
+                    }
+                }
+            }
+
+            connection.start(queue: .global())
+
+            state_enum: for await state in states {
+                switch state {
+                case .setup, .preparing, .cancelled:
+                    break
+                case .waiting, .failed:
+                    retryCount += 1
+                    if retryCount >= maxRetries {
+                        connection.cancel()
+                        break state_enum
+                    }
+
+                    try? await Task.sleep(for: .seconds(0.5))
+
+                    if case .failed = state {
+                        // 明确失败，清理旧连接，让外部循环创建新连接
+                        connection.cancel()
+                        break state_enum
+                    } else {
+                        // .waiting 状态下，使用 restart()
+                        connection.restart()
+                    }
+                case .ready:
+                    return
+                @unknown default:
+                    fatalError()
+                }
             }
         }
+        return nil
     }
+
+    // MARK: - Private Methods
+    private func cancelActorConnection() {
+        connection.cancel()
+    }
+
+    // MARK: - Public Methods
 
     func terminate() async throws {
         guard connection.state == .ready else { return }
