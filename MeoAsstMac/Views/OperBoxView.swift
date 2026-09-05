@@ -5,31 +5,53 @@
 //  Created by hguandl on 22/4/2023.
 //
 
+import AppKit
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct OperBoxView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
     var body: some View {
-        List {
-            Section {
-                ForEach(ownedOpers, id: \.id) { oper in
-                    oper.label
+        VStack(spacing: 20) {
+            List {
+                Section {
+                    ForEach(ownedOpers, id: \.id) { oper in
+                        oper.label
+                    }
+                } header: {
+                    Text("已拥有干员：\(ownedOpers.count)")
                 }
-            } header: {
-                Text("已拥有干员：\(ownedOpers.count)")
-            }
 
-            Section {
-                ForEach(unownedOpers, id: \.id) { oper in
-                    Text(oper.name)
+                Section {
+                    ForEach(unownedOpers, id: \.id) { oper in
+                        Text(oper.name)
+                    }
+                } header: {
+                    Text("未拥有干员：\(unownedOpers.count)")
                 }
-            } header: {
-                Text("未拥有干员：\(unownedOpers.count)")
             }
+            .animation(.default, value: viewModel.operBox)
+
+            HStack(spacing: 20) {
+                Spacer()
+                Button {
+                    copyJSONToPasteboard()
+                } label: {
+                    Label("复制 JSON", systemImage: "doc.on.doc")
+                }
+                .help("将干员列表 JSON 复制到剪贴板")
+
+                Button {
+                    exportJSONToFile()
+                } label: {
+                    Label("导出 JSON", systemImage: "square.and.arrow.up")
+                }
+                .help("将干员列表 JSON 导出为文件")
+            }
+            .disabled(viewModel.operBox?.done != true)
         }
         .padding()
-        .animation(.default, value: viewModel.operBox)
     }
 
     var ownedOpers: [MAAOperBox.OwnedOper] {
@@ -59,10 +81,54 @@ struct OperBoxView: View {
         "Sharp",
         "阿米娅-WARRIOR",
     ]
+
+    // MARK: - Export
+
+    private func copyJSONToPasteboard() {
+        guard let box = viewModel.operBox,
+              let jsonData = box.exportJSONData,
+              let jsonText = String(data: jsonData, encoding: .utf8)
+        else {
+            viewModel.logError("导出 JSON 失败")
+            return
+        }
+        let pasteboard = NSPasteboard.general
+        pasteboard.clearContents()
+        pasteboard.setString(jsonText, forType: .string)
+        viewModel.logInfo("已复制到剪贴板")
+    }
+
+    private func exportJSONToFile() {
+        guard let box = viewModel.operBox,
+              let jsonData = box.exportJSONData
+        else {
+            viewModel.logError("导出 JSON 失败")
+            return
+        }
+
+        let panel = NSSavePanel()
+        panel.allowedContentTypes = [.json]
+        panel.nameFieldStringValue = "Arknights_OperBox_Export.json"
+        panel.canCreateDirectories = true
+        guard panel.runModal() == .OK, let url = panel.url else {
+            return
+        }
+
+        var data = Data([0xEF, 0xBB, 0xBF])
+        data.append(jsonData)
+        do {
+            try data.write(to: url, options: .atomic)
+            viewModel.logInfo("已导出到文件")
+        }
+        catch {
+            viewModel.logError("导出 JSON 失败")
+        }
+    }
 }
 
 struct OperBoxView_Previews: PreviewProvider {
     static var previews: some View {
         OperBoxView()
+            .environmentObject(MAAViewModel())
     }
 }
