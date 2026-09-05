@@ -49,7 +49,7 @@ struct OperBoxView: View {
                 }
                 .help("将干员列表 JSON 导出为文件")
             }
-            .disabled(viewModel.operBox?.done != true)
+            .disabled(viewModel.operBox?.done != true || viewModel.status != .idle)
         }
         .padding()
     }
