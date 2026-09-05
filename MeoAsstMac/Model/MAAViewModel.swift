@@ -89,7 +89,6 @@ import SwiftUI
 
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
-    @Published var depot: MAADepot?
     @Published var operBox: MAAOperBox?
 
     // MARK: - Connection Settings

@@ -110,6 +110,16 @@
         }
       }
     },
+    "%@：%lld" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@：%2$lld"
+          }
+        }
+      }
+    },
     "%lld" : {
       "shouldTranslate" : false
     },
