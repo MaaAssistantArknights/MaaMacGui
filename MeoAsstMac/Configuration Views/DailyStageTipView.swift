@@ -50,26 +50,35 @@ enum DailyStageTip {
         Stage(code: "PR-D-1/2", name: String(localized: "近&特芯片"), weekdays: [.tuesday, .wednesday, .saturday, .sunday]),
     ]
 
-    /// 各服务器的当地时区偏移（小时）
-    private static func utcOffset(channel: MAAClientChannel) -> Int {
+    /// 各服务器游戏历法对应的当地时区
+    ///
+    /// YoStarEN 服务器位于北美太平洋时区，实行夏令时（PDT UTC-7 / PST UTC-8），
+    /// 按 IANA 时区规则随季节自动换算。
+    private static func localTimeZone(channel: MAAClientChannel) -> TimeZone {
         switch channel {
-        case .Official, .Bilibili, .txwy: 8
-        case .YoStarEN: -7
-        case .YoStarJP, .YoStarKR: 9
+        case .Official, .Bilibili, .txwy: TimeZone(identifier: "Asia/Shanghai")!
+        case .YoStarEN: TimeZone(identifier: "America/Los_Angeles")!
+        case .YoStarJP: TimeZone(identifier: "Asia/Tokyo")!
+        case .YoStarKR: TimeZone(identifier: "Asia/Seoul")!
         }
     }
 
-    /// 游戏内日历：当地时区减去凌晨 4 点的日切
+    /// 游戏内日历：当地时区、凌晨 4 点为一天的开始
     private static func yjCalendar(channel: MAAClientChannel) -> Calendar {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.timeZone = TimeZone(secondsFromGMT: (utcOffset(channel: channel) - 4) * 3600)!
+        calendar.timeZone = localTimeZone(channel: channel)
         return calendar
     }
 
     /// 游戏内日历（yj 历）下的今天星期几
     static func yjWeekday(channel: MAAClientChannel, date: Date = .now) -> Weekday {
         let calendar = yjCalendar(channel: channel)
-        return Weekday(rawValue: calendar.component(.weekday, from: date)) ?? .sunday
+        // 以当地挂钟时间 04:00 为日切：未过 04:00 仍算前一天
+        var inGameDate = calendar.startOfDay(for: date)
+        if calendar.component(.hour, from: date) < 4 {
+            inGameDate = calendar.date(byAdding: .day, value: -1, to: inGameDate) ?? inGameDate
+        }
+        return Weekday(rawValue: calendar.component(.weekday, from: inGameDate)) ?? .sunday
     }
 
     /// 今日开放的每日轮换关卡
