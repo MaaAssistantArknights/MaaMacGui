@@ -427,7 +427,7 @@ extension MAAViewModel {
         do {
             try await startTasks()
         } catch {
-            logError("ConnectFailed")
+            logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
         }
     }
