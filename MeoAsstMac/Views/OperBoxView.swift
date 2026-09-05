@@ -94,7 +94,10 @@ struct OperBoxView: View {
         }
         let pasteboard = NSPasteboard.general
         pasteboard.clearContents()
-        pasteboard.setString(jsonText, forType: .string)
+        guard pasteboard.setString(jsonText, forType: .string) else {
+            viewModel.logError("导出 JSON 失败")
+            return
+        }
         viewModel.logInfo("已复制到剪贴板")
     }
 
