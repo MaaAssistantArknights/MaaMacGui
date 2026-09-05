@@ -60,6 +60,10 @@ import Observation
     @ObservationIgnored var stoneUsedTimes = 0
     @ObservationIgnored var recruitConfirmTimes = 0
 
+    // MARK: - Recognition
+
+    private(set) var depot: MAADepot?
+
     // MARK: - Bridges to Old View Model
 
     private let parent: MAAViewModel
@@ -203,6 +207,7 @@ protocol LogStore: AnyObject {
     func appendLog(_ entry: MAALog)
     func clearLogs()
     func setLastImportedCopilot(_ url: URL)
+    func setDepot(_ depot: MAADepot)
 
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
@@ -226,5 +231,9 @@ extension NewViewModel: LogStore {
 
     func setLastImportedCopilot(_ url: URL) {
         lastImportedCopilot = url
+    }
+
+    func setDepot(_ depot: MAADepot) {
+        self.depot = depot
     }
 }

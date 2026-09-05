@@ -27,13 +27,15 @@ extension JSONInitializable {
     }
 }
 
-private func decodeMessage<T: Decodable>(_ type: T.Type, from json: JSON, context: String) -> T? {
-    do {
-        let data = try json.serialize()
-        return try JSONDecoder().decode(T.self, from: data)
-    } catch {
-        logger.error("Failed to decode \(context): \(error); details: \(json)")
-        return nil
+extension Decodable {
+    fileprivate init?(json: JSON, context: String) {
+        do {
+            let data = try json.serialize()
+            self = try JSONDecoder().decode(Self.self, from: data)
+        } catch {
+            logger.error("Failed to parse \(context): \(error); details: \(json)")
+            return nil
+        }
     }
 }
 
@@ -919,13 +921,15 @@ extension MAAViewModel {
             break
 
         case "Depot":
-            // FIXME: Update MAADepot to decode Core's current `done` and `data` payload.
             // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
-            depot = decodeMessage(MAADepot.self, from: info.details, context: "Depot")
+            guard let depot = MAADepot(json: info.details, context: "Depot") else {
+                break
+            }
+            logStore?.setDepot(depot)
 
         case "OperBox":
             // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
-            operBox = decodeMessage(MAAOperBox.self, from: info.details, context: "OperBox")
+            operBox = MAAOperBox(json: info.details, context: "OperBox")
 
         default:
             break
@@ -1022,7 +1026,7 @@ extension MAAViewModel {
             } else {
                 logInfo("\(level) ★ Tags")
             }
-            recruit = decodeMessage(MAARecruit.self, from: info.details, context: "RecruitResult")
+            recruit = MAARecruit(json: info.details, context: "RecruitResult")
 
         case "RecruitSupportOperator":
             guard let name: String = try? info.details["name"] else {

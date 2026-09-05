@@ -38,6 +38,22 @@ actor MAAProvider {
         }
         return String(cString: code)
     }
+
+    func itemName(for id: String) -> String {
+        let name = id.withCString {
+            AsstGetItemName($0)
+        }
+        guard let name else { return "" }
+        return String(cString: name)
+    }
+}
+
+extension MAAProvider {
+    func itemNames<S: Sequence<String>>(for ids: S) -> [String: String] {
+        ids.reduce(into: [:]) { partialResult, id in
+            partialResult[id] = itemName(for: id)
+        }
+    }
 }
 
 actor MAAHandle {
