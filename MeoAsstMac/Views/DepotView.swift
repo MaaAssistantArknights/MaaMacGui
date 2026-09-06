@@ -21,11 +21,11 @@ struct DepotView: View {
                 Text("复制结果JSON至剪贴板：")
 
                 Button("企鹅物流") {
-                    copyToPasteboard(text: viewModel.depot?.arkplanner.data)
+                    copyToPasteboard(text: viewModel.depot?.arkPlannerExportText)
                     NSWorkspace.shared.open(URL(string: "https://penguin-stats.cn/planner")!)
                 }
                 Button("明日方舟工具箱") {
-                    copyToPasteboard(text: viewModel.depot?.lolicon.data)
+                    copyToPasteboard(text: viewModel.depot?.loliconExportText)
                     NSWorkspace.shared.open(URL(string: "https://arkntools.app/#/material")!)
                 }
             }
