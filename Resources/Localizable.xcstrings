@@ -4946,6 +4946,76 @@
           }
         }
       }
+    },
+    "复制 JSON" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 복사"
+          }
+        }
+      }
+    },
+    "导出 JSON" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 내보내기"
+          }
+        }
+      }
+    },
+    "已复制到剪贴板" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클립보드에 복사됨"
+          }
+        }
+      }
+    },
+    "已导出到文件" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "파일로 내보냄"
+          }
+        }
+      }
+    },
+    "导出 JSON 失败" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "JSON 내보내기 실패"
+          }
+        }
+      }
+    },
+    "将干员列表 JSON 复制到剪贴板" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오퍼레이터 목록 JSON을 클립보드에 복사"
+          }
+        }
+      }
+    },
+    "将干员列表 JSON 导出为文件" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오퍼레이터 목록 JSON을 파일로 내보내기"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
