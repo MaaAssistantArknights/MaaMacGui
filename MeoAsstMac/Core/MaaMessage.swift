@@ -1380,14 +1380,21 @@ extension MAAViewModel {
             }
 
         case "UseMedicine":
-            // FIXME: Derive the expiring-medicine window from the originating Fight task.
             // TODO: (Achievement) Mirror WPF medicine-usage achievement progress.
             guard let medicine = UseMedicineDetails(json: info.details, context: info.what) else {
                 return
             }
+            let expiry: LocalizedStringResource
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                config.medicine_expire_days > 0
+            {
+                expiry = config.localizedExpiry
+            } else {
+                expiry = "即将"
+            }
             if medicine.is_expiring {
                 expiringMedicineUsedTimes += medicine.count
-                logInfo("ExpiringMedicineUsed \("--") \(expiringMedicineUsedTimes) \(medicine.count)")
+                logInfo("ExpiringMedicineUsed \(expiry) \(expiringMedicineUsedTimes) \(medicine.count)")
             } else {
                 medicineUsedTimes += medicine.count
                 logInfo("MedicineUsed \(medicineUsedTimes) \(medicine.count)")
