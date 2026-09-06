@@ -63,6 +63,7 @@ import Observation
     // MARK: - Recognition
 
     private(set) var depot: MAADepot?
+    private(set) var operBox: MAAOperBox?
 
     // MARK: - Bridges to Old View Model
 
@@ -208,6 +209,7 @@ protocol LogStore: AnyObject {
     func clearLogs()
     func setLastImportedCopilot(_ url: URL)
     func setDepot(_ depot: MAADepot?)
+    func setOperBox(_ operBox: MAAOperBox?)
 
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
@@ -235,5 +237,9 @@ extension NewViewModel: LogStore {
 
     func setDepot(_ depot: MAADepot?) {
         self.depot = depot
+    }
+
+    func setOperBox(_ operBox: MAAOperBox?) {
+        self.operBox = operBox
     }
 }

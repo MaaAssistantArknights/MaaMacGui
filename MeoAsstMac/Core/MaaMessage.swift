@@ -926,7 +926,7 @@ extension MAAViewModel {
 
         case "OperBox":
             // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
-            operBox = MAAOperBox(json: info.details, context: "OperBox")
+            logStore?.setOperBox(.init(json: info.details, context: "OperBox"))
 
         default:
             break

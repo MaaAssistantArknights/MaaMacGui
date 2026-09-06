@@ -5,21 +5,22 @@
 //  Created by hguandl on 22/4/2023.
 //
 
+import JBird
 import SwiftUI
 
-struct MAAOperBox: Codable, Hashable {
+@JSONRepresentable struct MAAOperBox: Hashable {
     let done: Bool
     let all_opers: [Oper]
     let own_opers: [OwnedOper]
 
-    struct Oper: Codable, Hashable {
+    @JSONRepresentable struct Oper: Identifiable, Hashable {
         let id: String
         let own: Bool
         let name: String
         let rarity: Int
     }
 
-    struct OwnedOper: Codable, Hashable {
+    @JSONRepresentable struct OwnedOper: Identifiable, Hashable {
         let id: String
         let own: Bool
         let name: String
