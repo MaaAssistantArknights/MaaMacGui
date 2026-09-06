@@ -25,6 +25,8 @@ struct TasksContent: View {
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .fight(let config):
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .depotMaintain(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .mall(let config):
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .award(let config):

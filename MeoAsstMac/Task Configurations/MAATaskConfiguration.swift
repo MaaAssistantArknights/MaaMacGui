@@ -43,6 +43,8 @@ extension MAAHandle {
             return try appendTask(config: config)
         case .fight(let config):
             return try appendTask(config: config)
+        case .depotMaintain:
+            throw MaaCoreError.uiOnlyTask
         case .mall(let config):
             return try appendTask(config: config)
         case .award(let config):
