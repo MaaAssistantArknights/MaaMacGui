@@ -92,8 +92,8 @@ enum CopilotCategory: String, CaseIterable {
 extension CopilotCategory {
     static let userDefaultsKey = "CopilotContentCategory"
 
-    static func userDefaultsValue(defaults: UserDefaults = .standard) -> Self {
-        let rawValue = defaults.string(forKey: userDefaultsKey)
+    static func userDefaultsValue(store: UserDefaults = .standard) -> Self {
+        let rawValue = store.string(forKey: userDefaultsKey)
         if let rawValue {
             return .init(rawValue: rawValue) ?? .bundled
         } else {
@@ -101,8 +101,8 @@ extension CopilotCategory {
         }
     }
 
-    func setUserDefaults(defaults: UserDefaults = .standard) {
-        defaults.set(rawValue, forKey: Self.userDefaultsKey)
+    func setUserDefaults(store: UserDefaults = .standard) {
+        store.set(rawValue, forKey: Self.userDefaultsKey)
     }
 }
 
@@ -140,18 +140,24 @@ extension CopilotCategory {
         let isRaid: Bool?
     }
 
+    @ObservationIgnored @MainActor private var contentUpdateTask: Task<Void, Never>?
+
     @MainActor var selection: ItemID? {
         didSet {
             guard oldValue != selection else {
                 return
             }
+            contentUpdateTask?.cancel()
             guard let url = selection?.url else {
                 content = nil
                 return
             }
             content = .pending
-            Task {
-                content = await Content(url: url)
+            contentUpdateTask = Task {
+                let newContent = await Content(url: url)
+                guard !Task.isCancelled else { return }
+                content = newContent
+                contentUpdateTask = nil
             }
         }
     }
