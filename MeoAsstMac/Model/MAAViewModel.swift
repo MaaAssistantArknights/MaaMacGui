@@ -46,7 +46,6 @@ import SwiftUI
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
-    @Published var dailyTasksDetailMode: DailyTasksDetailMode = .log
 
     enum TaskStatus: Equatable {
         case cancel
@@ -426,6 +425,7 @@ extension MAAViewModel {
 extension MAAViewModel {
     func tryStartTasks() async {
         do {
+            logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")

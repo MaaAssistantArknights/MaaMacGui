@@ -13,7 +13,6 @@ struct TaskButtons: View {
     var body: some View {
         Button("开始任务") {
             Task {
-                viewModel.dailyTasksDetailMode = .log
                 await viewModel.tryStartTasks()
             }
         }
