@@ -76,6 +76,8 @@ import Observation
         return parent.status
     }
 
+    var dailyTasksDetailMode = MAAViewModel.DailyTasksDetailMode.log
+
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
         parent.logStore = self
@@ -210,6 +212,7 @@ protocol LogStore: AnyObject {
     func setLastImportedCopilot(_ url: URL)
     func setDepot(_ depot: MAADepot?)
     func setOperBox(_ operBox: MAAOperBox?)
+    func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode)
 
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
@@ -241,5 +244,9 @@ extension NewViewModel: LogStore {
 
     func setOperBox(_ operBox: MAAOperBox?) {
         self.operBox = operBox
+    }
+
+    func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode) {
+        dailyTasksDetailMode = mode
     }
 }

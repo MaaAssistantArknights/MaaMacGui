@@ -9,11 +9,12 @@ import SwiftUI
 
 struct TaskDetail: View {
     @EnvironmentObject private var viewModel: MAAViewModel
+    @Environment(NewViewModel.self) private var newModel
     let id: UUID?
 
     var body: some View {
         VStack {
-            switch viewModel.dailyTasksDetailMode {
+            switch newModel.dailyTasksDetailMode {
             case .taskConfig:
                 if let id, let task = viewModel.tasks[id] {
                     switch task {
@@ -74,19 +75,13 @@ struct TaskDetail: View {
         }
 
         ToolbarItem {
-            ControlGroup {
-                ViewDetaiTabButton(mode: .taskConfig, selection: $viewModel.dailyTasksDetailMode) {
-                    Label("选项", systemImage: "gearshape")
-                }
-                ViewDetaiTabButton(mode: .log, selection: $viewModel.dailyTasksDetailMode) {
-                    Label("日志", systemImage: "note.text")
-                }
-                ViewDetaiTabButton(mode: .timerConfig, selection: $viewModel.dailyTasksDetailMode) {
-                    Label("定时", systemImage: "clock.arrow.2.circlepath")
-                }
-            } label: {
-                Label("内容", systemImage: "menucard")
+            @Bindable var newModel = newModel
+            Picker("内容", selection: $newModel.dailyTasksDetailMode) {
+                Label("选项", systemImage: "gearshape").tag(MAAViewModel.DailyTasksDetailMode.taskConfig)
+                Label("日志", systemImage: "note.text").tag(MAAViewModel.DailyTasksDetailMode.log)
+                Label("定时", systemImage: "clock.arrow.2.circlepath").tag(MAAViewModel.DailyTasksDetailMode.timerConfig)
             }
+            .pickerStyle(.segmented)
         }
     }
 
@@ -98,33 +93,12 @@ struct TaskDetail: View {
     }
 }
 
-struct ViewDetaiTabButton<L: View>: View {
-    let mode: MAAViewModel.DailyTasksDetailMode
-    @Binding var selection: MAAViewModel.DailyTasksDetailMode
-    let label: L
-
-    init(
-        mode: MAAViewModel.DailyTasksDetailMode, selection: Binding<MAAViewModel.DailyTasksDetailMode>,
-        @ViewBuilder label: () -> L
-    ) {
-        self.mode = mode
-        self._selection = selection.animation(.default)
-        self.label = label()
-    }
-
-    var body: some View {
-        Button {
-            selection = mode
-        } label: {
-            label
-                .foregroundColor(mode == selection ? Color.accentColor : nil)
-        }
-    }
-}
-
 struct TaskDetail_Previews: PreviewProvider {
     static var previews: some View {
+        let viewModel = MAAViewModel()
+        let newModel = NewViewModel(parent: viewModel)
         TaskDetail(id: nil)
             .environmentObject(MAAViewModel())
+            .environment(newModel)
     }
 }
