@@ -6,6 +6,16 @@ MAA 的意思是 MAA Assistant Arknights
 
 本 Repo 为 MAA 的 Mac GUI 仓库，是 MAA 主仓库的 submodule。 更多关于 MAA 的信息请参考 [MAA Assistant Arknights 主仓库](https://github.com/MaaAssistantArknights/MaaAssistantArknights)。
 
+## 自定义基建时间轮换
+
+在基建设置中选择“自定义基建配置”和排班文件。文件中任一班次包含非空 `period` 时，班次列表提供“时间轮换（当前班次）”；选择文件时默认启用时间轮换，没有时段则默认第一班。已有配置中保存的具体班次不会自动改成时间轮换。
+
+时间轮换与 Windows 一致：手动启动和定时启动均在提交任务时按电脑本地时间选班，同一班次任一时段匹配即可，多个班次重叠时选文件中靠前的一班。提交后，界面的时间预览更新不改变本次执行班次。时间轮换完成后不递增班次；手动选择具体班次则在基建完成后顺序推进，末班回到第一班。
+
+`period` 的起止点都包含在区间内，但结束分钟不会扩展为整分钟，例如 `13:59:00` 匹配结束时间 `13:59`，`13:59:30` 已不匹配。跨午夜需要拆成两段，例如 `[["22:00", "23:59"], ["00:00", "06:00"]]`。详见[基建排班协议](https://github.com/MaaAssistantArknights/MaaAssistantArknights/blob/master-v2/docs/zh-cn/protocol/base-scheduling-schema.md)。
+
+修改文件后点击“重新加载文件”。重载保留仍有效的选择；与 Windows 一样，失效选择会设为时间轮换状态，即使新文件已没有时段，此时下拉框可能没有对应选项。时间轮换没有匹配时段或班次列表为空时，仍向 Core 提交索引 `0` 并记录错误。解析错误会清空已加载班次；手动索引越界则报错。可重新选择文件或有效班次。任务运行期间禁止修改基建设置。
+
 ## 开发
 
 ### clone 代码

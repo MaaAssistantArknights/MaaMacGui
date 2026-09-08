@@ -23,6 +23,7 @@ struct TaskDetail: View {
                         RecruitSettingsView(config: taskConfigBinding(config, id: id))
                     case .infrast(let config):
                         InfrastSettingsView(config: taskConfigBinding(config, id: id))
+                            .disabled(viewModel.status != .idle)
                     case .fight(let config):
                         FightSettingsView(config: taskConfigBinding(config, id: id))
                     case .mall(let config):

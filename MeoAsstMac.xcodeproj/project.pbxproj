@@ -107,6 +107,7 @@
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
+		A10700000000000000000001 /* InfrastTimeRotationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10700000000000000000002 /* InfrastTimeRotationTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -238,6 +239,8 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		A10700000000000000000002 /* InfrastTimeRotationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastTimeRotationTests.swift; sourceTree = "<group>"; };
+		A10700000000000000000003 /* MeoAsstMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeoAsstMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -257,7 +260,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10700000000000000000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXContainerItemProxy section */
+		A1070000000000000000000C = {isa = PBXContainerItemProxy; containerPortal = 833786C328F188D800D39D6F /* Project object */; proxyType = 1; remoteGlobalIDString = 833786CA28F188D800D39D6F; remoteInfo = MAA; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		A1070000000000000000000D /* PBXTargetDependency */ = {isa = PBXTargetDependency; target = 833786CA28F188D800D39D6F /* MAA */; targetProxy = A1070000000000000000000C; };
+/* End PBXTargetDependency section */
 
 /* Begin PBXGroup section */
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
@@ -371,6 +383,7 @@
 			children = (
 				8337871028F1DF4A00D39D6F /* ExternalTools */,
 				833786CD28F188D800D39D6F /* MeoAsstMac */,
+				A10700000000000000000004 /* MeoAsstMacTests */,
 				83661E2529F628DA007793CA /* Resources */,
 				8368855029BD851F00C5B999 /* Version.xcconfig */,
 				83885C112C4D5D1500B02663 /* README.md */,
@@ -384,6 +397,7 @@
 			isa = PBXGroup;
 			children = (
 				833786CB28F188D800D39D6F /* MAA.app */,
+				A10700000000000000000003 /* MeoAsstMacTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -503,6 +517,12 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		A10700000000000000000004 /* MeoAsstMacTests */ = {
+			isa = PBXGroup;
+			children = (A10700000000000000000002 /* InfrastTimeRotationTests.swift */, );
+			path = MeoAsstMacTests;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -531,6 +551,21 @@
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A10700000000000000000005 /* MeoAsstMacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A10700000000000000000009 /* Build configuration list for PBXNativeTarget "MeoAsstMacTests" */;
+			buildPhases = (
+				A10700000000000000000006 /* Sources */,
+				A10700000000000000000007 /* Frameworks */,
+				A10700000000000000000008 /* Resources */,
+			);
+			buildRules = ();
+			dependencies = (A1070000000000000000000D /* PBXTargetDependency */, );
+			name = MeoAsstMacTests;
+			productName = MeoAsstMacTests;
+			productReference = A10700000000000000000003 /* MeoAsstMacTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -541,6 +576,10 @@
 				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 2660;
 				TargetAttributes = {
+					A10700000000000000000005 = {
+						CreatedOnToolsVersion = 26.0;
+						TestTargetID = 833786CA28F188D800D39D6F;
+					};
 					833786CA28F188D800D39D6F = {
 						CreatedOnToolsVersion = 14.0.1;
 					};
@@ -566,6 +605,7 @@
 			projectRoot = "";
 			targets = (
 				833786CA28F188D800D39D6F /* MAA */,
+				A10700000000000000000005 /* MeoAsstMacTests */,
 			);
 		};
 /* End PBXProject section */
@@ -583,6 +623,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10700000000000000000008 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -673,6 +714,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A10700000000000000000006 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (A10700000000000000000001 /* InfrastTimeRotationTests.swift in Sources */, ); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -865,6 +907,36 @@
 			};
 			name = Release;
 		};
+		A1070000000000000000000A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", "@loader_path/../Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMacTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MAA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MAA";
+			};
+			name = Debug;
+		};
+		A1070000000000000000000B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/../Frameworks", "@loader_path/../Frameworks", );
+				PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMacTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MAA.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MAA";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -883,6 +955,12 @@
 				833786DB28F188D900D39D6F /* Debug */,
 				83E9D13E294B8C310091D1FF /* Release */,
 			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A10700000000000000000009 /* Build configuration list for PBXNativeTarget "MeoAsstMacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (A1070000000000000000000A /* Debug */, A1070000000000000000000B /* Release */, );
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
