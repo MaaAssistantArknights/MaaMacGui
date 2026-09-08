@@ -1,6 +1,76 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "时间轮换" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time rotation"
+          }
+        }
+      }
+    },
+    "时间轮换（%@）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time rotation (%@)"
+          }
+        }
+      }
+    },
+    "自定义基建配置选择超出索引" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom base plan selection is out of range"
+          }
+        }
+      }
+    },
+    "自定义基建配置文件解析错误：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to parse custom base configuration: %@"
+          }
+        }
+      }
+    },
+    "自定义基建配置仅有部分计划存在时间段，请全部设置时间段或全部留空。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only some custom base plans have time periods. Set periods for all plans or leave all empty."
+          }
+        }
+      }
+    },
+    "自定义基建配置未找到对应时间段的计划，使用第一个班次。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No custom base plan matches the current time. Using the first plan."
+          }
+        }
+      }
+    },
+    "自定义基建班次：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom base plan: %@"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

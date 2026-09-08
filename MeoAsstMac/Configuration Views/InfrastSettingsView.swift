@@ -9,6 +9,7 @@ import SwiftUI
 
 struct InfrastSettingsView: View {
     @Environment(\.defaultMinListRowHeight) private var rowHeight
+    @Environment(\.isEnabled) private var isEnabled
 
     @Binding var config: InfrastConfiguration
 
@@ -53,6 +54,10 @@ struct InfrastSettingsView: View {
         }
         .animation(.default, value: config.mode)
         .padding()
+        .onAppear {
+            if isEnabled { config.refreshCustomPlanSelection() }
+        }
+        .onChange(of: config.mode) { config.reloadCustomPlan() }
     }
 
     @ViewBuilder private var facilityList: some View {
@@ -107,9 +112,26 @@ struct InfrastSettingsView: View {
                     Text("内置排班")
                 }
             }
+            .id(refreshCustomPlans)
 
-            Picker("班次", selection: $config.plan_index) {
-                try? MAAInfrast(path: config.filename).planList
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                Picker("班次", selection: $config.plan_index) {
+                    if config.customPlan.hasPeriods {
+                        let index = try? config.customPlan.select(-1, at: context.date).index
+                        Text("时间轮换（\(config.customPlan.name(at: index ?? 0))）").tag(-1)
+                    }
+                    ForEach(Array(config.customPlan.plans.enumerated()), id: \.offset) { index, plan in
+                        Text(plan.name ?? "\(index)").tag(index)
+                    }
+                }
+            }
+
+            if let error = config.customPlanError {
+                Text("自定义基建配置文件解析错误：\(error)")
+                    .foregroundStyle(.red)
+            } else if config.customPlan.hasMixedPeriods {
+                Text("自定义基建配置仅有部分计划存在时间段，请全部设置时间段或全部留空。")
+                    .foregroundStyle(.orange)
             }
 
             HStack(spacing: 20) {
@@ -117,6 +139,7 @@ struct InfrastSettingsView: View {
                     NSWorkspace.shared.selectFile(nil, inFileViewerRootedAtPath: customInfrastDirectory.path)
                 }
                 Button("重新加载文件") {
+                    config.reloadCustomPlan()
                     refreshCustomPlans.toggle()
                 }
             }
@@ -129,8 +152,10 @@ struct InfrastSettingsView: View {
         Binding {
             config.filename
         } set: {
-            config.plan_index = 0
-            config.filename = $0
+            var updated = config
+            updated.filename = $0
+            updated.reloadCustomPlan(resetSelection: true)
+            config = updated
         }
     }
 

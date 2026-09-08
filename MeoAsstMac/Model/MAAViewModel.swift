@@ -427,6 +427,8 @@ extension MAAViewModel {
     func tryStartTasks() async {
         do {
             try await startTasks()
+        } catch let error as MAAInfrast.SelectionError {
+            logError("\(error.localizedDescription)")
         } catch {
             logError("ConnectFailed")
             logInfo("CheckSettings")
@@ -468,7 +470,26 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            let coreID: Int32?
+            if case .infrast(let config) = task.task, config.mode == .custom {
+                if let error = config.customPlanError {
+                    logError("自定义基建配置文件解析错误：\(error)")
+                }
+                if config.customPlan.hasMixedPeriods {
+                    logWarn("自定义基建配置仅有部分计划存在时间段，请全部设置时间段或全部留空。")
+                }
+                let execution = try config.execution()
+                if execution.selection?.usedFallback == true {
+                    logError("自定义基建配置未找到对应时间段的计划，使用第一个班次。")
+                }
+                let name = config.customPlan.name(at: execution.configuration.plan_index)
+                logInfo("自定义基建班次：\(name)")
+                coreID = try await handle?.appendTask(
+                    type: .Infrast, params: execution.configuration.jsonString())
+            } else {
+                coreID = try await handle?.appendTask(task.task)
+            }
+            if let coreID {
                 taskIDMap[coreID] = task.id
             }
         }
