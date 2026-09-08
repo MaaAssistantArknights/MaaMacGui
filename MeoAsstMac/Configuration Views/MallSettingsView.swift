@@ -27,7 +27,7 @@ struct MallSettingsView: View {
                     Toggle("信用点不溢出后停止购买", isOn: $config.reserve_max_credit)
                 }
                 GridRow {
-                    Toggle("借助战赚信用", isOn: $config.creditFight)
+                    Toggle(.creditFight, isOn: $config.creditFight)
                     Picker("编队栏位", selection: $config.formationIndex) {
                         Text("当前").tag(0)
                         ForEach(1...4, id: \.self) { index in

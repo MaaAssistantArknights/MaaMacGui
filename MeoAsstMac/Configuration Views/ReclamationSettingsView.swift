@@ -14,7 +14,7 @@ struct ReclamationSettingsView: View {
         Form {
             Picker("主题：", selection: $config.theme) {
                 ForEach(ReclamationTheme.allCases, id: \.rawValue) { theme in
-                    Text("\(theme.description)").tag(theme)
+                    Text(theme.description).tag(theme)
                 }
             }
 
