@@ -1162,18 +1162,18 @@ extension MAAViewModel {
             guard let group: String = try? info.details["group"] else {
                 return
             }
-            logTrace("RoomGroupsMatch \(group)")
+            logTrace(.roomGroupsMatch(group: group))
 
         case "CustomInfrastRoomGroupsMatchFailed":
             guard let groups: [String] = try? info.details["groups"] else {
                 return
             }
-            logTrace("RoomGroupsMatchFailed \(groups.joined(separator: ", "))")
+            logTrace(.roomGroupsMatchFailed(groups: groups.joined(separator: ", ")))
 
         case "CustomInfrastRoomOperators":
             // TODO: (Localization) Localize infrastructure operator names.
             let names: [String] = (try? info.details["names"]) ?? []
-            logTrace("RoomOperators \(names.joined(separator: ", "))")
+            logTrace(.roomOperators(names: names.joined(separator: ", ")))
 
         case "InfrastTrainingIdle":
             logTrace("TrainingIdle")

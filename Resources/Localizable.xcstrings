@@ -2290,14 +2290,38 @@
         }
       }
     },
-    "RoomGroupsMatch %@" : {
-
+    "RoomGroupsMatch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "匹配编组：%1$(group)@"
+          }
+        }
+      }
     },
-    "RoomGroupsMatchFailed %@" : {
-
+    "RoomGroupsMatchFailed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编组失败，编组列表：%1$(groups)@"
+          }
+        }
+      }
     },
-    "RoomOperators %@" : {
-
+    "RoomOperators" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "首选干员%1$(names)@"
+          }
+        }
+      }
     },
     "RoutingRestartTooManyBattles" : {
       "extractionState" : "manual",
