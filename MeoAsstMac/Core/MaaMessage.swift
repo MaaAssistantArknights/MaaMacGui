@@ -338,6 +338,13 @@ extension MAAViewModel {
 
         let isCopilot = ["Copilot", "SSSCopilot"].contains(info.taskchain)
 
+        let taskchainName: String
+        if let task = MAATaskType(rawValue: info.taskchain) {
+            taskchainName = task.description
+        } else {
+            taskchainName = l(info.taskchain)
+        }
+
         switch message.code {
         case .TaskChainStopped:
             if let id = taskID(coreID: info.taskid) {
@@ -356,9 +363,9 @@ extension MAAViewModel {
             }
             let error: String? = try? message.details["details"]["error"]
             if error == "OutOfMemory" {
-                logError(.outOfMemoryError(name: l(info.taskchain)))
+                logError(.outOfMemoryError(name: taskchainName))
             } else {
-                logError(.taskError(name: l(info.taskchain)))
+                logError(.taskError(name: taskchainName))
             }
             if isCopilot {
                 logError(.combatError)
@@ -370,7 +377,7 @@ extension MAAViewModel {
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .running
             }
-            logTrace(.startTask(name: l(info.taskchain)))
+            logTrace(.startTask(name: taskchainName))
 
         case .TaskChainCompleted:
             // TODO: (Achievement) Mirror WPF task-completion achievement progress.
@@ -410,9 +417,9 @@ extension MAAViewModel {
                 taskStatus[id] = .success
             }
             if info.taskchain == "Fight", let report = logStore?.sanityReport {
-                logTrace(.completeTaskWithSanity(name: l(info.taskchain), cur: report.current, max: report.maximum))
+                logTrace(.completeTaskWithSanity(name: taskchainName, cur: report.current, max: report.maximum))
             } else {
-                logTrace(.completeTask(name: l(info.taskchain)))
+                logTrace(.completeTask(name: taskchainName))
             }
 
         case .TaskChainExtraInfo:
@@ -978,8 +985,12 @@ extension MAAViewModel {
         case "EnterFacility":
             // TODO: (LogCard) Start a new infrastructure-room log card section.
             let facilityText: String
-            if let facility: String = try? info.details["facility"] {
-                facilityText = l(facility)
+            if let facilityName: String = try? info.details["facility"] {
+                if let facility = InfrastConfiguration.Facility(rawValue: facilityName) {
+                    facilityText = facility.description
+                } else {
+                    facilityText = l(facilityName)
+                }
             } else {
                 facilityText = L("未知")
             }
