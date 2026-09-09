@@ -906,14 +906,6 @@ private let sanityReportTimeParser = Date.ParseStrategy(
     locale: Locale(identifier: "en_US_POSIX"),
     timeZone: .current)
 
-@available(*, unavailable, message: "This type is only for localization key extraction.")
-private enum BattleFormationOperUnavailableType {
-    static let elite = L("BattleFormationOperUnavailable.elite")
-    static let level = L("BattleFormationOperUnavailable.level")
-    static let skillLevel = L("BattleFormationOperUnavailable.skill_level")
-    static let module = L("BattleFormationOperUnavailable.module")
-}
-
 extension MAAViewModel {
     private func processSubTaskExtraInfo(_ details: JSON) {
         guard let info = SubTaskExtraInfoMessage(json: details, context: "SubTaskExtraInfo") else {
@@ -1111,9 +1103,15 @@ extension MAAViewModel {
             // TODO: (Localization) Localize the unavailable requirement type.
             // TODO: (LogStyle) Use warning or error styling according to requirement settings.
             let operName: String = (try? info.details["oper_name"]) ?? ""
-            let type: String = (try? info.details["requirement_type"]) ?? "Unknown Type"
-            /// See ``BattleFormationOperUnavailableType``.
-            let typeName = l("BattleFormationOperUnavailable.\(type)", value: type)
+            let typeName: String
+            let type: String? = try? info.details["requirement_type"]
+            switch type {
+            case "elite": typeName = L("BattleFormationOperUnavailable.Elite")
+            case "level": typeName = L("BattleFormationOperUnavailable.Level")
+            case "skill_level": typeName = L("BattleFormationOperUnavailable.SkillLevel")
+            case "module": typeName = L("BattleFormationOperUnavailable.Module")
+            default: typeName = "Unknown Type"
+            }
             logError(.battleFormationOperUnavailable(name: operName, reason: typeName))
 
         case "CopilotAction":
@@ -1176,66 +1174,59 @@ extension MAAViewModel {
             logTrace(.roomOperators(names: names.joined(separator: ", ")))
 
         case "InfrastTrainingIdle":
-            logTrace("TrainingIdle")
+            logTrace(.trainingIdle)
 
         case "InfrastTrainingCompleted", "InfrastTrainingTimeLeft":
             // TODO: (Localization) Localize the training operator name.
-            let operatorName: String = (try? info.details["operator"]) ?? "UnKnown"
+            let oper: String = (try? info.details["operator"]) ?? "UnKnown"
             let skill: String = (try? info.details["skill"]) ?? "UnKnown"
             let level: Int = (try? info.details["level"]) ?? -1
-            let trainingLevel = LocalizedStringResource("TrainingLevel")
             if info.what == "InfrastTrainingCompleted" {
-                let trainingCompleted = LocalizedStringResource("TrainingCompleted")
-                logInfo("[\(operatorName)] \(skill)\n\(trainingLevel): \(level) \(trainingCompleted)")
+                logInfo(.trainingCompleted(oper: oper, skill: skill, level: level))
             } else {
                 let time: String = (try? info.details["time"]) ?? "Unknown"
-                let trainingTimeLeft = LocalizedStringResource("TrainingTimeLeft")
-                logInfo("[\(operatorName)] \(skill)\n\(trainingLevel): \(level)\n\(trainingTimeLeft): \(time)")
+                logInfo(.trainingTimeLeft(oper: oper, skill: skill, level: level, time: time))
             }
 
         case "ReclamationReport":
             let totalBadges: Int = (try? info.details["total_badges"]) ?? -1
             let badges: Int = (try? info.details["badges"]) ?? -1
-            let totalConstructionPoints: Int = (try? info.details["total_construction_points"]) ?? -1
-            let constructionPoints: Int = (try? info.details["construction_points"]) ?? -1
-            let algorithmFinish = LocalizedStringResource("AlgorithmFinish")
-            let algorithmBadge = LocalizedStringResource("AlgorithmBadge")
-            let algorithmConstructionPoint = LocalizedStringResource("AlgorithmConstructionPoint")
-            logTrace(
-                "\(algorithmFinish)\n\(algorithmBadge): \(totalBadges)(+\(badges))\n\(algorithmConstructionPoint): \(totalConstructionPoints)(+\(constructionPoints))"
-            )
+            let totalPoints: Int = (try? info.details["total_construction_points"]) ?? -1
+            let points: Int = (try? info.details["construction_points"]) ?? -1
+            logTrace(.algorithmFinish(badges: "\(totalBadges)(+\(badges))", points: "\(totalPoints)(+\(points))"))
 
         case "ReclamationProcedureStart":
             guard let times: Int = try? info.details["times"] else {
                 return
             }
-            logInfo("MissionStart \(times) UnitTime")
+            logInfo(.missionStartTimes(times))
 
         case "ReclamationSmeltGold":
             guard let times: Int = try? info.details["times"] else {
                 return
             }
-            logTrace("AlgorithmDoneSmeltGold \(times) UnitTime")
+            logTrace(.algorithmDoneSmeltGold(times: times))
 
         case "RoguelikeInvestmentReachFull":
-            logInfo("RoguelikeInvestmentReachFull")
+            logInfo(.roguelikeInvestmentReachFull)
 
         case "RoguelikeInvestmentReachLimit":
             guard let limit: Int = try? info.details["limit"] else {
                 return
             }
-            logInfo("RoguelikeInvestmentReachLimit \(limit)")
+            logInfo(.roguelikeInvestmentReachLimit(limit: limit))
 
         case "RoguelikeInvestment":
             guard let investment = RoguelikeInvestmentDetails(json: info.details, context: info.what) else {
                 return
             }
-            logInfo("RoguelikeInvestment \(investment.count) \(investment.total) \(investment.deposit)")
+            logInfo(.roguelikeInvestment(count: investment.count, total: investment.total, deposit: investment.deposit))
 
         case "RoguelikeSettlement":
             // TODO: (DataCorrection) Validate and correct difficulty OCR for the selected theme.
             // TODO: (LogCard) Update the Roguelike settlement log card.
             // TODO: (Screenshot) Update the settlement card with the current screenshot.
+            // FIXME: Complex Output
             guard let settlement = RoguelikeSettlementDetails(json: info.details, context: info.what) else {
                 return
             }
@@ -1251,11 +1242,12 @@ extension MAAViewModel {
             guard let name: String = try? info.details["name"] else {
                 return
             }
-            logInfo("RoguelikeEvent \(name)")
+            logInfo(.roguelikeEvent(name: name))
 
         case "RoguelikeEncounterOptions":
             // TODO: (LogCard) Update the Roguelike encounter-options log card.
             // TODO: (Screenshot) Update the encounter-options card with the current screenshot.
+            // FIXME: Complex Output
             let options: [RoguelikeEncounterOptionDetails] = (try? info.details["options"]) ?? []
             let optionLines = options.map { option in
                 let resource: LocalizedStringResource
@@ -1278,28 +1270,29 @@ extension MAAViewModel {
             // TODO: (Localization) Localize BlackFlow node types.
             // TODO: (Localization) Localize BlackFlow reason categories.
             // TODO: (Localization) Localize BlackFlow reason details.
+            // FIXME: Complex Output
             guard let decision = BlackFlowRoutingDecisionDetails(json: info.details, context: info.what) else {
                 return
             }
             logInfo(
                 "BlackFlowRoutingDecision \(decision.floor) \(decision.action_points_before) \(decision.action_points_after) \(decision.movement) \(decision.node_name ?? decision.node_type) \(decision.safety_margin)"
             )
-            logInfo("BlackFlowRoutingReason \(decision.reason_category) \(decision.reason_detail ?? "")")
+            logInfo(.blackFlowRoutingReason(reason: decision.reason_category, detail: decision.reason_detail ?? ""))
 
         case "BlackFlowRoutingWarning":
             let code: String = (try? info.details["code"]) ?? ""
             switch code {
-            case "map_rebuild_failed": logWarn("BlackFlowWarningMapRebuildFailed")
-            case "page_recovery_failed": logWarn("BlackFlowWarningPageRecoveryFailed")
-            case "preview_cost_changed": logWarn("BlackFlowWarningPreviewCostChanged")
-            case "route_blocked": logWarn("BlackFlowWarningRouteBlocked")
-            case "insufficient_action_points": logWarn("BlackFlowWarningInsufficientActionPoints")
-            case "target_state_changed": logWarn("BlackFlowWarningTargetStateChanged")
-            case "target_unreachable": logWarn("BlackFlowWarningTargetUnreachable")
-            case "inferred_edge_selected": logWarn("BlackFlowWarningInferredEdge")
-            case "post_move_mismatch": logWarn("BlackFlowWarningPostMoveMismatch")
-            case "identity_conflict": logWarn("BlackFlowWarningIdentityConflict")
-            default: logWarn("BlackFlowWarningUnknown")
+            case "map_rebuild_failed": logWarn(.blackFlowWarningMapRebuildFailed)
+            case "page_recovery_failed": logWarn(.blackFlowWarningPageRecoveryFailed)
+            case "preview_cost_changed": logWarn(.blackFlowWarningPreviewCostChanged)
+            case "route_blocked": logWarn(.blackFlowWarningRouteBlocked)
+            case "insufficient_action_points": logWarn(.blackFlowWarningInsufficientActionPoints)
+            case "target_state_changed": logWarn(.blackFlowWarningTargetStateChanged)
+            case "target_unreachable": logWarn(.blackFlowWarningTargetUnreachable)
+            case "inferred_edge_selected": logWarn(.blackFlowWarningInferredEdge)
+            case "post_move_mismatch": logWarn(.blackFlowWarningPostMoveMismatch)
+            case "identity_conflict": logWarn(.blackFlowWarningIdentityConflict)
+            default: logWarn(.blackFlowWarningUnknown)
             }
 
         case "BlackFlowMilestoneChanged":
@@ -1308,74 +1301,69 @@ extension MAAViewModel {
             let status: String = (try? info.details["status"]) ?? ""
             let milestoneId: String = (try? info.details["milestone_id"]) ?? ""
             if status != "inactive" {
-                logInfo("BlackFlowMilestoneChanged \(milestoneId) \(status)")
+                logInfo(.blackFlowMilestoneChanged(id: milestoneId, status: status))
             }
 
         case "BlackFlowStrategyStarted":
             // TODO: (Localization) Localize the BlackFlow profile value.
             let profile: String = (try? info.details["profile"]) ?? ""
-            logInfo("BlackFlowStrategyStarted \(profile)")
+            logInfo(.blackFlowStrategyStarted(profile: profile))
 
         case "BlackFlowStrategyResult":
             // TODO: (Localization) Localize the BlackFlow outcome value.
             // TODO: (Localization) Localize the BlackFlow termination reason.
             let outcome: String = (try? info.details["outcome"]) ?? ""
-            let terminationReason: String = (try? info.details["termination_reason"]) ?? ""
-            let succeeded: Bool = (try? info.details["succeeded"]) ?? false
-            if succeeded {
-                logInfo("BlackFlowStrategyResult \(outcome) \(terminationReason)")
-            } else {
-                logWarn("BlackFlowStrategyResult \(outcome) \(terminationReason)")
-            }
+            let reason: String = (try? info.details["termination_reason"]) ?? ""
+            logInfo(.blackFlowStrategyResult(outcome: outcome, reason: reason))
 
         case "BoskyPassageNode":
             guard let nodeType: String = try? info.details["node_type"] else {
                 return
             }
             switch nodeType {
-            case "Omissions": logInfo("BoskyOmissions")
-            case "Legend": logInfo("BoskyLegend")
-            case "OldShop": logInfo("BoskyOldShop")
-            case "YiTrader": logInfo("BoskyYiTrader")
-            case "Scheme": logInfo("BoskyScheme")
-            case "Playtime": logInfo("BoskyPlaytime")
-            case "Doubts": logInfo("BoskyDoubts")
-            case "Disaster": logWarn("BoskyDisaster")
-            default: logInfo("\(nodeType)")
+            case "Omissions": logInfo(.boskyOmissions)
+            case "Legend": logInfo(.boskyLegend)
+            case "OldShop": logInfo(.boskyOldShop)
+            case "YiTrader": logInfo(.boskyYiTrader)
+            case "Scheme": logInfo(.boskyScheme)
+            case "Playtime": logInfo(.boskyPlaytime)
+            case "Doubts": logInfo(.boskyDoubts)
+            case "Disaster": logWarn(.boskyDisaster)
+            default: logInfo(verbatim: nodeType)
             }
 
         case "RoguelikeCoppersRecognitionError":
             let recognizedName: String = (try? info.details["recognized_name"]) ?? "Unknown"
-            logError("RoguelikeCoppersRecognitionError \(recognizedName)")
+            logError(.roguelikeCoppersRecognitionError(name: recognizedName))
 
         case "RoguelikeCoppersExchangeInfo":
             let toDiscard: String = (try? info.details["to_discard"]) ?? "Unknown"
             let toPickup: String = (try? info.details["to_pickup"]) ?? "Unknown"
-            logInfo("RoguelikeCoppersExchange \(toDiscard) \(toPickup)")
+            logInfo(.roguelikeCoppersExchange(from: toDiscard, to: toPickup))
 
         case "EncounterOcrError":
-            logError("EncounterOcrError")
+            logError(.encounterOcrError)
 
         case "RoguelikeJieGardenTargetFound":
             let targetSubtype: String = (try? info.details["target_subtype"]) ?? "Unknown"
             let targetName: String
             switch targetSubtype {
-            case "Ling": targetName = String(localized: "RoguelikePlaytimeLing")
-            case "Shu": targetName = String(localized: "RoguelikePlaytimeShu")
-            case "Nian": targetName = String(localized: "RoguelikePlaytimeNian")
+            case "Ling": targetName = L(.roguelikePlaytimeLing)
+            case "Shu": targetName = L(.roguelikePlaytimeShu)
+            case "Nian": targetName = L(.roguelikePlaytimeNian)
             default: targetName = targetSubtype
             }
-            logInfo("RoguelikeJieGardenTargetFound \(targetName)")
+            logInfo(.roguelikeJieGardenTargetFound(name: targetName))
 
         case "FoldartalGainOcrNextLevel":
             let foldartal: String = (try? info.details["foldartal"]) ?? ""
-            logTrace("FoldartalGainOcrNextLevel \(foldartal)")
+            logTrace(.foldartalGainOcrNextLevel(name: foldartal))
 
         case "MonthlySquadCompleted":
-            logRare("MonthlySquadCompleted")
+            logRare(.monthlySquadCompleted)
 
         case "DeepExplorationCompleted":
-            logRare("DeepExplorationCompleted")
+            logRare(.deepExplorationCompleted)
 
         case "RoguelikeCollapsalParadigms":
             guard let deepenOrWeaken: Int = try? info.details["deepen_or_weaken"] else {
@@ -1384,13 +1372,13 @@ extension MAAViewModel {
             let current: String = (try? info.details["cur"]) ?? "UnKnown"
             let previous: String = (try? info.details["prev"]) ?? "UnKnown"
             if deepenOrWeaken == 1, previous.isEmpty {
-                logInfo("RoguelikeGainParadigm \(current)")
+                logInfo(.roguelikeGainParadigm(current))
             } else if deepenOrWeaken == 1 {
-                logInfo("RoguelikeDeepenParadigm \(current) \(previous)")
+                logInfo(.roguelikeDeepenParadigm(from: previous, to: current))
             } else if deepenOrWeaken == -1, current.isEmpty {
-                logInfo("RoguelikeLoseParadigm \("") \(previous)")
+                logInfo(LocalizedStringResource.roguelikeLoseParadigm(name: previous))
             } else if deepenOrWeaken == -1 {
-                logInfo("RoguelikeWeakenParadigm \(current) \(previous)")
+                logInfo(.roguelikeWeakenParadigm(from: previous, to: current))
             }
 
         case "UseMedicine":
@@ -1398,23 +1386,23 @@ extension MAAViewModel {
             guard let medicine = UseMedicineDetails(json: info.details, context: info.what) else {
                 return
             }
-            let expiry: LocalizedStringResource
+            let expiry: String
             if case .fight(let config) = dailyTask(coreID: info.taskid),
                 config.medicine_expire_days > 0
             {
-                expiry = config.localizedExpiry
+                expiry = L(config.localizedExpiry)
             } else {
-                expiry = "即将"
+                expiry = L("即将")
             }
             if medicine.is_expiring {
                 expiringMedicineUsedTimes += medicine.count
-                logInfo("ExpiringMedicineUsed \(expiry) \(expiringMedicineUsedTimes) \(medicine.count)")
+                logInfo(.expiringMedicineUsed(expiry: expiry, total: expiringMedicineUsedTimes, count: medicine.count))
             } else {
                 medicineUsedTimes += medicine.count
-                logInfo("MedicineUsed \(medicineUsedTimes) \(medicine.count)")
+                logInfo(.medicineUsed(total: medicineUsedTimes, count: medicine.count))
             }
             for item in medicine.medicines ?? [] {
-                logInfo("UseMedicine.MedicineInfo \(item.use) \(item.inventory)")
+                logInfo(.useMedicineInfo(use: item.use, inventory: item.inventory))
             }
 
         case "SanityBeforeStage":
@@ -1456,14 +1444,15 @@ extension MAAViewModel {
                 let timesFinished = details.times_finished,
                 timesFinished < limit, details.finished == true
             {
-                logWarn("FightTimesUnused \(timesFinished) \(series) \(timesFinished + series) \(limit)")
+                let nextFinished = timesFinished + series
+                logWarn(.fightTimesUnused(times: timesFinished, series: series, upTo: nextFinished, limit: limit))
             }
 
         case "StageQueueUnableToAgent":
             guard let stageCode: String = try? info.details["stage_code"] else {
                 return
             }
-            logInfo("StageQueue \(stageCode) \(String(localized: "UnableToAgent"))")
+            logInfo(.unableToAgent(stage: stageCode))
 
         case "StageQueueMissionCompleted":
             guard let stageCode: String = try? info.details["stage_code"],
@@ -1471,7 +1460,7 @@ extension MAAViewModel {
             else {
                 return
             }
-            logInfo("StageQueue \(stageCode) - \(stars) ★")
+            logInfo(.stageQueue(stage: stageCode, stars: stars))
 
         case "PixelPaintProgress":
             // TODO: (LogStyle) Apply the current palette color to progress logs.
@@ -1480,7 +1469,7 @@ extension MAAViewModel {
             if done >= total, total > 0 {
                 logInfo("MiniGame@PixelPaint@DoneLog")
             } else {
-                logTrace("MiniGame@PixelPaint@ProgressLog \(done) \(total)")
+                logTrace("MiniGame@PixelPaint@ProgressLog \(done)/\(total)")
             }
 
         case "Finished" where info.taskchain == "VideoRecognition":

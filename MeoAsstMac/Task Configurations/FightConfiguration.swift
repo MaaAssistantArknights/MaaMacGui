@@ -159,7 +159,7 @@ extension FightConfiguration {
         switch medicine_expire_days {
         case 0: "不启用"
         case 1: "24小时内"
-        case let d: "\(d - 1)天"
+        case let d: "\(d - 1)天内"
         }
     }
 }
