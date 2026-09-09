@@ -186,8 +186,16 @@
     "24小时内" : {
 
     },
-    "AccountSwitch %@" : {
-
+    "AccountSwitch" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "账号切换 —> %1$(to)@"
+          }
+        }
+      }
     },
     "ActingCommandError" : {
       "extractionState" : "manual",
@@ -283,51 +291,98 @@
     "Arknights Screenshot" : {
 
     },
-    "BattleFormation %@" : {
-
-    },
-    "BattleFormation: %@" : {
-      "extractionState" : "stale",
+    "BattleFormation" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "편성 시작: %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开始编队：%@"
+            "value" : "开始编队：\n[%@]"
           }
         }
       }
     },
-    "BattleFormationOperUnavailable %@ %@" : {
+    "BattleFormationOperUnavailable" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "BattleFormationOperUnavailable %1$@ %2$@"
+            "state" : "translated",
+            "value" : "干员“%1$(name)@”不可用，因为%2$(reason)@"
+          }
+        }
+      }
+    },
+    "BattleFormationOperUnavailable.elite" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "精英化不足"
+          }
+        }
+      }
+    },
+    "BattleFormationOperUnavailable.level" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等级不足"
+          }
+        }
+      }
+    },
+    "BattleFormationOperUnavailable.module" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "所需模组未解锁"
+          }
+        }
+      }
+    },
+    "BattleFormationOperUnavailable.skill_level" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "技能等级不足"
           }
         }
       }
     },
     "BattleFormationParseFailed" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编队解析失败"
+          }
+        }
+      }
     },
-    "BattleFormationSelected %@" : {
+    "BattleFormationSelected" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오퍼레이터 선택: %@"
+            "value" : "오퍼레이터 선택: %(groupOrName)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择干员：%@"
+            "value" : "选择干员：%(groupOrName)@"
           }
         }
       }
@@ -510,26 +565,6 @@
         }
       }
     },
-    "Choose %@" : {
-
-    },
-    "Choose Tags: %@" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "태그 선택: %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "选择 Tags：%@"
-          }
-        }
-      }
-    },
     "CloseArknightsFailed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -665,7 +700,15 @@
       }
     },
     "ContinueRefresh" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无招聘许可，继续尝试刷新词条"
+          }
+        }
+      }
     },
     "CopilotUserAdditionalNameInvalid" : {
       "extractionState" : "manual",
@@ -689,8 +732,16 @@
         }
       }
     },
-    "CreditFullOnlyBuyDiscount %lld" : {
-
+    "CreditFullOnlyBuyDiscount" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "博士！\n只购买折扣商品让信用点数溢出了！\n小心信用点数浪费哦！\n剩余信用点数：%1$(credit)lld"
+          }
+        }
+      }
     },
     "currentResolution" : {
       "extractionState" : "manual",
@@ -714,28 +765,30 @@
         }
       }
     },
-    "CurrentStage %@" : {
+    "CurrentStage" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "현재 단계: %@"
+            "state" : "needs_review",
+            "value" : "현재 단계: %(stage)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前步骤：%@"
+            "value" : "当前关卡：%(stage)@"
           }
         }
       }
     },
-    "CurrentSteps %@ %@" : {
+    "CurrentSteps" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "CurrentSteps %1$@ %2$@"
+            "state" : "translated",
+            "value" : "当前步骤：%1$(action)@ %2$(target)@"
           }
         }
       }
@@ -810,8 +863,16 @@
         }
       }
     },
-    "ElapsedTime %lld" : {
-
+    "ElapsedTime" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前计时器：%1$(time)lldms"
+          }
+        }
+      }
     },
     "EmergencyOps" : {
       "extractionState" : "manual",
@@ -1718,9 +1779,18 @@
       }
     },
     "NoRecruitmentPermit" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无招聘许可，已返回"
+          }
+        }
+      }
     },
     "NotEnoughStaff" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1743,16 +1813,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$(name)@任务因内存不足停止，请关闭部分程序或重启MAA后重试"
-          }
-        }
-      }
-    },
-    "Parse %@[%@] Success" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Parse %1$@[%2$@] Success"
           }
         }
       }
@@ -1960,14 +2020,14 @@
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "공개 모집 인식 결과: %(tags)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "公招识别结果：%(tags)@"
+            "value" : "公招识别结果：\n%(tags)@"
           }
         }
       }
@@ -2010,22 +2070,36 @@
         }
       }
     },
-    "Refreshed %lld" : {
-
-    },
-    "Refreshed %lld UnitTime" : {
-      "extractionState" : "stale",
+    "RecruitTagsSelectedLog" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "현재 슬롯 %lld회 새로 고침"
+            "state" : "needs_review",
+            "value" : "태그 선택: %(tags)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前槽位已刷新 %lld 次"
+            "value" : "选择词条：\n%(tags)@"
+          }
+        }
+      }
+    },
+    "Refreshed" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "현재 슬롯 %(times)lld회 새로 고침"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前槽位已刷新%(times)lld次"
           }
         }
       }
@@ -2297,9 +2371,6 @@
         }
       }
     },
-    "Save to: %@" : {
-
-    },
     "ScreencapCost: %@ / %@ / %@" : {
       "extractionState" : "stale",
       "localizations" : {
@@ -2351,6 +2422,7 @@
       }
     },
     "StageInfoError" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2386,18 +2458,19 @@
         }
       }
     },
-    "StartCombat %@" : {
+    "StartCombat" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전투 시작: %@"
+            "value" : "전투 시작: %(name)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开始战斗：%@"
+            "value" : "开始战斗：%(name)@"
           }
         }
       }
@@ -2596,24 +2669,21 @@
 
     },
     "UnsupportedLevel" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "지원되지 않는 스테이지입니다. MAA 소프트웨어 버전을 업데이트해주세요!"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不支持的关卡，请更新 MAA 软件版本！"
+            "value" : "不支持的关卡“%1$(level)@”，请检查关卡名或在左下角尝试更新资源！"
           }
         }
       }
-    },
-    "UnsupportedLevel %@" : {
-
     },
     "UpperLimit" : {
       "extractionState" : "manual",
@@ -3851,6 +3921,9 @@
           }
         }
       }
+    },
+    "已添加：%@" : {
+
     },
     "已连接至 %@" : {
 
@@ -5372,6 +5445,16 @@
     },
     "襁褓羽蛇" : {
 
+    },
+    "解析 %@[%@] 成功" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "解析 %1$@[%2$@] 成功"
+          }
+        }
+      }
     },
     "触控模式" : {
       "localizations" : {

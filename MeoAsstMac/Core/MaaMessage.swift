@@ -20,8 +20,8 @@ private func L(_ resource: LocalizedStringResource) -> String {
     String(localized: resource)
 }
 
-private func l(_ key: String) -> String {
-    Bundle.main.localizedString(forKey: key, value: nil, table: nil)
+private func l(_ key: String, value: String? = nil) -> String {
+    Bundle.main.localizedString(forKey: key, value: value, table: nil)
 }
 
 extension JSONInitializable {
@@ -906,6 +906,14 @@ private let sanityReportTimeParser = Date.ParseStrategy(
     locale: Locale(identifier: "en_US_POSIX"),
     timeZone: .current)
 
+@available(*, unavailable, message: "This type is only for localization key extraction.")
+private enum BattleFormationOperUnavailableType {
+    static let elite = L("BattleFormationOperUnavailable.elite")
+    static let level = L("BattleFormationOperUnavailable.level")
+    static let skillLevel = L("BattleFormationOperUnavailable.skill_level")
+    static let module = L("BattleFormationOperUnavailable.module")
+}
+
 extension MAAViewModel {
     private func processSubTaskExtraInfo(_ details: JSON) {
         guard let info = SubTaskExtraInfoMessage(json: details, context: "SubTaskExtraInfo") else {
@@ -1038,64 +1046,64 @@ extension MAAViewModel {
         case "RecruitTagsSelected":
             let tags: [String] = (try? info.details["tags"]) ?? []
             let selected = tags.isEmpty ? String(localized: .noDrop) : tags.joined(separator: "\n")
-            logTrace("Choose \(selected)")
+            logTrace(.recruitTagsSelectedLog(tags: selected))
 
         case "RecruitTagsRefreshed":
             // TODO: (Achievement) Record recruit-tag refreshes.
             guard let count: Int = try? info.details["count"] else {
                 return
             }
-            logTrace("Refreshed \(count)")
+            logTrace(.refreshed(times: count))
 
         case "RecruitNoPermit":
             guard let shouldContinue: Bool = try? info.details["continue"] else {
                 return
             }
             if shouldContinue {
-                logTrace("ContinueRefresh")
+                logTrace(.continueRefresh)
             } else {
-                logTrace("NoRecruitmentPermit")
+                logTrace(.noRecruitmentPermit)
             }
 
         case "NotEnoughStaff":
-            logError("NotEnoughStaff")
+            logError(.notEnoughStaff)
 
         case "CreditFullOnlyBuyDiscount":
             guard let credit: Int = try? info.details["credit"] else {
                 return
             }
-            logTrace("CreditFullOnlyBuyDiscount \(credit)")
+            logTrace(.creditFullOnlyBuyDiscount(credit: credit))
 
         case "AccountSwitch":
             let accountName: String = (try? info.details["account_name"]) ?? ""
-            logTrace("AccountSwitch \(accountName)")
+            logTrace(.accountSwitch(to: accountName))
 
         case "StageInfo":
             // TODO: (ViewState) Mark delayed Roguelike aborts as waiting for combat to finish.
             guard let name: String = try? info.details["name"] else {
                 return
             }
-            logTrace("StartCombat \(name)")
+            logTrace(.startCombat(name: name))
 
         case "StageInfoError":
             // TODO: (LogCard) Split the stage-error log card.
             // TODO: (Screenshot) Update the stage-error card with the current screenshot.
-            logError("StageInfoError")
+            logError(.stageInfoError)
 
         case "BattleFormation":
             // TODO: (Localization) Localize operator names.
             let formation: [String] = (try? info.details["formation"]) ?? []
-            logTrace("BattleFormation \(formation.joined(separator: ", "))")
+            logTrace(.battleFormation(formation.joined(separator: ", ")))
 
         case "BattleFormationParseFailed":
-            logTrace("BattleFormationParseFailed")
+            logTrace(.battleFormationParseFailed)
 
         case "BattleFormationSelected":
             // TODO: (Localization) Localize the selected operator name.
             let selected: String = (try? info.details["selected"]) ?? ""
             let groupName: String? = try? info.details["group_name"]
             let displayName = groupName.map { "\($0) => \(selected)" } ?? selected
-            logTrace("BattleFormationSelected \(displayName)")
+            logTrace(.battleFormationSelected(groupOrName: displayName))
 
         case "BattleFormationOperUnavailable":
             // TODO: (ViewState) Record that Copilot requirements were ignored.
@@ -1103,8 +1111,10 @@ extension MAAViewModel {
             // TODO: (Localization) Localize the unavailable requirement type.
             // TODO: (LogStyle) Use warning or error styling according to requirement settings.
             let operName: String = (try? info.details["oper_name"]) ?? ""
-            let requirementType: String = (try? info.details["requirement_type"]) ?? "Unknown Type"
-            logError("BattleFormationOperUnavailable \(operName) \(requirementType)")
+            let type: String = (try? info.details["requirement_type"]) ?? "Unknown Type"
+            /// See ``BattleFormationOperUnavailableType``.
+            let typeName = l("BattleFormationOperUnavailable.\(type)", value: type)
+            logError(.battleFormationOperUnavailable(name: operName, reason: typeName))
 
         case "CopilotAction":
             // TODO: (LogStyle) Apply the callback-provided document color.
@@ -1114,11 +1124,11 @@ extension MAAViewModel {
                 return
             }
             if let doc = action.doc, !doc.isEmpty {
-                logTrace("\(doc)")
+                logTrace(verbatim: doc)
             }
-            logTrace("CurrentSteps \(action.action) \(action.target ?? "")")
+            logTrace(.currentSteps(action: action.action, target: action.target ?? ""))
             if let elapsedTime = action.elapsed_time, elapsedTime >= 0 {
-                logTrace("ElapsedTime \(elapsedTime)")
+                logTrace(.elapsedTime(time: elapsedTime))
             }
 
         case "CopilotListLoadTaskFileSuccess":
@@ -1127,17 +1137,17 @@ extension MAAViewModel {
             guard let file = CopilotFileDetails(json: info.details, context: info.what) else {
                 return
             }
-            logTrace("Parse \(file.file_name)[\(file.stage_name)] Success")
+            logTrace("解析 \(file.file_name)[\(file.stage_name)] 成功")
 
         case "SSSStage":
             guard let stage: String = try? info.details["stage"] else {
                 return
             }
-            logInfo("CurrentStage \(stage)")
+            logInfo(.currentStage(stage: stage))
 
         case "SSSSettlement":
             if let why = info.why {
-                logInfo("\(why)")
+                logInfo(verbatim: why)
             }
 
         case "SSSGamePass":
@@ -1145,8 +1155,8 @@ extension MAAViewModel {
 
         case "UnsupportedLevel":
             // TODO: (ResourceUpdate) Update resources and reload them into Core.
-            let level: JSON = (try? info.details["level"]) ?? .null
-            logError("UnsupportedLevel \(String(describing: level))")
+            let level = (try? info.details["level"]) ?? .null
+            logError(.unsupportedLevel(level: level.description))
 
         case "CustomInfrastRoomGroupsMatch":
             guard let group: String = try? info.details["group"] else {
@@ -1481,7 +1491,7 @@ extension MAAViewModel {
                 let url = URL(filePath: filename)
                 let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
                 logStore?.setLastImportedCopilot(dst)
-                logInfo("Save to: \(dst.deletingPathExtension().lastPathComponent)")
+                logInfo("已添加：\(dst.deletingPathExtension().lastPathComponent)")
             } catch {
                 logError("无法添加视频作业：\(error.localizedDescription)")
             }
