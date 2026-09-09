@@ -16,6 +16,8 @@ struct MaaMessage: Hashable {
 
 private let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "MaaMessage")
 
+private typealias L = LocalizedStringResource
+
 extension JSONInitializable {
     fileprivate init?(json: JSON, context: String) {
         do {
@@ -113,23 +115,25 @@ extension MAAViewModel {
         case "UnsupportedResolution":
             // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
             if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
-                logError("ResolutionNotSupportedCurrentResolution \(width) \(height)")
+                let message = String(localized: .resolutionNotSupported)
+                logError(.currentResolution(message: message, width: width, height: height))
             } else {
-                logError("ResolutionNotSupported")
+                logError(.resolutionNotSupported)
             }
 
         case "ResolutionChanged":
             // TODO: (ConnectionState) Mark the invalidated connection as unavailable and retain the error message.
             if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
-                logError("ResolutionChangedCurrentResolution \(width) \(height)")
+                let message = String(localized: .resolutionChanged)
+                logError(.currentResolution(message: message, width: width, height: height))
             } else {
-                logError("ResolutionChanged")
+                logError(.resolutionChanged)
             }
 
         case "ResolutionInfo":
             if let (width, height) = parseResolution(details: details) {
                 if clientChannel == .YoStarEN, width != 1920 || height != 1080 {
-                    logError("ResolutionInfoYoStarEN")
+                    logError(.resolutionInfoYoStarEN)
                 }
             }
 
@@ -139,20 +143,20 @@ extension MAAViewModel {
 
         case "ResolutionError":
             // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
-            logError("ResolutionAcquisitionFailure")
+            logError(.resolutionAcquisitionFailure)
 
         case "Reconnecting":
             guard let times: Int = try? details["details"]["times"] else {
                 return
             }
-            logError("TryToReconnect \(times + 1)")
+            logError(.tryToReconnect(times: times + 1))
 
         case "Reconnected":
-            logTrace("ReconnectSuccess")
+            logTrace(.reconnectSuccess)
 
         case "Disconnect":
             // TODO: (ConnectionState) Mark the current connection as unavailable.
-            logError("ReconnectFailed")
+            logError(.reconnectFailed)
             if status == .idle {
                 break
             }
@@ -165,11 +169,11 @@ extension MAAViewModel {
             }
 
         case "ScreencapFailed":
-            logError("ScreencapFailed")
+            logError(.screencapFailed)
 
         case "TouchModeNotAvailable":
             // TODO: (ConnectionState) Mark the current connection as unavailable.
-            logError("TouchModeNotAvailable")
+            logError(.touchModeNotAvailable)
 
         case "FastestWayToScreencap":
             // TODO: (ConnectionState) Store the selected screencap method and its summary.
@@ -180,9 +184,9 @@ extension MAAViewModel {
                 return
             }
             if cost > 400 {
-                logWarn("FastestWayToScreencap \(cost) \(method)")
+                logWarn(.fastestWayToScreencap(cost: cost, method: method))
             } else {
-                logTrace("FastestWayToScreencap \(cost) \(method)")
+                logTrace(.fastestWayToScreencap(cost: cost, method: method))
             }
 
         case "ScreencapCost":
@@ -208,9 +212,9 @@ extension MAAViewModel {
             }
             switch level {
             case 800:
-                logWarn("FastestWayToScreencapErrorTip \(average)")
+                logWarn(.fastestWayToScreencapErrorTip(average: average))
             case 400:
-                logWarn("FastestWayToScreencapWarningTip \(average)")
+                logWarn(.fastestWayToScreencapWarningTip(average: average))
             default:
                 break
             }
@@ -224,18 +228,18 @@ extension MAAViewModel {
             case ...0, 60:
                 break
             case ..<30:
-                logError("EmulatorFpsErrorTip \(fps)")
+                logError(.emulatorFpsErrorTip(fps: fps))
             case ..<60:
-                logWarn("EmulatorFpsWarningTip \(fps)")
+                logWarn(.emulatorFpsWarningTip(fps: fps))
             default:
                 if logStore?.hasPrintedFPSHighTip != true {
-                    logWarn("EmulatorFpsHighTip \(fps)")
+                    logWarn(.emulatorFpsHighTip(fps: fps))
                     logStore?.hasPrintedFPSHighTip = true
                 }
             }
 
         case "UnsupportedPlayTools":
-            logError("不支持此版本 PlayCover")
+            logError("不支持此版本PlayCover")
 
         default:
             break

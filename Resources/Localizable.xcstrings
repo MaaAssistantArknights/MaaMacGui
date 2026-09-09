@@ -230,12 +230,6 @@
     "24小时内" : {
 
     },
-    "720P" : {
-
-    },
-    "1080P" : {
-
-    },
     "AccountSwitch %@" : {
 
     },
@@ -688,6 +682,17 @@
     "CreditFullOnlyBuyDiscount %lld" : {
 
     },
+    "currentResolution" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(message)@（当前分辨率：%2$(width)lld×%3$(height)lld）"
+          }
+        }
+      }
+    },
     "CurrentSanity %lld %lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -787,14 +792,38 @@
         }
       }
     },
-    "EmulatorFpsErrorTip %lld" : {
-
+    "EmulatorFpsErrorTip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到模拟器设置帧率过低（%1$(fps)lld fps），可能导致任务异常，请关闭模拟器后台降帧并将帧率设置为60 fps"
+          }
+        }
+      }
     },
-    "EmulatorFpsHighTip %lld" : {
-
+    "EmulatorFpsHighTip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到模拟器设置帧率为%1$(fps)lld fps，高于游戏原生帧率上限（60 fps），可能是模拟器插帧功能，可能导致画面异常或识别不稳定，建议关闭插帧并将帧率设置为60 fps"
+          }
+        }
+      }
     },
-    "EmulatorFpsWarningTip %lld" : {
-
+    "EmulatorFpsWarningTip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "检测到模拟器设置帧率为%1$(fps)lld fps，低于游戏原生帧率（60 fps），可能开启了后台降帧或帧率设置过低，建议将模拟器帧率设置为60 fps"
+          }
+        }
+      }
     },
     "Encounter" : {
       "extractionState" : "stale",
@@ -894,38 +923,44 @@
         }
       }
     },
-    "FastestWayToScreencap %lld %@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "FastestWayToScreencap %1$lld %2$@"
-          }
-        }
-      }
-    },
-    "FastestWayToScreencap: %@ms (%@)" : {
-      "extractionState" : "stale",
+    "FastestWayToScreencap" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가장 빠른 스크린샷 소요 시간: %1$@ms (%2$@)"
+            "value" : "가장 빠른 스크린샷 소요 시간: %1$(cost)lldms (%2$(method)@)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最快截图耗时：%1$@ms (%2$@)"
+            "value" : "最快截图耗时：%1$(cost)lldms（%2$(method)@）"
           }
         }
       }
     },
-    "FastestWayToScreencapErrorTip %lld" : {
-
+    "FastestWayToScreencapErrorTip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图用时过长（平均%1$(average)lldms），自动战斗类功能（如自动肉鸽）很可能无法正常运行，建议尝试重启或更换模拟器！"
+          }
+        }
+      }
     },
-    "FastestWayToScreencapWarningTip %lld" : {
-
+    "FastestWayToScreencapWarningTip" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图用时较长（平均%1$(average)lldms），自动战斗类功能（如自动肉鸽）可能表现异常。"
+          }
+        }
+      }
     },
     "FightCompleted" : {
       "localizations" : {
@@ -1695,6 +1730,7 @@
 
     },
     "ReconnectFailed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1711,6 +1747,7 @@
       }
     },
     "ReconnectSuccess" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1809,59 +1846,57 @@
       }
     },
     "ResolutionAcquisitionFailure" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "에뮬레이터 해상도 가져오기 실패. 에뮬레이터와 ADB를 재시작하거나, 컴퓨터를 재시작하거나, 에뮬레이터를 교체한 후 다시 시도하는 것을 권장합니다."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模拟器分辨率获取失败，建议重启模拟器与 ADB 或重启电脑，或更换模拟器后再次尝试"
+            "value" : "模拟器分辨率获取失败，建议重启模拟器与ADB或重启电脑，或更换模拟器后再次尝试"
           }
         }
       }
     },
     "ResolutionChanged" : {
-
-    },
-    "ResolutionChangedCurrentResolution %lld %lld" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "ResolutionChangedCurrentResolution %1$lld %2$lld"
+            "state" : "translated",
+            "value" : "模拟器分辨率已变更，连接已断开。请重新开始任务以应用新分辨率"
           }
         }
       }
     },
     "ResolutionInfoYoStarEN" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "确保模拟器设置为1920×1080"
+          }
+        }
+      }
     },
     "ResolutionNotSupported" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "지원되지 않는 에뮬레이터 해상도입니다. 720p 이상, 16:9 비율로 설정해주세요."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模拟器分辨率不支持，请设置为 720p 或更高，且为 16:9 比例"
-          }
-        }
-      }
-    },
-    "ResolutionNotSupportedCurrentResolution %lld %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ResolutionNotSupportedCurrentResolution %1$lld %2$lld"
+            "value" : "模拟器分辨率不支持，请设置为720p或更高，且为16:9比例，推荐使用1280×720或1920×1080"
           }
         }
       }
@@ -2086,6 +2121,7 @@
       }
     },
     "ScreencapFailed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2310,25 +2346,16 @@
         }
       }
     },
-    "TouchModeNotAvaiable" : {
-      "extractionState" : "stale",
+    "TouchModeNotAvailable" : {
+      "extractionState" : "manual",
       "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "터치 모드를 사용할 수 없습니다. 설정 - 연결 설정에서 다른 터치 모드로 전환해주세요."
-          }
-        },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "触控模式不可用。请进入 设置 - 连接设置 切换其他触控模式"
+            "value" : "触控模式不可用。请尝试切换“设置”>“连接设置”>“触控模式”的选项"
           }
         }
       }
-    },
-    "TouchModeNotAvailable" : {
-
     },
     "Trader" : {
       "localizations" : {
@@ -2358,25 +2385,22 @@
     "TrainingTimeLeft" : {
 
     },
-    "TryToReconnect (%lld)" : {
-      "extractionState" : "stale",
+    "TryToReconnect" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "에뮬레이터 연결 끊김. 재연결 시도 중 (%lld)"
+            "value" : "에뮬레이터 연결 끊김. 재연결 시도 중 (%(times)lld)"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "模拟器断开，正在尝试重连 (%lld)"
+            "value" : "模拟器断开，正在尝试重连 (%(times)lld)"
           }
         }
       }
-    },
-    "TryToReconnect %lld" : {
-
     },
     "UnableToAgent" : {
 
@@ -2517,6 +2541,7 @@
       }
     },
     "不支持此版本 PlayCover" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2525,6 +2550,9 @@
           }
         }
       }
+    },
+    "不支持此版本PlayCover" : {
+
     },
     "不购物" : {
       "localizations" : {
@@ -3871,7 +3899,7 @@
     "截图分辨率：" : {
 
     },
-    "截图分辨率不足720P" : {
+    "截图分辨率不足720p" : {
 
     },
     "截图宽高比不符合16:9" : {

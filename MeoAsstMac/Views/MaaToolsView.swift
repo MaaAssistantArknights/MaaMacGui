@@ -119,8 +119,8 @@ private struct MaaPresetView: View {
             )
             .fixedSize(horizontal: false, vertical: true)
             Picker("预设", selection: $preset) {
-                Text("720P").tag(720.0)
-                Text("1080P").tag(1080.0)
+                Text(verbatim: "720p").tag(720.0)
+                Text(verbatim: "1080p").tag(1080.0)
             }
             .pickerStyle(.segmented)
             VStack(spacing: 6) {
@@ -199,7 +199,7 @@ extension MaaResult {
             Label("截图宽高比不符合16:9", systemImage: "xmark.circle")
                 .foregroundStyle(.red)
         } else if image.height < 720 {
-            Label("截图分辨率不足720P", systemImage: "xmark.circle")
+            Label("截图分辨率不足720p", systemImage: "xmark.circle")
                 .foregroundStyle(.red)
         } else {
             Label("成功！", systemImage: "checkmark.circle")
