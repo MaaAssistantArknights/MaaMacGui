@@ -305,7 +305,7 @@ extension MAAViewModel {
                 if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
                     let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
                     let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
-                    sanitySuffix = "\n\(String(localized: .sanityReport(date: recoveryDate, duration: remaining)))"
+                    sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
                 } else {
                     sanitySuffix = ""
                 }
@@ -332,7 +332,7 @@ extension MAAViewModel {
         if info.taskchain == "Recruit", message.code == .TaskChainError {
             // TODO: (Notification) Show the recruit-recognition error notification.
             // TODO: (ViewState) Show the recruit-recognition error in RecruitView.
-            let resource = LocalizedStringResource("IdentifyTheMistakes")
+            let resource = LocalizedStringResource.identifyTheMistakes
             _ = resource
         }
 
@@ -474,6 +474,20 @@ private struct BattleFormationErrorDetails {
     let opers: [String: [MissingOperatorDetails]]
 }
 
+private func localizedWhy(_ why: String?) -> String {
+    switch why {
+    case "recognition error": L(.identifyTheMistakes)
+    case "refresh count reached the limit": L(.recruitRefreshLimitReached)
+    case "UnknownStage": L(.penguinUploadUnknownStage)
+    case "NotThreeStars": L(.penguinUploadNotThreeStars)
+    case "UnknownTimes": L(.penguinUploadUnknownTimes)
+    case "UnknownDropType": L(.penguinUploadUnknownDropType)
+    case "UnknownDrops": L(.penguinUploadUnknownDrops)
+    case nil: L(.errorOccurred)
+    case .some(let why): why
+    }
+}
+
 extension MAAViewModel {
     private func processSubTaskError(_ details: JSON) {
         guard let info = SubTaskErrorMessage(json: details, context: "SubTaskError") else {
@@ -488,20 +502,20 @@ extension MAAViewModel {
             logError(.closeArknightsFailed)
 
         case "AutoRecruitTask":
-            logError(.hasReturned(reason: info.why ?? L(.errorOccurred)))
+            logError(.hasReturned(reason: localizedWhy(info.why)))
 
         case "RecognizeDrops":
             logError(.dropRecognitionError)
 
         case "ReportToPenguinStats":
             if case .fight(let config) = dailyTask(coreID: info.taskid), config.stage == "Annihilation" {
-                logTrace(LocalizedStringResource.giveUpUploadingPenguins(reason: L(.annihilationStage)))
+                logTrace(.giveUpUploadingPenguins(reason: L(.annihilationStage)))
             } else {
-                logWarn(LocalizedStringResource.giveUpUploadingPenguins(reason: info.why ?? L(.errorOccurred)))
+                logWarn(.giveUpUploadingPenguins(reason: localizedWhy(info.why)))
             }
 
         case "CheckStageValid":
-            logError(.theEX)
+            logError(.theEx)
 
         case "BattleFormationTask":
             // TODO: (Achievement) Record formations missing multiple operator groups.
@@ -578,7 +592,7 @@ extension MAAViewModel {
 
                 var statusParts = [LocalizedStringResource]()
                 if let report = logStore?.sanityReport {
-                    statusParts.append(LocalizedStringResource.currentSanity(cur: report.current, max: report.maximum))
+                    statusParts.append(.currentSanity(cur: report.current, max: report.maximum))
                 }
                 if expiringMedicineUsedTimes > 0 {
                     statusParts.append(.medicineUsedTimesWithExpiring(medicineUsedTimes, expiringMedicineUsedTimes))
@@ -588,7 +602,7 @@ extension MAAViewModel {
                 if let stoneUsedTimes = logStore?.stoneUsedTimes, stoneUsedTimes > 0 {
                     statusParts.append(.stoneUsedTimes(stoneUsedTimes))
                 }
-                let statusString = statusParts.map { String(localized: $0) }.joined(separator: "  ")
+                let statusString = statusParts.map(L).joined(separator: "  ")
                 let statusSuffix = statusParts.isEmpty ? "" : "\n\(statusString)"
                 logInfo(.missionStartFightTask(times: times, cost: sanityCost, using: statusSuffix))
 
@@ -1037,7 +1051,7 @@ extension MAAViewModel {
 
         case "RecruitTagsSelected":
             let tags: [String] = (try? info.details["tags"]) ?? []
-            let selected = tags.isEmpty ? String(localized: .noDrop) : tags.joined(separator: "\n")
+            let selected = tags.isEmpty ? L(.noDrop) : tags.joined(separator: "\n")
             logTrace(.recruitTagsSelectedLog(tags: selected))
 
         case "RecruitTagsRefreshed":
@@ -1106,10 +1120,10 @@ extension MAAViewModel {
             let typeName: String
             let type: String? = try? info.details["requirement_type"]
             switch type {
-            case "elite": typeName = L("BattleFormationOperUnavailable.Elite")
-            case "level": typeName = L("BattleFormationOperUnavailable.Level")
-            case "skill_level": typeName = L("BattleFormationOperUnavailable.SkillLevel")
-            case "module": typeName = L("BattleFormationOperUnavailable.Module")
+            case "elite": typeName = L(.battleFormationOperUnavailableElite)
+            case "level": typeName = L(.battleFormationOperUnavailableLevel)
+            case "skill_level": typeName = L(.battleFormationOperUnavailableSkillLevel)
+            case "module": typeName = L(.battleFormationOperUnavailableModule)
             default: typeName = "Unknown Type"
             }
             logError(.battleFormationOperUnavailable(name: operName, reason: typeName))
@@ -1149,7 +1163,7 @@ extension MAAViewModel {
             }
 
         case "SSSGamePass":
-            logRare("SSSGamePass")
+            logRare(.sssgamePass)
 
         case "UnsupportedLevel":
             // TODO: (ResourceUpdate) Update resources and reload them into Core.
@@ -1317,7 +1331,12 @@ extension MAAViewModel {
             // TODO: (Localization) Localize the BlackFlow termination reason.
             let outcome: String = (try? info.details["outcome"]) ?? ""
             let reason: String = (try? info.details["termination_reason"]) ?? ""
-            logInfo(.blackFlowStrategyResult(outcome: outcome, reason: reason))
+            let success: Bool = (try? info.details["succeeded"]) ?? false
+            if success {
+                logInfo(.blackFlowStrategyResult(outcome: outcome, reason: reason))
+            } else {
+                logWarn(.blackFlowStrategyResult(outcome: outcome, reason: reason))
+            }
 
         case "BoskyPassageNode":
             guard let nodeType: String = try? info.details["node_type"] else {
@@ -1379,7 +1398,7 @@ extension MAAViewModel {
             } else if deepenOrWeaken == 1 {
                 logInfo(.roguelikeDeepenParadigm(from: previous, to: current))
             } else if deepenOrWeaken == -1, current.isEmpty {
-                logInfo(LocalizedStringResource.roguelikeLoseParadigm(name: previous))
+                logInfo(.roguelikeLoseParadigm(previous))
             } else if deepenOrWeaken == -1 {
                 logInfo(.roguelikeWeakenParadigm(from: previous, to: current))
             }
@@ -1405,7 +1424,7 @@ extension MAAViewModel {
                 logInfo(.medicineUsed(total: medicineUsedTimes, count: medicine.count))
             }
             for item in medicine.medicines ?? [] {
-                logInfo(.useMedicineInfo(use: item.use, inventory: item.inventory))
+                logInfo(.useMedicineMedicineInfo(use: item.use, inventory: item.inventory))
             }
 
         case "SanityBeforeStage":
@@ -1465,14 +1484,18 @@ extension MAAViewModel {
             }
             logInfo(.stageQueue(stage: stageCode, stars: stars))
 
+        case let what where what.starts(with: "MaterialSynthesis"):
+            // There is no plan to re-run Material Synthesis currently.
+            break
+
         case "PixelPaintProgress":
             // TODO: (LogStyle) Apply the current palette color to progress logs.
             let done: Int = (try? info.details["done"]) ?? 0
             let total: Int = (try? info.details["total"]) ?? 0
             if done >= total, total > 0 {
-                logInfo("MiniGame@PixelPaint@DoneLog")
+                logInfo(.miniGamePixelPaintDoneLog)
             } else {
-                logTrace("MiniGame@PixelPaint@ProgressLog \(done)/\(total)")
+                logTrace(.miniGamePixelPaintProgressLog(done: done, total: total))
             }
 
         case "Finished" where info.taskchain == "VideoRecognition":

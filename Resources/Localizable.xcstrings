@@ -280,6 +280,7 @@
       }
     },
     "BattleFormationOperUnavailable.Elite" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -290,6 +291,7 @@
       }
     },
     "BattleFormationOperUnavailable.Level" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -300,6 +302,7 @@
       }
     },
     "BattleFormationOperUnavailable.Module" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -310,6 +313,7 @@
       }
     },
     "BattleFormationOperUnavailable.SkillLevel" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -779,7 +783,8 @@
         }
       }
     },
-    "CompleteTaskWithSanity\n%lld%lld" : {
+    "CompleteTaskWithSanity" : {
+      "comment" : "WPF: CompleteTask + CurrentSanity",
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -850,7 +855,8 @@
         }
       }
     },
-    "currentResolution" : {
+    "CurrentResolution" : {
+      "comment" : "WPF: ResolutionNotSupportedCurrentResolution",
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -1084,7 +1090,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已使用%1$(expiry)@内过期理智药%2$(total)lld(+%3$(count)lld)次"
+            "value" : "已使用%1$(expiry)@过期理智药%2$(total)lld(+%3$(count)lld)次"
           }
         }
       }
@@ -1582,6 +1588,7 @@
       }
     },
     "IdentifyTheMistakes" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1691,7 +1698,7 @@
         }
       }
     },
-    "MedicineUsedTimesWithExpiring %lld %lld" : {
+    "MedicineUsedTimesWithExpiring" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -1713,6 +1720,7 @@
       }
     },
     "MiniGame@PixelPaint@DoneLog" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -1722,12 +1730,13 @@
         }
       }
     },
-    "MiniGame@PixelPaint@ProgressLog %lld/%lld" : {
+    "MiniGame@PixelPaint@ProgressLog" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "像素画 %1$lld/%2$lld"
+            "value" : "像素画 %1$(done)lld/%2$(total)lld"
           }
         }
       }
@@ -1753,7 +1762,7 @@
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
+            "state" : "translated",
             "value" : "以下干员组内的干员均未拥有（每组只需其一）：\n%(groups)@\n“特别关注”可能影响干员识别，若实际已拥有，可移除“特别关注”后重试，或关闭“自动编队”手动补充；若确实未拥有，仅缺一组时可从“助战模式”中选择合适项目，缺两组以上请更换作业。"
           }
         }
@@ -1788,6 +1797,7 @@
       }
     },
     "MissionStartTimes" : {
+      "comment" : "WPF: MissionStart + UnitTime",
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
@@ -1867,6 +1877,61 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$(name)@任务因内存不足停止，请关闭部分程序或重启MAA后重试"
+          }
+        }
+      }
+    },
+    "PenguinUploadNotThreeStars" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "非三星结算"
+          }
+        }
+      }
+    },
+    "PenguinUploadUnknownDrops" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未识别掉落物"
+          }
+        }
+      }
+    },
+    "PenguinUploadUnknownDropType" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未识别掉落类型"
+          }
+        }
+      }
+    },
+    "PenguinUploadUnknownStage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未识别关卡"
+          }
+        }
+      }
+    },
+    "PenguinUploadUnknownTimes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未识别关卡次数"
           }
         }
       }
@@ -2041,7 +2106,7 @@
         }
       }
     },
-    "RecruitConfirm %lld" : {
+    "RecruitConfirm" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -2069,7 +2134,7 @@
         }
       }
     },
-    "RecruitingTips %@" : {
+    "RecruitingTips" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -2092,6 +2157,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "小提示：和主界面的自动公招是两个独立的功能，\n请手动打开游戏公招 Tags 界面后使用～"
+          }
+        }
+      }
+    },
+    "RecruitRefreshLimitReached" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新次数达到上限"
           }
         }
       }
@@ -2274,7 +2350,7 @@
         }
       }
     },
-    "roguelikeGainParadigm" : {
+    "RoguelikeGainParadigm" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -2352,7 +2428,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "坍缩范式消退：%1$(name)@"
+            "value" : "坍缩范式消退：%1$@"
           }
         }
       }
@@ -2512,7 +2588,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "理智将在%1$(date)@回满。（%2$(duration)@秒后） "
+            "value" : "理智将在%1$(date)@回满。（%2$(duration)@秒后）"
           }
         }
       }
@@ -2535,6 +2611,7 @@
       }
     },
     "SSSGamePass" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2677,7 +2754,7 @@
         }
       }
     },
-    "TheEX" : {
+    "TheEx" : {
       "extractionState" : "manual",
       "localizations" : {
         "ko" : {
@@ -2851,7 +2928,7 @@
         }
       }
     },
-    "UseMedicineInfo" : {
+    "UseMedicine.MedicineInfo" : {
       "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
@@ -2868,7 +2945,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visiting"
+            "value" : "访问好友"
           }
         }
       }
@@ -5583,14 +5660,7 @@
 
     },
     "解析 %@[%@] 成功" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "解析 %1$@[%2$@] 成功"
-          }
-        }
-      }
+
     },
     "触控模式" : {
       "localizations" : {
