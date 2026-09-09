@@ -680,7 +680,7 @@ extension MAAViewModel {
 
             case "OfflineConfirm", "OfflineConfirmAfterBattle":
                 // TODO: (Notification) Show the game-disconnection notification.
-                logWarn(.gameDrop)
+                logError(.gameDrop)
                 Task {
                     do {
                         try await stop()
@@ -1108,7 +1108,12 @@ extension MAAViewModel {
             // TODO: (Localization) Localize the selected operator name.
             let selected: String = (try? info.details["selected"]) ?? ""
             let groupName: String? = try? info.details["group_name"]
-            let displayName = groupName.map { "\($0) => \(selected)" } ?? selected
+            let displayName: String
+            if let groupName, groupName != selected {
+                displayName = "\(groupName) => \(selected)"
+            } else {
+                displayName = selected
+            }
             logTrace(.battleFormationSelected(groupOrName: displayName))
 
         case "BattleFormationOperUnavailable":
@@ -1288,10 +1293,11 @@ extension MAAViewModel {
             guard let decision = BlackFlowRoutingDecisionDetails(json: info.details, context: info.what) else {
                 return
             }
+            let node = decision.node_name.map { $0.isEmpty ? decision.node_type : $0 } ?? decision.node_type
             logInfo(
                 .blackFlowRoutingDecision(
                     floor: decision.floor, before: decision.action_points_before, after: decision.action_points_after,
-                    movement: decision.movement, node: decision.node_name ?? decision.node_type,
+                    movement: decision.movement, node: node,
                     margin: decision.safety_margin)
             )
             logInfo(.blackFlowRoutingReason(reason: decision.reason_category, detail: decision.reason_detail ?? ""))
