@@ -66,50 +66,6 @@
         }
       }
     },
-    "%@ %@\n%@%@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@ %2$@\n%3$@%4$@"
-          }
-        }
-      }
-    },
-    "%@ GiveUpUploadingPenguins" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, 펭귄 로지스틱스 업로드 포기"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@，放弃上传企鹅物流"
-          }
-        }
-      }
-    },
-    "%@ HasReturned" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, 돌아왔습니다."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@，已返回"
-          }
-        }
-      }
-    },
     "%@：%lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -234,6 +190,7 @@
 
     },
     "ActingCommandError" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -280,13 +237,32 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "任务已全部完成！（用时%1$(duration)@）%2$(sanity)@"
+            "value" : "任务已全部完成！（用时%1$(duration)@秒）%2$(sanity)@"
+          }
+        }
+      }
+    },
+    "AnnihilationMode" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剿灭模式：%1$(cur)lld/%2$(max)lld"
           }
         }
       }
     },
     "AnnihilationStage" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "剿灭关卡"
+          }
+        }
+      }
     },
     "AP-5" : {
       "localizations" : {
@@ -356,22 +332,19 @@
         }
       }
     },
-    "BegunToExplore %lld" : {
-
-    },
-    "BegunToExplore %lld UnitTime" : {
-      "extractionState" : "stale",
+    "BegunToExplore" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "탐험 시작 %lld회"
+            "value" : "탐험 시작 %(times)lld회"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已开始探索%lld次"
+            "value" : "已开始探索%(times)lld次"
           }
         }
       }
@@ -558,12 +531,29 @@
       }
     },
     "CloseArknightsFailed" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "关闭游戏失败"
+          }
+        }
+      }
     },
     "ClueExchangeUnlocked" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已开启线索交流"
+          }
+        }
+      }
     },
     "CombatError" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -580,6 +570,7 @@
       }
     },
     "CombatOps" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -596,6 +587,7 @@
       }
     },
     "CompleteCombat" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -611,28 +603,30 @@
         }
       }
     },
-    "CompleteTask %@" : {
+    "CompleteTask" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 완료: %@"
+            "value" : "작업 완료: %(name)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成任务：%@"
+            "value" : "完成任务：%(name)@"
           }
         }
       }
     },
-    "CompleteTask %@\n%@" : {
+    "CompleteTaskWithSanity\n%lld%lld" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "CompleteTask %1$@\n%2$@"
+            "state" : "translated",
+            "value" : "完成任务：%1$(name)@\n理智：%2$(cur)lld/%3$(max)lld"
           }
         }
       }
@@ -673,11 +667,27 @@
     "ContinueRefresh" : {
 
     },
-    "CopilotUserAdditionalNameInvalid %@" : {
-
+    "CopilotUserAdditionalNameInvalid" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "追加自定干员“%1$(name)@”名称无效，请检查拼写"
+          }
+        }
+      }
     },
     "CreditFight" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "借助战赚信用"
+          }
+        }
+      }
     },
     "CreditFullOnlyBuyDiscount %lld" : {
 
@@ -693,12 +703,13 @@
         }
       }
     },
-    "CurrentSanity %lld %lld" : {
+    "CurrentSanity" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "CurrentSanity %1$lld %2$lld"
+            "state" : "translated",
+            "value" : "理智：%1$(cur)lld/%2$(max)lld"
           }
         }
       }
@@ -729,19 +740,44 @@
         }
       }
     },
-    "CurTimes : %lld" : {
-
+    "CurTimes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前次数：%1$(times)lld"
+          }
+        }
+      }
     },
     "CustomInfrastPlanIndexAutoSwitch" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动保存为下个计划"
+          }
+        }
+      }
     },
     "DeepExplorationCompleted" : {
 
     },
     "DeepExplorationNotUnlockedComplain" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "深入调查未解锁"
+          }
+        }
+      }
     },
     "DreadfulFoe" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -758,6 +794,7 @@
       }
     },
     "DropRecognitionError" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -777,6 +814,7 @@
 
     },
     "EmergencyOps" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -846,9 +884,18 @@
 
     },
     "Error" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "错误"
+          }
+        }
+      }
     },
     "ErrorOccurred" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -892,6 +939,7 @@
       }
     },
     "ExplorationAbandoned" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -908,6 +956,7 @@
       }
     },
     "FailedToOpenClient" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -963,6 +1012,7 @@
       }
     },
     "FightCompleted" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -979,6 +1029,7 @@
       }
     },
     "FightFailed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -995,7 +1046,15 @@
       }
     },
     "FightMissionFailedAndStop" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "代理失败次数已达上限，任务已停止"
+          }
+        }
+      }
     },
     "FightTimesUnused %lld %lld %lld %lld" : {
       "localizations" : {
@@ -1008,10 +1067,29 @@
       }
     },
     "FilterTruth" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "节点：去伪存真"
+          }
+        }
+      }
     },
     "FoldartalGainOcrNextLevel %@" : {
 
+    },
+    "FurnitureDrop" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "家具"
+          }
+        }
+      }
     },
     "GachaInitTip" : {
       "localizations" : {
@@ -1336,17 +1414,18 @@
       }
     },
     "GameDrop" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "게임 연결 끊김, 다시 연결"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "游戏掉线，重新连接"
+            "value" : "游戏掉线，停止任务"
           }
         }
       }
@@ -1354,8 +1433,16 @@
     "GitHub" : {
       "shouldTranslate" : false
     },
-    "GiveUpUploadingPenguins %@" : {
-
+    "GiveUpUploadingPenguins" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%(reason)@，放弃上传企鹅物流"
+          }
+        }
+      }
     },
     "HasInvested %lld UnitTime" : {
       "extractionState" : "stale",
@@ -1374,8 +1461,16 @@
         }
       }
     },
-    "HasReturned %@" : {
-
+    "HasReturned" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%(reason)@，已返回"
+          }
+        }
+      }
     },
     "IdentifyTheMistakes" : {
       "localizations" : {
@@ -1397,17 +1492,18 @@
 
     },
     "InfrastDormDoubleConfirmed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "오퍼레이터 충돌"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "干员冲突"
+            "value" : "检测到干员已进驻其他设施，已自动确认将其调动"
           }
         }
       }
@@ -1423,6 +1519,7 @@
       }
     },
     "LabelsRefreshed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1484,21 +1581,37 @@
         }
       }
     },
-    "MedicineUsedTimes %lld" : {
-
-    },
-    "MedicineUsedTimesWithExpiring %lld %lld" : {
+    "MedicineUsedTimes" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "MedicineUsedTimesWithExpiring %1$lld %2$lld"
+            "state" : "translated",
+            "value" : "药剂：%lld"
+          }
+        }
+      }
+    },
+    "MedicineUsedTimesWithExpiring %lld %lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "药剂：%1$lld，%2$lld（临期）"
           }
         }
       }
     },
     "MiniGame@InteractiveExhibition@UncollectedNotificationContent" : {
-
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA已停止自动探索，请返回游戏完成战斗。"
+          }
+        }
+      }
     },
     "MiniGame@PixelPaint@DoneLog" : {
 
@@ -1541,6 +1654,7 @@
       }
     },
     "MissionStart" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1587,6 +1701,7 @@
 
     },
     "NoDrop" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -1621,8 +1736,16 @@
         }
       }
     },
-    "OutOfMemoryError %@" : {
-
+    "OutOfMemoryError" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(name)@任务因内存不足停止，请关闭部分程序或重启MAA后重试"
+          }
+        }
+      }
     },
     "Parse %@[%@] Success" : {
       "localizations" : {
@@ -1671,16 +1794,33 @@
       }
     },
     "ProductChanged" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "产物已切换"
+          }
+        }
+      }
     },
     "ProductChangeFail" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "产物切换失败"
+          }
+        }
+      }
     },
     "ProductIncorrect" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "생산물이 구성과 맞지 않습니다."
           }
         },
@@ -1693,10 +1833,18 @@
       }
     },
     "ProductUnknown" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法识别的产物"
+          }
+        }
+      }
     },
     "prts://" : {
-
+      "shouldTranslate" : false
     },
     "RA-1" : {
 
@@ -1724,10 +1872,26 @@
       }
     },
     "ReclamationPisModeError" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前任务模式需要您拥有可合成道具的存档。请考虑切换模式。"
+          }
+        }
+      }
     },
     "ReclamationPnsModeError" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前使用无存档任务模式。请手动删除现有存档后再尝试。若您希望保留存档，请考虑切换模式。"
+          }
+        }
+      }
     },
     "ReconnectFailed" : {
       "extractionState" : "manual",
@@ -1781,30 +1945,43 @@
       }
     },
     "RecruitConfirm %lld" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已确认招募%1$(times)lld次"
+          }
+        }
+      }
     },
-    "RecruitingResults %@" : {
-
-    },
-    "RecruitingResults: %@" : {
-      "extractionState" : "stale",
+    "RecruitingResults" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공개 모집 인식 결과: %@"
+            "value" : "공개 모집 인식 결과: %(tags)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "公招识别结果：%@"
+            "value" : "公招识别结果：%(tags)@"
           }
         }
       }
     },
     "RecruitingTips %@" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "公招提示：\n%1$(preserved)@"
+          }
+        }
+      }
     },
     "RecruitmentRecognitionTip" : {
       "localizations" : {
@@ -1822,8 +1999,16 @@
         }
       }
     },
-    "RecruitSupportOperator %@" : {
-
+    "RecruitSupportOperator" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "编入助战干员：%1$(name)@"
+          }
+        }
+      }
     },
     "Refreshed %lld" : {
 
@@ -1940,6 +2125,7 @@
 
     },
     "RoguelikeGamePass" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2004,6 +2190,7 @@
       }
     },
     "RoguelikeSpecialItemBought" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2038,8 +2225,16 @@
     "RoomOperators %@" : {
 
     },
-    "RoutingRestartTooManyBattles %lld" : {
-
+    "RoutingRestartTooManyBattles" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前方战斗数：%1$(cost)lld，重开路线"
+          }
+        }
+      }
     },
     "Running" : {
       "localizations" : {
@@ -2058,27 +2253,29 @@
       }
     },
     "SafeHouse" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "스테이지: 안전한 곳"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关卡：安全的角落"
+            "value" : "节点：安全的角落"
           }
         }
       }
     },
-    "SanityReport %@ %@" : {
+    "SanityReport" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "SanityReport %1$@ %2$@"
+            "state" : "translated",
+            "value" : "理智将在%1$(date)@回满。（%2$(duration)@秒后） "
           }
         }
       }
@@ -2205,18 +2402,19 @@
         }
       }
     },
-    "StartTask %@" : {
+    "StartTask" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 시작: %@"
+            "value" : "작업 시작: %(name)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开始任务：%@"
+            "value" : "开始任务：%(name)@"
           }
         }
       }
@@ -2224,30 +2422,36 @@
     "StartTasksFailed: %@" : {
 
     },
-    "StoneUsed %lld" : {
-
-    },
-    "StoneUsed %lld UnitTime" : {
-      "extractionState" : "stale",
+    "StoneUsed" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "오리지늄 %lld회 사용"
+            "state" : "needs_review",
+            "value" : "오리지늄 %(times)lld회 사용"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已使用源石 %lld 次"
+            "value" : "已使用至纯源石%(times)lld次"
           }
         }
       }
     },
-    "StoneUsedTimes %lld" : {
-
+    "StoneUsedTimes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "至纯源石：%lld"
+          }
+        }
+      }
     },
     "Stopped" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2263,27 +2467,25 @@
         }
       }
     },
-    "TaskError %@" : {
+    "TaskError" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 오류: %@"
+            "value" : "작업 오류: %(name)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "任务出错：%@"
+            "value" : "任务出错：%(name)@"
           }
         }
       }
     },
-    "TheEx" : {
-
-    },
     "TheEX" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2299,49 +2501,36 @@
         }
       }
     },
-    "ThisFacility %@ %@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "ThisFacility %1$@ %2$@"
-          }
-        }
-      }
-    },
-    "ThisFacility %@ %lld" : {
-      "extractionState" : "stale",
+    "ThisFacility" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "현재 시설: %1$@ %2$lld"
+            "value" : "현재 시설: %1$(facility)@ %2$(index)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当前设施：%1$@ %2$lld"
+            "value" : "当前设施：%1$(facility)@%2$(index)@"
           }
         }
       }
     },
     "TotalDrop" : {
-
-    },
-    "TotalDrop\n%@\n\nSanityLeft: %@" : {
-      "extractionState" : "stale",
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
-            "value" : "드롭 통계:\n%1$@\n\n남은 이성: %2$@"
+            "state" : "needs_review",
+            "value" : "드롭 통계:\n%1$(code)@\n\n남은 이성: %2$(drops)@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "掉落统计：\n%1$@\n\n剩余理智: %2$@"
+            "value" : "%1$(code)@掉落统计：\n%2$(drops)@%3$(extras)@"
           }
         }
       }
@@ -2358,17 +2547,18 @@
       }
     },
     "Trader" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
-            "state" : "translated",
+            "state" : "needs_review",
             "value" : "스테이지: 교활한 상인"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关卡：诡意行商"
+            "value" : "节点：诡意行商"
           }
         }
       }
@@ -2426,6 +2616,7 @@
 
     },
     "UpperLimit" : {
+      "extractionState" : "manual",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2452,7 +2643,15 @@
       }
     },
     "Visiting" : {
-
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visiting"
+          }
+        }
+      }
     },
     "一层远见密文板" : {
       "localizations" : {
@@ -2536,17 +2735,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "이미 배치된 오퍼레이터를 숙소에 넣지 않음"
-          }
-        }
-      }
-    },
-    "不支持此版本 PlayCover" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 버전의 PlayCover는 지원되지 않습니다."
           }
         }
       }
@@ -2766,6 +2954,7 @@
       }
     },
     "借助战赚信用" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -3256,16 +3445,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "섬멸 모드"
-          }
-        }
-      }
-    },
-    "剿灭模式 : %lld / %lld" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "剿灭模式 : %1$lld / %2$lld"
           }
         }
       }
@@ -4163,17 +4342,6 @@
         }
       }
     },
-    "无限吃48小时内过期的理智药" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "48시간 이내 만료되는 이성 회복제 전부 사용"
-          }
-        }
-      }
-    },
     "无需更新" : {
       "localizations" : {
         "ko" : {
@@ -4369,6 +4537,9 @@
           }
         }
       }
+    },
+    "未知" : {
+
     },
     "未知排班" : {
       "localizations" : {
@@ -5304,17 +5475,6 @@
         }
       }
     },
-    "请将PlayCover的分辨率设置为1280x720、分辨率缩放设置为1.0。" : {
-      "extractionState" : "stale",
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "PlayCover의 해상도를 1280x720, 해상도 배율을 1.0으로 설정해주세요."
-          }
-        }
-      }
-    },
     "请打开“自动战斗”页，将攻略视频文件拖入外部作业列表即可。" : {
       "localizations" : {
         "ko" : {
@@ -5474,7 +5634,7 @@
     "运行窗口化的《明日方舟》时，请尝试双击标题栏调整窗口大小，切换并保持为较大的窗口。" : {
 
     },
-    "运行过程中，请勿将游戏设置为全屏幕，或移动窗口至其他显示器" : {
+    "运行过程中，请勿将游戏设置为全屏幕、最小化，或移动窗口至其他显示器" : {
 
     },
     "还原默认" : {

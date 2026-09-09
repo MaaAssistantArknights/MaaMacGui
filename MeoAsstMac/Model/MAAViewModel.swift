@@ -215,7 +215,7 @@ extension MAAViewModel {
                 logError("未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问")
             }
             if toolsMode == .MacSCK {
-                logInfo("运行过程中，请勿将游戏设置为全屏幕，或移动窗口至其他显示器")
+                logInfo("运行过程中，请勿将游戏设置为全屏幕、最小化，或移动窗口至其他显示器")
             }
         }
 
