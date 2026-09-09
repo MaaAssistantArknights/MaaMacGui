@@ -23,19 +23,6 @@
     "**神秘代码**" : {
 
     },
-    "%@" : {
-      "shouldTranslate" : false
-    },
-    "%@\n%@" : {
-      "localizations" : {
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "%1$@\n%2$@"
-          }
-        }
-      }
-    },
     "%@：%lld" : {
       "localizations" : {
         "zh-Hans" : {
@@ -398,12 +385,13 @@
         }
       }
     },
-    "BlackFlowRoutingDecision %lld %lld %lld %@ %@ %lld" : {
+    "BlackFlowRoutingDecision" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "BlackFlowRoutingDecision %1$lld %2$lld %3$lld %4$@ %5$@ %6$lld"
+            "state" : "translated",
+            "value" : "第%1$(floor)lld层｜行动力%2$(before)lld→%3$(after)lld｜%4$(movement)@至%5$(node)@｜安全余量%6$(margin)lld"
           }
         }
       }
@@ -2242,14 +2230,38 @@
         }
       }
     },
-    "RoguelikeEncounterDisabledOption %@" : {
-
+    "RoguelikeEncounterDisabledOption" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不可选选项：%1$(name)@"
+          }
+        }
+      }
     },
-    "RoguelikeEncounterEnabledOption %@" : {
-
+    "RoguelikeEncounterEnabledOption" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可选选项：%1$(name)@"
+          }
+        }
+      }
     },
-    "RoguelikeEncounterOptions %lld" : {
-
+    "RoguelikeEncounterOptions" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "识别到%1$(count)lld个选项：\n%2$(options)@"
+          }
+        }
+      }
     },
     "RoguelikeEvent" : {
       "extractionState" : "manual",
@@ -2378,12 +2390,13 @@
         }
       }
     },
-    "RoguelikeSettlement %@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@ %@" : {
+    "RoguelikeSettlement" : {
+      "extractionState" : "manual",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
-            "state" : "new",
-            "value" : "RoguelikeSettlement %1$@ %2$@ %3$@ %4$@ %5$@ %6$@ %7$@ %8$@ %9$@ %10$@ %11$@ %12$@"
+            "state" : "translated",
+            "value" : "肉鸽结算：%1$(pass)@ (难度%9$(difficulty)lld)\n探索：%2$(floor)lld层%3$(step)lld步\n战斗：%4$(combat)lld / %5$(emergency)lld紧急 / %6$(boss)lld BOSS\n招募：%7$(recruit)lld 收藏品：%8$(collection)lld\n得分：%10$(score)lld 经验：%11$(exp)@ 点数：%12$(skill)@"
           }
         }
       }
@@ -4876,6 +4889,9 @@
           }
         }
       }
+    },
+    "没有识别到选项" : {
+
     },
     "活动商店" : {
       "localizations" : {

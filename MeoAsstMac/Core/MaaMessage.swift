@@ -1226,12 +1226,17 @@ extension MAAViewModel {
             // TODO: (DataCorrection) Validate and correct difficulty OCR for the selected theme.
             // TODO: (LogCard) Update the Roguelike settlement log card.
             // TODO: (Screenshot) Update the settlement card with the current screenshot.
-            // FIXME: Complex Output
             guard let settlement = RoguelikeSettlementDetails(json: info.details, context: info.what) else {
                 return
             }
             logTrace(
-                "RoguelikeSettlement \(settlement.game_pass ? "✓" : "✗") \(settlement.floor.map(String.init) ?? "") \(settlement.step.map(String.init) ?? "") \(settlement.combat.map(String.init) ?? "") \(settlement.emergency.map(String.init) ?? "") \(settlement.boss.map(String.init) ?? "") \(settlement.recruit.map(String.init) ?? "") \(settlement.collection.map(String.init) ?? "") \(settlement.difficulty.map(String.init) ?? "") \(settlement.score.map(String.init) ?? "") \(settlement.exp ?? "") \(settlement.skill ?? "")"
+                .roguelikeSettlement(
+                    pass: settlement.game_pass ? "✓" : "✗",
+                    floor: settlement.floor ?? 0, step: settlement.step ?? 0,
+                    combat: settlement.combat ?? 0, emergency: settlement.emergency ?? 0, boss: settlement.boss ?? 0,
+                    recruit: settlement.recruit ?? 0, collection: settlement.collection ?? 0,
+                    difficulty: settlement.difficulty ?? 0, score: settlement.score ?? 0,
+                    exp: settlement.exp ?? "", skill: settlement.skill ?? "")
             )
 
         case "RoguelikeCombatEnd":
@@ -1247,22 +1252,18 @@ extension MAAViewModel {
         case "RoguelikeEncounterOptions":
             // TODO: (LogCard) Update the Roguelike encounter-options log card.
             // TODO: (Screenshot) Update the encounter-options card with the current screenshot.
-            // FIXME: Complex Output
             let options: [RoguelikeEncounterOptionDetails] = (try? info.details["options"]) ?? []
             let optionLines = options.map { option in
-                let resource: LocalizedStringResource
                 if option.enabled {
-                    resource = LocalizedStringResource("RoguelikeEncounterEnabledOption \(option.text)")
+                    L(.roguelikeEncounterEnabledOption(name: option.text))
                 } else {
-                    resource = LocalizedStringResource("RoguelikeEncounterDisabledOption \(option.text)")
+                    L(.roguelikeEncounterDisabledOption(name: option.text))
                 }
-                return String(localized: resource)
             }.joined(separator: "\n")
-            let optionsTitle = LocalizedStringResource("RoguelikeEncounterOptions \(options.count)")
             if optionLines.isEmpty {
-                logInfo("\(optionsTitle)")
+                logInfo("没有识别到选项")
             } else {
-                logInfo("\(optionsTitle)\n\(optionLines)")
+                logInfo(.roguelikeEncounterOptions(count: options.count, options: optionLines))
             }
 
         case "BlackFlowRoutingDecision":
@@ -1270,12 +1271,14 @@ extension MAAViewModel {
             // TODO: (Localization) Localize BlackFlow node types.
             // TODO: (Localization) Localize BlackFlow reason categories.
             // TODO: (Localization) Localize BlackFlow reason details.
-            // FIXME: Complex Output
             guard let decision = BlackFlowRoutingDecisionDetails(json: info.details, context: info.what) else {
                 return
             }
             logInfo(
-                "BlackFlowRoutingDecision \(decision.floor) \(decision.action_points_before) \(decision.action_points_after) \(decision.movement) \(decision.node_name ?? decision.node_type) \(decision.safety_margin)"
+                .blackFlowRoutingDecision(
+                    floor: decision.floor, before: decision.action_points_before, after: decision.action_points_after,
+                    movement: decision.movement, node: decision.node_name ?? decision.node_type,
+                    margin: decision.safety_margin)
             )
             logInfo(.blackFlowRoutingReason(reason: decision.reason_category, detail: decision.reason_detail ?? ""))
 
