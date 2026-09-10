@@ -477,7 +477,7 @@ extension MAAViewModel {
                config.useWeeklySchedule,
                !config.weeklySchedule.isEnabled(for: today)
             {
-                logInfo("跳过刷理智任务（今日不在周计划内）")
+                logInfo(.weeklyScheduleSkippedFight)
                 continue
             }
 

@@ -2950,6 +2950,41 @@
         }
       }
     },
+    "WeeklyScheduleSkippedFight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skipped fight task (not in today's weekly schedule)"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "戦闘任務をスキップしました（本日の週間スケジュールに含まれていません）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전투 작업을 건너뜁니다 (오늘의 주간 일정에 없음)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳过刷理智任务（今日不在周计划内）"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "跳過刷理智任務（今日不在週計劃內）"
+          }
+        }
+      }
+    },
     "一层远见密文板" : {
       "localizations" : {
         "ko" : {
@@ -5962,34 +5997,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "리소스 업데이트 출처"
-          }
-        }
-      }
-    },
-    "跳过刷理智任务（今日不在周计划内）" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skipped fight task (not in today's weekly schedule)"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "戦闘任務をスキップしました（本日の週間スケジュールに含まれていません）"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "전투 작업을 건너뜁니다 (오늘의 주간 일정에 없음)"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "跳過刷理智任務（今日不在週計劃內）"
           }
         }
       }
