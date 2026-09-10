@@ -15,7 +15,7 @@ struct SwitchThemeSettingsView: View {
             Section {
                 TextField("主题名称：", text: themesText, prompt: Text("多个主题用逗号分隔"))
 
-                Text("填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。")
+                Text("填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。个别不常用字可能出现识别偏差导致主题未找到。")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
