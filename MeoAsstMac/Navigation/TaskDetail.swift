@@ -30,6 +30,8 @@ struct TaskDetail: View {
                         MallSettingsView(config: taskConfigBinding(config, id: id))
                     case .award(let config):
                         AwardSettingsView(config: taskConfigBinding(config, id: id))
+                    case .switchtheme(let config):
+                        SwitchThemeSettingsView(config: taskConfigBinding(config, id: id))
                     case .roguelike(let config):
                         RoguelikeSettingsView(config: taskConfigBinding(config, id: id))
                     case .reclamation(let config):

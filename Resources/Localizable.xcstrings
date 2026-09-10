@@ -1,6 +1,46 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "主题名称：" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme name:"
+          }
+        }
+      }
+    },
+    "多个主题用逗号分隔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Separate multiple themes with commas"
+          }
+        }
+      }
+    },
+    "填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter theme names as shown in the in-game theme list. With multiple themes, one is picked at random each run; leave empty to skip switching."
+          }
+        }
+      }
+    },
+    "更换主题" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch Theme"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },
