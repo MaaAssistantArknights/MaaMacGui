@@ -54,6 +54,8 @@ struct InfrastConfiguration: MAATaskConfiguration {
     var filename: String
     var plan_index: Int
 
+    var rotation: InfrastRotation?
+
     var title: String {
         type.description
     }
@@ -75,7 +77,9 @@ struct InfrastConfiguration: MAATaskConfiguration {
             return String(localized: "单设施最优解")
         }
 
-        if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
+        if rotation?.automatic == true { return String(localized: "自动") }
+
+        if let plan = try? MAAInfrast(path: filename), plan.plans.indices.contains(plan_index) {
             return plan.plans[plan_index].name ?? "\(plan_index)"
         } else {
             return String(localized: "未知排班")
@@ -89,7 +93,9 @@ struct InfrastConfiguration: MAATaskConfiguration {
     typealias Params = Self
 
     var params: Self {
-        self
+        var core = self
+        core.rotation = nil
+        return core
     }
 
     private var customPlan: MAAInfrast? {
@@ -162,6 +168,7 @@ extension InfrastConfiguration {
         self.dorm_trust_enabled = try container.decodeIfPresent(Bool.self, forKey: .dorm_trust_enabled) ?? false
         self.filename = try container.decodeIfPresent(String.self, forKey: .filename) ?? ""
         self.plan_index = try container.decodeIfPresent(Int.self, forKey: .plan_index) ?? 0
+        self.rotation = try? container.decodeIfPresent(InfrastRotation.self, forKey: .rotation)
         self.continue_training = try container.decodeIfPresent(Bool.self, forKey: .continue_training) ?? true
         self.reception_message_board =
             try container.decodeIfPresent(Bool.self, forKey: .reception_message_board) ?? true
