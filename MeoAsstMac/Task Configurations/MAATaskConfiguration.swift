@@ -47,6 +47,8 @@ extension MAAHandle {
             return try appendTask(config: config)
         case .award(let config):
             return try appendTask(config: config)
+        case .switchtheme(let config):
+            return try appendTask(config: config)
         case .roguelike(let config):
             return try appendTask(config: config)
         case .reclamation(let config):
