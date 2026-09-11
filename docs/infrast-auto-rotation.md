@@ -29,6 +29,6 @@
 
 ## 后续平台工作
 
-本次仅提交 Mac GUI 功能。Windows/WPF 移植和 Android 设备连接场景的适配与验证留待后续开发，不包含在本次验收中。Android 指受 MAA 控制的游戏设备端，不代表新增 Android GUI 客户端。
+本次仅提交 Mac GUI 功能。Windows/WPF 和 [MAA Meow（安卓牛）](https://github.com/Aliothmoon/MAA-Meow) 的功能移植与验证留待后续开发，不包含在本次验收中。MAA Meow 是在 Android 设备上原生运行 MAA 的客户端，目前尚未对其进行适配或验收。
 
 上游 MaaMacGui #124 提供按 period 时间段匹配班次的方案，本功能按成功记录顺序选班并给出固定周期建议。两者配置入口有交集，尚未完成与该分支的集成验证，提交前应核对最新上游状态。
