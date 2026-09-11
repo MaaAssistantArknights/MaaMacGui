@@ -14,112 +14,108 @@ struct FightSettingsView: View {
     @State private var dropItemList: [(name: String, id: String)] = []
 
     var body: some View {
-        ScrollView {
-            Form {
-                Section {
-                    HStack(spacing: 20) {
-                        if useCustomStage || stageNotListed {
-                            TextField("关卡名", text: $config.stage)
-                        } else {
-                            Picker("关卡选择", selection: $config.stage) {
-                                Text("当前/上次").tag("")
-                                Text("1-7").tag("1-7")
-                                Text("CE-6").tag("CE-6")
-                                Text("AP-5").tag("AP-5")
-                                Text("CA-5").tag("CA-5")
-                                Text("LS-6").tag("LS-6")
-                                Text("剿灭模式").tag("Annihilation")
-                            }
-                        }
-                        Toggle("手动输入关卡名", isOn: isUsingCustomStage)
-                    }
-                    .animation(.default, value: config.stage)
-                }
-
-                if useCustomStage || stageNotListed {
-                    Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
-                }
-
-                Divider()
-
-                Section {
-                    TextField(value: $config.medicine, format: .number) {
-                        Toggle("吃理智药", isOn: useMedicine)
-                    }
-
-                    TextField(value: $config.stone, format: .number) {
-                        Toggle("吃源石", isOn: useStone)
-                    }
-
-                    TextField(value: $config.times, format: .number) {
-                        Toggle("指定次数", isOn: limitBattles)
-                    }
-
-                    Picker(selection: $config.series) {
-                        Text(verbatim: "AUTO").tag(0)
-                        ForEach((1...10).reversed(), id: \.self) { i in
-                            Text(verbatim: "\(i)").tag(i)
-                        }
-                        Text("不使用").tag(Int?.none)
-                    } label: {
-                        Toggle("连战次数", isOn: seriesBattles)
-                    }
-                }
-
-                Divider()
-
-                Section {
-                    Picker(selection: dropItemIdx) {
-                        Text("").tag(nil as Int?)
-                        ForEach(Array(zip(dropItemList.indices, dropItemList)), id: \.0) {
-                            Text($1.0).tag($0 as Int?)
-                        }
-                    } label: {
-                        Toggle("指定材料", isOn: dropItemToggle)
-                    }
-                    if dropItemToggle.wrappedValue {
-                        TextField(value: dropItemCount, format: .number) {
-                            Text("刷取数量")
+        Form {
+            Section {
+                HStack(spacing: 20) {
+                    if useCustomStage || stageNotListed {
+                        TextField("关卡名", text: $config.stage)
+                    } else {
+                        Picker("关卡选择", selection: $config.stage) {
+                            Text("当前/上次").tag("")
+                            Text("1-7").tag("1-7")
+                            Text("CE-6").tag("CE-6")
+                            Text("AP-5").tag("AP-5")
+                            Text("CA-5").tag("CA-5")
+                            Text("LS-6").tag("LS-6")
+                            Text("剿灭模式").tag("Annihilation")
                         }
                     }
-                }.onAppear {
-                    do {
-                        try FightConfiguration.initDropItems("zh-cn")
-                    } catch let err {
-                        print(String(localized: "Read item_index.json failed: \(err.localizedDescription)"))
-                    }
-                    dropItemList = FightConfiguration.dropItems.map {
-                        (name: $0.item.name, id: $0.id)
-                    }
-                    dropItem = config.drops?.first
+                    Toggle("手动输入关卡名", isOn: isUsingCustomStage)
+                }
+                .animation(.default, value: config.stage)
+            }
+
+            if useCustomStage || stageNotListed {
+                Text("<无忧梦呓>请使用特殊关卡名，如AveMujica-8").foregroundStyle(.secondary)
+            }
+
+            Divider()
+
+            Section {
+                TextField(value: $config.medicine, format: .number) {
+                    Toggle("吃理智药", isOn: useMedicine)
                 }
 
-                Divider()
+                TextField(value: $config.stone, format: .number) {
+                    Toggle("吃源石", isOn: useStone)
+                }
 
-                Section {
-                    LabeledContent {
-                        Text(config.localizedExpiry)
-                    } label: {
-                        Stepper("吃临期理智药", value: $config.medicine_expire_days, in: 0...7, step: 1)
+                TextField(value: $config.times, format: .number) {
+                    Toggle("指定次数", isOn: limitBattles)
+                }
+
+                Picker(selection: $config.series) {
+                    Text(verbatim: "AUTO").tag(0)
+                    ForEach((1...10).reversed(), id: \.self) { i in
+                        Text(verbatim: "\(i)").tag(i)
                     }
-                    Toggle("博朗台碎石模式", isOn: $config.DrGrandet)
-                }
-
-                Divider()
-
-                TextField(text: $config.penguin_id) {
-                    Toggle("企鹅物流汇报ID", isOn: $config.report_to_penguin)
-                }
-
-                Divider()
-
-                Section {
-                    DailyStageTipView()
+                    Text("不使用").tag(Int?.none)
+                } label: {
+                    Toggle("连战次数", isOn: seriesBattles)
                 }
             }
-            .padding()
-            .animation(.default, value: useCustomStage)
+
+            Divider()
+
+            Section {
+                Picker(selection: dropItemIdx) {
+                    Text("").tag(nil as Int?)
+                    ForEach(Array(zip(dropItemList.indices, dropItemList)), id: \.0) {
+                        Text($1.0).tag($0 as Int?)
+                    }
+                } label: {
+                    Toggle("指定材料", isOn: dropItemToggle)
+                }
+                if dropItemToggle.wrappedValue {
+                    TextField(value: dropItemCount, format: .number) {
+                        Text("刷取数量")
+                    }
+                }
+            }.onAppear {
+                do {
+                    try FightConfiguration.initDropItems("zh-cn")
+                } catch let err {
+                    print(String(localized: "Read item_index.json failed: \(err.localizedDescription)"))
+                }
+                dropItemList = FightConfiguration.dropItems.map {
+                    (name: $0.item.name, id: $0.id)
+                }
+                dropItem = config.drops?.first
+            }
+
+            Divider()
+
+            Section {
+                LabeledContent {
+                    Text(config.localizedExpiry)
+                } label: {
+                    Stepper("吃临期理智药", value: $config.medicine_expire_days, in: 0...7, step: 1)
+                }
+                Toggle("博朗台碎石模式", isOn: $config.DrGrandet)
+            }
+
+            Divider()
+
+            TextField(text: $config.penguin_id) {
+                Toggle("企鹅物流汇报ID", isOn: $config.report_to_penguin)
+            }
+
+            Divider()
+
+            DailyStageTipView()
         }
+        .padding()
+        .animation(.default, value: useCustomStage)
     }
 
     private var useMedicine: Binding<Bool> {

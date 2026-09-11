@@ -1,186 +1,6 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
-    "今日关卡小提示" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Today's open stages"
-          }
-        }
-      }
-    },
-    "游戏内历法：%@" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In-game calendar: %@"
-          }
-        }
-      }
-    },
-    "星期日" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sunday"
-          }
-        }
-      }
-    },
-    "星期一" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Monday"
-          }
-        }
-      }
-    },
-    "星期二" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tuesday"
-          }
-        }
-      }
-    },
-    "星期三" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wednesday"
-          }
-        }
-      }
-    },
-    "星期四" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thursday"
-          }
-        }
-      }
-    },
-    "星期五" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Friday"
-          }
-        }
-      }
-    },
-    "星期六" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Saturday"
-          }
-        }
-      }
-    },
-    "龙门币" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "LMD"
-          }
-        }
-      }
-    },
-    "红票" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Purchase Certificate"
-          }
-        }
-      }
-    },
-    "技能" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skill Summary"
-          }
-        }
-      }
-    },
-    "碳" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Carbon"
-          }
-        }
-      }
-    },
-    "经验" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Battle Record"
-          }
-        }
-      }
-    },
-    "奶&盾芯片" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Med&Def Chip"
-          }
-        }
-      }
-    },
-    "术&狙芯片" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cst&Sni Chip"
-          }
-        }
-      }
-    },
-    "先&辅芯片" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pio&Sup Chip"
-          }
-        }
-      }
-    },
-    "近&特芯片" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grd&Spc Chip"
-          }
-        }
-      }
-    },
     "" : {
       "shouldTranslate" : false
     },
@@ -202,6 +22,16 @@
     },
     "**神秘代码**" : {
 
+    },
+    "%@：%@" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@：%2$@"
+          }
+        }
+      }
     },
     "%@：%lld" : {
       "localizations" : {
@@ -3265,6 +3095,16 @@
     "亮度" : {
 
     },
+    "今日关卡小提示" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's open stages"
+          }
+        }
+      }
+    },
     "仓库材料" : {
       "localizations" : {
         "ko" : {
@@ -3503,6 +3343,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "시스템 절전 모드 방지 허용"
+          }
+        }
+      }
+    },
+    "先/辅芯片" : {
+
+    },
+    "先/辅芯片组" : {
+
+    },
+    "先&辅芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pio&Sup Chip"
           }
         }
       }
@@ -4146,6 +4002,22 @@
         }
       }
     },
+    "奶/盾芯片" : {
+
+    },
+    "奶/盾芯片组" : {
+
+    },
+    "奶&盾芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med&Def Chip"
+          }
+        }
+      }
+    },
     "好" : {
       "localizations" : {
         "ko" : {
@@ -4593,6 +4465,19 @@
         }
       }
     },
+    "技能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skill Summary"
+          }
+        }
+      }
+    },
+    "技能-5" : {
+
+    },
     "投资后进二层" : {
       "localizations" : {
         "ko" : {
@@ -4905,6 +4790,83 @@
         }
       }
     },
+    "星期一" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Monday"
+          }
+        }
+      }
+    },
+    "星期三" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wednesday"
+          }
+        }
+      }
+    },
+    "星期二" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tuesday"
+          }
+        }
+      }
+    },
+    "星期五" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Friday"
+          }
+        }
+      }
+    },
+    "星期六" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saturday"
+          }
+        }
+      }
+    },
+    "星期四" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thursday"
+          }
+        }
+      }
+    },
+    "星期日" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sunday"
+          }
+        }
+      }
+    },
     "更新失败：%@" : {
       "localizations" : {
         "ko" : {
@@ -5010,6 +4972,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알 수 없는 교대"
+          }
+        }
+      }
+    },
+    "术/狙芯片" : {
+
+    },
+    "术/狙芯片组" : {
+
+    },
+    "术&狙芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cst&Sni Chip"
           }
         }
       }
@@ -5219,6 +5197,16 @@
     "清除" : {
 
     },
+    "游戏内历法：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In-game calendar: %@"
+          }
+        }
+      }
+    },
     "游戏设置" : {
       "localizations" : {
         "ko" : {
@@ -5401,6 +5389,19 @@
         }
       }
     },
+    "碳" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Carbon"
+          }
+        }
+      }
+    },
+    "碳-5" : {
+
+    },
     "视频作业" : {
       "localizations" : {
         "ko" : {
@@ -5499,6 +5500,19 @@
         }
       }
     },
+    "红票" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purchase Certificate"
+          }
+        }
+      }
+    },
+    "红票-5" : {
+
+    },
     "组装批次数：" : {
       "localizations" : {
         "ko" : {
@@ -5518,6 +5532,19 @@
           }
         }
       }
+    },
+    "经验" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Battle Record"
+          }
+        }
+      }
+    },
+    "经验-6/5" : {
+
     },
     "绿票商店" : {
       "localizations" : {
@@ -6106,6 +6133,22 @@
     "运行过程中，请勿将游戏设置为全屏幕、最小化，或移动窗口至其他显示器" : {
 
     },
+    "近/特芯片" : {
+
+    },
+    "近/特芯片组" : {
+
+    },
+    "近&特芯片" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grd&Spc Chip"
+          }
+        }
+      }
+    },
     "还原默认" : {
 
     },
@@ -6405,6 +6448,19 @@
           }
         }
       }
+    },
+    "龙门币" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "LMD"
+          }
+        }
+      }
+    },
+    "龙门币-6/5" : {
+
     }
   },
   "version" : "1.0"
