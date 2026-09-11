@@ -51,6 +51,8 @@ extension MAAHandle {
             return try appendTask(config: config)
         case .reclamation(let config):
             return try appendTask(config: config)
+        case .custom(let config):
+            return try appendTask(config: config)
         }
     }
 

@@ -17,6 +17,7 @@ enum MAATask: Codable, Equatable {
     case award(AwardConfiguration)
     case roguelike(RoguelikeConfiguration)
     case reclamation(ReclamationConfiguration)
+    case custom(CustomConfiguration)
 }
 
 let defaultTaskConfigurations: [any MAATaskConfiguration] = [
@@ -28,6 +29,7 @@ let defaultTaskConfigurations: [any MAATaskConfiguration] = [
     AwardConfiguration(),
     RoguelikeConfiguration(),
     ReclamationConfiguration(),
+    CustomConfiguration(),
     ClosedownConfiguration(),
 ]
 
@@ -65,7 +67,7 @@ extension MAATaskType: Codable, CustomStringConvertible {
         case .OperBox:
             return String(localized: "干员识别")
         case .Custom:
-            return String(localized: "自定义")
+            return String(localized: "自定任务")
         }
     }
 }
