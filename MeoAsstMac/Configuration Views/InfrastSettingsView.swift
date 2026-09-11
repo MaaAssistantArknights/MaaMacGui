@@ -11,6 +11,7 @@ struct InfrastSettingsView: View {
     @Environment(\.defaultMinListRowHeight) private var rowHeight
 
     @Binding var config: InfrastConfiguration
+    var connectionScope: String = ""
 
     var body: some View {
         VStack {
@@ -108,9 +109,12 @@ struct InfrastSettingsView: View {
                 }
             }
 
-            Picker("班次", selection: $config.plan_index) {
+            Picker("基建计划", selection: planSelection) {
+                Text("自动").tag(-1)
                 try? MAAInfrast(path: config.filename).planList
             }
+
+            rotationStatusView
 
             HStack(spacing: 20) {
                 Button("打开自定义排班文件夹…") {
@@ -123,6 +127,131 @@ struct InfrastSettingsView: View {
         }
     }
 
+    private var planSelection: Binding<Int> {
+        Binding {
+            config.rotation?.automatic == true ? -1 : config.plan_index
+        } set: { index in
+            var rotation = config.rotation ?? InfrastRotation()
+            rotation.automatic = index == -1
+            if rotation.current?.status != .running && rotation.current?.status != .prepared {
+                rotation.current = nil
+            }
+            config.rotation = rotation
+            if index >= 0 { config.plan_index = index }
+        }
+    }
+
+    private var intervalSelection: Binding<Bool> {
+        Binding {
+            config.rotation?.intervalMinutes != nil
+        } set: { custom in
+            var rotation = config.rotation ?? InfrastRotation()
+            rotation.intervalMinutes = custom ? 1440 : nil
+            config.rotation = rotation
+        }
+    }
+
+    private var intervalHours: Binding<Double> {
+        Binding {
+            (config.rotation?.intervalMinutes ?? 1440) / 60
+        } set: { hours in
+            var rotation = config.rotation ?? InfrastRotation()
+            guard let minutes = InfrastRotation.validMinutes(hours * 60) else { return }
+            rotation.intervalMinutes = minutes
+            config.rotation = rotation
+        }
+    }
+
+    @ViewBuilder private var rotationStatusView: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            VStack(alignment: .leading, spacing: 6) {
+                if let data = try? Data(contentsOf: URL(fileURLWithPath: config.filename)),
+                    let plan = try? JSONDecoder().decode(MAAInfrast.self, from: data), !plan.plans.isEmpty
+                {
+                    let fingerprint = InfrastRotationRun.fingerprint(data)
+                    let rotation = config.rotation ?? InfrastRotation()
+                    let nextIndex =
+                        rotation.nextIndex(
+                            fingerprint: fingerprint, count: plan.plans.count, fallback: config.plan_index,
+                            connection: connectionScope) ?? 0
+                    let last = rotation.lastCompleted
+                    let validLast =
+                        last?.fingerprint == fingerprint && last?.connection == connectionScope
+                        && plan.plans.indices.contains(last?.index ?? -1)
+                    let attempt = rotation.current
+                    let validAttempt = attempt?.fingerprint == fingerprint && attempt?.connection == connectionScope
+
+                    HStack {
+                        Text("上次换班")
+                        if let last {
+                            Text(
+                                verbatim:
+                                    "\(last.name) · \(last.completedAt.formatted(date: .abbreviated, time: .shortened))"
+                            )
+                            if !validLast { Text("记录已不适用").foregroundStyle(.secondary) }
+                        } else {
+                            Text("暂无完成记录").foregroundStyle(.secondary)
+                        }
+                    }
+                    HStack {
+                        Text("本次换班")
+                        if let attempt, validAttempt {
+                            Text(verbatim: attempt.name)
+                            Text(attemptLabel(attempt.status))
+                        } else {
+                            Text(verbatim: plan.plans[nextIndex].name ?? String(nextIndex + 1))
+                            Text("待执行")
+                        }
+                    }
+                    HStack {
+                        Text("下次换班建议")
+                        if let last, validLast {
+                            let suggestedIndex = (last.index + 1) % plan.plans.count
+                            Text(verbatim: plan.plans[suggestedIndex].name ?? String(suggestedIndex + 1))
+                            if let date = rotation.suggestedDate(fingerprint: fingerprint, connection: connectionScope)
+                            {
+                                Text(date, format: .dateTime.month().day().hour().minute())
+                                if date <= context.date { Text("已到建议时间").foregroundStyle(.orange) }
+                            } else {
+                                Text("暂无有效时长").foregroundStyle(.secondary)
+                            }
+                        } else {
+                            Text("下次完成后计算").foregroundStyle(.secondary)
+                        }
+                    }
+                    if rotation.automatic {
+                        Text("自动按计划顺序选班；由你启动换班，时间段不参与选班。")
+                            .font(.caption).foregroundStyle(.secondary)
+                    } else {
+                        Text("建议不改变手动选择的计划。")
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                } else {
+                    Text("暂无有效排班计划").foregroundStyle(.secondary)
+                }
+                Picker("建议间隔", selection: intervalSelection) {
+                    Text("按排班表时长").tag(false)
+                    Text("自定义固定间隔").tag(true)
+                }
+                if intervalSelection.wrappedValue {
+                    TextField("间隔（小时）", value: intervalHours, format: .number)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(8)
+            .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
+        }
+    }
+
+    private func attemptLabel(_ status: InfrastRotation.Attempt.Status) -> String {
+        switch status {
+        case .prepared: String(localized: "待执行")
+        case .running: String(localized: "执行中")
+        case .completed: String(localized: "已完成")
+        case .incomplete: String(localized: "本次未完成")
+        }
+    }
+
     // MARK: - State Wrappers
 
     private var customPlan: Binding<String> {
@@ -131,6 +260,7 @@ struct InfrastSettingsView: View {
         } set: {
             config.plan_index = 0
             config.filename = $0
+            config.rotation?.current = nil
         }
     }
 

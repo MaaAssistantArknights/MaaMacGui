@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0011223344556677889901 /* InfrastRotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0011223344556677889902 /* InfrastRotation.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
 		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
@@ -148,6 +149,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA0011223344556677889902 /* InfrastRotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastRotation.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
@@ -467,6 +469,7 @@
 				832985B529EF1890009F7ED5 /* MAADepot.swift */,
 				838FF82829FDE1FA000566A0 /* MAAError.swift */,
 				83531D6229F0A033008A5DF8 /* MAAInfrast.swift */,
+				AA0011223344556677889902 /* InfrastRotation.swift */,
 				8341195229EC25A900044F45 /* MAALog.swift */,
 				8366DE0229F2F34100F715E8 /* MAAOperBox.swift */,
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
@@ -652,6 +655,7 @@
 				838FF82229FBB9E3000566A0 /* GameSettingsView.swift in Sources */,
 				832985AC29EE9977009F7ED5 /* DepotView.swift in Sources */,
 				83531D6329F0A033008A5DF8 /* MAAInfrast.swift in Sources */,
+				AA0011223344556677889901 /* InfrastRotation.swift in Sources */,
 				8355E7AE29E7F9DD005D5A1C /* ContentView.swift in Sources */,
 				8355E7B029E8722E005D5A1C /* TaskCell.swift in Sources */,
 				83B8E0D93053131B00AB0B56 /* HGCalendar.swift in Sources */,
