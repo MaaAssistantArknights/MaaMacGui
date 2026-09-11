@@ -15,15 +15,11 @@ struct InfrastSettingsView: View {
 
     var body: some View {
         VStack {
-            Form {
-                Picker("基建模式", selection: $config.mode) {
-                    Text("常规模式").tag(InfrastConfiguration.Mode.default)
-                    Text("队列轮换").tag(InfrastConfiguration.Mode.rotation)
-                    Text("自定义基建配置").tag(InfrastConfiguration.Mode.custom)
-                }
-                if config.mode == .custom {
-                    customPlanView
-                } else {
+            if config.mode == .custom {
+                customPlanView
+            } else {
+                Form {
+                    modePicker
                     Picker("无人机用途", selection: $config.drones) {
                         ForEach(droneUsages, id: \.self) { usage in
                             Text(usage.description).tag(usage)
@@ -89,30 +85,51 @@ struct InfrastSettingsView: View {
         Toggle("训练完成后继续尝试专精当前技能", isOn: $config.continue_training)
     }
 
+    private var modePicker: some View {
+        Picker("基建模式", selection: $config.mode) {
+            Text("常规模式").tag(InfrastConfiguration.Mode.default)
+            Text("队列轮换").tag(InfrastConfiguration.Mode.rotation)
+            Text("自定义基建配置").tag(InfrastConfiguration.Mode.custom)
+        }
+    }
+
     @ViewBuilder private var customPlanView: some View {
-        VStack {
-            Picker("方案", selection: customPlan) {
-                Section {
-                    ForEach(customInfrastPaths, id: \.self) { path in
-                        path.label
-                    }
-                } header: {
-                    Text("自定义排班")
+        VStack(spacing: 14) {
+            Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 12) {
+                GridRow {
+                    Text("基建模式").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                    modePicker.labelsHidden()
                 }
+                GridRow {
+                    Text("方案").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                    Picker("方案", selection: customPlan) {
+                        Section {
+                            ForEach(customInfrastPaths, id: \.self) { path in
+                                path.label
+                            }
+                        } header: {
+                            Text("自定义排班")
+                        }
 
-                Section {
-                    ForEach(String.bundledPlans, id: \.self) { path in
-                        path.label
-                    }
-                } header: {
-                    Text("内置排班")
+                        Section {
+                            ForEach(String.bundledPlans, id: \.self) { path in
+                                path.label
+                            }
+                        } header: {
+                            Text("内置排班")
+                        }
+                    }.labelsHidden()
+                }
+                GridRow {
+                    Text("基建计划").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                    Picker("基建计划", selection: planSelection) {
+                        Text("自动").tag(-1)
+                        try? MAAInfrast(path: config.filename).planList
+                    }.labelsHidden()
                 }
             }
-
-            Picker("基建计划", selection: planSelection) {
-                Text("自动").tag(-1)
-                try? MAAInfrast(path: config.filename).planList
-            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 14)
 
             rotationStatusView
 
@@ -181,44 +198,69 @@ struct InfrastSettingsView: View {
                     let attempt = rotation.current
                     let validAttempt = attempt?.fingerprint == fingerprint && attempt?.connection == connectionScope
 
-                    HStack {
-                        Text("上次换班")
-                        if let last {
-                            Text(
-                                verbatim:
-                                    "\(last.name) · \(last.completedAt.formatted(date: .abbreviated, time: .shortened))"
-                            )
-                            if !validLast { Text("记录已不适用").foregroundStyle(.secondary) }
-                        } else {
-                            Text("暂无完成记录").foregroundStyle(.secondary)
-                        }
-                    }
-                    HStack {
-                        Text("本次换班")
-                        if let attempt, validAttempt {
-                            Text(verbatim: attempt.name)
-                            Text(attemptLabel(attempt.status))
-                        } else {
-                            Text(verbatim: plan.plans[nextIndex].name ?? String(nextIndex + 1))
-                            Text("待执行")
-                        }
-                    }
-                    HStack {
-                        Text("下次换班建议")
-                        if let last, validLast {
-                            let suggestedIndex = (last.index + 1) % plan.plans.count
-                            Text(verbatim: plan.plans[suggestedIndex].name ?? String(suggestedIndex + 1))
-                            if let date = rotation.suggestedDate(fingerprint: fingerprint, connection: connectionScope)
-                            {
-                                Text(date, format: .dateTime.month().day().hour().minute())
-                                if date <= context.date { Text("已到建议时间").foregroundStyle(.orange) }
-                            } else {
-                                Text("暂无有效时长").foregroundStyle(.secondary)
+                    Grid(alignment: .leading, horizontalSpacing: 18, verticalSpacing: 12) {
+                        GridRow {
+                            Text("上次换班").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                                .gridColumnAlignment(.trailing)
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                if let last {
+                                    Text(verbatim: last.name).fontWeight(.medium)
+                                    Text(last.completedAt, format: .dateTime.month().day().hour().minute())
+                                        .monospacedDigit().foregroundStyle(.secondary)
+                                    if !validLast { Text("记录已不适用").foregroundStyle(.secondary) }
+                                } else {
+                                    Text("暂无完成记录").foregroundStyle(.secondary)
+                                }
                             }
-                        } else {
-                            Text("下次完成后计算").foregroundStyle(.secondary)
+                        }
+                        GridRow {
+                            Text("本次换班").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                if let attempt, validAttempt {
+                                    Text(verbatim: attempt.name)
+                                    Text(attemptLabel(attempt.status)).foregroundStyle(.secondary)
+                                } else {
+                                    Text(verbatim: plan.plans[nextIndex].name ?? String(nextIndex + 1))
+                                    Text("待执行").foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                        GridRow {
+                            Text("下次换班建议").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                            HStack(alignment: .firstTextBaseline, spacing: 10) {
+                                if let last, validLast {
+                                    let suggestedIndex = (last.index + 1) % plan.plans.count
+                                    Text(verbatim: plan.plans[suggestedIndex].name ?? String(suggestedIndex + 1))
+                                    if let date = rotation.suggestedDate(
+                                        fingerprint: fingerprint, connection: connectionScope)
+                                    {
+                                        Text(date, format: .dateTime.month().day().hour().minute())
+                                            .monospacedDigit().foregroundStyle(.secondary)
+                                        if date <= context.date { Text("已到建议时间").foregroundStyle(.orange) }
+                                    } else {
+                                        Text("暂无有效时长").foregroundStyle(.secondary)
+                                    }
+                                } else {
+                                    Text("下次完成后计算").foregroundStyle(.secondary)
+                                }
+                            }
+                        }
+                        GridRow {
+                            Text("建议间隔").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                            Picker("建议间隔", selection: intervalSelection) {
+                                Text("按排班表时长").tag(false)
+                                Text("自定义固定间隔").tag(true)
+                            }.labelsHidden().fixedSize()
+                        }
+                        if intervalSelection.wrappedValue {
+                            GridRow {
+                                Text("间隔（小时）").frame(width: 96, alignment: .trailing).foregroundStyle(.secondary)
+                                TextField("间隔（小时）", value: intervalHours, format: .number)
+                                    .labelsHidden().frame(width: 100)
+                            }
                         }
                     }
+                    Divider().padding(.vertical, 4)
                     if rotation.automatic {
                         Text("自动按计划顺序选班；由你启动换班，时间段不参与选班。")
                             .font(.caption).foregroundStyle(.secondary)
@@ -229,17 +271,11 @@ struct InfrastSettingsView: View {
                 } else {
                     Text("暂无有效排班计划").foregroundStyle(.secondary)
                 }
-                Picker("建议间隔", selection: intervalSelection) {
-                    Text("按排班表时长").tag(false)
-                    Text("自定义固定间隔").tag(true)
-                }
-                if intervalSelection.wrappedValue {
-                    TextField("间隔（小时）", value: intervalHours, format: .number)
-                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(8)
-            .background(.quaternary, in: RoundedRectangle(cornerRadius: 6))
+            .padding(14)
+            .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 8))
+            .overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(.quaternary, lineWidth: 1))
         }
     }
 
