@@ -109,6 +109,10 @@ struct FightSettingsView: View {
             TextField(text: $config.penguin_id) {
                 Toggle("企鹅物流汇报ID", isOn: $config.report_to_penguin)
             }
+
+            Divider()
+
+            DailyStageTipView()
         }
         .padding()
         .animation(.default, value: useCustomStage)
