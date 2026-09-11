@@ -3370,6 +3370,16 @@
         }
       }
     },
+    "关于 MAA" : {
+      "localizations" : {
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 정보"
+          }
+        }
+      }
+    },
     "关卡名" : {
       "localizations" : {
         "ko" : {

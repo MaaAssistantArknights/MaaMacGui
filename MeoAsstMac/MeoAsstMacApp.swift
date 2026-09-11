@@ -46,12 +46,20 @@ struct MeoAsstMacApp: App {
             CommandGroup(replacing: .newItem) {
                 OpenLogFileView()
             }
+            CommandGroup(replacing: .appInfo) {
+                AboutView()
+            }
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
             }
             SidebarCommands()
             TaskCommands(viewModel: appViewModel)
         }
+
+        Window("关于 MAA", id: "about") {
+            AboutContentView()
+        }
+        .windowResizability(.contentSize)
 
         Settings {
             TabView {
