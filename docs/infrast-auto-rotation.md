@@ -25,4 +25,4 @@
 
 运行 `bash Tests/InfrastRotation/run.sh`。该脚本用 Command Line Tools 编译实际计算、配置、界面源码；生命周期测试提取生产提交/完成方法，使用假 Core 验证。它不等同于构建完整 MAA，也不验证真实 Core 的回调分发。
 
-本实现由 GPT-6 Astra 协助编写。提交前仍需用完整 Xcode 和主仓库依赖构建 MAA，并验证一次实际基建换班。Windows 需单独适配 WPF，不能将 Mac 测试当成 Windows 验证。
+本实现由 GPT-6 Astra 协助编写。已使用 Xcode 26.6 和官方 MAA 6.17.5 运行库完成 arm64 Debug / Release 构建，并在 PlayCover 完成一次真实基建换班，验证具体索引提交、成功记录、24 小时建议及重启持久化。Windows 需单独适配 WPF，不能将 Mac 测试当成 Windows 验证。
