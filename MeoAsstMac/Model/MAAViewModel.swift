@@ -471,6 +471,11 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
+            // 自定任务未填写任务名时跳过，避免向核心提交空的任务链
+            if case .custom(let custom) = task.task, custom.parsedTaskNames.isEmpty {
+                continue
+            }
+
             if let coreID = try await handle?.appendTask(task.task) {
                 taskIDMap[coreID] = task.id
             }
