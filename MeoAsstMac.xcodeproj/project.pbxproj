@@ -11,6 +11,7 @@
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
 		830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */; };
+		83D5A2E02E6F1A01B1C2D3E4 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D5A2DF2E6F1A01B1C2D3E4 /* AboutView.swift */; };
 		831100C43026440D00554899 /* NewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831100C33026440D00554899 /* NewViewModel.swift */; };
 		831597123028DF98008C7EDF /* CapsulePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831597113028DF98008C7EDF /* CapsulePicker.swift */; };
 		8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8315B0BC290E48F300AE7FDC /* StartupSettingsView.swift */; };
@@ -146,6 +147,7 @@
 /* Begin PBXFileReference section */
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
+		83D5A2DF2E6F1A01B1C2D3E4 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		831100C33026440D00554899 /* NewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewViewModel.swift; sourceTree = "<group>"; };
 		831597113028DF98008C7EDF /* CapsulePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CapsulePicker.swift; sourceTree = "<group>"; };
@@ -320,6 +322,7 @@
 			isa = PBXGroup;
 			children = (
 				830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */,
+				83D5A2DF2E6F1A01B1C2D3E4 /* AboutView.swift */,
 				8329858B29EDA8DB009F7ED5 /* OpenLogFileView.swift */,
 				83477CB129FEA12300A5FF99 /* TaskCommands.swift */,
 			);
@@ -623,6 +626,7 @@
 				8337870228F1D95F00D39D6F /* Maa.swift in Sources */,
 				832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */,
 				830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */,
+				83D5A2E02E6F1A01B1C2D3E4 /* AboutView.swift in Sources */,
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
