@@ -107,3 +107,27 @@ extension MAAResourceChannel {
         return try decoder.decode(MAAResourceVersion.self, from: data)
     }
 }
+
+enum MaaVersionInfo {
+    static var uiVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "Unknown"
+        return version.hasPrefix("v") ? version : "v\(version)"
+    }
+
+    static var coreVersion: String {
+        MAAProvider.coreVersion
+    }
+
+    static func text(resourceVersion: MAAResourceVersion) -> String {
+        """
+        UI Version: \(uiVersion)
+        Core Version: \(coreVersion)
+        Resource Version: \(resourceVersion.title)
+        Resource Time: \(resourceVersion.last_updated)
+        """
+    }
+    
+    static func coreVersionLogLine() -> String {
+        String(localized: "Core Version: \(coreVersion)")
+    }
+}

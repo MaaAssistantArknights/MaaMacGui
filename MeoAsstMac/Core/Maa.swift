@@ -13,8 +13,20 @@ import OSLog
 
 private let logger = Logger(subsystem: "plus.maa.swift", category: "MAAHandle")
 
+@_silgen_name("AsstGetVersion")
+private func MaaCoreAsstGetVersion() -> UnsafePointer<CChar>?
+
 actor MAAProvider {
     static let shared = MAAProvider()
+    
+    static let coreVersion: String = {
+        guard let versionPointer = MaaCoreAsstGetVersion() else {
+            return "Unknown"
+        }
+
+        return String(cString: versionPointer)
+    }()
+    
     private init() {}
 
     func loadResource(path: String) throws {
