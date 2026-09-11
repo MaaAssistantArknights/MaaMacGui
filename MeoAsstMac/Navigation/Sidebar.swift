@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct Sidebar: View {
-    @Binding var selection: SidebarEntry?
+struct Sidebar: View {    @Binding var selection: SidebarEntry?
 
     @Binding var showUpdate: Bool
     let onUpdate: () async throws -> Void
 
     @Environment(\.defaultMinListRowHeight) var rowHeight
+    @Environment(\.openSettings) private var openSettings
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -38,10 +38,13 @@ struct Sidebar: View {
                     Label("查找日志…", systemImage: "doc.text.magnifyingglass")
                 }
 
-                SettingsLink {
+                Button {
+                    openSettings()
+                } label: {
                     Label("设置", systemImage: "gear")
                 }
             }
+            .labelStyle(SidebarActionLabelStyle())
             .buttonStyle(.plain)
             .padding()
         }
@@ -49,6 +52,15 @@ struct Sidebar: View {
             ResourceUpdateView(onUpdate: onUpdate)
         }
         .frame(minWidth: 150)
+    }
+}
+
+struct SidebarActionLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) {
+            configuration.icon.frame(width: 18)
+            configuration.title
+        }
     }
 }
 
