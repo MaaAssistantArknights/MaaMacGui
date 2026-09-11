@@ -14,6 +14,16 @@ struct InfrastSettingsView: View {
     var connectionScope: String = ""
 
     var body: some View {
+        if config.mode == .custom {
+            ScrollView {
+                settingsContent
+            }
+        } else {
+            settingsContent
+        }
+    }
+
+    private var settingsContent: some View {
         VStack {
             if config.mode == .custom {
                 customPlanView
