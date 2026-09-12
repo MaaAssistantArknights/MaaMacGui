@@ -3144,6 +3144,12 @@
             "state" : "translated",
             "value" : "쉼표로 구분된 작업 이름 목록이며, 첫 번째로 일치하는 작업과 그 이후의 체인을 실행합니다. 예시: TaskA, TaskB → TaskA 실행(일치하지 않으면 TaskB 시도)"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Comma-separated task names; the first match and its chain runs. Example: TaskA, TaskB → runs TaskA (else TaskB)."
+          }
         }
       }
     },
@@ -3163,6 +3169,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작업 이름"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Name"
           }
         }
       }
@@ -4912,6 +4924,12 @@
             "state" : "translated",
             "value" : "작업 이름 미입력"
           }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No task name entered"
+          }
         }
       }
     },
@@ -5776,6 +5794,12 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "커스텀 작업"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom Task"
           }
         }
       }
