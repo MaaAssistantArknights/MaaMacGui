@@ -30,7 +30,10 @@ struct CustomSettingsView: View {
     }
 
     private var formattedTaskNames: String {
-        "[" + config.parsedTaskNames.map { "\"\($0)\"" }.joined(separator: ", ") + "]"
+        "[" + config.parsedTaskNames.map { n in
+            let escaped = n.replacingOccurrences(of: "\\", with: "\\\\").replacingOccurrences(of: "\"", with: "\\\"")
+            return "\"\(escaped)\""
+        }.joined(separator: ", ") + "]"
     }
 }
 
