@@ -35,10 +35,13 @@ struct CustomConfiguration: MAATaskConfiguration {
     }
 
     /// 解析用户输入的任务名列表，兼容全角/半角逗号与换行分隔（对照 WPF TaskName 的逗号拆分 + Trim + RemoveEmptyEntries）。
+    /// 先归一化换行：Swift 中 "\r\n" 是单个 grapheme cluster，split 谓词按 Character 比较匹配不到，需拆成 "\n" 再进入分隔。
     var parsedTaskNames: [String] {
         taskList
+            .replacingOccurrences(of: "\r\n", with: "\n")
+            .replacingOccurrences(of: "\r", with: "\n")
             .replacingOccurrences(of: "，", with: ",")
-            .split(whereSeparator: { $0 == "," || $0 == "\n" || $0 == "\r" })
+            .split(whereSeparator: { $0 == "," || $0 == "\n" })
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .filter { !$0.isEmpty }
     }
