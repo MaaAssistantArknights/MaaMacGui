@@ -28,6 +28,8 @@
 		83264A3129EBEE3C0074E33A /* InfrastConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */; };
 		83264A3329EBEE680074E33A /* MallConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3229EBEE680074E33A /* MallConfiguration.swift */; };
 		83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */; };
+		83C75A112DD9000100000011 /* CustomConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A102DD9000100000010 /* CustomConfiguration.swift */; };
+		83C75A212DD9000100000021 /* CustomSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83C75A202DD9000100000020 /* CustomSettingsView.swift */; };
 		83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3A29EC0F2E0074E33A /* LogView.swift */; };
 		83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83264A3D29EC22DE0074E33A /* MAAViewModel.swift */; };
 		832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 832903A8302C9802008E1DC6 /* URL+contentType.swift */; };
@@ -167,6 +169,8 @@
 		83264A3029EBEE3C0074E33A /* InfrastConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfrastConfiguration.swift; sourceTree = "<group>"; };
 		83264A3229EBEE680074E33A /* MallConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallConfiguration.swift; sourceTree = "<group>"; };
 		83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardConfiguration.swift; sourceTree = "<group>"; };
+		83C75A102DD9000100000010 /* CustomConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomConfiguration.swift; sourceTree = "<group>"; };
+		83C75A202DD9000100000020 /* CustomSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSettingsView.swift; sourceTree = "<group>"; };
 		83264A3A29EC0F2E0074E33A /* LogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogView.swift; sourceTree = "<group>"; };
 		83264A3D29EC22DE0074E33A /* MAAViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAViewModel.swift; sourceTree = "<group>"; };
 		832903A8302C9802008E1DC6 /* URL+contentType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+contentType.swift"; sourceTree = "<group>"; };
@@ -304,6 +308,7 @@
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
 				8341195429EC55C600044F45 /* CopilotConfiguration.swift */,
 				832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */,
+				83C75A102DD9000100000010 /* CustomConfiguration.swift */,
 				83782A2A2CFFAF2900A32BDD /* LegacyConfigurations.swift */,
 			);
 			path = "Task Configurations";
@@ -320,6 +325,7 @@
 				83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */,
 				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
 				83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */,
+				83C75A202DD9000100000020 /* CustomSettingsView.swift */,
 			);
 			path = "Configuration Views";
 			sourceTree = "<group>";
@@ -637,6 +643,8 @@
 				832985B929EF9D50009F7ED5 /* MAAContent.swift in Sources */,
 				830C3D1E29BC7DE200B13A9F /* CheckForUpdatesView.swift in Sources */,
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
+				83C75A112DD9000100000011 /* CustomConfiguration.swift in Sources */,
+				83C75A212DD9000100000021 /* CustomSettingsView.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
 				8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */,

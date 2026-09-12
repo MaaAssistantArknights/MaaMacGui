@@ -33,6 +33,8 @@ struct TasksContent: View {
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .reclamation(let config):
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .custom(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 }
             }
             .onMove(perform: moveTask)

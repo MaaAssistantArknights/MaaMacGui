@@ -34,6 +34,8 @@ struct TaskDetail: View {
                         RoguelikeSettingsView(config: taskConfigBinding(config, id: id))
                     case .reclamation(let config):
                         ReclamationSettingsView(config: taskConfigBinding(config, id: id))
+                    case .custom(let config):
+                        CustomSettingsView(config: taskConfigBinding(config, id: id))
                     case .closedown(_):
                         EmptyView()
                     }
