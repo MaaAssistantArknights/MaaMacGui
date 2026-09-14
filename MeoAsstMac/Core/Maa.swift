@@ -7,9 +7,9 @@
 
 import CoreGraphics
 import Foundation
+import JBirdCore
 import MaaCore
 import OSLog
-import SwiftyJSON
 
 private let logger = Logger(subsystem: "plus.maa.swift", category: "MAAHandle")
 
@@ -37,6 +37,22 @@ actor MAAProvider {
             return nil
         }
         return String(cString: code)
+    }
+
+    func itemName(for id: String) -> String {
+        let name = id.withCString {
+            AsstGetItemName($0)
+        }
+        guard let name else { return "" }
+        return String(cString: name)
+    }
+}
+
+extension MAAProvider {
+    func itemNames<S: Sequence<String>>(for ids: S) -> [String: String] {
+        ids.reduce(into: [:]) { partialResult, id in
+            partialResult[id] = itemName(for: id)
+        }
     }
 }
 
@@ -80,14 +96,17 @@ actor MAAHandle {
     private nonisolated func process(msg: AsstId, details: Data) {
         let info: JSON
         do {
-            info = try JSON(data: details)
+            info = try JSON(details)
         } catch {
             logger.error("Failed to parse details: \(error)")
             return
         }
         if msg == 4 {
             // AsyncCallInfo
-            guard let callID = info["async_call_id"].int32 else {
+            let callID: AsstAsyncCallId
+            do {
+                callID = try info["async_call_id"]
+            } catch {
                 logger.error("Invalid `async_call_id` in AsyncCallInfo: \(info)")
                 return
             }
@@ -133,12 +152,7 @@ actor MAAHandle {
     func connect(adbPath: String, address: String, profile: String) async throws {
         let info = try await waitFor(AsstAsyncConnect(handle, adbPath, address, profile, 0))
 
-        guard let ret = info["details"]["ret"].bool else {
-            logger.error("Invalid `ret` in AsyncCallInfo: \(info)")
-            throw MaaCoreError.connectFailed
-        }
-
-        guard ret else {
+        guard try info["details"]["ret"] else {
             throw MaaCoreError.connectFailed
         }
     }
@@ -227,16 +241,6 @@ typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]
 
 extension Notification.Name {
     static let MAAPreventSystemSleepingChanged = Notification.Name("MAAPreventSystemSleepingChanged")
-}
-
-extension JSON {
-    func parseTo<T: Decodable>() -> T? {
-        guard let data = try? rawData(options: .prettyPrinted) else {
-            return nil
-        }
-        let decoder = JSONDecoder()
-        return try? decoder.decode(T.self, from: data)
-    }
 }
 
 extension AsstBool {

@@ -31,10 +31,39 @@ import Observation
     /// Observe this value to update and select the corresponding list entry after an import.
     var lastImportedCopilot: URL?
 
+    // MARK: - Log
+
+    struct SanityReport: Sendable {
+        let current: Int
+        let maximum: Int
+        let reportedAt: Date?
+    }
+
+    struct FightReport: Sendable {
+        let sanityCost: Int?
+        let series: Int?
+        let timesFinished: Int?
+        let finished: Bool?
+    }
+
     private(set) var logs = [MAALog]()
     var trackTail = false
     @ObservationIgnored private var logStoreContinuation: AsyncStream<MAALog>.Continuation?
     @ObservationIgnored private var logStoreTask: Task<Void, Never>?
+
+    var screencapCost: (min: Int, max: Int, avg: Int)?
+    @ObservationIgnored var lastScreencapWarningLevel = 0
+    @ObservationIgnored var hasPrintedFPSHighTip = false
+    @ObservationIgnored var taskStartTime: Date?
+    @ObservationIgnored var sanityReport: SanityReport?
+    @ObservationIgnored var fightReport: FightReport?
+    @ObservationIgnored var stoneUsedTimes = 0
+    @ObservationIgnored var recruitConfirmTimes = 0
+
+    // MARK: - Recognition
+
+    private(set) var depot: MAADepot?
+    private(set) var operBox: MAAOperBox?
 
     // MARK: - Bridges to Old View Model
 
@@ -46,6 +75,8 @@ import Observation
         access(keyPath: \.status)
         return parent.status
     }
+
+    var dailyTasksDetailMode = MAAViewModel.DailyTasksDetailMode.log
 
     @MainActor init(parent: MAAViewModel) {
         self.parent = parent
@@ -74,17 +105,6 @@ import Observation
 
         parent.$status.sink { [weak self] _ in
             self?.withMutation(keyPath: \.status) {}
-        }
-        .store(in: &cancellables)
-
-        parent.$videoRecoginition.sink { [weak self] url in
-            guard let url else { return }
-            do {
-                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
-                self?.lastImportedCopilot = dst
-            } catch {
-                print(error)
-            }
         }
         .store(in: &cancellables)
     }
@@ -189,6 +209,19 @@ extension NewViewModel {
 protocol LogStore: AnyObject {
     func appendLog(_ entry: MAALog)
     func clearLogs()
+    func setLastImportedCopilot(_ url: URL)
+    func setDepot(_ depot: MAADepot?)
+    func setOperBox(_ operBox: MAAOperBox?)
+    func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode)
+
+    var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
+    var lastScreencapWarningLevel: Int { get set }
+    var hasPrintedFPSHighTip: Bool { get set }
+    var recruitConfirmTimes: Int { get set }
+    var stoneUsedTimes: Int { get set }
+    var taskStartTime: Date? { get set }
+    var sanityReport: NewViewModel.SanityReport? { get set }
+    var fightReport: NewViewModel.FightReport? { get set }
 }
 
 extension NewViewModel: LogStore {
@@ -199,5 +232,21 @@ extension NewViewModel: LogStore {
 
     func clearLogs() {
         logs.removeAll()
+    }
+
+    func setLastImportedCopilot(_ url: URL) {
+        lastImportedCopilot = url
+    }
+
+    func setDepot(_ depot: MAADepot?) {
+        self.depot = depot
+    }
+
+    func setOperBox(_ operBox: MAAOperBox?) {
+        self.operBox = operBox
+    }
+
+    func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode) {
+        dailyTasksDetailMode = mode
     }
 }

@@ -21,10 +21,12 @@ struct MAAInfrast: Codable, Hashable, Sendable {
         let period: [Period]?
     }
 
-    struct Period: Codable, Hashable, Sendable {
+    struct Period: Codable, Hashable, Sendable, CustomStringConvertible {
         let start: Double
         let end: Double
         private let times: [String]
+
+        var description: String { "[ \(times[0]) – \(times[1]) ]" }
 
         init(from decoder: any Decoder) throws {
             let container = try decoder.singleValueContainer()

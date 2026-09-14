@@ -6,30 +6,72 @@
 //
 
 import Foundation
-import SwiftyJSON
+import JBird
+import OSLog
 
-extension JSON: @unchecked @retroactive Sendable {
-}
-
-struct MaaMessage {
+struct MaaMessage: Hashable {
     let code: Int
     let details: JSON
 }
 
-extension MAAViewModel {
-    // MARK: - Process Message
+private let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "MaaMessage")
 
+private func L(_ resource: LocalizedStringResource) -> String {
+    String(localized: resource)
+}
+
+private func l(_ key: String, value: String? = nil) -> String {
+    Bundle.main.localizedString(forKey: key, value: value, table: nil)
+}
+
+extension JSONInitializable {
+    fileprivate init?(json: JSON, context: String) {
+        do {
+            self = try Self(json: json)
+        } catch {
+            logger.error("Failed to parse \(context): \(error); details: \(json)")
+            return nil
+        }
+    }
+}
+
+extension Decodable {
+    fileprivate init?(json: JSON, context: String) {
+        do {
+            let data = try json.serialize()
+            self = try JSONDecoder().decode(Self.self, from: data)
+        } catch {
+            logger.error("Failed to parse \(context): \(error); details: \(json)")
+            return nil
+        }
+    }
+}
+
+// MARK: - Process Message
+
+extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
         switch message.code {
         case .InternalError:
+            // WPF retains this callback but currently performs no operation.
             break
 
         case .InitFailed:
-            // TODO: Show alert and shutdown
+            // Core currently does not emit this callback.
+            // TODO: (Dialog) Show the initialization error dialog.
+            // TODO: (ApplicationLifecycle) Terminate the app after initialization fails.
             break
 
         case .ConnectionInfo:
             processConnectionInfo(message)
+
+        case .AsyncCallInfo:
+            // MAAHandle consumes async-call callbacks before they reach the ViewModel.
+            assert(false, "Should have been processed in MAAHandle")
+
+        case .Destroyed:
+            // MAAHandle remains valid throughout the current lifecycle.
+            break
 
         case .AllTasksCompleted, .TaskChainError ... .TaskChainStopped:
             processTaskChainMessage(message)
@@ -37,154 +79,363 @@ extension MAAViewModel {
         case .SubTaskError ... .SubTaskExtraInfo:
             processSubTaskMessage(message)
 
-        default:
+        case .SubTaskStopped:
+            // Currently not emitted by Core.
             break
+
+        case .ReportRequest:
+            // TODO: (NetworkReport) Perform the HTTP data-reporting request provided by Core.
+            break
+
+        default:
+            logger.warning("Unhandled MaaMessage code: \(message.code)")
         }
     }
+}
 
-    // MARK: - Process Connection
+// MARK: - Process Connection
 
+private func parseResolution(details: JSON) -> (width: Int, height: Int)? {
+    guard let width: Int = try? details["details"]["width"],
+        let height: Int = try? details["details"]["height"]
+    else {
+        return nil
+    }
+    return (width, height)
+}
+
+extension MAAViewModel {
     private func processConnectionInfo(_ message: MaaMessage) {
-        guard let what = message.details["what"].string else {
+        let details = message.details
+        guard let what: String = try? details["what"] else {
             return
         }
 
         switch what {
         case "Connected":
-            break
+            // TODO: (ConnectionState) Store the connected ADB path and address, then clear the last connection error.
+            if let address: String = try? details["details"]["address"] {
+                logInfo("已连接至 \(address)")
+            }
 
         case "UnsupportedResolution":
-            logError("ResolutionNotSupported")
+            // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
+                logError(.currentResolution(message: L(.resolutionNotSupported), width: width, height: height))
+            } else {
+                logError(.resolutionNotSupported)
+            }
+
+        case "ResolutionChanged":
+            // TODO: (ConnectionState) Mark the invalidated connection as unavailable and retain the error message.
+            if let (width, height) = parseResolution(details: details), width > 0, height > 0 {
+                logError(.currentResolution(message: L(.resolutionChanged), width: width, height: height))
+            } else {
+                logError(.resolutionChanged)
+            }
+
+        case "ResolutionInfo":
+            if let (width, height) = parseResolution(details: details) {
+                if clientChannel == .YoStarEN, width != 1920 || height != 1080 {
+                    logError(.resolutionInfoYoStarEN)
+                }
+            }
+
+        case "MuMuExtrasInputStatus":
+            // Not available on macOS
+            break
 
         case "ResolutionError":
-            logError("ResolutionAcquisitionFailure")
+            // TODO: (ConnectionState) Mark the current connection as unavailable and retain the error message.
+            logError(.resolutionAcquisitionFailure)
 
         case "Reconnecting":
-            let times = message.details["times"].int ?? 0 + 1
-            logError("TryToReconnect (\(times))")
+            guard let times: Int = try? details["details"]["times"] else {
+                return
+            }
+            logError(.tryToReconnect(times: times + 1))
 
         case "Reconnected":
-            logTrace("ReconnectSuccess")
+            logTrace(.reconnectSuccess)
 
         case "Disconnect":
-            logError("ReconnectFailed")
+            // TODO: (ConnectionState) Mark the current connection as unavailable.
+            logError(.reconnectFailed)
             if status == .idle {
                 break
             }
             Task {
-                try await stop()
+                do {
+                    try await stop()
+                } catch {
+                    logger.warning("Failed to stop after Disconnect: \(error)")
+                }
             }
-        // TODO: If retryOnDisconnection, try to start emulator
 
         case "ScreencapFailed":
-            logError("ScreencapFailed")
+            logError(.screencapFailed)
 
         case "TouchModeNotAvailable":
-            logError("TouchModeNotAvaiable")
+            // TODO: (ConnectionState) Mark the current connection as unavailable.
+            logError(.touchModeNotAvailable)
 
         case "FastestWayToScreencap":
-            let cost = message.details["details"]["cost"].number?.stringValue ?? "???"
-            let method = message.details["details"]["method"].string ?? "???"
-            logInfo("FastestWayToScreencap: \(cost)ms (\(method))")
+            // TODO: (ConnectionState) Store the selected screencap method and its summary.
+            // TODO: (Tooltip) Show alternative screencap methods and costs.
+            guard let cost: Int = try? details["details"]["cost"],
+                let method: String = try? details["details"]["method"]
+            else {
+                return
+            }
+            if cost > 400 {
+                logWarn(.fastestWayToScreencap(cost: cost, method: method))
+            } else {
+                logTrace(.fastestWayToScreencap(cost: cost, method: method))
+            }
 
         case "ScreencapCost":
-            let minCost = message.details["details"]["min"].number?.stringValue ?? "???"
-            let avgCost = message.details["details"]["avg"].number?.stringValue ?? "???"
-            let maxCost = message.details["details"]["max"].number?.stringValue ?? "???"
-            logInfo("ScreencapCost: \(minCost) / \(avgCost) / \(maxCost)")
+            // TODO: (Achievement) Mirror WPF screenshot-performance achievement progress.
+            guard let minimum: Int = try? details["details"]["min"],
+                let maximum: Int = try? details["details"]["max"],
+                let average: Int = try? details["details"]["avg"]
+            else {
+                return
+            }
+            logStore?.screencapCost = (minimum, maximum, average)
+            let level: Int
+            switch average {
+            case 800...:
+                level = 800
+            case 400...:
+                level = 400
+            default:
+                level = 0
+            }
+            guard level > logStore?.lastScreencapWarningLevel ?? 0 else {
+                return
+            }
+            switch level {
+            case 800:
+                logWarn(.fastestWayToScreencapErrorTip(average: average))
+            case 400:
+                logWarn(.fastestWayToScreencapWarningTip(average: average))
+            default:
+                break
+            }
+            logStore?.lastScreencapWarningLevel = level
+
+        case "EmulatorFPS":
+            guard let fps: Int = try? details["details"]["fps"] else {
+                return
+            }
+            switch fps {
+            case ...0, 60:
+                break
+            case ..<30:
+                logError(.emulatorFpsErrorTip(fps: fps))
+            case ..<60:
+                logWarn(.emulatorFpsWarningTip(fps: fps))
+            default:
+                if logStore?.hasPrintedFPSHighTip != true {
+                    logWarn(.emulatorFpsHighTip(fps: fps))
+                    logStore?.hasPrintedFPSHighTip = true
+                }
+            }
 
         case "UnsupportedPlayTools":
-            logError("不支持此版本 PlayCover")
+            logError("不支持此版本PlayCover")
 
         default:
             break
         }
     }
+}
 
-    // MARK: - Process TaskChain
+// MARK: - Process TaskChain
 
+extension NewViewModel.SanityReport {
+    fileprivate func fullRecoveryTime() -> Date? {
+        guard let reportedAt else {
+            return nil
+        }
+        let missingSanity = max(maximum - current, 0)
+        return reportedAt.addingTimeInterval(TimeInterval(missingSanity * 6 * 60))
+    }
+}
+
+@JSONRepresentable
+private struct TaskChainMessage {
+    let taskchain: String
+    let taskid: Int32
+}
+
+extension MAAViewModel {
     private func processTaskChainMessage(_ message: MaaMessage) {
-        guard let taskChain = message.details["taskchain"].string else {
+        if message.code == .AllTasksCompleted {
+            // TODO: (LogCard) Update the all-tasks-completed log card.
+            // TODO: (Notification) Show the all-tasks-completed notification.
+            // TODO: (ExternalNotification) Send the all-tasks-completed event.
+            // TODO: (Notification) Schedule the sanity-recovery notification.
+            // TODO: (PostAction) Execute the configured completion action.
+            // TODO: (ViewState) Show the April Fools completion animation when applicable.
+            // TODO: (Notification) Show completion feedback for standalone Copilot tasks.
+            // TODO: (Persistence) Record the credit-store easter-egg date when applicable.
+            // TODO: (Dialog) Present the credit-store easter-egg dialog when applicable.
+            // TODO: (ViewState) Apply the easter-egg language after confirmation.
+            // TODO: (Achievement) Mirror WPF all-tasks-completed achievement progress.
+            defer {
+                resetStatus()
+            }
+            guard let ids: [Int32] = try? message.details["finished_tasks"] else {
+                return
+            }
+            for id in ids {
+                guard let task = dailyTask(coreID: id) else {
+                    continue
+                }
+                if case .closedown = task {
+                    continue
+                }
+                guard let start = logStore?.taskStartTime else {
+                    break
+                }
+                let now = Date.now
+                let duration = (start..<now).formatted(.timeDuration)
+                let sanitySuffix: String
+                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+                    let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
+                    let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
+                    sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
+                } else {
+                    sanitySuffix = ""
+                }
+                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+                break
+            }
             return
         }
 
-        let isCopilot = ["Copilot", "VideoRecognition"].contains(taskChain)
-
-        if taskChain == "CloseDown" {
-            Task {
-                try await stop()
-            }
+        if message.code == .TaskChainStopped {
+            resetStatus()
+            logTrace(.stopped)
         }
 
-        if taskChain == "Recruit" {
-            if message.code == .TaskChainError {
-                logError("IdentifyTheMistakes")
-                // TODO: Alert "IdentifyTheMistakes"
-            }
+        guard let info = TaskChainMessage(json: message.details, context: "TaskChain") else {
+            return
+        }
+
+        if info.taskchain == "CloseDown" {
+            // WPF retains this task-chain callback but currently performs no operation.
+            return
+        }
+
+        if info.taskchain == "Recruit", message.code == .TaskChainError {
+            // TODO: (Notification) Show the recruit-recognition error notification.
+            // TODO: (ViewState) Show the recruit-recognition error in RecruitView.
+            let resource = LocalizedStringResource.identifyTheMistakes
+            _ = resource
+        }
+
+        let isCopilot = ["Copilot", "SSSCopilot"].contains(info.taskchain)
+
+        let taskchainName: String
+        if let task = MAATaskType(rawValue: info.taskchain) {
+            taskchainName = task.description
+        } else {
+            taskchainName = l(info.taskchain)
         }
 
         switch message.code {
         case .TaskChainStopped:
-            if let id = taskID(taskDetails: message.details) {
+            if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .cancel
             }
-            resetStatus()
-            logTrace("Stopped")
 
         case .TaskChainError:
-            if let id = taskID(taskDetails: message.details) {
+            // TODO: (LogCard) Update the task-error log card.
+            // TODO: (Screenshot) Fetch the latest screenshot for the error card.
+            // TODO: (Tooltip) Use the error screenshot as the log tooltip.
+            // TODO: (Notification) Show the task-error notification.
+            // TODO: (ExternalNotification) Send the task-error event.
+            // TODO: (Achievement) Record Copilot task errors.
+            if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .failure
             }
-            logError("TaskError \(taskChain)")
+            let error: String? = try? message.details["details"]["error"]
+            if error == "OutOfMemory" {
+                logError(.outOfMemoryError(name: taskchainName))
+            } else {
+                logError(.taskError(name: taskchainName))
+            }
             if isCopilot {
-                logError("CombatError")
+                logError(.combatError)
             }
 
         case .TaskChainStart:
-            if let id = taskID(taskDetails: message.details) {
+            // macOS task items do not currently support custom display names.
+            // TODO: (ViewState) Switch the overlay log source for Copilot and daily tasks.
+            if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .running
             }
-            logTrace("StartTask \(taskChain)")
+            logTrace(.startTask(name: taskchainName))
 
         case .TaskChainCompleted:
-            if taskChain == "Infrast" {
-                if let id = taskID(taskDetails: message.details),
+            // TODO: (Achievement) Mirror WPF task-completion achievement progress.
+            if info.taskchain == "Infrast" {
+                if let id = taskID(coreID: info.taskid),
                     let task = tasks[id],
-                    case .infrast(var config) = task
+                    case .infrast(var config) = task,
+                    config.mode == .custom,
+                    config.customPlan.plans.indices.contains(config.plan_index)
                 {
+                    let plan = config.customPlan
+                    let currentPlan = plan.plans[config.plan_index]
+                    logInfo(.customInfrastPlanIndexAutoSwitch)
+                    if let description = currentPlan.description_post, !description.isEmpty {
+                        logTrace(verbatim: description)
+                    }
                     config.advanceCustomPlan()
                     tasks[id] = .infrast(config)
+                    let nextPlan = plan.plans[config.plan_index]
+                    if let name = nextPlan.name, !name.isEmpty {
+                        logInfo(verbatim: name)
+                    }
+                    let periods = nextPlan.period?.map(\.description)
+                    if let periods, !periods.isEmpty {
+                        logTrace(verbatim: periods.joined(separator: ", "))
+                    }
+                    if let description = nextPlan.description, !description.isEmpty {
+                        logTrace(verbatim: description)
+                    }
                 }
             }
-
-            if taskChain == "Mall" {
-                // TODO: CreditFight
-            }
-
-            if let id = taskID(taskDetails: message.details) {
+            if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .success
             }
-
-            logTrace("CompleteTask \(taskChain)")
-
-            if isCopilot {
-                logInfo("CompleteCombat")
+            if info.taskchain == "Fight", let report = logStore?.sanityReport {
+                logTrace(.completeTaskWithSanity(name: taskchainName, cur: report.current, max: report.maximum))
+            } else {
+                logTrace(.completeTask(name: taskchainName))
             }
 
         case .TaskChainExtraInfo:
-            break
-
-        case .AllTasksCompleted:
-            logTrace("AllTasksComplete")
-            resetStatus()
+            let what: String? = try? message.details["what"]
+            let why: String? = try? message.details["why"]
+            if what == "RoutingRestart", why == "TooManyBattlesAhead" {
+                if let nodeCost: Int = try? message.details["node_cost"] {
+                    logWarn(.routingRestartTooManyBattles(cost: nodeCost))
+                }
+            }
 
         default:
             break
         }
     }
+}
 
-    // MARK: - Process SubTask
+// MARK: - Process SubTask
 
+extension MAAViewModel {
     private func processSubTaskMessage(_ message: MaaMessage) {
         switch message.code {
         case .SubTaskError:
@@ -203,390 +454,1075 @@ extension MAAViewModel {
             break
         }
     }
+}
 
+// MARK: - Process SubTask Error
+
+@JSONRepresentable
+private struct SubTaskErrorMessage {
+    let subtask: String
+    let why: String?
+    let what: String?
+    let details: JSON?
+    let taskid: Int32?
+}
+
+@JSONRepresentable
+private struct MissingOperatorDetails {
+    let name: String
+}
+
+@JSONRepresentable
+private struct BattleFormationErrorDetails {
+    let opers: [String: [MissingOperatorDetails]]
+}
+
+private func localizedWhy(_ why: String?) -> String {
+    switch why {
+    case "recognition error": L(.identifyTheMistakes)
+    case "refresh count reached the limit": L(.recruitRefreshLimitReached)
+    case "UnknownStage": L(.penguinUploadUnknownStage)
+    case "NotThreeStars": L(.penguinUploadNotThreeStars)
+    case "UnknownTimes": L(.penguinUploadUnknownTimes)
+    case "UnknownDropType": L(.penguinUploadUnknownDropType)
+    case "UnknownDrops": L(.penguinUploadUnknownDrops)
+    case nil: L(.errorOccurred)
+    case .some(let why): why
+    }
+}
+
+extension MAAViewModel {
     private func processSubTaskError(_ details: JSON) {
-        guard let subTask = details["subtask"].string else {
+        guard let info = SubTaskErrorMessage(json: details, context: "SubTaskError") else {
             return
         }
 
-        switch subTask {
+        switch info.subtask {
         case "StartGameTask":
-            logError("FailedToOpenClient")
+            logError(.failedToOpenClient)
+
+        case "StopGameTask":
+            logError(.closeArknightsFailed)
 
         case "AutoRecruitTask":
-            let why = details["why"].string ?? String(localized: "ErrorOccurred")
-            logError("\(why) HasReturned")
+            logError(.hasReturned(reason: localizedWhy(info.why)))
 
         case "RecognizeDrops":
-            logError("DropRecognitionError")
+            logError(.dropRecognitionError)
 
         case "ReportToPenguinStats":
-            let why = details["why"].string ?? String(localized: "ErrorOccurred")
-            logError("\(why) GiveUpUploadingPenguins")
+            if case .fight(let config) = dailyTask(coreID: info.taskid), config.stage == "Annihilation" {
+                logTrace(.giveUpUploadingPenguins(reason: L(.annihilationStage)))
+            } else {
+                logWarn(.giveUpUploadingPenguins(reason: localizedWhy(info.why)))
+            }
 
         case "CheckStageValid":
-            logError("TheEX")
+            logError(.theEx)
+
+        case "BattleFormationTask":
+            // TODO: (Achievement) Record formations missing multiple operator groups.
+            if info.why == "OperatorMissing", let payload = info.details,
+                let formation = BattleFormationErrorDetails(json: payload, context: "BattleFormationError")
+            {
+                let groups = formation.opers.map { group, opers in
+                    if opers.count == 1 {
+                        return group
+                    } else {
+                        let names = opers.map(\.name).joined(separator: "/")
+                        return "\(group) => \(names)"
+                    }
+                }.joined(separator: "\n")
+                logError(.missingOperators(groups: groups))
+            }
+
+        case "CopilotTask":
+            if info.what == "UserAdditionalOperInvalid", let payload = info.details,
+                let name: String = try? payload["name"]
+            {
+                logError(.copilotUserAdditionalNameInvalid(name: name))
+            }
 
         default:
             break
         }
     }
+}
 
+// MARK: - Process SubTask Start
+
+@JSONRepresentable
+private struct SubTaskStartMessage {
+    let subtask: String
+    let what: String?
+    let details: JSON?
+}
+
+@JSONRepresentable
+private struct ProcessTaskDetails {
+    let task: String
+    let exec_times: Int
+}
+
+extension MAAViewModel {
     private func processSubTaskStart(_ details: JSON) {
-        guard let subTask = details["subtask"].string else {
+        guard let info = SubTaskStartMessage(json: details, context: "SubTaskStart") else {
             return
         }
 
-        switch subTask {
+        switch info.subtask {
         case "ProcessTask":
-            guard let taskName = details["details"]["task"].string,
-                let execTimes = details["details"]["exec_times"].int
+            guard let payload = info.details,
+                let process = ProcessTaskDetails(json: payload, context: "ProcessTaskStart")
             else {
-                break
+                return
             }
 
-            switch taskName {
+            switch process.task {
             case "StartButton2", "AnnihilationConfirm":
-                logInfo("MissionStart \(execTimes) UnitTime")
+                // TODO: (LogCard) Start a new fight log card section.
+                let sanityCost = logStore?.fightReport?.sanityCost.map { "\($0)" } ?? "???"
+                let times: String
+                if let report = logStore?.fightReport,
+                    let timesFinished = report.timesFinished,
+                    let series = report.series, series > 0
+                {
+                    let next = timesFinished + 1
+                    times = series == 1 ? "\(next)" : "\(next)~\(timesFinished + series)"
+                } else {
+                    times = "???"
+                }
+
+                var statusParts = [LocalizedStringResource]()
+                if let report = logStore?.sanityReport {
+                    statusParts.append(.currentSanity(cur: report.current, max: report.maximum))
+                }
+                if expiringMedicineUsedTimes > 0 {
+                    statusParts.append(.medicineUsedTimesWithExpiring(medicineUsedTimes, expiringMedicineUsedTimes))
+                } else if medicineUsedTimes > 0 {
+                    statusParts.append(.medicineUsedTimes(medicineUsedTimes))
+                }
+                if let stoneUsedTimes = logStore?.stoneUsedTimes, stoneUsedTimes > 0 {
+                    statusParts.append(.stoneUsedTimes(stoneUsedTimes))
+                }
+                let statusString = statusParts.map(L).joined(separator: "  ")
+                let statusSuffix = statusParts.isEmpty ? "" : "\n\(statusString)"
+                logInfo(.missionStartFightTask(times: times, cost: sanityCost, using: statusSuffix))
 
             case "StoneConfirm":
-                logInfo("StoneUsed \(execTimes) UnitTime")
+                logInfo(.stoneUsed(times: process.exec_times))
+                logStore?.stoneUsedTimes += 1
 
             case "AbandonAction":
-                logError("ActingCommandError")
+                logError(.actingCommandError)
+
+            case "FightMissionFailedAndStop":
+                // TODO: (Notification) Show the fight-failure notification.
+                logError(.fightMissionFailedAndStop)
+
+            case "CheckEncounter-Uncollected":
+                // TODO: (LogCard) Update the uncollected-reward log card.
+                // TODO: (Notification) Show the uncollected-reward notification.
+                // TODO: (ExternalNotification) Send the uncollected-reward event.
+                logWarn("MiniGame@InteractiveExhibition@UncollectedNotificationContent")
 
             case "RecruitRefreshConfirm":
-                logInfo("LabelsRefreshed")
+                logInfo(.labelsRefreshed)
 
             case "RecruitConfirm":
-                logInfo("RecruitConfirm")
+                // TODO: (LogCard) Update the recruit-confirmation log card.
+                // TODO: (Achievement) Record recruit-confirmation progress.
+                if let logStore {
+                    logStore.recruitConfirmTimes += 1
+                    logInfo(.recruitConfirm(times: logStore.recruitConfirmTimes))
+                }
 
             case "InfrastDormDoubleConfirmButton":
-                logInfo("InfrastDormDoubleConfirmed")
-
-            /// Tag: - 肉鸽相关
-            case "StartExplore":
-                logInfo("BegunToExplore \(execTimes) UnitTime")
-
-            case "StageTraderInvestConfirm":
-                logInfo("HasInvested \(execTimes) UnitTime")
+                logInfo(.infrastDormDoubleConfirmed)
 
             case "ExitThenAbandon":
-                logTrace("ExplorationAbandoned")
+                // TODO: (Achievement) Record Roguelike retreats.
+                logWarn(.explorationAbandoned)
+
+            case "StartAction":
+                // WPF retains this callback branch but currently performs no operation.
+                break
 
             case "MissionCompletedFlag":
-                logTrace("FightCompleted")
+                // TODO: (LogCard) Update the Roguelike battle-success log card.
+                logInfo(.fightCompleted)
 
             case "MissionFailedFlag":
-                logTrace("FightFailed")
+                // TODO: (LogCard) Update the Roguelike battle-failure log card.
+                logError(.fightFailed)
 
-            case "StageTraderEnter":
-                logTrace("Trader")
+            case "StageTrader":
+                logInfo(.trader)
 
-            case "StageSafeHouseEnter":
-                logTrace("SafeHouse")
+            case "StageSafeHouse":
+                logInfo(.safeHouse)
 
-            case "StageEncounterEnter":
-                logTrace("Encounter")
+            case "StageFilterTruth":
+                logInfo(.filterTruth)
 
-            case "StageCombatOpsEnter":
-                logTrace("CombatOps")
+            case "StageBoonsEnter":
+                // WPF retains this callback branch but currently performs no operation.
+                break
+
+            case "StageCombatOps":
+                logInfo(.combatOps)
 
             case "StageEmergencyOps":
-                logTrace("EmergencyOps")
+                logWarn(.emergencyOps)
 
-            case "StageDreadfulFoe", "StageDreadfulFoe-5Enter":
-                logTrace("DreadfulFoe")
+            case "StageDreadfulFoe", "StageDreadfulFoe-5":
+                logError(.dreadfulFoe)
 
             case "StageTraderInvestSystemFull":
-                logInfo("UpperLimit")
+                logInfo(.upperLimit)
 
-            case "RestartGameAndContinue":
-                logWarn("GameCrash")
-
-            case "OfflineConfirm":
-                // TODO: Auto-restart
-                logWarn("GameDrop")
+            case "OfflineConfirm", "OfflineConfirmAfterBattle":
+                // TODO: (Notification) Show the game-disconnection notification.
+                logError(.gameDrop)
+                Task {
+                    do {
+                        try await stop()
+                    } catch {
+                        logger.warning("Failed to stop after game disconnect: \(error)")
+                    }
+                }
 
             case "GamePass":
-                logRare("RoguelikeGamePass")
+                // TODO: (Achievement) Record completed Roguelike runs.
+                logRare(.roguelikeGamePass)
 
             case "BattleStartAll":
-                logInfo("MissionStart")
+                logInfo(.missionStart)
+
+            case "StageDrops-Stars-3", "StageDrops-Stars-Adverse":
+                // TODO: (ViewState) Mark the current Copilot task as successful.
+                logInfo(.completeCombat)
 
             case "StageTraderSpecialShoppingAfterRefresh":
-                logRare("RoguelikeSpecialItemBought")
+                logRare(.roguelikeSpecialItemBought)
+
+            case "DeepExplorationNotUnlockedComplain":
+                logWarn(.deepExplorationNotUnlockedComplain)
+
+            case "PNS-Resume":
+                logError(.reclamationPnsModeError)
+
+            case "PIS-Commence":
+                logError(.reclamationPisModeError)
 
             default:
                 break
             }
 
         case "CombatRecordRecognitionTask":
-            if let what = details["what"].string {
-                logTrace("\(what)")
+            if let what = info.what {
+                logTrace(verbatim: what)
             }
 
         default:
             break
         }
     }
+}
 
+// MARK: - Process SubTask Completed
+
+@JSONRepresentable
+private struct SubTaskCompletedMessage {
+    let subtask: String
+    let taskchain: String?
+    let taskid: Int32?
+    let details: JSON?
+}
+
+extension MAAViewModel {
     private func processSubTaskCompleted(_ details: JSON) {
-        // Placeholder
-    }
-
-    private func processSubTaskExtraInfo(_ details: JSON) {
-        guard let taskChain = details["taskchain"].string,
-            let what = details["what"].string
+        guard let info = SubTaskCompletedMessage(json: details, context: "SubTaskCompleted") else {
+            return
+        }
+        guard info.subtask == "ProcessTask", let payload = info.details,
+            let process = ProcessTaskDetails(json: payload, context: "ProcessTaskCompleted")
         else {
             return
         }
-        let subTaskDetails = details["details"]
 
-        switch taskChain {
+        switch info.taskchain {
+        case "Infrast":
+            switch process.task {
+            case "UnlockClues":
+                // TODO: (Achievement) Record clue-exchange progress.
+                logTrace(.clueExchangeUnlocked)
+            case "SendClues":
+                // TODO: (Achievement) Record sent-clue progress as WPF does.
+                break
+            default:
+                break
+            }
+
+        case "Roguelike":
+            if process.task == "StartExplore" {
+                logInfo(.begunToExplore(times: process.exec_times))
+            }
+
+        case "Mall":
+            switch process.task {
+            case "StageDrops-Stars-3":
+                // TODO: (Achievement) Record completed credit fights.
+                if let id = taskID(coreID: info.taskid),
+                    case .mall(var config) = tasks[id]
+                {
+                    config.creditFightDate = .now
+                    tasks[id] = .mall(config)
+                }
+                logInfo(.completeTask(name: L(.creditFight)))
+            case "VisitLimited":
+                if let id = taskID(coreID: info.taskid),
+                    case .mall(var config) = tasks[id]
+                {
+                    config.friendVisitDate = .now
+                    tasks[id] = .mall(config)
+                }
+                logInfo(.completeTask(name: L(.visiting)))
+            case "VisitNextBlack":
+                logInfo(.completeTask(name: L(.visiting)))
+            default:
+                break
+            }
+
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Process SubTask Extra Info
+
+@JSONRepresentable
+private struct SubTaskExtraInfoMessage {
+    let taskchain: String
+    let what: String
+    let details: JSON
+    let why: String?
+    let taskid: Int32?
+}
+
+@JSONRepresentable
+private struct StageDropItemDetails {
+    let itemName: String
+    let quantity: Int
+    let addQuantity: Int
+}
+
+@JSONRepresentable
+private struct StageDropStageDetails {
+    let stageCode: String?
+}
+
+@JSONRepresentable
+private struct StageDropsDetails {
+    let stats: [StageDropItemDetails]
+    let stage: StageDropStageDetails?
+    let cur_times: Int?
+    let annihilation_weekly_process: [Int]?
+}
+
+@JSONRepresentable
+private struct CopilotActionDetails {
+    let action: String
+    let target: String?
+    let doc: String?
+    let doc_color: String?
+    let elapsed_time: Int?
+}
+
+@JSONRepresentable
+private struct CopilotFileDetails {
+    let file_name: String
+    let stage_name: String
+    let id: Int?
+}
+
+@JSONRepresentable
+private struct RoguelikeInvestmentDetails {
+    let count: Int
+    let total: Int
+    let deposit: Int
+}
+
+@JSONRepresentable
+private struct RoguelikeSettlementDetails {
+    let game_pass: Bool
+    let floor: Int?
+    let step: Int?
+    let combat: Int?
+    let emergency: Int?
+    let boss: Int?
+    let recruit: Int?
+    let collection: Int?
+    let difficulty: Int?
+    let score: Int?
+    let exp: String?
+    let skill: String?
+}
+
+@JSONRepresentable
+private struct RoguelikeEncounterOptionDetails {
+    let enabled: Bool
+    let text: String
+}
+
+@JSONRepresentable
+private struct BlackFlowRoutingDecisionDetails {
+    let floor: Int
+    let action_points_before: Int
+    let action_points_after: Int
+    let movement: String
+    let node_name: String?
+    let node_type: String
+    let safety_margin: Int
+    let reason_category: String
+    let reason_detail: String?
+}
+
+@JSONRepresentable
+private struct MedicineItemDetails {
+    let use: Int
+    let inventory: Int
+}
+
+@JSONRepresentable
+private struct UseMedicineDetails {
+    let is_expiring: Bool
+    let count: Int
+    let medicines: [MedicineItemDetails]?
+}
+
+@JSONRepresentable
+private struct SanityBeforeStageDetails {
+    let current_sanity: Int?
+    let max_sanity: Int?
+    let report_time: String?
+}
+
+@JSONRepresentable
+private struct FightTimesDetails {
+    let sanity_cost: Int?
+    let series: Int?
+    let times_finished: Int?
+    let finished: Bool?
+}
+
+private let sanityReportTimeParser = Date.ParseStrategy(
+    format:
+        "\(year: .defaultDigits)-\(month: .twoDigits)-\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits).\(secondFraction: .fractional(3))",
+    locale: Locale(identifier: "en_US_POSIX"),
+    timeZone: .current)
+
+extension MAAViewModel {
+    private func processSubTaskExtraInfo(_ details: JSON) {
+        guard let info = SubTaskExtraInfoMessage(json: details, context: "SubTaskExtraInfo") else {
+            return
+        }
+
+        switch info.taskchain {
         case "Recruit":
-            processRecruitMessage(details: details)
-
-        case "VideoRecognition":
-            processVideoMessage(details: details)
+            // TODO: (ViewState) Forward every Recruit callback to the recruit-calculation state.
+            break
 
         case "Depot":
-            depot = subTaskDetails.parseTo()
+            // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
+            logStore?.setDepot(.init(json: info.details, context: "Depot"))
 
         case "OperBox":
-            operBox = subTaskDetails.parseTo()
+            // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
+            logStore?.setOperBox(.init(json: info.details, context: "OperBox"))
 
         default:
             break
         }
 
-        switch what {
+        switch info.what {
         case "StageDrops":
-            guard let statistics = subTaskDetails["stats"].array else {
+            // TODO: (Tooltip) Show recognized drop details.
+            // TODO: (LogCard) Update the stage-drop log card.
+            // TODO: (DataSync) Merge recognized drops into Depot data.
+            // TODO: (Achievement) Record sanity-spending progress.
+            guard let dropInfo = StageDropsDetails(json: info.details, context: "StageDrops") else {
+                return
+            }
+            let drops = dropInfo.stats
+                .sorted {
+                    ($0.addQuantity, $0.quantity) > ($1.addQuantity, $1.quantity)
+                }
+                .map { item in
+                    let itemName = item.itemName == "furni" ? L(.furnitureDrop) : item.itemName
+                    return item.addQuantity > 0
+                        ? "\(itemName) : \(item.quantity) (+\(item.addQuantity))"
+                        : "\(itemName) : \(item.quantity)"
+                }
+            let dropText = drops.isEmpty ? L(.noDrop) : drops.joined(separator: "\n")
+            let stageCode = dropInfo.stage?.stageCode ?? ""
+            var extraInfo = [LocalizedStringResource]()
+            if let curTimes = dropInfo.cur_times, curTimes > 0 {
+                extraInfo.append(.curTimes(times: curTimes))
+            }
+            if let annihilation = dropInfo.annihilation_weekly_process, annihilation.count == 2 {
+                extraInfo.append(.annihilationMode(cur: annihilation[0], max: annihilation[1]))
+            }
+            let extras = extraInfo.map(L).joined(separator: "\n")
+            let extraLine = extraInfo.isEmpty ? "" : "\n\(extras)"
+            logTrace(.totalDrop(code: stageCode, drops: dropText, extras: extraLine))
+
+        case "EnterFacility":
+            // TODO: (LogCard) Start a new infrastructure-room log card section.
+            let facilityText: String
+            if let facilityName: String = try? info.details["facility"] {
+                if let facility = InfrastConfiguration.Facility(rawValue: facilityName) {
+                    facilityText = facility.description
+                } else {
+                    facilityText = l(facilityName)
+                }
+            } else {
+                facilityText = L("未知")
+            }
+            let indexText: String
+            if let index: Int = try? info.details["index"] {
+                indexText = String(format: "%02d", index + 1)
+            } else {
+                indexText = ""
+            }
+            logTrace(.thisFacility(facility: facilityText, index: indexText))
+
+        case "ProductIncorrect":
+            logError(.productIncorrect)
+
+        case "ProductUnknown":
+            logError(.productUnknown)
+
+        case "ProductChanged":
+            logInfo(.productChanged)
+
+        case "ProductChangeFail":
+            logError(.productChangeFail)
+
+        case "InfrastConfirmButton":
+            // TODO: (Screenshot) Fetch the latest infrastructure screenshot.
+            // TODO: (LogCard) Update the infrastructure-confirmation log card.
+            break
+
+        case "RecruitTagsDetected":
+            // TODO: (LogCard) Start a new recruit-result log card section.
+            // TODO: (Screenshot) Update the recruit card with the current screenshot.
+            let tags: [String] = (try? info.details["tags"]) ?? []
+            let tagText = tags.isEmpty ? L(.error) : tags.joined(separator: "\n")
+            logTrace(.recruitingResults(tags: tagText))
+
+        case "RecruitSpecialTag", "RecruitRobotTag":
+            // TODO: (Notification) Show the matching special-tag recruit notification.
+            guard let _: String = try? info.details["tag"] else {
                 return
             }
 
-            var allDrops = [String]()
-            for item in statistics {
-                guard let name = item["itemName"].string,
-                    let total = item["quantity"].int,
-                    let addition = item["addQuantity"].int
-                else {
-                    continue
-                }
-
-                var drop = "\(name) : \(total)"
-                if addition > 0 {
-                    drop += " (+\(addition))"
-                }
-                allDrops.append(drop)
+        case "RecruitPreservedTag":
+            // TODO: (Notification) Show the matching preserved-tag recruit notification.
+            guard let tag: String = try? info.details["tag"] else {
+                return
             }
-
-            if allDrops.count == 0 {
-                allDrops.append(String(localized: "NoDrop"))
-            }
-
-            let sanityLeft = self.curSanityBeforeFight - self.sanityCost
-            logTrace(
-                "TotalDrop\n\(allDrops.joined(separator: "\n"))\n\nSanityLeft: \(sanityLeft >= 0 ? String(sanityLeft) : "Error")"
-            )
-
-        case "EnterFacility":
-            guard let facility = subTaskDetails["facility"].string,
-                let index = subTaskDetails["index"].int
-            else {
-                break
-            }
-            logTrace("ThisFacility \(facility) \(index)")
-
-        case "ProductIncorrect":
-            logError("ProductIncorrect")
-
-        case "RecruitTagsDetected":
-            guard let tags = subTaskDetails["tags"].array else {
-                break
-            }
-            let tagNames = tags.compactMap(\.string)
-            logTrace("RecruitingResults: \(tagNames.joined(separator: ", "))")
-
-        case "RecruitSpecialTag":
-            if let special = subTaskDetails["tag"].string {
-                _ = special
-            }
-        // TODO: Push Notification
-
-        case "RecruitRobotTag":
-            if let special = subTaskDetails["tag"].string {
-                _ = special
-            }
-        // TODO: Push Notification
+            logTrace(.recruitingTips(preserved: tag))
 
         case "RecruitResult":
-            guard let level = subTaskDetails["level"].int else {
-                break
+            // TODO: (Tooltip) Show detailed recruit combinations.
+            // TODO: (LogStyle) Emphasize high-rarity recruit results.
+            // TODO: (Notification) Show high-rarity recruit notifications.
+            // TODO: (Achievement) Mirror WPF recruit-result achievement progress.
+            guard let level: Int = try? info.details["level"] else {
+                return
             }
             if level >= 5 {
-                // TODO: Push Notification
-                // TODO: Bold
                 logRare("\(level) ★ Tags")
             } else {
                 logInfo("\(level) ★ Tags")
             }
+            recruit = MAARecruit(json: info.details, context: "RecruitResult")
 
-        case "RecruitTagsSelect":
-            guard let selected = subTaskDetails["tags"].array else {
-                break
+        case "RecruitSupportOperator":
+            guard let name: String = try? info.details["name"] else {
+                return
             }
-            let selectedTags = selected.compactMap(\.string)
-            if selectedTags.count > 0 {
-                logTrace("Choose Tags: \(selectedTags.joined(separator: ", "))")
-            }
+            logInfo(.recruitSupportOperator(name: name))
+
+        case "RecruitTagsSelected":
+            let tags: [String] = (try? info.details["tags"]) ?? []
+            let selected = tags.isEmpty ? L(.noDrop) : tags.joined(separator: "\n")
+            logTrace(.recruitTagsSelectedLog(tags: selected))
 
         case "RecruitTagsRefreshed":
-            guard let count = subTaskDetails["count"].int else {
-                break
+            // TODO: (Achievement) Record recruit-tag refreshes.
+            guard let count: Int = try? info.details["count"] else {
+                return
             }
-            logTrace("Refreshed \(count) UnitTime")
+            logTrace(.refreshed(times: count))
+
+        case "RecruitNoPermit":
+            guard let shouldContinue: Bool = try? info.details["continue"] else {
+                return
+            }
+            if shouldContinue {
+                logTrace(.continueRefresh)
+            } else {
+                logTrace(.noRecruitmentPermit)
+            }
 
         case "NotEnoughStaff":
-            logError("NotEnoughStaff")
+            logError(.notEnoughStaff)
 
-        /// Tag: - Roguelike
-        case "StageInfo":
-            guard let name = subTaskDetails["name"].string else {
-                break
+        case "CreditFullOnlyBuyDiscount":
+            guard let credit: Int = try? info.details["credit"] else {
+                return
             }
-            logTrace("StartCombat \(name)")
+            logTrace(.creditFullOnlyBuyDiscount(credit: credit))
+
+        case "AccountSwitch":
+            let accountName: String = (try? info.details["account_name"]) ?? ""
+            logTrace(.accountSwitch(to: accountName))
+
+        case "StageInfo":
+            // TODO: (ViewState) Mark delayed Roguelike aborts as waiting for combat to finish.
+            guard let name: String = try? info.details["name"] else {
+                return
+            }
+            logTrace(.startCombat(name: name))
 
         case "StageInfoError":
-            logError("StageInfoError")
-
-        case "PenguinId":
-            if let id = subTaskDetails["id"].string {
-                // Set viewModel id
-                _ = id
-            }
+            // TODO: (LogCard) Split the stage-error log card.
+            // TODO: (Screenshot) Update the stage-error card with the current screenshot.
+            logError(.stageInfoError)
 
         case "BattleFormation":
-            if let formation = subTaskDetails["formation"].rawString() {
-                logTrace("BattleFormation: \(formation)")
-            }
+            // TODO: (Localization) Localize operator names.
+            let formation: [String] = (try? info.details["formation"]) ?? []
+            logTrace(.battleFormation(formation.joined(separator: ", ")))
+
+        case "BattleFormationParseFailed":
+            logTrace(.battleFormationParseFailed)
 
         case "BattleFormationSelected":
-            if let selected = subTaskDetails["selected"].string {
-                logTrace("BattleFormationSelected \(selected)")
+            // TODO: (Localization) Localize the selected operator name.
+            let selected: String = (try? info.details["selected"]) ?? ""
+            let groupName: String? = try? info.details["group_name"]
+            let displayName: String
+            if let groupName, groupName != selected {
+                displayName = "\(groupName) => \(selected)"
+            } else {
+                displayName = selected
             }
+            logTrace(.battleFormationSelected(groupOrName: displayName))
+
+        case "BattleFormationOperUnavailable":
+            // TODO: (ViewState) Record that Copilot requirements were ignored.
+            // TODO: (Localization) Localize the operator name.
+            // TODO: (Localization) Localize the unavailable requirement type.
+            // TODO: (LogStyle) Use warning or error styling according to requirement settings.
+            let operName: String = (try? info.details["oper_name"]) ?? ""
+            let typeName: String
+            let type: String? = try? info.details["requirement_type"]
+            switch type {
+            case "elite": typeName = L(.battleFormationOperUnavailableElite)
+            case "level": typeName = L(.battleFormationOperUnavailableLevel)
+            case "skill_level": typeName = L(.battleFormationOperUnavailableSkillLevel)
+            case "module": typeName = L(.battleFormationOperUnavailableModule)
+            default: typeName = "Unknown Type"
+            }
+            logError(.battleFormationOperUnavailable(name: operName, reason: typeName))
 
         case "CopilotAction":
-            // TODO: b
-            break
-
-        case "SSSStage":
-            if let stage = subTaskDetails["stage"].string {
-                logInfo("CurrentStage \(stage)")
+            // TODO: (LogStyle) Apply the callback-provided document color.
+            // TODO: (Localization) Localize Copilot action names.
+            // TODO: (Localization) Localize target operator names.
+            guard let action = CopilotActionDetails(json: info.details, context: info.what) else {
+                return
+            }
+            if let doc = action.doc, !doc.isEmpty {
+                logTrace(verbatim: doc)
+            }
+            logTrace(.currentSteps(action: action.action, target: action.target ?? ""))
+            if let elapsedTime = action.elapsed_time, elapsedTime >= 0 {
+                logTrace(.elapsedTime(time: elapsedTime))
             }
 
+        case "CopilotListLoadTaskFileSuccess":
+            // TODO: (ViewState) Store the current Copilot ID.
+            // TODO: (ViewState) Reset the ignored-requirement state.
+            guard let file = CopilotFileDetails(json: info.details, context: info.what) else {
+                return
+            }
+            logTrace("解析 \(file.file_name)[\(file.stage_name)] 成功")
+
+        case "SSSStage":
+            guard let stage: String = try? info.details["stage"] else {
+                return
+            }
+            logInfo(.currentStage(stage: stage))
+
         case "SSSSettlement":
-            if let why = details["why"].string {
-                logInfo("\(why)")
+            if let why = info.why {
+                logInfo(verbatim: why)
             }
 
         case "SSSGamePass":
-            logRare("SSSGamePass")
+            logRare(.sssgamePass)
 
         case "UnsupportedLevel":
-            logError("UnsupportedLevel")
+            // TODO: (ResourceUpdate) Update resources and reload them into Core.
+            let level = (try? info.details["level"]) ?? .null
+            logError(.unsupportedLevel(level: level.description))
+
+        case "CustomInfrastRoomGroupsMatch":
+            guard let group: String = try? info.details["group"] else {
+                return
+            }
+            logTrace(.roomGroupsMatch(group: group))
+
+        case "CustomInfrastRoomGroupsMatchFailed":
+            guard let groups: [String] = try? info.details["groups"] else {
+                return
+            }
+            logTrace(.roomGroupsMatchFailed(groups: groups.joined(separator: ", ")))
 
         case "CustomInfrastRoomOperators":
-            if let names = subTaskDetails["names"].array {
-                let contents = names.compactMap(\.string).joined(separator: ", ")
-                logTrace("\(contents)")
+            // TODO: (Localization) Localize infrastructure operator names.
+            let names: [String] = (try? info.details["names"]) ?? []
+            logTrace(.roomOperators(names: names.joined(separator: ", ")))
+
+        case "InfrastTrainingIdle":
+            logTrace(.trainingIdle)
+
+        case "InfrastTrainingCompleted", "InfrastTrainingTimeLeft":
+            // TODO: (Localization) Localize the training operator name.
+            let oper: String = (try? info.details["operator"]) ?? "UnKnown"
+            let skill: String = (try? info.details["skill"]) ?? "UnKnown"
+            let level: Int = (try? info.details["level"]) ?? -1
+            if info.what == "InfrastTrainingCompleted" {
+                logInfo(.trainingCompleted(oper: oper, skill: skill, level: level))
+            } else {
+                let time: String = (try? info.details["time"]) ?? "Unknown"
+                logInfo(.trainingTimeLeft(oper: oper, skill: skill, level: level, time: time))
             }
 
         case "ReclamationReport":
-            // TODO: Complete this part when it comes back...
-            break
+            let totalBadges: Int = (try? info.details["total_badges"]) ?? -1
+            let badges: Int = (try? info.details["badges"]) ?? -1
+            let totalPoints: Int = (try? info.details["total_construction_points"]) ?? -1
+            let points: Int = (try? info.details["construction_points"]) ?? -1
+            logTrace(.algorithmFinish(badges: "\(totalBadges)(+\(badges))", points: "\(totalPoints)(+\(points))"))
 
         case "ReclamationProcedureStart":
-            if let count = subTaskDetails["times"].int {
-                logInfo("MissionStart \(count) UnitTime")
+            guard let times: Int = try? info.details["times"] else {
+                return
             }
+            logInfo(.missionStartTimes(times))
 
         case "ReclamationSmeltGold":
-            if let count = subTaskDetails["times"].int {
-                logInfo("AlgorithmDoneSmeltGold \(count) UnitTime")
+            guard let times: Int = try? info.details["times"] else {
+                return
+            }
+            logTrace(.algorithmDoneSmeltGold(times: times))
+
+        case "RoguelikeInvestmentReachFull":
+            logInfo(.roguelikeInvestmentReachFull)
+
+        case "RoguelikeInvestmentReachLimit":
+            guard let limit: Int = try? info.details["limit"] else {
+                return
+            }
+            logInfo(.roguelikeInvestmentReachLimit(limit: limit))
+
+        case "RoguelikeInvestment":
+            guard let investment = RoguelikeInvestmentDetails(json: info.details, context: info.what) else {
+                return
+            }
+            logInfo(.roguelikeInvestment(count: investment.count, total: investment.total, deposit: investment.deposit))
+
+        case "RoguelikeSettlement":
+            // TODO: (DataCorrection) Validate and correct difficulty OCR for the selected theme.
+            // TODO: (LogCard) Update the Roguelike settlement log card.
+            // TODO: (Screenshot) Update the settlement card with the current screenshot.
+            guard let settlement = RoguelikeSettlementDetails(json: info.details, context: info.what) else {
+                return
+            }
+            logTrace(
+                .roguelikeSettlement(
+                    pass: settlement.game_pass ? "✓" : "✗",
+                    floor: settlement.floor ?? 0, step: settlement.step ?? 0,
+                    combat: settlement.combat ?? 0, emergency: settlement.emergency ?? 0, boss: settlement.boss ?? 0,
+                    recruit: settlement.recruit ?? 0, collection: settlement.collection ?? 0,
+                    difficulty: settlement.difficulty ?? 0, score: settlement.score ?? 0,
+                    exp: settlement.exp ?? "", skill: settlement.skill ?? "")
+            )
+
+        case "RoguelikeCombatEnd":
+            // TODO: (ViewState) Clear the delayed-abort and in-combat state.
+            break
+
+        case "RoguelikeEvent":
+            guard let name: String = try? info.details["name"] else {
+                return
+            }
+            logInfo(.roguelikeEvent(name: name))
+
+        case "RoguelikeEncounterOptions":
+            // TODO: (LogCard) Update the Roguelike encounter-options log card.
+            // TODO: (Screenshot) Update the encounter-options card with the current screenshot.
+            let options: [RoguelikeEncounterOptionDetails] = (try? info.details["options"]) ?? []
+            let optionLines = options.map { option in
+                if option.enabled {
+                    L(.roguelikeEncounterEnabledOption(name: option.text))
+                } else {
+                    L(.roguelikeEncounterDisabledOption(name: option.text))
+                }
+            }.joined(separator: "\n")
+            if optionLines.isEmpty {
+                logInfo("没有识别到选项")
+            } else {
+                logInfo(.roguelikeEncounterOptions(count: options.count, options: optionLines))
             }
 
+        case "BlackFlowRoutingDecision":
+            // TODO: (Localization) Localize BlackFlow movement values.
+            // TODO: (Localization) Localize BlackFlow node types.
+            // TODO: (Localization) Localize BlackFlow reason categories.
+            // TODO: (Localization) Localize BlackFlow reason details.
+            guard let decision = BlackFlowRoutingDecisionDetails(json: info.details, context: info.what) else {
+                return
+            }
+            let node = decision.node_name.map { $0.isEmpty ? decision.node_type : $0 } ?? decision.node_type
+            logInfo(
+                .blackFlowRoutingDecision(
+                    floor: decision.floor, before: decision.action_points_before, after: decision.action_points_after,
+                    movement: decision.movement, node: node,
+                    margin: decision.safety_margin)
+            )
+            logInfo(.blackFlowRoutingReason(reason: decision.reason_category, detail: decision.reason_detail ?? ""))
+
+        case "BlackFlowRoutingWarning":
+            let code: String = (try? info.details["code"]) ?? ""
+            switch code {
+            case "map_rebuild_failed": logWarn(.blackFlowWarningMapRebuildFailed)
+            case "page_recovery_failed": logWarn(.blackFlowWarningPageRecoveryFailed)
+            case "preview_cost_changed": logWarn(.blackFlowWarningPreviewCostChanged)
+            case "route_blocked": logWarn(.blackFlowWarningRouteBlocked)
+            case "insufficient_action_points": logWarn(.blackFlowWarningInsufficientActionPoints)
+            case "target_state_changed": logWarn(.blackFlowWarningTargetStateChanged)
+            case "target_unreachable": logWarn(.blackFlowWarningTargetUnreachable)
+            case "inferred_edge_selected": logWarn(.blackFlowWarningInferredEdge)
+            case "post_move_mismatch": logWarn(.blackFlowWarningPostMoveMismatch)
+            case "identity_conflict": logWarn(.blackFlowWarningIdentityConflict)
+            default: logWarn(.blackFlowWarningUnknown)
+            }
+
+        case "BlackFlowMilestoneChanged":
+            // TODO: (Localization) Localize BlackFlow milestone identifiers.
+            // TODO: (Localization) Localize BlackFlow milestone status values.
+            let status: String = (try? info.details["status"]) ?? ""
+            let milestoneId: String = (try? info.details["milestone_id"]) ?? ""
+            if status != "inactive" {
+                logInfo(.blackFlowMilestoneChanged(id: milestoneId, status: status))
+            }
+
+        case "BlackFlowStrategyStarted":
+            // TODO: (Localization) Localize the BlackFlow profile value.
+            let profile: String = (try? info.details["profile"]) ?? ""
+            logInfo(.blackFlowStrategyStarted(profile: profile))
+
+        case "BlackFlowStrategyResult":
+            // TODO: (Localization) Localize the BlackFlow outcome value.
+            // TODO: (Localization) Localize the BlackFlow termination reason.
+            let outcome: String = (try? info.details["outcome"]) ?? ""
+            let reason: String = (try? info.details["termination_reason"]) ?? ""
+            let success: Bool = (try? info.details["succeeded"]) ?? false
+            if success {
+                logInfo(.blackFlowStrategyResult(outcome: outcome, reason: reason))
+            } else {
+                logWarn(.blackFlowStrategyResult(outcome: outcome, reason: reason))
+            }
+
+        case "BoskyPassageNode":
+            guard let nodeType: String = try? info.details["node_type"] else {
+                return
+            }
+            switch nodeType {
+            case "Omissions": logInfo(.boskyOmissions)
+            case "Legend": logInfo(.boskyLegend)
+            case "OldShop": logInfo(.boskyOldShop)
+            case "YiTrader": logInfo(.boskyYiTrader)
+            case "Scheme": logInfo(.boskyScheme)
+            case "Playtime": logInfo(.boskyPlaytime)
+            case "Doubts": logInfo(.boskyDoubts)
+            case "Disaster": logWarn(.boskyDisaster)
+            default: logInfo(verbatim: nodeType)
+            }
+
+        case "RoguelikeCoppersRecognitionError":
+            let recognizedName: String = (try? info.details["recognized_name"]) ?? "Unknown"
+            logError(.roguelikeCoppersRecognitionError(name: recognizedName))
+
+        case "RoguelikeCoppersExchangeInfo":
+            let toDiscard: String = (try? info.details["to_discard"]) ?? "Unknown"
+            let toPickup: String = (try? info.details["to_pickup"]) ?? "Unknown"
+            logInfo(.roguelikeCoppersExchange(from: toDiscard, to: toPickup))
+
+        case "EncounterOcrError":
+            logError(.encounterOcrError)
+
+        case "RoguelikeJieGardenTargetFound":
+            let targetSubtype: String = (try? info.details["target_subtype"]) ?? "Unknown"
+            let targetName: String
+            switch targetSubtype {
+            case "Ling": targetName = L(.roguelikePlaytimeLing)
+            case "Shu": targetName = L(.roguelikePlaytimeShu)
+            case "Nian": targetName = L(.roguelikePlaytimeNian)
+            default: targetName = targetSubtype
+            }
+            logInfo(.roguelikeJieGardenTargetFound(name: targetName))
+
+        case "FoldartalGainOcrNextLevel":
+            let foldartal: String = (try? info.details["foldartal"]) ?? ""
+            logTrace(.foldartalGainOcrNextLevel(name: foldartal))
+
+        case "MonthlySquadCompleted":
+            logRare(.monthlySquadCompleted)
+
+        case "DeepExplorationCompleted":
+            logRare(.deepExplorationCompleted)
+
         case "RoguelikeCollapsalParadigms":
-            if let cur = subTaskDetails["cur"].string,
-                let deepen_or_weaken = subTaskDetails["deepen_or_weaken"].int,
-                deepen_or_weaken == 1
-            {
-                logInfo("GainParadigm \(cur)")
+            guard let deepenOrWeaken: Int = try? info.details["deepen_or_weaken"] else {
+                return
+            }
+            let current: String = (try? info.details["cur"]) ?? "UnKnown"
+            let previous: String = (try? info.details["prev"]) ?? "UnKnown"
+            if deepenOrWeaken == 1, previous.isEmpty {
+                logInfo(.roguelikeGainParadigm(current))
+            } else if deepenOrWeaken == 1 {
+                logInfo(.roguelikeDeepenParadigm(from: previous, to: current))
+            } else if deepenOrWeaken == -1, current.isEmpty {
+                logInfo(.roguelikeLoseParadigm(previous))
+            } else if deepenOrWeaken == -1 {
+                logInfo(.roguelikeWeakenParadigm(from: previous, to: current))
             }
 
         case "UseMedicine":
-            if let isExpiringMedicine = subTaskDetails["is_expiring"].bool,
-                let medicineCount = subTaskDetails["count"].int
+            // TODO: (Achievement) Mirror WPF medicine-usage achievement progress.
+            guard let medicine = UseMedicineDetails(json: info.details, context: info.what) else {
+                return
+            }
+            let expiry: String
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                config.medicine_expire_days > 0
             {
-                if !isExpiringMedicine {
-                    medicineUsedTimes += medicineCount
-                    logInfo("MedicineUsed \(medicineUsedTimes)(+\(medicineCount)) UnitTime")
-                } else {
-                    expiringMedicineUsedTimes += medicineCount
-                    logInfo("ExpiringMedicineUsed \(expiringMedicineUsedTimes)(+\(medicineCount)) UnitTime")
-                }
+                expiry = L(config.localizedExpiry)
+            } else {
+                expiry = L("即将")
+            }
+            if medicine.is_expiring {
+                expiringMedicineUsedTimes += medicine.count
+                logInfo(.expiringMedicineUsed(expiry: expiry, total: expiringMedicineUsedTimes, count: medicine.count))
+            } else {
+                medicineUsedTimes += medicine.count
+                logInfo(.medicineUsed(total: medicineUsedTimes, count: medicine.count))
+            }
+            for item in medicine.medicines ?? [] {
+                logInfo(.useMedicineMedicineInfo(use: item.use, inventory: item.inventory))
             }
 
         case "SanityBeforeStage":
-            if let curSanityBeforeFight = subTaskDetails["current_sanity"].int {
-                self.curSanityBeforeFight = curSanityBeforeFight
+            logStore?.sanityReport = nil
+            guard let details = SanityBeforeStageDetails(json: info.details, context: info.what),
+                let current = details.current_sanity,
+                let maximum = details.max_sanity,
+                maximum > 0
+            else {
+                return
             }
+            let reportedAt: Date?
+            if let reportTime = details.report_time {
+                do {
+                    reportedAt = try sanityReportTimeParser.parse(reportTime)
+                } catch {
+                    logger.error("Failed to parse SanityBeforeStage report_time: \(error); value: \(reportTime)")
+                    reportedAt = nil
+                }
+            } else {
+                reportedAt = nil
+            }
+            logStore?.sanityReport = NewViewModel.SanityReport(
+                current: current, maximum: maximum, reportedAt: reportedAt)
 
         case "FightTimes":
-            if let sanityCost = subTaskDetails["sanity_cost"].int {
-                self.sanityCost = sanityCost
+            // TODO: (Achievement) Record completed fight-count progress.
+            logStore?.fightReport = nil
+            guard let details = FightTimesDetails(json: info.details, context: info.what) else {
+                return
+            }
+            logStore?.fightReport = NewViewModel.FightReport(
+                sanityCost: details.sanity_cost,
+                series: details.series,
+                timesFinished: details.times_finished,
+                finished: details.finished)
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                let limit = config.times, let series = details.series,
+                let timesFinished = details.times_finished,
+                timesFinished < limit, details.finished == true
+            {
+                let nextFinished = timesFinished + series
+                logWarn(.fightTimesUnused(times: timesFinished, series: series, upTo: nextFinished, limit: limit))
             }
 
-        default:
+        case "StageQueueUnableToAgent":
+            guard let stageCode: String = try? info.details["stage_code"] else {
+                return
+            }
+            logInfo(.unableToAgent(stage: stageCode))
+
+        case "StageQueueMissionCompleted":
+            guard let stageCode: String = try? info.details["stage_code"],
+                let stars: Int = try? info.details["stars"]
+            else {
+                return
+            }
+            logInfo(.stageQueue(stage: stageCode, stars: stars))
+
+        case let what where what.starts(with: "MaterialSynthesis"):
+            // There is no plan to re-run Material Synthesis currently.
             break
-        }
-    }
 
-    // MARK: Recruit Recoginition
-
-    private func processRecruitMessage(details: JSON) {
-        guard let what = details["what"].string else {
-            return
-        }
-        let subTaskDetails = details["details"]
-
-        switch what {
-        case "RecruitTagsDetected":
-            break
-
-        case "RecruitResult":
-            if let result: MAARecruit = subTaskDetails.parseTo() {
-                recruit = result
+        case "PixelPaintProgress":
+            // TODO: (LogStyle) Apply the current palette color to progress logs.
+            let done: Int = (try? info.details["done"]) ?? 0
+            let total: Int = (try? info.details["total"]) ?? 0
+            if done >= total, total > 0 {
+                logInfo(.miniGamePixelPaintDoneLog)
+            } else {
+                logTrace(.miniGamePixelPaintProgressLog(done: done, total: total))
             }
 
-        default:
-            break
-        }
-    }
-
-    // MARK: Video Recognition
-
-    private func processVideoMessage(details: JSON) {
-        guard let what = details["what"].string else {
-            return
-        }
-
-        switch what {
-        case "Finished":
-            let filename = details["details"]["filename"].string ?? "No output"
-            videoRecoginition = URL(fileURLWithPath: filename)
-            logInfo("Save to \(filename)")
+        case "Finished" where info.taskchain == "VideoRecognition":
+            guard let filename: String = try? info.details["filename"] else {
+                return
+            }
+            do {
+                let url = URL(filePath: filename)
+                let dst = try FileManager.default.moveCopilotToExternalDirectory(at: url)
+                logStore?.setLastImportedCopilot(dst)
+                logInfo("已添加：\(dst.deletingPathExtension().lastPathComponent)")
+            } catch {
+                logError("无法添加视频作业：\(error.localizedDescription)")
+            }
 
         default:
             break
@@ -609,6 +1545,8 @@ extension Int {
     fileprivate static let AllTasksCompleted = 3
     /// 外部异步调用信息
     fileprivate static let AsyncCallInfo = 4
+    /// 实例已销毁
+    fileprivate static let Destroyed = 5
 
     /* TaskChain Info */
 
@@ -635,42 +1573,71 @@ extension Int {
     fileprivate static let SubTaskExtraInfo = 20003
     /// 原子任务手动停止
     fileprivate static let SubTaskStopped = 20004
+
+    /// 上报请求
+    fileprivate static let ReportRequest = 30000
 }
 
 // MARK: - Convenience Methods
 
 extension MAAViewModel {
-    func logTrace(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .trace, key, comment: comment)
+    fileprivate static let SubTaskStopped = 20004
+}
+
+// MARK: - Convenience Methods
+
+extension MAAViewModel {
+    func logTrace(_ resource: LocalizedStringResource) {
+        logTrace(verbatim: .init(localized: resource))
     }
 
-    func logInfo(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .info, key, comment: comment)
+    func logInfo(_ resource: LocalizedStringResource) {
+        logInfo(verbatim: .init(localized: resource))
     }
 
-    func logWarn(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .warning, key, comment: comment)
+    func logWarn(_ resource: LocalizedStringResource) {
+        logWarn(verbatim: .init(localized: resource))
     }
 
-    func logRare(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .rare, key, comment: comment)
+    func logRare(_ resource: LocalizedStringResource) {
+        logRare(verbatim: .init(localized: resource))
     }
 
-    func logError(_ key: String.LocalizationValue, comment: StaticString? = nil) {
-        writeLog(color: .error, key, comment: comment)
+    func logError(_ resource: LocalizedStringResource) {
+        logError(verbatim: .init(localized: resource))
     }
 
-    private func writeLog(color: MAALog.LogColor, _ key: String.LocalizationValue, comment: StaticString?) {
-        let content = String(localized: key, comment: comment)
+    func logTrace(verbatim content: String) {
+        writeLog(color: .trace, content)
+    }
+
+    func logInfo(verbatim content: String) {
+        writeLog(color: .info, content)
+    }
+
+    func logWarn(verbatim content: String) {
+        writeLog(color: .warning, content)
+    }
+
+    func logRare(verbatim content: String) {
+        writeLog(color: .rare, content)
+    }
+
+    func logError(verbatim content: String) {
+        writeLog(color: .error, content)
+    }
+
+    private func writeLog(color: MAALog.LogColor, _ content: String) {
         let entry = MAALog(date: Date(), content: content, color: color)
         logStore?.appendLog(entry)
     }
 
-    func taskID(taskDetails: JSON) -> UUID? {
-        return taskID(coreID: taskDetails["taskid"].int32)
+    func dailyTask(coreID: Int32?) -> MAATask? {
+        guard let id = taskID(coreID: coreID) else { return nil }
+        return tasks[id]
     }
 
-    func taskID(coreID: Int32?) -> UUID? {
+    private func taskID(coreID: Int32?) -> UUID? {
         if let coreID,
             let id = taskIDMap[coreID]
         {

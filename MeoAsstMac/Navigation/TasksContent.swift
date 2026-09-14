@@ -79,7 +79,6 @@ struct TasksContent: View {
 
     private func start() {
         Task {
-            viewModel.dailyTasksDetailMode = .log
             await viewModel.tryStartTasks()
         }
     }
@@ -109,12 +108,6 @@ struct TasksContent: View {
         viewModel.tasks.move(fromOffsets: from, toOffset: to)
     }
 
-    private func deselectTask(_ viewMode: MAAViewModel.DailyTasksDetailMode) {
-        if viewMode != .taskConfig {
-            selection = nil
-        }
-    }
-
     private func selectLastTask(_ shouldSelect: Bool) {
         if shouldSelect {
             selection = viewModel.tasks.last?.id
@@ -123,7 +116,7 @@ struct TasksContent: View {
 
     private func updateViewMode(_: UUID?, selectedTaskID: UUID?) {
         guard selectedTaskID != nil else { return }
-        viewModel.dailyTasksDetailMode = .taskConfig
+        viewModel.logStore?.setDailyTasksDetailMode(.taskConfig)
     }
 
     // MARK: - State Wrappers

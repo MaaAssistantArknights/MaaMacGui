@@ -349,11 +349,11 @@ extension RoguelikeConfiguration.JiePlaytimeTarget: CustomStringConvertible {
     var description: String {
         switch self {
         case .ling:
-            String(localized: "令—掷地有声")
+            String(localized: .roguelikePlaytimeLing)
         case .shu:
-            String(localized: "黍—种因得果")
+            String(localized: .roguelikePlaytimeShu)
         case .nian:
-            String(localized: "年—三缺一")
+            String(localized: .roguelikePlaytimeNian)
         }
     }
 }

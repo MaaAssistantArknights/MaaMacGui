@@ -21,12 +21,6 @@ import SwiftUI
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
-    /// Current sanity value before this fight(s)
-    var curSanityBeforeFight = 0
-
-    /// Sanity cost of current fight(s)
-    var sanityCost = 0
-
     @Published private(set) var status = Status.idle
 
     private var wakeupAssertionID: UInt32?
@@ -52,7 +46,6 @@ import SwiftUI
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
-    @Published var dailyTasksDetailMode: DailyTasksDetailMode = .log
 
     enum TaskStatus: Equatable {
         case cancel
@@ -95,9 +88,6 @@ import SwiftUI
 
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
-    @Published var depot: MAADepot?
-    @Published var videoRecoginition: URL?
-    @Published var operBox: MAAOperBox?
 
     // MARK: - Connection Settings
 
@@ -107,7 +97,7 @@ import SwiftUI
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
 
-    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.RGBA
+    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
@@ -224,6 +214,9 @@ extension MAAViewModel {
             if toolsMode == .MacSCK && !CGPreflightScreenCaptureAccess() {
                 logError("未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问")
             }
+            if toolsMode == .MacSCK {
+                logInfo("运行过程中，请勿将游戏设置为全屏幕、最小化，或移动窗口至其他显示器")
+            }
         }
 
         let connectionProfile: String
@@ -254,6 +247,15 @@ extension MAAViewModel {
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
+
+        logStore?.screencapCost = nil
+        logStore?.lastScreencapWarningLevel = 0
+        logStore?.hasPrintedFPSHighTip = false
+        logStore?.taskStartTime = nil
+        logStore?.sanityReport = nil
+        logStore?.fightReport = nil
+        logStore?.stoneUsedTimes = 0
+        logStore?.recruitConfirmTimes = 0
     }
 
     func screenshot() async throws -> NSImage {
@@ -426,11 +428,12 @@ extension MAAViewModel {
 extension MAAViewModel {
     func tryStartTasks() async {
         do {
+            logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
         } catch let error as MAAInfrast.SelectionError {
             logError("\(error.localizedDescription)")
         } catch {
-            logError("ConnectFailed")
+            logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
         }
     }
@@ -495,6 +498,7 @@ extension MAAViewModel {
         }
 
         try await handle?.start()
+        logStore?.taskStartTime = .now
 
         status = .busy
     }

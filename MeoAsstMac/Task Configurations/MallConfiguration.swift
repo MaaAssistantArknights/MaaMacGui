@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import JBird
 
 struct MallConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .Mall }
@@ -16,6 +17,13 @@ struct MallConfiguration: MAATaskConfiguration {
     var force_shopping_if_credit_full: Bool
     var only_buy_discount: Bool
     var reserve_max_credit: Bool
+
+    var visitFriends: Bool
+    var creditFight: Bool
+    var formationIndex: Int
+
+    var creditFightDate: Date
+    var friendVisitDate: Date
 
     var title: String {
         type.description
@@ -37,10 +45,20 @@ struct MallConfiguration: MAATaskConfiguration {
         .mall(self)
     }
 
-    typealias Params = Self
-
-    var params: Self {
-        self
+    // TODO: Run credit fight at most once per game day.
+    // TODO: Skip friend visits after reaching the daily limit.
+    @JSON.Builder var params: JSON {
+        "visit_friends" => visitFriends
+        "shopping" => shopping
+        "buy_first" => buy_first
+        "blacklist" => blacklist
+        "force_shopping_if_credit_full" => force_shopping_if_credit_full
+        "only_buy_discount" => only_buy_discount
+        "reserve_max_credit" => reserve_max_credit
+        "credit_fight" => creditFight
+        if creditFight {
+            "formation_index" => formationIndex
+        }
     }
 }
 
@@ -54,5 +72,12 @@ extension MallConfiguration {
             try container.decodeIfPresent(Bool.self, forKey: .force_shopping_if_credit_full) ?? true
         self.only_buy_discount = try container.decodeIfPresent(Bool.self, forKey: .only_buy_discount) ?? false
         self.reserve_max_credit = try container.decodeIfPresent(Bool.self, forKey: .reserve_max_credit) ?? false
+
+        self.visitFriends = container[.visitFriends, default: true]
+        self.creditFight = container[.creditFight, default: false]
+        self.formationIndex = container[.formationIndex, default: 0]
+
+        self.creditFightDate = container[.creditFightDate, default: .distantPast]
+        self.friendVisitDate = container[.friendVisitDate, default: .distantPast]
     }
 }

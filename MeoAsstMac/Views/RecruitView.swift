@@ -56,7 +56,7 @@ struct RecruitView: View {
         Text(recruit.tags.joined(separator: ", "))
         List(recruit.result, id: \.tags.hashValue) { result in
             Section {
-                Text("\(result.opers.map(\.name).joined(separator: ", "))")
+                Text(result.opers.map(\.name).joined(separator: ", "))
             } header: {
                 Text("\(result.level)★ \(result.tags.joined(separator: " "))")
             }

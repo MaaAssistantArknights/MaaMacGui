@@ -14,7 +14,7 @@ struct GameSettingsView: View {
         VStack {
             Picker("客户端类型：", selection: $viewModel.clientChannel) {
                 ForEach(MAAClientChannel.allCases, id: \.rawValue) { channel in
-                    Text("\(channel.description)").tag(channel)
+                    Text(channel.description).tag(channel)
                 }
             }
         }

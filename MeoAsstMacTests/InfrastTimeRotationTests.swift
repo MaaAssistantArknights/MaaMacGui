@@ -94,6 +94,15 @@ final class InfrastTimeRotationTests: XCTestCase {
         }
     }
 
+    func testPeriodDescriptionPreservesOriginalTimesForCompletionLogs() throws {
+        let config = try configuration(#"[{"period":[["6:00","13:59"],["18:00:30","20:00:00"]]}]"#)
+        XCTAssertEqual(
+            config.plans[0].period?.map(\.description),
+            [
+                "[ 6:00 – 13:59 ]", "[ 18:00:30 – 20:00:00 ]",
+            ])
+    }
+
     func testMissingPlansAreEmptyButExplicitNullIsAnError() throws {
         let missing = try JSONDecoder().decode(MAAInfrast.self, from: Data("{}".utf8))
         XCTAssertTrue(missing.plans.isEmpty)
