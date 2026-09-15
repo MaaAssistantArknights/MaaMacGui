@@ -40,11 +40,50 @@ extension FightStage {
 }
 
 extension FightStage {
-    static func tips(for date: Date, stageActivity: StageActivityContext) -> [(code: String, drop: String)] {
-        supplies.filter { $0.isOpen(at: date, stageActivity: stageActivity) }
-            .map { ($0.code, $0.drop) }
-            + metaChips.filter { $0.isOpen(at: date, stageActivity: stageActivity) }
-            .map { ($0.code, String(localized: $0.drop)) }
+    enum TipRow: Identifiable {
+        /// 活动级信息行（活动名+剩余天数、资源全开放提示）。
+        case headline(id: String, text: String)
+        /// 关卡行；drop 可能是物品 id，由展示层映射为物品名。
+        case stage(id: String, code: String, drop: String)
+
+        var id: String {
+            switch self {
+            case .headline(let id, _): id
+            case .stage(let id, _, _): id
+            }
+        }
+    }
+
+    static func tips(for date: Date, stageActivity: StageActivityContext) -> [TipRow] {
+        var rows: [TipRow] = []
+
+        if stageActivity.resourceCollectionIsOpen(at: date),
+            let tip = stageActivity.activities?.resourceCollection?.Tip
+        {
+            let period = stageActivity.activities?.resourceCollection
+            rows.append(.headline(id: "resourceCollection", text: "｢\(tip)｣ " + daysLeftText(period?.expireDate ?? .distantFuture, now: date)))
+        }
+
+        for (key, period, stages) in stageActivity.ongoingSideStories {
+            let name = period.StageName ?? period.Tip ?? ""
+            rows.append(.headline(id: "activity#\(key)", text: "｢\(name)｣ " + daysLeftText(period.expireDate, now: date)))
+            rows += stages.enumerated().compactMap { idx, stage in
+                guard let code = stage.Display ?? stage.Value, !code.isEmpty else { return nil }
+                return .stage(id: "\(key)#\(idx)", code: code, drop: stage.Drop ?? "")
+            }
+        }
+
+        rows += supplies.filter { $0.isOpen(at: date, stageActivity: stageActivity) }
+            .map { .stage(id: $0.code, code: $0.code, drop: $0.drop) }
+        rows += metaChips.filter { $0.isOpen(at: date, stageActivity: stageActivity) }
+            .map { .stage(id: $0.code, code: $0.code, drop: String(localized: $0.drop)) }
+        return rows
+    }
+
+    /// 对照 WpfGui GetDaysLeftText：整天数截断，不足一天显示「不到 1 天」。
+    private static func daysLeftText(_ expire: Date, now: Date) -> String {
+        let days = Int(expire.timeIntervalSince(now) / 86400)
+        return days > 0 ? String(localized: "剩余天数: \(days)") : String(localized: "不到 1 天")
     }
 }
 

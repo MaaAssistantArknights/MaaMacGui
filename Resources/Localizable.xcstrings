@@ -5142,6 +5142,38 @@
         }
       }
     },
+    "剩余天数: %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Days left open: %lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "남은 오픈일 수: %lld"
+          }
+        }
+      }
+    },
+    "不到 1 天" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Less than 1 day"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1일 미만"
+          }
+        }
+      }
+    },
     "游戏设置" : {
       "localizations" : {
         "ko" : {
