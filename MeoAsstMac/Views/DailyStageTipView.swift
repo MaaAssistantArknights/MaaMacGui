@@ -11,11 +11,14 @@ import SwiftUI
 struct DailyStageTipView: View {
     @AppStorage("MAAClientChannel") private var clientChannel = MAAClientChannel.Official
 
+    @Environment(\.defaultMinListRowHeight) private var rowHeight
+
     var body: some View {
         LabeledContent {
             ScrollView {
                 content.frame(maxWidth: .infinity, alignment: .leading)
             }
+            .frame(minHeight: 2 * rowHeight)
             .alignmentGuide(.firstTextBaseline) { d in
                 d[.top]
             }
