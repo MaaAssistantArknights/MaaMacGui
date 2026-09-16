@@ -32,7 +32,7 @@ struct GameSettingsView: View {
                 if viewModel.runDurationLimitEnabled {
                     Stepper(value: $viewModel.runDurationLimitMinutes, in: 1...11451) {
                         HStack {
-                            Text("运行时长上限（分钟）: ")
+                            Text("运行时长上限（分钟）：")
                             TextField("", value: $viewModel.runDurationLimitMinutes, format: .number)
                                 .frame(maxWidth: 50)
                         }

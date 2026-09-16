@@ -5174,18 +5174,18 @@
         }
       }
     },
-    "运行时长上限（分钟）: " : {
+    "运行时长上限（分钟）：" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Run duration limit (min): "
+            "value" : "Run duration limit (min):"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "실행 시간 상한 (분): "
+            "value" : "실행 시간 상한 (분):"
           }
         }
       }

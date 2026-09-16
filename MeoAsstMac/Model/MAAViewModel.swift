@@ -545,7 +545,8 @@ extension MAAViewModel {
         runDurationLimitTask = nil
 
         guard runDurationLimitEnabled else { return }
-        let minutes = runDurationLimitMinutes
+        // 兜底钳制：@AppStorage 装载不触发 didSet，越界值（如手工改 defaults）会让计时立刻到期
+        let minutes = min(max(runDurationLimitMinutes, 1), 11451)
 
         runDurationLimitTask = Task { [weak self] in
             do {
