@@ -34,13 +34,6 @@ struct CopilotView: View {
         } else {
             switch context.content {
             case .copilot(_, let kind, let copilot):
-                LabeledContent {
-                    Stepper(String(context.config.loop_times), value: $context.config.loop_times, in: 1...Int.max)
-                } label: {
-                    Text("循环次数")
-                }
-                .padding(.horizontal)
-                .padding(.bottom, -10)
                 CopilotConfigView(kind: kind, config: $context.config) {
                     CopilotDescriptionView(pilot: copilot)
                 }
@@ -136,6 +129,7 @@ private struct RegularCopilotConfigView: View {
             }
             .animation(.default, value: config.support_unit_usage)
         }
+        SSSCopilotConfigView(config: $config)
     }
 }
 
