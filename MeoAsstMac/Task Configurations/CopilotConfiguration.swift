@@ -89,50 +89,14 @@ enum CopilotCategory: String, CaseIterable {
     case list
 }
 
-extension CopilotCategory {
-    static let userDefaultsKey = "CopilotContentCategory"
-
-    static func userDefaultsValue(store: UserDefaults = .standard) -> Self {
-        let rawValue = store.string(forKey: userDefaultsKey)
-        if let rawValue {
-            return .init(rawValue: rawValue) ?? .bundled
-        } else {
-            return .bundled
-        }
-    }
-
-    func setUserDefaults(store: UserDefaults = .standard) {
-        store.set(rawValue, forKey: Self.userDefaultsKey)
-    }
-}
-
 @Observable final class CopilotContext {
     var config = CopilotConfiguration()
 
-    var category: CopilotCategory {
-        get {
-            access(keyPath: \.category)
-            return .userDefaultsValue()
-        }
-        set {
-            withMutation(keyPath: \.category) {
-                newValue.setUserDefaults()
-            }
-        }
-    }
-
-    @ObservationIgnored private var categoryObserver: UserDefaultsObserver<String>?
+    @ObservationIgnored
+    @Defaults("CopilotContentCategory")
+    var category = CopilotCategory.bundled
 
     init() {
-        categoryObserver = UserDefaults.standard.observeKey(CopilotCategory.userDefaultsKey) { [weak self] _ in
-            self?.withMutation(keyPath: \.category) {}
-        }
-    }
-
-    deinit {
-        if let categoryObserver {
-            UserDefaults.standard.removeObserver(categoryObserver, forKeyPath: CopilotCategory.userDefaultsKey)
-        }
     }
 
     struct ItemID: Hashable {
