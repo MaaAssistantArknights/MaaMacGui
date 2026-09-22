@@ -9,9 +9,10 @@ import SwiftUI
 
 struct UtilityDetail: View {
     let entry: UtilityEntry?
+    @State private var showInfo = true
 
-    var body: some View {
-        VStack {
+    @ViewBuilder var content: some View {
+        if showInfo {
             switch entry {
             case .recruit:
                 RecruitView()
@@ -28,12 +29,31 @@ struct UtilityDetail: View {
             case .maatools:
                 MaaToolsView()
             case .none:
-                Text("请选择识别项目")
+                Text("请选择工具项目")
             }
+        } else {
+            LogView()
+        }
+    }
+
+    var body: some View {
+        VStack {
+            content
         }
         .padding()
         .toolbar {
             UtilityTitle(description: entry?.description)
+            ToolbarItem {
+                Picker("工具介绍", selection: $showInfo) {
+                    Label("info", systemImage: "info")
+                        .tag(true)
+                        .help("工具介绍")
+                    Label("日志", systemImage: "note.text")
+                        .tag(false)
+                        .help("运行日志")
+                }
+                .pickerStyle(.segmented)
+            }
         }
     }
 }
@@ -47,7 +67,7 @@ struct UtilityDetail_Previews: PreviewProvider {
 
 private struct UtilityTitle: ToolbarContent {
     let description: String?
-    
+
     var body: some ToolbarContent {
         let item = ToolbarItem {
             Text(description ?? String(localized: "实用工具"))

@@ -4179,6 +4179,9 @@
         }
       }
     },
+    "工具介绍" : {
+
+    },
     "已启用" : {
       "localizations" : {
         "ko" : {
@@ -5952,7 +5955,11 @@
         }
       }
     },
+    "请选择工具项目" : {
+
+    },
     "请选择识别项目" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
