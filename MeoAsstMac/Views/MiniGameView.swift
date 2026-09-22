@@ -52,7 +52,7 @@ struct MiniGameView: View {
                 PixelPaintView(params: $taskParams)
             case "MiniGame@AutoRaisePotential@Begin":
                 ScrollView {
-                    LazyVStack(alignment: .leading) {
+                    LazyVStack {
                         Text(selectedGame.instructions)
                         Toggle("中间信物不足时使用普通信物", isOn: $useNormalToken)
                     }
@@ -84,7 +84,9 @@ struct MiniGameView: View {
         }
         .onChange(of: selectedGame) {
             selection = $1.taskName
-            taskParams = nil
+            taskParams =
+                $1.taskName == "MiniGame@AutoRaisePotential@Begin" && useNormalToken
+                ? ["auto_raise_potential": ["use_normal_token": true]] : nil
         }
         .onChange(of: useNormalToken) {
             taskParams = $1 ? ["auto_raise_potential": ["use_normal_token": true]] : nil
