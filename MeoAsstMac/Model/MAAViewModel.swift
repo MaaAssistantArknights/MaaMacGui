@@ -70,13 +70,15 @@ import SwiftUI
             return
         }
 
+        // 先记状态再合成：子任务的完成顺序不确定（一图流拉取可能先于同条目的 core 子任务结束）
+        subtaskStatuses[coreID] = status
+
         let subtasks = taskSubtasks[id] ?? [coreID]
         guard subtasks.count > 1 else {
             taskStatus[id] = status
             return
         }
 
-        subtaskStatuses[coreID] = status
         if subtasks.contains(where: { subtaskStatuses[$0] == .failure }) {
             taskStatus[id] = .failure
         } else if subtasks.allSatisfy({ subtaskStatuses[$0] == .success }) {
@@ -98,6 +100,23 @@ import SwiftUI
             taskIDMap[coreTaskID] = id
         }
         taskSubtasks[id, default: []].append(contentsOf: coreTaskIDs)
+    }
+
+    /// 前端子任务（不占 core 任务，如「更新数据」中从一图流获取的干员识别）的哨兵 id。
+    ///
+    /// core 任务 id 由 `AsstAppendTask` 从 1 起分配，负数不会与之冲突；逐个递减发放，
+    /// 保证同一轮里多个条目的子任务 id 互不覆盖。
+    private var nextFrontendSubtaskID: Int32 = -1
+
+    /// 把一个不占 core 任务的前端子任务登记到条目上，返回它的哨兵 id。
+    ///
+    /// 登记后该子任务与 core 子任务共用 `updateTaskStatus` 的聚合语义：任一失败即条目失败，
+    /// 全部成功才算条目成功。
+    private func addFrontendSubtask(for id: UUID) -> Int32 {
+        let subtaskID = nextFrontendSubtaskID
+        nextFrontendSubtaskID -= 1
+        addTaskIDs([subtaskID], for: id)
+        return subtaskID
     }
 
     var tasksDirectory: URL {
@@ -549,14 +568,24 @@ extension MAAViewModel {
             tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
-        try await ensureHandle()
+        let plans = planTasks()
+        // 一图流子任务不依赖模拟器：本轮没有任何 core 任务时（例如「更新数据」仅勾选干员识别
+        // 且从一图流获取）不必连接，同队列还有 core 任务时连接仍先于它们的执行。
+        try await ensureHandle(requireConnect: plans.contains { $0.coreTask != nil })
 
         var hasCoreTask = false
-        for task in tasks {
-            guard task.enabled else { continue }
+        for plan in plans {
+            if plan.operBoxFromYituliu {
+                let subtaskID = addFrontendSubtask(for: plan.id)
+                Task { await syncOperBoxFromYituliu(subtaskID: subtaskID) }
+            }
 
-            let coreTaskIDs = try await appendTasks(task)
-            addTaskIDs(coreTaskIDs, for: task.id)
+            guard let coreTask = plan.coreTask else {
+                continue
+            }
+
+            let coreTaskIDs = try await handle?.appendTask(coreTask) ?? []
+            addTaskIDs(coreTaskIDs, for: plan.id)
             hasCoreTask = hasCoreTask || !coreTaskIDs.isEmpty
         }
 
@@ -572,43 +601,66 @@ extension MAAViewModel {
         status = .busy
     }
 
-    /// 追加一个队列条目对应的 core 任务，返回它占用的 core 任务 id 列表。
+    /// 本轮要执行的一个队列条目。
+    private struct TaskPlan {
+        let id: UUID
+        /// 交给 core 追加的任务；「更新数据」剔除一图流子项后 core 无事可做时为 nil
+        let coreTask: MAATask?
+        /// 干员识别改由一图流 OpenAPI 拉取（不占 core 任务，也不需要模拟器连接）
+        let operBoxFromYituliu: Bool
+    }
+
+    /// 规划本轮任务：按触发间隔与一图流开关决定子项去留，只读状态、不触碰 core。
     ///
-    /// 「更新数据」是前端伪任务：先按触发间隔与一图流开关决定子项去留，再交给 core 追加。
-    private func appendTasks(_ task: DailyTask) async throws -> [Int32] {
-        guard case .userdataupdate(var config) = task.task else {
-            return try await handle?.appendTask(task.task) ?? []
-        }
+    /// 「更新数据」是前端伪任务，规划的产物既决定要追加哪些 core 任务，也决定本轮是否需要模拟器连接。
+    private func planTasks() -> [TaskPlan] {
+        var plans = [TaskPlan]()
 
-        let interval = config.triggerInterval
-        let operBoxDue =
-            config.updateOperBox && interval.isDue(lastSyncTime: lastOperBoxSyncTime, channel: clientChannel)
-        let depotDue = config.updateDepot && interval.isDue(lastSyncTime: lastDepotSyncTime, channel: clientChannel)
+        for task in tasks {
+            guard task.enabled else { continue }
 
-        guard operBoxDue || depotDue else {
-            if config.updateOperBox || config.updateDepot {
-                logInfo("距上次同步未达到「\(interval.description)」触发间隔")
-            } else {
-                logInfo("「干员识别」和「仓库识别」均未勾选")
-            }
-            taskStatus[task.id] = .skipped
-            return []
-        }
-
-        if operBoxDue, enableOperBoxYituliuApi {
-            guard !yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
-                logError("请先填写 Token")
-                taskStatus[task.id] = .failure
-                return []
+            guard case .userdataupdate(var config) = task.task else {
+                plans.append(TaskPlan(id: task.id, coreTask: task.task, operBoxFromYituliu: false))
+                continue
             }
 
-            // 一图流模式不占 core 任务：拉取完成后自行更新条目状态
-            Task { await syncOperBoxFromYituliu(taskID: task.id) }
-            config.updateOperBox = false
+            let interval = config.triggerInterval
+            let operBoxDue =
+                config.updateOperBox && interval.isDue(lastSyncTime: lastOperBoxSyncTime, channel: clientChannel)
+            let depotDue = config.updateDepot && interval.isDue(lastSyncTime: lastDepotSyncTime, channel: clientChannel)
+
+            guard operBoxDue || depotDue else {
+                if config.updateOperBox || config.updateDepot {
+                    logInfo("距上次同步未达到「\(interval.description)」触发间隔")
+                } else {
+                    logInfo("「干员识别」和「仓库识别」均未勾选")
+                }
+                taskStatus[task.id] = .skipped
+                continue
+            }
+
+            var operBoxFromYituliu = false
+            if operBoxDue, enableOperBoxYituliuApi {
+                guard !yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                    logError("请先填写 Token")
+                    taskStatus[task.id] = .failure
+                    continue
+                }
+
+                operBoxFromYituliu = true
+                config.updateOperBox = false
+            }
+
+            config.updateDepot = depotDue
+
+            let hasCoreSubtasks = config.updateOperBox || config.updateDepot
+            plans.append(
+                TaskPlan(
+                    id: task.id, coreTask: hasCoreSubtasks ? .userdataupdate(config) : nil,
+                    operBoxFromYituliu: operBoxFromYituliu))
         }
 
-        config.updateDepot = depotDue
-        return try await handle?.appendTask(.userdataupdate(config)) ?? []
+        return plans
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -649,12 +701,14 @@ extension MAAViewModel {
 extension MAAViewModel {
     /// 从一图流 OpenAPI 拉取干员练度数据，拉取结束后写日志并更新任务条目状态。
     /// 拉取是后台并行的，只在结束时输出日志，避免与队列启动日志交错。
-    private func syncOperBoxFromYituliu(taskID: UUID) async {
+    ///
+    /// 状态写回走 `updateTaskStatus`：一图流子任务与同条目的 core 子任务（如仓库识别）按同一口径合成。
+    private func syncOperBoxFromYituliu(subtaskID: Int32) async {
         let success = await fetchOperBoxFromYituliu()
         if success {
             logInfo("干员识别完成（一图流）")
         }
-        taskStatus[taskID] = success ? .success : .failure
+        updateTaskStatus(success ? .success : .failure, coreID: subtaskID)
     }
 
     /// 从一图流 OpenAPI 拉取干员练度数据并按识别结果填充，不依赖模拟器连接。
