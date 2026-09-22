@@ -9,31 +9,44 @@ import SwiftUI
 
 struct UtilityDetail: View {
     let entry: UtilityEntry?
+    @State private var mode = UtilityDetailMode.tool
 
     var body: some View {
         VStack {
-            switch entry {
-            case .recruit:
-                RecruitView()
-            case .depot:
-                DepotView()
-            case .oper:
-                OperBoxView()
-            case .video:
-                VideoRecogView()
-            case .gacha:
-                GachaView()
-            case .minigame:
-                MiniGameView()
-            case .maatools:
-                MaaToolsView()
-            case .none:
-                Text("请选择识别项目")
+            switch mode {
+            case .tool:
+                switch entry {
+                case .recruit:
+                    RecruitView()
+                case .depot:
+                    DepotView()
+                case .oper:
+                    OperBoxView()
+                case .video:
+                    VideoRecogView()
+                case .gacha:
+                    GachaView()
+                case .minigame:
+                    MiniGameView()
+                case .maatools:
+                    MaaToolsView()
+                case .none:
+                    Text("请选择识别项目")
+                }
+            case .log:
+                LogView()
             }
         }
         .padding()
         .toolbar {
             UtilityTitle(description: entry?.description)
+            ToolbarItem {
+                Picker("内容", selection: $mode) {
+                    Label("工具", systemImage: "wrench.and.screwdriver").tag(UtilityDetailMode.tool)
+                    Label("日志", systemImage: "note.text").tag(UtilityDetailMode.log)
+                }
+                .pickerStyle(.segmented)
+            }
         }
     }
 }
@@ -42,6 +55,7 @@ struct UtilityDetail_Previews: PreviewProvider {
     static var previews: some View {
         UtilityDetail(entry: .recruit)
             .environmentObject(MAAViewModel())
+            .environment(NewViewModel(parent: MAAViewModel()))
     }
 }
 
@@ -60,4 +74,9 @@ private struct UtilityTitle: ToolbarContent {
             item
         }
     }
+}
+
+private enum UtilityDetailMode: Hashable {
+    case tool
+    case log
 }
