@@ -12,6 +12,7 @@ struct MiniGameView: View {
     @SceneStorage("selectedMiniGame") private var selection = MiniGameOption.sideStoryStore.taskName
     @State private var selectedGame = MiniGameOption.sideStoryStore.tag
     @State private var taskParams: Any?
+    @State private var useNormalToken = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -24,7 +25,7 @@ struct MiniGameView: View {
                             }
                         }
                     }
-                    Section("常驻活动") {
+                    Section("常驻功能") {
                         ForEach(MiniGameOption.allCases, id: \.self) { game in
                             Text(game.displayName).tag(game.tag)
                         }
@@ -49,6 +50,13 @@ struct MiniGameView: View {
             switch selectedGame.taskName {
             case "MiniGame@PixelPaint@Begin":
                 PixelPaintView(params: $taskParams)
+            case "MiniGame@AutoRaisePotential@Begin":
+                ScrollView {
+                    LazyVStack(alignment: .leading) {
+                        Text(selectedGame.instructions)
+                        Toggle("中间信物不足时使用普通信物", isOn: $useNormalToken)
+                    }
+                }
             default:
                 ScrollView {
                     LazyVStack {
@@ -76,6 +84,10 @@ struct MiniGameView: View {
         }
         .onChange(of: selectedGame) {
             selection = $1.taskName
+            taskParams = nil
+        }
+        .onChange(of: useNormalToken) {
+            taskParams = $1 ? ["auto_raise_potential": ["use_normal_token": true]] : nil
         }
     }
 
@@ -95,6 +107,8 @@ enum MiniGameOption: String, CaseIterable {
     case greenTicketStore
     case yellowTickerStore
     case reclamationStore
+    case autoRaisePotential
+    case materialSynthesis
 
     var taskName: String {
         switch self {
@@ -106,6 +120,10 @@ enum MiniGameOption: String, CaseIterable {
             return "SS@Store@Begin"
         case .reclamationStore:
             return "RA@Store@Begin"
+        case .autoRaisePotential:
+            return "MiniGame@AutoRaisePotential@Begin"
+        case .materialSynthesis:
+            return "MiniGame@MaterialSynthesis@Begin"
         }
     }
 
@@ -119,6 +137,10 @@ enum MiniGameOption: String, CaseIterable {
             return String(localized: "活动商店")
         case .reclamationStore:
             return String(localized: "生息演算商店")
+        case .autoRaisePotential:
+            return String(localized: "自动提升潜能")
+        case .materialSynthesis:
+            return String(localized: "缺口材料合成")
         }
     }
 
@@ -150,6 +172,20 @@ enum MiniGameOption: String, CaseIterable {
                 localized:
                     """
                     请在活动商店页面开始。
+                    """)
+        case .autoRaisePotential:
+            String(
+                localized:
+                    """
+                    请先进入干员列表界面，再开始任务。自动提升所有带提示标记干员的潜能。
+                    完成后停留在最后一名干员档案；没有可提升目标时停留在干员列表。
+                    """)
+        case .materialSynthesis:
+            String(
+                localized:
+                    """
+                    请先手动从培养页面(如精英化、专精、模组升级)缺少的材料弹窗跳转到加工站合成页，再开始任务。
+                    会递归合成可加工的下级材料，材料不足时停止。
                     """)
         }
     }
