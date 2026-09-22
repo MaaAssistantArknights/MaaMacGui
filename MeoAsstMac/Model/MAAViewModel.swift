@@ -730,9 +730,13 @@ extension MAAViewModel {
 
         let operBox = MAAOperBox(yituliu: data, channel: clientChannel)
         guard !operBox.own_opers.isEmpty else {
-            // 账号未绑定或未导入练度时接口返回空列表（本地资源过旧跳过全部干员时同样为空），
-            // 此时保留本地识别数据
-            logError("Token 对应的一图流账号暂无干员练度数据，已保留本地识别结果")
+            // 两种空结果：账号未绑定或未导入练度（接口返回空列表），本地干员表加载失败
+            // （battle_data.json 缺失或解码失败，全部干员被跳过）。此时都保留本地识别数据。
+            if MAAOperBox.hasLocalOperatorTable {
+                logError("Token 对应的一图流账号暂无干员练度数据，已保留本地识别结果")
+            } else {
+                logError("本地干员数据缺失，无法补全一图流练度数据，已保留本地识别结果")
+            }
             return false
         }
 

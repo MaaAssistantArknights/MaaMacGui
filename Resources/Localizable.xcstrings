@@ -3145,6 +3145,12 @@
     },
     "仓库识别" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depot Recognition"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4289,6 +4295,12 @@
     },
     "干员识别" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator Recognition"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6630,6 +6642,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Neither Operator nor Depot recognition is selected"
+          }
+        }
+      }
+    },
+    "本地干员数据缺失，无法补全一图流练度数据，已保留本地识别结果" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local operator data is missing, so the Yituliu data cannot be completed. Local recognition results are kept"
           }
         }
       }

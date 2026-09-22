@@ -192,6 +192,13 @@ extension MAAOperBox {
         self.init(done: true, all_opers: allOpers, own_opers: ownOpers, source: "yituliu")
     }
 
+    /// 本地干员表（`resource/battle_data.json`）是否加载成功。
+    ///
+    /// 加载失败时一图流数据无法补齐名称与星级，全部干员会被跳过，与账号本身没有练度数据是两回事。
+    static var hasLocalOperatorTable: Bool {
+        !LocalOperatorTable.shared.isEmpty
+    }
+
     /// 升变形态 ID 到基础形态 ID 的等价表（对齐 WPF `DataHelper.GetCanonicalOperId`）
     private static let promotedOperIDs = [
         "char_1001_amiya2": "char_002_amiya",
