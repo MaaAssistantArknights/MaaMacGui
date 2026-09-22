@@ -1,22 +1,18 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
-    "主题名称：" : {
+    "主题名称" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Theme name:"
+            "value" : "Theme name"
           }
-        }
-      }
-    },
-    "多个主题用逗号分隔" : {
-      "localizations" : {
-        "en" : {
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Separate multiple themes with commas"
+            "value" : "테마 이름"
           }
         }
       }

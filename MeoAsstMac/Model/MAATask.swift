@@ -15,7 +15,7 @@ enum MAATask: Codable, Equatable {
     case fight(FightConfiguration)
     case mall(MallConfiguration)
     case award(AwardConfiguration)
-    case switchtheme(SwitchThemeConfiguration)
+    case switchTheme(SwitchThemeConfiguration)
     case roguelike(RoguelikeConfiguration)
     case reclamation(ReclamationConfiguration)
 }

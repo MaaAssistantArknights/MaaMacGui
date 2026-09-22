@@ -24,7 +24,7 @@ struct SwitchThemeConfiguration: MAATaskConfiguration {
     var summary: String { "" }
 
     var projectedTask: MAATask {
-        .switchtheme(self)
+        .switchTheme(self)
     }
 
     @JSON.Builder var params: JSON {
