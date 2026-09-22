@@ -347,9 +347,7 @@ extension MAAViewModel {
 
         switch message.code {
         case .TaskChainStopped:
-            if let id = taskID(coreID: info.taskid) {
-                taskStatus[id] = .cancel
-            }
+            updateTaskStatus(.cancel, coreID: info.taskid)
 
         case .TaskChainError:
             // TODO: (LogCard) Update the task-error log card.
@@ -358,9 +356,7 @@ extension MAAViewModel {
             // TODO: (Notification) Show the task-error notification.
             // TODO: (ExternalNotification) Send the task-error event.
             // TODO: (Achievement) Record Copilot task errors.
-            if let id = taskID(coreID: info.taskid) {
-                taskStatus[id] = .failure
-            }
+            updateTaskStatus(.failure, coreID: info.taskid)
             let error: String? = try? message.details["details"]["error"]
             if error == "OutOfMemory" {
                 logError(.outOfMemoryError(name: taskchainName))
@@ -374,9 +370,7 @@ extension MAAViewModel {
         case .TaskChainStart:
             // macOS task items do not currently support custom display names.
             // TODO: (ViewState) Switch the overlay log source for Copilot and daily tasks.
-            if let id = taskID(coreID: info.taskid) {
-                taskStatus[id] = .running
-            }
+            updateTaskStatus(.running, coreID: info.taskid)
             logTrace(.startTask(name: taskchainName))
 
         case .TaskChainCompleted:
@@ -413,9 +407,7 @@ extension MAAViewModel {
                     }
                 }
             }
-            if let id = taskID(coreID: info.taskid) {
-                taskStatus[id] = .success
-            }
+            updateTaskStatus(.success, coreID: info.taskid)
             if info.taskchain == "Fight", let report = logStore?.sanityReport {
                 logTrace(.completeTaskWithSanity(name: taskchainName, cur: report.current, max: report.maximum))
             } else {
@@ -939,12 +931,20 @@ extension MAAViewModel {
             break
 
         case "Depot":
-            // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
-            logStore?.setDepot(.init(json: info.details, context: "Depot"))
+            // TODO: (Persistence) Persist Depot recognition results.
+            let depot: MAADepot? = .init(json: info.details, context: "Depot")
+            logStore?.setDepot(depot)
+            if depot?.done == true {
+                lastDepotSyncTime = .now
+            }
 
         case "OperBox":
-            // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
-            logStore?.setOperBox(.init(json: info.details, context: "OperBox"))
+            // TODO: (Persistence) Persist OperBox recognition results.
+            let operBox: MAAOperBox? = .init(json: info.details, context: "OperBox")
+            logStore?.setOperBox(operBox)
+            if operBox?.done == true {
+                lastOperBoxSyncTime = .now
+            }
 
         default:
             break

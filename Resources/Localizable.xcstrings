@@ -3145,6 +3145,12 @@
     },
     "仓库识别" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Depot Recognition"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4289,6 +4295,12 @@
     },
     "干员识别" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator Recognition"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6443,6 +6455,206 @@
     },
     "龙门币-6/5" : {
 
+    },
+    "更新数据" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Doctor Data"
+          }
+        }
+      }
+    },
+    "每次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every Time"
+          }
+        }
+      }
+    },
+    "每天" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "每周" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        }
+      }
+    },
+    "触发间隔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trigger Interval"
+          }
+        }
+      }
+    },
+    "上次同步时间：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Sync Time: %@"
+          }
+        }
+      }
+    },
+    "第三方服务" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Third-party services"
+          }
+        }
+      }
+    },
+    "一图流 OpenAPI Token" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yituliu OpenAPI token"
+          }
+        }
+      }
+    },
+    "干员识别从一图流获取" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fetch Operator data from Yituliu"
+          }
+        }
+      }
+    },
+    "开启后「更新数据」的干员识别不再连接模拟器截图识别，改为直接读取 Token 对应的一图流练度数据。一图流保存的是练度快照，需先在一图流网站上传过干员数据。相比本地截图识别可额外获取技能等级、专精等级与模组信息。Token 在一图流「个人中心」的「第三方 API Token」中生成，为保护账号数据请仅使用只读 Token。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When enabled, Operator recognition in \"Update Doctor Data\" no longer connects to the emulator for screenshot recognition, and instead reads the Yituliu progression data linked to the token. Yituliu stores a snapshot of your progression, so your operator data must have been uploaded to Yituliu first. Unlike screenshot recognition, this also fetches skill levels, masteries, and module information. Generate the token under \"Third-party API Token\" on the Yituliu account page. Use a read-only token only to protect your account data."
+          }
+        }
+      }
+    },
+    "Token 不具备读取权限，请使用只读或读写权限的 Token" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token does not have read access. Use a read-only or read-write token"
+          }
+        }
+      }
+    },
+    "Token 无效或已失效，请重新生成" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Token is invalid or expired. Please generate a new one"
+          }
+        }
+      }
+    },
+    "网络错误，请稍后重试" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Network error. Please try again later"
+          }
+        }
+      }
+    },
+    "请先填写 Token" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please enter a token first"
+          }
+        }
+      }
+    },
+    "从一图流获取失败：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to fetch from Yituliu: %@"
+          }
+        }
+      }
+    },
+    "Token 对应的一图流账号暂无干员练度数据，已保留本地识别结果" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The Yituliu account linked to the token has no operator data yet. Local recognition results are kept"
+          }
+        }
+      }
+    },
+    "干员识别完成（一图流）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator recognition completed (Yituliu)"
+          }
+        }
+      }
+    },
+    "距上次同步未达到「%@」触发间隔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The %@ trigger interval has not been reached since the last sync"
+          }
+        }
+      }
+    },
+    "「干员识别」和「仓库识别」均未勾选" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neither Operator nor Depot recognition is selected"
+          }
+        }
+      }
+    },
+    "本地干员数据缺失，无法补全一图流练度数据，已保留本地识别结果" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Local operator data is missing, so the Yituliu data cannot be completed. Local recognition results are kept"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

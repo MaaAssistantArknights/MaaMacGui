@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6ED005259498BD556DA04D00 /* UserDataUpdateConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9350BE2979C1711F99786F9D /* UserDataUpdateConfiguration.swift */; };
+		4DC78779088BA89E27A40F08 /* UserDataUpdateSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED6500D0C850B11687C89DC3 /* UserDataUpdateSettingsView.swift */; };
+		F54623652E06763984E2A423 /* YituliuApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E13522090177C06F1D10C25D /* YituliuApiService.swift */; };
+		6E8C2F60585BC3AAEC2A3A7A /* ThirdPartyServiceSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4BC72F9CCFF03AB4F45A143 /* ThirdPartyServiceSettingsView.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
 		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
@@ -151,6 +155,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9350BE2979C1711F99786F9D /* UserDataUpdateConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataUpdateConfiguration.swift; sourceTree = "<group>"; };
+		ED6500D0C850B11687C89DC3 /* UserDataUpdateSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataUpdateSettingsView.swift; sourceTree = "<group>"; };
+		E13522090177C06F1D10C25D /* YituliuApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YituliuApiService.swift; sourceTree = "<group>"; };
+		E4BC72F9CCFF03AB4F45A143 /* ThirdPartyServiceSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThirdPartyServiceSettingsView.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
@@ -308,6 +316,7 @@
 				83264A3229EBEE680074E33A /* MallConfiguration.swift */,
 				83264A3429EBEE8D0074E33A /* AwardConfiguration.swift */,
 				2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */,
+				9350BE2979C1711F99786F9D /* UserDataUpdateConfiguration.swift */,
 				8341194F29EC249E00044F45 /* RoguelikeConfiguration.swift */,
 				8341195429EC55C600044F45 /* CopilotConfiguration.swift */,
 				832985AF29EEF483009F7ED5 /* ReclamationConfiguration.swift */,
@@ -326,6 +335,7 @@
 				83D3283228F2F1BE00018D10 /* MallSettingsView.swift */,
 				83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */,
 				714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */,
+				ED6500D0C850B11687C89DC3 /* UserDataUpdateSettingsView.swift */,
 				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
 				83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */,
 			);
@@ -511,6 +521,7 @@
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
 				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
+				E4BC72F9CCFF03AB4F45A143 /* ThirdPartyServiceSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -534,6 +545,7 @@
 				83191C8E3040AF0D00576DC0 /* TCPConnection.swift */,
 				83AAF81730416ACF003752BD /* ByteReader.swift */,
 				83B8E0D83053131B00AB0B56 /* HGCalendar.swift */,
+				E13522090177C06F1D10C25D /* YituliuApiService.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -691,6 +703,10 @@
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
+				6ED005259498BD556DA04D00 /* UserDataUpdateConfiguration.swift in Sources */,
+				4DC78779088BA89E27A40F08 /* UserDataUpdateSettingsView.swift in Sources */,
+				F54623652E06763984E2A423 /* YituliuApiService.swift in Sources */,
+				6E8C2F60585BC3AAEC2A3A7A /* ThirdPartyServiceSettingsView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,
 				83264A3529EBEE8D0074E33A /* AwardConfiguration.swift in Sources */,
 				225274591F2173E6A21B54F0 /* SwitchThemeConfiguration.swift in Sources */,

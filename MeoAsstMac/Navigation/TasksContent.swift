@@ -31,6 +31,8 @@ struct TasksContent: View {
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .switchTheme(let config):
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
+                case .userdataupdate(let config):
+                    TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .roguelike(let config):
                     TaskCell(id: task.id, config: config, enabled: $task.enabled)
                 case .reclamation(let config):
