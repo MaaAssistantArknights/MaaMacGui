@@ -2,7 +2,7 @@
 //  EditableTextList.swift
 //  MAA
 //
-//  Created by zhangweijian on 22/9/2026.
+//  Created by hguandl on 2026/9/22.
 //
 
 import SwiftUI
@@ -34,9 +34,7 @@ struct EditableTextList: View {
                     HStack {
                         TextField("", text: entry.element)
                             .focused($focusedField, equals: entry.id)
-
                         Button {
-                            selection = entry.id
                             focusedField = entry.id
                         } label: {
                             Image(systemName: "pencil")
@@ -53,6 +51,9 @@ struct EditableTextList: View {
             }
         }
         .animation(.default, value: texts)
+        .onChange(of: focusedField) {
+            selection = $1
+        }
     }
 
     @ViewBuilder private func editButtons() -> some View {
@@ -78,14 +79,18 @@ struct EditableTextList: View {
     }
 
     private func addEntry() {
+        let newIndex = texts.count
         texts.append("")
-        selection = texts.count - 1
+        focusedField = newIndex
     }
 
     private func deleteEntry() {
         if let selection {
+            let indices = texts.indices
             texts.remove(at: selection)
+            if selection == indices.last {
+                self.selection = indices.dropLast().last
+            }
         }
-        selection = nil
     }
 }

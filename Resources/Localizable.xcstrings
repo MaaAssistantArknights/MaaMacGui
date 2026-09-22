@@ -1,42 +1,6 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
-    "主题名称" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Theme name"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "테마 이름"
-          }
-        }
-      }
-    },
-    "填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。个别不常用字可能出现识别偏差导致主题未找到。个别不常用字可能出现识别偏差导致主题未找到。" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Enter theme names as shown in the in-game theme list. With multiple themes, one is picked at random each run; leave empty to skip switching."
-          }
-        }
-      }
-    },
-    "更换主题" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Switch Theme"
-          }
-        }
-      }
-    },
     "" : {
       "shouldTranslate" : false
     },
@@ -3115,6 +3079,22 @@
         }
       }
     },
+    "主题名称" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theme name"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테마 이름"
+          }
+        }
+      }
+    },
     "也填白色" : {
 
     },
@@ -3979,6 +3959,20 @@
         }
       }
     },
+    "填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。个别不常用字可能出现识别偏差导致主题未找到。" : {
+
+    },
+    "填写游戏内主题列表中显示的名称，多个主题每次运行随机选择一个，留空则跳过更换主题。个别不常用字可能出现识别偏差导致主题未找到。个别不常用字可能出现识别偏差导致主题未找到。" : {
+      "extractionState" : "stale",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enter theme names as shown in the in-game theme list. With multiple themes, one is picked at random each run; leave empty to skip switching."
+          }
+        }
+      }
+    },
     "复制结果JSON至剪贴板：" : {
       "localizations" : {
         "ko" : {
@@ -4757,6 +4751,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "명일방주 툴박스"
+          }
+        }
+      }
+    },
+    "更换主题" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Switch Theme"
           }
         }
       }
