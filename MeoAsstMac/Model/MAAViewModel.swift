@@ -648,9 +648,9 @@ extension MAAViewModel {
                 }
 
                 operBoxFromYituliu = true
-                config.updateOperBox = false
             }
 
+            config.updateOperBox = operBoxDue && !operBoxFromYituliu
             config.updateDepot = depotDue
 
             let hasCoreSubtasks = config.updateOperBox || config.updateDepot
