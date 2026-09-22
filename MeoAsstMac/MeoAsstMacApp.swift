@@ -65,6 +65,11 @@ struct MeoAsstMacApp: App {
                         Label("游戏设置", systemImage: "gamecontroller")
                     }
 
+                ThirdPartyServiceSettingsView()
+                    .tabItem {
+                        Label("第三方服务", systemImage: "network")
+                    }
+
                 UpdaterSettingsView(updater: updaterController.updater)
                     .tabItem {
                         Label("更新设置", systemImage: "square.and.arrow.down")

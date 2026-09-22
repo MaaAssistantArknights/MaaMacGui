@@ -176,6 +176,14 @@ import SwiftUI
         }
     }
 
+    // MARK: - Third-Party Service Settings
+
+    /// 一图流 OpenAPI Token，鉴权方式为请求头 Authorization 直接携带
+    @AppStorage("MAAYituliuOpenApiToken") var yituliuOpenApiToken = ""
+
+    /// 干员识别改为从一图流 OpenAPI 获取（不再连接模拟器截图识别）
+    @AppStorage("MAAOperBoxUseYituliuApi") var enableOperBoxYituliuApi = false
+
     // MARK: - User Data Update
 
     @AppStorage("MAALastDepotSyncTime") private var lastDepotSyncTimeInterval: Double = 0
@@ -587,6 +595,18 @@ extension MAAViewModel {
             return []
         }
 
+        if operBoxDue, enableOperBoxYituliuApi {
+            guard !yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                logError("请先填写 Token")
+                taskStatus[task.id] = .failure
+                return []
+            }
+
+            // 一图流模式不占 core 任务：拉取完成后自行更新条目状态
+            Task { await syncOperBoxFromYituliu(taskID: task.id) }
+            config.updateOperBox = false
+        }
+
         config.updateDepot = depotDue
         return try await handle?.appendTask(.userdataupdate(config)) ?? []
     }
@@ -621,6 +641,50 @@ extension MAAViewModel {
 
     func appendNewTaskTimer() {
         scheduledDailyTaskTimers.append(DailyTaskTimer(id: UUID(), hour: 9, minute: 0, isEnabled: false))
+    }
+}
+
+// MARK: User Data Update
+
+extension MAAViewModel {
+    /// 从一图流 OpenAPI 拉取干员练度数据，拉取结束后写日志并更新任务条目状态。
+    /// 拉取是后台并行的，只在结束时输出日志，避免与队列启动日志交错。
+    private func syncOperBoxFromYituliu(taskID: UUID) async {
+        let success = await fetchOperBoxFromYituliu()
+        if success {
+            logInfo("干员识别完成（一图流）")
+        }
+        taskStatus[taskID] = success ? .success : .failure
+    }
+
+    /// 从一图流 OpenAPI 拉取干员练度数据并按识别结果填充，不依赖模拟器连接。
+    ///
+    /// 拉取失败只报错不回退 core 本地识别：开关开着是用户显式选择，静默回退会突然要求连接模拟器。
+    /// 拉取成功后才替换旧识别数据，失败时保留。
+    private func fetchOperBoxFromYituliu() async -> Bool {
+        let token = yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !token.isEmpty else {
+            logError("请先填写 Token")
+            return false
+        }
+
+        let (result, data) = await YituliuApiService.operatorInfo(token: token)
+        guard result == .valid, let data else {
+            logError("从一图流获取失败：\(result.description)")
+            return false
+        }
+
+        let operBox = MAAOperBox(yituliu: data, channel: clientChannel)
+        guard !operBox.own_opers.isEmpty else {
+            // 账号未绑定或未导入练度时接口返回空列表（本地资源过旧跳过全部干员时同样为空），
+            // 此时保留本地识别数据
+            logError("Token 对应的一图流账号暂无干员练度数据，已保留本地识别结果")
+            return false
+        }
+
+        logStore?.setOperBox(operBox)
+        lastOperBoxSyncTime = .now
+        return true
     }
 }
 
@@ -687,6 +751,15 @@ extension MAAViewModel {
     func recognizeOperBox() async throws {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
+
+        if enableOperBoxYituliuApi {
+            // 一图流模式不占 core 任务：拉取本身就是识别，结束后由状态机回落到 idle，
+            // 失败（含 Token 为空）由拉取函数写日志提示并保留旧数据
+            if await fetchOperBoxFromYituliu() {
+                logInfo("干员识别完成（一图流）")
+            }
+            return
+        }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .OperBox, params: "")
