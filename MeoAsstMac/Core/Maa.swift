@@ -207,6 +207,7 @@ enum MAATaskType: String {
     case Mall
     case Award
     case SwitchTheme
+    case UserDataUpdate
     case Roguelike
     case Copilot
     case SSSCopilot

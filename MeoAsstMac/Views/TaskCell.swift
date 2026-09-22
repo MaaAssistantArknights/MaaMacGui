@@ -52,6 +52,8 @@ private struct TaskIndicator: View {
             Image(systemName: "xmark.circle").foregroundStyle(.red)
         case .running:
             ProgressView().controlSize(.small)
+        case .skipped:
+            Image(systemName: "minus.circle").foregroundStyle(.secondary)
         case .success:
             Image(systemName: "checkmark.circle").foregroundStyle(.green)
         case .none:

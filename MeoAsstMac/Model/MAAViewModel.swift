@@ -51,10 +51,54 @@ import SwiftUI
         case cancel
         case failure
         case running
+        case skipped
         case success
     }
 
     @Published var taskStatus: [UUID: TaskStatus] = [:]
+
+    /// 一个条目占用的全部 core 任务 id 及其状态。
+    ///
+    /// 条目可以拆成多个 core 任务（「更新数据」= 干员识别 + 仓库识别），
+    /// 条目状态按 WPF 口径合成：任一子任务失败即失败，全部完成才算完成。
+    private var taskSubtasks = [UUID: [Int32]]()
+    private var subtaskStatuses = [Int32: TaskStatus]()
+
+    /// 更新条目状态，`coreID` 为对应的 core 任务 id
+    func updateTaskStatus(_ status: TaskStatus, coreID: Int32?) {
+        guard let coreID, let id = taskIDMap[coreID] else {
+            return
+        }
+
+        let subtasks = taskSubtasks[id] ?? [coreID]
+        guard subtasks.count > 1 else {
+            taskStatus[id] = status
+            return
+        }
+
+        subtaskStatuses[coreID] = status
+        if subtasks.contains(where: { subtaskStatuses[$0] == .failure }) {
+            taskStatus[id] = .failure
+        } else if subtasks.allSatisfy({ subtaskStatuses[$0] == .success }) {
+            taskStatus[id] = .success
+        } else if subtasks.contains(where: { subtaskStatuses[$0] == .cancel }) {
+            taskStatus[id] = .cancel
+        } else {
+            taskStatus[id] = .running
+        }
+    }
+
+    /// 记录条目占用的 core 任务 id
+    func addTaskIDs(_ coreTaskIDs: [Int32], for id: UUID) {
+        guard !coreTaskIDs.isEmpty else {
+            return
+        }
+
+        for coreTaskID in coreTaskIDs {
+            taskIDMap[coreTaskID] = id
+        }
+        taskSubtasks[id, default: []].append(contentsOf: coreTaskIDs)
+    }
 
     var tasksDirectory: URL {
         Self.userDirectory.appendingPathComponent("DailyTasks", isDirectory: true)
@@ -132,6 +176,35 @@ import SwiftUI
         }
     }
 
+    // MARK: - User Data Update
+
+    @AppStorage("MAALastDepotSyncTime") private var lastDepotSyncTimeInterval: Double = 0
+    @AppStorage("MAALastOperBoxSyncTime") private var lastOperBoxSyncTimeInterval: Double = 0
+
+    /// 上次仓库同步时间，无记录时为 nil
+    ///
+    /// `@AppStorage` 不参与 `ObservableObject` 的发布，改写后手动通知界面刷新（设置页要展示时间）。
+    var lastDepotSyncTime: Date? {
+        get {
+            lastDepotSyncTimeInterval > 0 ? Date(timeIntervalSince1970: lastDepotSyncTimeInterval) : nil
+        }
+        set {
+            lastDepotSyncTimeInterval = newValue?.timeIntervalSince1970 ?? 0
+            objectWillChange.send()
+        }
+    }
+
+    /// 上次干员同步时间，无记录时为 nil
+    var lastOperBoxSyncTime: Date? {
+        get {
+            lastOperBoxSyncTimeInterval > 0 ? Date(timeIntervalSince1970: lastOperBoxSyncTimeInterval) : nil
+        }
+        set {
+            lastOperBoxSyncTimeInterval = newValue?.timeIntervalSince1970 ?? 0
+            objectWillChange.send()
+        }
+    }
+
     // MARK: - Initializer
 
     init() {
@@ -204,6 +277,8 @@ extension MAAViewModel {
 
         logStore?.clearLogs()
         taskIDMap.removeAll()
+        taskSubtasks.removeAll()
+        subtaskStatuses.removeAll()
         taskStatus.removeAll()
 
         guard requireConnect else { return }
@@ -468,18 +543,52 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        var hasCoreTask = false
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
-                taskIDMap[coreID] = task.id
-            }
+            let coreTaskIDs = try await appendTasks(task)
+            addTaskIDs(coreTaskIDs, for: task.id)
+            hasCoreTask = hasCoreTask || !coreTaskIDs.isEmpty
+        }
+
+        guard hasCoreTask else {
+            // 本轮没有任何 core 任务（例如「更新数据」仅勾选干员识别且从一图流获取），不启动 core，
+            // 条目状态由各自分支标记
+            return
         }
 
         try await handle?.start()
         logStore?.taskStartTime = .now
 
         status = .busy
+    }
+
+    /// 追加一个队列条目对应的 core 任务，返回它占用的 core 任务 id 列表。
+    ///
+    /// 「更新数据」是前端伪任务：先按触发间隔与一图流开关决定子项去留，再交给 core 追加。
+    private func appendTasks(_ task: DailyTask) async throws -> [Int32] {
+        guard case .userdataupdate(var config) = task.task else {
+            return try await handle?.appendTask(task.task) ?? []
+        }
+
+        let interval = config.triggerInterval
+        let operBoxDue =
+            config.updateOperBox && interval.isDue(lastSyncTime: lastOperBoxSyncTime, channel: clientChannel)
+        let depotDue = config.updateDepot && interval.isDue(lastSyncTime: lastDepotSyncTime, channel: clientChannel)
+
+        guard operBoxDue || depotDue else {
+            if config.updateOperBox || config.updateDepot {
+                logInfo("距上次同步未达到「\(interval.description)」触发间隔")
+            } else {
+                logInfo("「干员识别」和「仓库识别」均未勾选")
+            }
+            taskStatus[task.id] = .skipped
+            return []
+        }
+
+        config.updateDepot = depotDue
+        return try await handle?.appendTask(.userdataupdate(config)) ?? []
     }
 
     private func initScheduledDailyTaskTimer() {

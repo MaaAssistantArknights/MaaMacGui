@@ -6443,6 +6443,86 @@
     },
     "龙门币-6/5" : {
 
+    },
+    "更新数据" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Update Doctor Data"
+          }
+        }
+      }
+    },
+    "每次" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Every Time"
+          }
+        }
+      }
+    },
+    "每天" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily"
+          }
+        }
+      }
+    },
+    "每周" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Weekly"
+          }
+        }
+      }
+    },
+    "触发间隔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trigger Interval"
+          }
+        }
+      }
+    },
+    "上次同步时间：%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Last Sync Time: %@"
+          }
+        }
+      }
+    },
+    "距上次同步未达到「%@」触发间隔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The %@ trigger interval has not been reached since the last sync"
+          }
+        }
+      }
+    },
+    "「干员识别」和「仓库识别」均未勾选" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neither Operator nor Depot recognition is selected"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

@@ -31,28 +31,41 @@ extension MAATaskConfiguration {
 // MARK: JSON TaskParams
 
 extension MAAHandle {
-    func appendTask(_ task: MAATask) throws -> Int32 {
+    /// 追加一个队列条目对应的 core 任务，返回它占用的 core 任务 id 列表。
+    ///
+    /// 常规条目只对应一个 core 任务，返回单元素数组；「更新数据」是前端伪任务，
+    /// 按勾选项拆成干员识别与仓库识别两个 core 任务，两个子项各占一个 id。
+    func appendTask(_ task: MAATask) throws -> [Int32] {
         switch task {
         case .startup(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .closedown(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .recruit(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .infrast(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .fight(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .mall(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .award(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .switchTheme(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
+        case .userdataupdate(let config):
+            var coreTaskIDs = [Int32]()
+            if config.updateOperBox {
+                coreTaskIDs.append(try appendTask(type: .OperBox, params: ""))
+            }
+            if config.updateDepot {
+                coreTaskIDs.append(try appendTask(type: .Depot, params: ""))
+            }
+            return coreTaskIDs
         case .roguelike(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         case .reclamation(let config):
-            return try appendTask(config: config)
+            return [try appendTask(config: config)]
         }
     }
 
