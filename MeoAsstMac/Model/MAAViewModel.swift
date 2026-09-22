@@ -578,6 +578,10 @@ extension MAAViewModel {
             if plan.operBoxFromYituliu {
                 let subtaskID = addFrontendSubtask(for: plan.id)
                 Task { await syncOperBoxFromYituliu(subtaskID: subtaskID) }
+            } else if plan.operBoxTokenMissing {
+                // Token 为空：干员子项登记为失败，与同条目的 core 子任务（如仓库识别）共同决定条目状态
+                let subtaskID = addFrontendSubtask(for: plan.id)
+                updateTaskStatus(.failure, coreID: subtaskID)
             }
 
             guard let coreTask = plan.coreTask else {
@@ -608,6 +612,9 @@ extension MAAViewModel {
         let coreTask: MAATask?
         /// 干员识别改由一图流 OpenAPI 拉取（不占 core 任务，也不需要模拟器连接）
         let operBoxFromYituliu: Bool
+        /// 干员识别要改由一图流拉取但 Token 为空：干员子项在执行期登记为失败，
+        /// 同条目的仓库识别照常执行，条目状态仍由聚合语义给出
+        let operBoxTokenMissing: Bool
     }
 
     /// 规划本轮任务：按触发间隔与一图流开关决定子项去留，只读状态、不触碰 core。
@@ -620,7 +627,8 @@ extension MAAViewModel {
             guard task.enabled else { continue }
 
             guard case .userdataupdate(var config) = task.task else {
-                plans.append(TaskPlan(id: task.id, coreTask: task.task, operBoxFromYituliu: false))
+                plans.append(
+                    TaskPlan(id: task.id, coreTask: task.task, operBoxFromYituliu: false, operBoxTokenMissing: false))
                 continue
             }
 
@@ -640,24 +648,26 @@ extension MAAViewModel {
             }
 
             var operBoxFromYituliu = false
+            var operBoxTokenMissing = false
             if operBoxDue, enableOperBoxYituliuApi {
-                guard !yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+                if yituliuOpenApiToken.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    // Token 为空只让干员子项失败：仓库识别不因此被跳过，
+                    // 条目状态由执行期的子任务聚合给出（干员失败 + 仓库成功 = 条目失败）
                     logError("请先填写 Token")
-                    taskStatus[task.id] = .failure
-                    continue
+                    operBoxTokenMissing = true
+                } else {
+                    operBoxFromYituliu = true
                 }
-
-                operBoxFromYituliu = true
             }
 
-            config.updateOperBox = operBoxDue && !operBoxFromYituliu
+            config.updateOperBox = operBoxDue && !operBoxFromYituliu && !operBoxTokenMissing
             config.updateDepot = depotDue
 
             let hasCoreSubtasks = config.updateOperBox || config.updateDepot
             plans.append(
                 TaskPlan(
                     id: task.id, coreTask: hasCoreSubtasks ? .userdataupdate(config) : nil,
-                    operBoxFromYituliu: operBoxFromYituliu))
+                    operBoxFromYituliu: operBoxFromYituliu, operBoxTokenMissing: operBoxTokenMissing))
         }
 
         return plans

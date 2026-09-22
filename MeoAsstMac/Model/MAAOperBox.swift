@@ -178,7 +178,11 @@ extension MAAOperBox {
 
         let allOpers =
             table
-            .filter { $0.value.isOperator && $0.value.isAvailable(in: channel) }
+            .filter {
+                // 升变形态不是独立干员（对齐 WPF `_virtualOperators`），只保留基础形态
+                !Self.promotedOperIDs.keys.contains($0.key)
+                    && $0.value.isOperator && $0.value.isAvailable(in: channel)
+            }
             .map { id, entry in
                 Oper(id: id, own: ownIDs.contains(id), name: entry.name(for: language), rarity: entry.rarity)
             }
