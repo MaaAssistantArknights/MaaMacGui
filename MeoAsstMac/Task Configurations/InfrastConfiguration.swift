@@ -54,6 +54,16 @@ struct InfrastConfiguration: MAATaskConfiguration {
     var filename: String
     var plan_index: Int
 
+    // GUI-only parsed state. Keep it stable while a task runs, as in Windows.
+    private(set) var customPlan = MAAInfrast.empty
+    private(set) var customPlanError: String?
+
+    enum CodingKeys: String, CodingKey {
+        case mode, facility, drones, threshold, replenish
+        case dorm_notstationed_enabled, dorm_trust_enabled, continue_training, reception_message_board
+        case filename, plan_index
+    }
+
     var title: String {
         type.description
     }
@@ -63,8 +73,8 @@ struct InfrastConfiguration: MAATaskConfiguration {
             return String(localized: "默认换班")
         }
 
-        if let plan = try? MAAInfrast(path: filename) {
-            return plan.title ?? filename
+        if customPlanError == nil {
+            return customPlan.title ?? filename
         } else {
             return String(localized: "无法识别配置")
         }
@@ -75,26 +85,67 @@ struct InfrastConfiguration: MAATaskConfiguration {
             return String(localized: "单设施最优解")
         }
 
-        if let plan = try? MAAInfrast(path: filename), plan_index < plan.plans.count {
-            return plan.plans[plan_index].name ?? "\(plan_index)"
-        } else {
-            return String(localized: "未知排班")
-        }
+        if plan_index == -1 { return String(localized: "时间轮换") }
+        return customPlan.plans.indices.contains(plan_index)
+            ? customPlan.name(at: plan_index) : String(localized: "未知排班")
     }
 
     var projectedTask: MAATask {
         .infrast(self)
     }
 
-    typealias Params = Self
+    struct Params: Encodable {
+        let configuration: InfrastConfiguration
 
-    var params: Self {
-        self
+        func encode(to encoder: any Encoder) throws {
+            try configuration.execution().configuration.encode(to: encoder)
+        }
     }
 
-    private var customPlan: MAAInfrast? {
-        guard mode == .custom else { return nil }
-        return try? MAAInfrast(path: filename)
+    var params: Params { Params(configuration: self) }
+
+    func execution(at date: Date = .now, calendar: Calendar = .current) throws
+        -> (configuration: Self, selection: MAAInfrast.Selection?)
+    {
+        guard mode == .custom else { return (self, nil) }
+        let selection = try customPlan.select(plan_index, at: date, calendar: calendar)
+        var resolved = self
+        resolved.plan_index = selection.index
+        return (resolved, selection)
+    }
+
+    mutating func reloadCustomPlan(resetSelection: Bool = false) {
+        loadCustomPlan()
+        plan_index = resetSelection ? customPlan.defaultSelection : customPlan.refreshedSelection(plan_index)
+    }
+
+    mutating func refreshCustomPlanSelection() {
+        plan_index = customPlan.refreshedSelection(plan_index)
+    }
+
+    private mutating func loadCustomPlan() {
+        customPlan = .empty
+        customPlanError = nil
+        guard mode == .custom, FileManager.default.fileExists(atPath: filename) else { return }
+        do {
+            customPlan = try MAAInfrast(path: filename)
+        } catch {
+            customPlanError = error.localizedDescription
+        }
+    }
+
+    mutating func restoreCustomPlan() {
+        // Windows leaves a missing file's saved selection alone. An existing
+        // file that cannot be parsed resets the selection to zero instead.
+        guard mode == .custom, !filename.isEmpty, FileManager.default.fileExists(atPath: filename) else { return }
+        loadCustomPlan()
+        if customPlanError != nil { plan_index = 0 }
+        if plan_index < -1 { plan_index = -1 } else if plan_index >= customPlan.plans.count { plan_index = 0 }
+    }
+
+    mutating func advanceCustomPlan() {
+        guard mode == .custom, let next = customPlan.nextSelection(after: plan_index) else { return }
+        plan_index = next
     }
 }
 
@@ -165,5 +216,6 @@ extension InfrastConfiguration {
         self.continue_training = try container.decodeIfPresent(Bool.self, forKey: .continue_training) ?? true
         self.reception_message_board =
             try container.decodeIfPresent(Bool.self, forKey: .reception_message_board) ?? true
+        restoreCustomPlan()
     }
 }

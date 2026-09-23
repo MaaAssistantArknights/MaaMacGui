@@ -384,27 +384,23 @@ extension MAAViewModel {
             if info.taskchain == "Infrast" {
                 if let id = taskID(coreID: info.taskid),
                     let task = tasks[id],
-                    case .infrast(let config) = task,
+                    case .infrast(var config) = task,
                     config.mode == .custom,
-                    let plan = try? MAAInfrast(path: config.filename),
-                    plan.plans.indices.contains(config.plan_index)
+                    config.customPlan.plans.indices.contains(config.plan_index)
                 {
+                    let plan = config.customPlan
                     let currentPlan = plan.plans[config.plan_index]
                     logInfo(.customInfrastPlanIndexAutoSwitch)
                     if let description = currentPlan.description_post, !description.isEmpty {
                         logTrace(verbatim: description)
                     }
-                    var newConfig = config
-                    newConfig.plan_index = (config.plan_index + 1) % plan.plans.count
-                    tasks[id] = .infrast(newConfig)
-                    let nextPlan = plan.plans[newConfig.plan_index]
+                    config.advanceCustomPlan()
+                    tasks[id] = .infrast(config)
+                    let nextPlan = plan.plans[config.plan_index]
                     if let name = nextPlan.name, !name.isEmpty {
                         logInfo(verbatim: name)
                     }
-                    let periods = nextPlan.period?.compactMap { period in
-                        guard period.count >= 2 else { return String?.none }
-                        return "[ \(period[0]) – \(period[1]) ]"
-                    }
+                    let periods = nextPlan.period?.map(\.description)
                     if let periods, !periods.isEmpty {
                         logTrace(verbatim: periods.joined(separator: ", "))
                     }

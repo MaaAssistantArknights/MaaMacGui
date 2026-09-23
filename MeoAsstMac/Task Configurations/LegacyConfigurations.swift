@@ -83,6 +83,7 @@ extension InfrastConfiguration {
         self.plan_index = config.plan_index
         self.continue_training = true
         self.reception_message_board = true
+        restoreCustomPlan()
     }
 }
 
