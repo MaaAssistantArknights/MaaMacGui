@@ -276,6 +276,8 @@ extension MAAResourceVersion {
 
 struct MAAStageActivity: Decodable, Hashable {
     let miniGame: [MiniGame]
+    let sideStoryStage: [String: SideStoryStage]?
+    let resourceCollection: ActivityPeriod?
 
     struct MiniGame: Decodable, Hashable {
         let Display: String?
@@ -287,6 +289,49 @@ struct MAAStageActivity: Decodable, Hashable {
         private let UtcStartTime: String?
         private let UtcExpireTime: String?
         private let TimeZone: Double?
+    }
+
+    struct SideStoryStage: Decodable, Hashable {
+        let Activity: ActivityPeriod?
+        let Stages: [SideStoryStageItem]?
+    }
+
+    struct SideStoryStageItem: Decodable, Hashable {
+        let Display: String?
+        let Value: String?
+        let Drop: String?
+    }
+
+    struct ActivityPeriod: Decodable, Hashable {
+        let Tip: String?
+        let StageName: String?
+        let UtcStartTime: String?
+        let UtcExpireTime: String?
+        let TimeZone: Double?
+    }
+}
+
+extension MAAStageActivity.ActivityPeriod {
+    var startDate: Date {
+        MAAStageActivity.parseActivityDate(UtcStartTime, timeZone: TimeZone) ?? .distantPast
+    }
+
+    var expireDate: Date {
+        MAAStageActivity.parseActivityDate(UtcExpireTime, timeZone: TimeZone) ?? .distantFuture
+    }
+}
+
+extension MAAStageActivity {
+    // 时间字段写作 UTC 前缀，实际是 TimeZone 字段指定时区的本地时间（与 MiniGame 的解析约定一致）
+    fileprivate static func parseActivityDate(_ value: String?, timeZone: Double?) -> Date? {
+        guard let value, let timeZone,
+            let tz = TimeZone(secondsFromGMT: Int(timeZone * 3600))
+        else { return nil }
+        let strategy = Date.ParseStrategy(
+            format:
+                "\(year: .defaultDigits)/\(month: .twoDigits)/\(day: .twoDigits) \(hour: .twoDigits(clock: .twentyFourHour, hourCycle: .zeroBased)):\(minute: .twoDigits):\(second: .twoDigits)",
+            timeZone: tz)
+        return try? Date(value, strategy: strategy)
     }
 }
 

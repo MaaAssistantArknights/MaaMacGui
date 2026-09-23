@@ -76,6 +76,11 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
         ![MAAClientChannel.Official, .Bilibili].contains(self)
     }
 
+    /// MAA 活动数据按数据源分服，Bilibili 服与官服共用 Official 数据。
+    var stageActivityKey: String {
+        self == .Bilibili ? MAAClientChannel.Official.rawValue : rawValue
+    }
+
     var appBundleName: String {
         switch self {
         case .Official, .Bilibili, .txwy:
