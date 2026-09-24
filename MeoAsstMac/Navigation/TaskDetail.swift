@@ -23,7 +23,9 @@ struct TaskDetail: View {
                     case .recruit(let config):
                         RecruitSettingsView(config: taskConfigBinding(config, id: id))
                     case .infrast(let config):
-                        InfrastSettingsView(config: taskConfigBinding(config, id: id))
+                        InfrastSettingsView(
+                            config: taskConfigBinding(config, id: id),
+                            connectionScope: viewModel.infrastConnectionScope)
                     case .fight(let config):
                         FightSettingsView(config: taskConfigBinding(config, id: id))
                     case .mall(let config):

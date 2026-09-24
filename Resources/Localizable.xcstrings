@@ -1,6 +1,206 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "基建计划": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Base plan"
+          }
+        }
+      }
+    },
+    "上次换班": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last rotation"
+          }
+        }
+      }
+    },
+    "本次换班": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Current rotation"
+          }
+        }
+      }
+    },
+    "下次换班建议": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next rotation suggestion"
+          }
+        }
+      }
+    },
+    "记录已不适用": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record no longer applies"
+          }
+        }
+      }
+    },
+    "暂无完成记录": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No completed rotation"
+          }
+        }
+      }
+    },
+    "待执行": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pending"
+          }
+        }
+      }
+    },
+    "执行中": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Running"
+          }
+        }
+      }
+    },
+    "已完成": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completed"
+          }
+        }
+      }
+    },
+    "本次未完成": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rotation incomplete"
+          }
+        }
+      }
+    },
+    "已到建议时间": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggested time reached"
+          }
+        }
+      }
+    },
+    "暂无有效时长": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No valid duration"
+          }
+        }
+      }
+    },
+    "下次完成后计算": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Available after completion"
+          }
+        }
+      }
+    },
+    "自动按计划顺序选班；由你启动换班，时间段不参与选班。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selects plans in order when you start the task; time windows are not used."
+          }
+        }
+      }
+    },
+    "建议不改变手动选择的计划。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggestions do not change your selected plan."
+          }
+        }
+      }
+    },
+    "暂无有效排班计划": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No valid base plan"
+          }
+        }
+      }
+    },
+    "建议间隔": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suggested interval"
+          }
+        }
+      }
+    },
+    "按排班表时长": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Use plan duration"
+          }
+        }
+      }
+    },
+    "自定义固定间隔": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fixed interval"
+          }
+        }
+      }
+    },
+    "间隔（小时）": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interval (hours)"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

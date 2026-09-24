@@ -17,6 +17,19 @@ struct MAAInfrast: Codable, Hashable {
         let description: String?
         let description_post: String?
         let period: [[String]]?
+        let duration: Double?
+
+        enum CodingKeys: String, CodingKey { case name, description, description_post, period, duration }
+
+        init(from decoder: Decoder) throws {
+            let values = try decoder.container(keyedBy: CodingKeys.self)
+            name = try values.decodeIfPresent(String.self, forKey: .name)
+            description = try values.decodeIfPresent(String.self, forKey: .description)
+            description_post = try values.decodeIfPresent(String.self, forKey: .description_post)
+            period = try values.decodeIfPresent([[String]].self, forKey: .period)
+            // Invalid optional hints must not prevent an otherwise valid plan from running.
+            duration = InfrastRotation.validMinutes(try? values.decode(Double.self, forKey: .duration))
+        }
     }
 }
 

@@ -347,11 +347,13 @@ extension MAAViewModel {
 
         switch message.code {
         case .TaskChainStopped:
+            finishInfrastRotation(coreID: info.taskid, succeeded: false)
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .cancel
             }
 
         case .TaskChainError:
+            finishInfrastRotation(coreID: info.taskid, succeeded: false)
             // TODO: (LogCard) Update the task-error log card.
             // TODO: (Screenshot) Fetch the latest screenshot for the error card.
             // TODO: (Tooltip) Use the error screenshot as the log tooltip.
@@ -372,6 +374,7 @@ extension MAAViewModel {
             }
 
         case .TaskChainStart:
+            updateInfrastAttempt(coreID: info.taskid, status: .running)
             // macOS task items do not currently support custom display names.
             // TODO: (ViewState) Switch the overlay log source for Copilot and daily tasks.
             if let id = taskID(coreID: info.taskid) {
@@ -382,36 +385,7 @@ extension MAAViewModel {
         case .TaskChainCompleted:
             // TODO: (Achievement) Mirror WPF task-completion achievement progress.
             if info.taskchain == "Infrast" {
-                if let id = taskID(coreID: info.taskid),
-                    let task = tasks[id],
-                    case .infrast(let config) = task,
-                    config.mode == .custom,
-                    let plan = try? MAAInfrast(path: config.filename),
-                    plan.plans.indices.contains(config.plan_index)
-                {
-                    let currentPlan = plan.plans[config.plan_index]
-                    logInfo(.customInfrastPlanIndexAutoSwitch)
-                    if let description = currentPlan.description_post, !description.isEmpty {
-                        logTrace(verbatim: description)
-                    }
-                    var newConfig = config
-                    newConfig.plan_index = (config.plan_index + 1) % plan.plans.count
-                    tasks[id] = .infrast(newConfig)
-                    let nextPlan = plan.plans[newConfig.plan_index]
-                    if let name = nextPlan.name, !name.isEmpty {
-                        logInfo(verbatim: name)
-                    }
-                    let periods = nextPlan.period?.compactMap { period in
-                        guard period.count >= 2 else { return String?.none }
-                        return "[ \(period[0]) – \(period[1]) ]"
-                    }
-                    if let periods, !periods.isEmpty {
-                        logTrace(verbatim: periods.joined(separator: ", "))
-                    }
-                    if let description = nextPlan.description, !description.isEmpty {
-                        logTrace(verbatim: description)
-                    }
-                }
+                finishInfrastRotation(coreID: info.taskid, succeeded: true)
             }
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .success

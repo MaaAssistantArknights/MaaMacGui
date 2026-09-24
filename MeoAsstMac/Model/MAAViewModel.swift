@@ -45,6 +45,7 @@ import SwiftUI
 
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
+    var infrastRotationRuns: [Int32: InfrastRotationRun] = [:]
     @Published var newTaskAdded = false
 
     enum TaskStatus: Equatable {
@@ -158,6 +159,15 @@ import SwiftUI
             }
         }
 
+        for index in tasks.indices {
+            if case .infrast(var config) = tasks[index].task,
+                let attempt = config.rotation?.current,
+                attempt.status == .prepared || attempt.status == .running
+            {
+                config.rotation?.current?.status = .incomplete
+                tasks[index] = .init(id: tasks[index].id, task: .infrast(config), enabled: tasks[index].enabled)
+            }
+        }
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
@@ -203,6 +213,7 @@ extension MAAViewModel {
         }
 
         logStore?.clearLogs()
+        finishPendingInfrastRotations()
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
@@ -240,10 +251,12 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .busy) }
 
         try await handle?.stop()
+        finishPendingInfrastRotations()
         status = .idle
     }
 
     func resetStatus() {
+        finishPendingInfrastRotations()
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -468,15 +481,51 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        var submitted = false
+        defer { if !submitted { finishPendingInfrastRotations() } }
         for task in tasks {
             guard task.enabled else { continue }
-
-            if let coreID = try await handle?.appendTask(task.task) {
+            var executionTask = task.task
+            var rotationRun: InfrastRotationRun?
+            if case .infrast(var config) = executionTask, config.mode == .custom {
+                do {
+                    let data = try Data(contentsOf: URL(fileURLWithPath: config.filename))
+                    let plan = try JSONDecoder().decode(MAAInfrast.self, from: data)
+                    let fingerprint = InfrastRotationRun.fingerprint(data)
+                    let rotation = config.rotation ?? InfrastRotation()
+                    guard
+                        let index = rotation.nextIndex(
+                            fingerprint: fingerprint, count: plan.plans.count, fallback: config.plan_index,
+                            connection: infrastConnectionScope)
+                    else { throw CocoaError(.fileReadCorruptFile) }
+                    // Concrete selections retain the existing Core validation behavior.
+                    let selected = rotation.automatic ? index : config.plan_index
+                    guard plan.plans.indices.contains(selected) else { throw CocoaError(.fileReadCorruptFile) }
+                    let entry = plan.plans[selected]
+                    rotationRun = InfrastRotationRun(
+                        id: UUID(), profile: dailyTaskProfile, connection: infrastConnectionScope,
+                        filename: config.filename, fingerprint: fingerprint, index: selected,
+                        count: plan.plans.count, name: entry.name ?? String(selected + 1),
+                        durationMinutes: entry.duration, automatic: rotation.automatic,
+                        selectedIndex: config.plan_index, descriptionPost: entry.description_post)
+                    config.plan_index = selected
+                    executionTask = .infrast(config)
+                } catch {
+                    // Optional GUI history must not add validation restrictions to concrete plans.
+                    if config.rotation?.automatic == true { throw error }
+                }
+            }
+            if let coreID = try await handle?.appendTask(executionTask) {
                 taskIDMap[coreID] = task.id
+                if let rotationRun {
+                    infrastRotationRuns[coreID] = rotationRun
+                    updateInfrastAttempt(coreID: coreID, status: .prepared)
+                }
             }
         }
 
         try await handle?.start()
+        submitted = true
         logStore?.taskStartTime = .now
 
         status = .busy
@@ -708,5 +757,74 @@ extension MAAViewModel {
     func stopGame() async throws {
         guard let client = await MaaToolClient(address: connectionAddress) else { return }
         try await client.terminate()
+    }
+}
+
+// MARK: - Custom infrastructure execution history
+
+extension MAAViewModel {
+    var infrastConnectionScope: String {
+        "\(clientChannel.rawValue)|\(touchMode)|\(connectionAddress)"
+    }
+
+    func updateInfrastAttempt(coreID: Int32, status: InfrastRotation.Attempt.Status) {
+        guard let run = infrastRotationRuns[coreID], run.profile == dailyTaskProfile,
+            let id = taskIDMap[coreID], case .infrast(var config) = tasks[id],
+            config.filename == run.filename
+        else { return }
+        var rotation = config.rotation ?? InfrastRotation()
+        rotation.current = .init(
+            runID: run.id, fingerprint: run.fingerprint,
+            index: run.index, name: run.name, connection: run.connection, status: status)
+        config.rotation = rotation
+        tasks[id] = .infrast(config)
+    }
+
+    func finishInfrastRotation(coreID: Int32, succeeded: Bool) {
+        guard let run = infrastRotationRuns[coreID] else { return }
+        defer { infrastRotationRuns.removeValue(forKey: coreID) }
+        guard run.profile == dailyTaskProfile, let id = taskIDMap[coreID],
+            case .infrast(var config) = tasks[id], config.filename == run.filename
+        else { return }
+        var rotation = config.rotation ?? InfrastRotation()
+        if succeeded {
+            rotation.complete(run, at: .now)
+            if let description = run.descriptionPost, !description.isEmpty {
+                logTrace(verbatim: description)
+            }
+            let currentData = try? Data(contentsOf: URL(fileURLWithPath: config.filename))
+            // Do not overwrite a selection or file changed while this task was running.
+            if let currentData, InfrastRotationRun.fingerprint(currentData) == run.fingerprint,
+                config.plan_index == run.selectedIndex, rotation.automatic == run.automatic,
+                infrastConnectionScope == run.connection
+            {
+                config.plan_index = (run.index + 1) % run.count
+                logInfo(.customInfrastPlanIndexAutoSwitch)
+                if let plan = try? JSONDecoder().decode(MAAInfrast.self, from: currentData),
+                    plan.plans.indices.contains(config.plan_index)
+                {
+                    let next = plan.plans[config.plan_index]
+                    if let name = next.name, !name.isEmpty { logInfo(verbatim: name) }
+                    for period in next.period ?? [] where period.count >= 2 {
+                        logTrace(verbatim: "[ \(period[0]) – \(period[1]) ]")
+                    }
+                    if let description = next.description, !description.isEmpty {
+                        logTrace(verbatim: description)
+                    }
+                }
+            }
+        } else {
+            rotation.current = .init(
+                runID: run.id, fingerprint: run.fingerprint,
+                index: run.index, name: run.name, connection: run.connection, status: .incomplete)
+        }
+        config.rotation = rotation
+        tasks[id] = .infrast(config)
+    }
+
+    func finishPendingInfrastRotations() {
+        for coreID in Array(infrastRotationRuns.keys) {
+            finishInfrastRotation(coreID: coreID, succeeded: false)
+        }
     }
 }
