@@ -116,6 +116,22 @@ import SwiftUI
         }
     }
 
+    // MARK: - Run Duration Limit
+
+    @AppStorage("MAARunDurationLimitEnabled") var runDurationLimitEnabled = false
+
+    @AppStorage("MAARunDurationLimitMinutes") var runDurationLimitMinutes = 240 {
+        didSet {
+            let clamped = min(max(runDurationLimitMinutes, 1), 11451)
+            if clamped != runDurationLimitMinutes {
+                runDurationLimitMinutes = clamped
+            }
+        }
+    }
+
+    /// 本轮运行的时长上限计时，仅由日常任务队列开始时设置，本轮结束时取消。
+    private var runDurationLimitTask: Task<Void, Never>?
+
     // MARK: - Update Settings
 
     @AppStorage("AutoResourceUpdate") var autoResourceUpdate = false
@@ -241,10 +257,12 @@ extension MAAViewModel {
 
         try await handle?.stop()
         status = .idle
+        cancelRunDurationLimit()
     }
 
     func resetStatus() {
         status = .idle
+        cancelRunDurationLimit()
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
 
@@ -480,6 +498,7 @@ extension MAAViewModel {
         logStore?.taskStartTime = .now
 
         status = .busy
+        scheduleRunDurationLimit()
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -512,6 +531,49 @@ extension MAAViewModel {
 
     func appendNewTaskTimer() {
         scheduledDailyTaskTimers.append(DailyTaskTimer(id: UUID(), hour: 9, minute: 0, isEnabled: false))
+    }
+}
+
+// MARK: - Run Duration Limit
+
+extension MAAViewModel {
+    /// 按当前设置开始本轮运行的时长计时，到达上限后自动停止任务。
+    ///
+    /// 由日常任务队列启动成功后调用；作业、公招识别等独立工具不设时长上限。
+    func scheduleRunDurationLimit() {
+        runDurationLimitTask?.cancel()
+        runDurationLimitTask = nil
+
+        guard runDurationLimitEnabled else { return }
+        // 兜底钳制：@AppStorage 装载不触发 didSet，越界值（如手工改 defaults）会让计时立刻到期
+        let minutes = min(max(runDurationLimitMinutes, 1), 11451)
+
+        runDurationLimitTask = Task { [weak self] in
+            do {
+                try await Task.sleep(for: .seconds(minutes * 60))
+            } catch {
+                // 本轮已结束，或被新的一轮取消
+                return
+            }
+            await self?.stopByRunDurationLimit(minutes: minutes)
+        }
+    }
+
+    /// 结束本轮运行的时长计时。
+    func cancelRunDurationLimit() {
+        runDurationLimitTask?.cancel()
+        runDurationLimitTask = nil
+    }
+
+    private func stopByRunDurationLimit(minutes: Int) async {
+        guard !Task.isCancelled, status == .busy else { return }
+
+        logWarn(verbatim: String(localized: "已达到运行时长上限（\(minutes) 分钟），停止任务"))
+        do {
+            try await stop()
+        } catch {
+            logError("StopTasksFailed: \(String(describing: error))")
+        }
     }
 }
 
