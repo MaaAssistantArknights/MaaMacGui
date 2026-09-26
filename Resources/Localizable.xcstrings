@@ -165,6 +165,55 @@
     "24小时内" : {
 
     },
+    "Accessibility permission is required for native macOS control" : {
+
+    },
+    "Accessibility permission: Enabled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibility permission: Enabled"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "손쉬운 사용 권한이 활성화됨"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "辅助功能权限已开启"
+          }
+        }
+      }
+    },
+    "Accessibility permission: Required" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accessibility permission: Required"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "손쉬운 사용 권한 필요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要辅助功能权限"
+          }
+        }
+      }
+    },
     "AccountSwitch" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -660,6 +709,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "节点：易与"
+          }
+        }
+      }
+    },
+    "Bundle ID" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bundle ID"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번들 ID"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用 Bundle ID"
           }
         }
       }
@@ -1692,6 +1764,29 @@
         }
       }
     },
+    "MacNative is experimental and supports screenshots, clicks, and straight swipes only." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacNative is experimental and supports screenshots, clicks, and straight swipes only."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacNative는 실험 기능이며 화면 캡처, 클릭, 직선 스와이프만 지원합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MacNative 为实验功能，目前仅支持截图、点击和直线滑动。"
+          }
+        }
+      }
+    },
     "MedicineUsed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1847,6 +1942,29 @@
         }
       }
     },
+    "Native macOS Control (Experimental)" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Native macOS Control (Experimental)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 기본 제어 (실험적)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 原生控制（实验）"
+          }
+        }
+      }
+    },
     "NoDrop" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1888,6 +2006,52 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "可用干员不足"
+          }
+        }
+      }
+    },
+    "Open Accessibility Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Accessibility Settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "손쉬운 사용 설정 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开辅助功能设置"
+          }
+        }
+      }
+    },
+    "Open Screen Recording Settings" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Screen Recording Settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 기록 설정 열기"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开录屏权限设置"
           }
         }
       }
@@ -1969,6 +2133,7 @@
       }
     },
     "PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。" : {
+      "extractionState" : "stale",
       "localizations" : {
         "ko" : {
           "stringUnit" : {
@@ -2235,6 +2400,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "当前槽位已刷新%(times)lld次"
+          }
+        }
+      }
+    },
+    "Requires macOS 14 or later." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requires macOS 14 or later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "macOS 14 이상이 필요합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要 macOS 14 或更高版本。"
           }
         }
       }
@@ -2615,6 +2803,55 @@
         }
       }
     },
+    "Screen Recording permission is required for native macOS control" : {
+
+    },
+    "Screen Recording permission: Enabled" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screen Recording permission: Enabled"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 기록 권한이 활성화됨"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录屏权限已开启"
+          }
+        }
+      }
+    },
+    "Screen Recording permission: Required" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screen Recording permission: Required"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 기록 권한 필요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要录屏权限"
+          }
+        }
+      }
+    },
     "ScreencapFailed" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -2676,6 +2913,32 @@
           }
         }
       }
+    },
+    "Start the game and keep its window open. Minimized or hidden windows are not supported." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start the game and keep its window open. Minimized or hidden windows are not supported."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임을 실행하고 창을 열어 두세요. 최소화하거나 숨긴 창은 지원하지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先启动游戏并保持窗口打开。窗口最小化或隐藏时无法使用。"
+          }
+        }
+      }
+    },
+    "Start the game first and keep its window open; minimized or hidden windows are unsupported" : {
+
     },
     "StartCombat" : {
       "extractionState" : "manual",
@@ -2772,6 +3035,29 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "任务出错：%(name)@"
+          }
+        }
+      }
+    },
+    "Text input, account switching, game launch, and deployment pauses are unsupported." : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Text input, account switching, game launch, and deployment pauses are unsupported."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트 입력, 계정 전환, 게임 실행 및 일시정지 배치는 지원하지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "暂不支持文本输入、账号切换、启动游戏和暂停部署。"
           }
         }
       }

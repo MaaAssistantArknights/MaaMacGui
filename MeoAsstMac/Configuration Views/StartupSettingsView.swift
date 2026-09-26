@@ -40,6 +40,9 @@ struct StartupSettingsView: View {
 
             Toggle("自动启动客户端", isOn: $config.start_game_enabled)
                 .padding(.vertical)
+#if arch(arm64) && WITH_MAC_NATIVE
+                .disabled(touchMode == .MacNative)
+#endif
 
             Picker("账号切换", selection: $config.account_name) {
                 Text("不切换").tag("")
@@ -47,6 +50,9 @@ struct StartupSettingsView: View {
                     Text(account).tag(account)
                 }
             }
+#if arch(arm64) && WITH_MAC_NATIVE
+            .disabled(touchMode == .MacNative)
+#endif
 
             if touchMode == .MacPlayTools {
                 Text("请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。")
