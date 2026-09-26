@@ -40,9 +40,6 @@ struct StartupSettingsView: View {
 
             Toggle("自动启动客户端", isOn: $config.start_game_enabled)
                 .padding(.vertical)
-#if arch(arm64) && WITH_MAC_NATIVE
-                .disabled(touchMode == .MacNative)
-#endif
 
             Picker("账号切换", selection: $config.account_name) {
                 Text("不切换").tag("")

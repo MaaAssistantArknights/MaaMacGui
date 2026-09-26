@@ -492,7 +492,6 @@ extension MAAViewModel {
             config.client_type = clientChannel
 #if arch(arm64) && WITH_MAC_NATIVE
             if touchMode == .MacNative {
-                config.start_game_enabled = false
                 config.account_name = ""
             }
 #endif
@@ -504,6 +503,26 @@ extension MAAViewModel {
                 }
                 firstStart = false
             }
+#if arch(arm64) && WITH_MAC_NATIVE
+            if touchMode == .MacNative, task.enabled, config.start_game_enabled, firstStart {
+                let appURL = URL(fileURLWithPath: "/Applications/Arknights.app")
+                guard FileManager.default.fileExists(atPath: appURL.path) else {
+                    logError("MacNative 自动启动要求游戏位于 /Applications/Arknights.app")
+                    throw MAAError.gameStartFailed
+                }
+                guard Bundle(url: appURL)?.bundleIdentifier == macNativeBundleID else {
+                    logError("MacNative 游戏的 Bundle ID 与连接设置不一致：/Applications/Arknights.app")
+                    throw MAAError.gameStartFailed
+                }
+                do {
+                    try await NSWorkspace.shared.openApplication(at: appURL, configuration: .init())
+                } catch {
+                    logError("MacNative 无法启动 /Applications/Arknights.app：\(error.localizedDescription)")
+                    throw MAAError.gameStartFailed
+                }
+                firstStart = false
+            }
+#endif
         }
 
         for (index, task) in tasks.enumerated() {

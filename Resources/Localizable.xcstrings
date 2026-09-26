@@ -1787,6 +1787,15 @@
         }
       }
     },
+    "MacNative 无法启动 /Applications/Arknights.app：%@" : {
+
+    },
+    "MacNative 游戏的 Bundle ID 与连接设置不一致：/Applications/Arknights.app" : {
+
+    },
+    "MacNative 自动启动要求游戏位于 /Applications/Arknights.app" : {
+
+    },
     "MedicineUsed" : {
       "extractionState" : "manual",
       "localizations" : {
