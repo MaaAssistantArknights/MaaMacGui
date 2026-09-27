@@ -96,9 +96,6 @@
     "✅ 屏幕录制权限已开启" : {
 
     },
-    "1" : {
-      "shouldTranslate" : false
-    },
     "1-7" : {
       "shouldTranslate" : false
     },
@@ -3023,7 +3020,14 @@
       }
     },
     "不借" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Never"
+          }
+        }
+      }
     },
     "不切换" : {
       "localizations" : {
@@ -3239,6 +3243,16 @@
     "作业信息" : {
 
     },
+    "作业执行" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Job execution"
+          }
+        }
+      }
+    },
     "使用 adb-lite 连接" : {
       "localizations" : {
         "ko" : {
@@ -3258,6 +3272,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "암호판 사용"
+          }
+        }
+      }
+    },
+    "保存" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
           }
         }
       }
@@ -3291,6 +3315,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "크레딧 쇼핑"
+          }
+        }
+      }
+    },
+    "借助战" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support unit"
           }
         }
       }
@@ -3826,8 +3860,15 @@
         }
       }
     },
-    "助战模式" : {
-
+    "助战干员名称" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Support operator name"
+          }
+        }
+      }
     },
     "单设施最优解" : {
       "localizations" : {
@@ -3936,6 +3977,12 @@
     },
     "吃理智药" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use sanity potion"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4275,7 +4322,14 @@
       }
     },
     "干员名称" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator name"
+          }
+        }
+      }
     },
     "干员寻访" : {
       "localizations" : {
@@ -4391,7 +4445,14 @@
       }
     },
     "当前" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current"
+          }
+        }
+      }
     },
     "当前/上次" : {
       "localizations" : {
@@ -4438,6 +4499,16 @@
     },
     "忽视干员属性要求" : {
 
+    },
+    "忽略干员属性要求" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ignore operator requirements"
+          }
+        }
+      }
     },
     "成功！" : {
 
@@ -4510,6 +4581,16 @@
         }
       }
     },
+    "技能序号" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skill"
+          }
+        }
+      }
+    },
     "技能" : {
       "localizations" : {
         "en" : {
@@ -4550,7 +4631,14 @@
 
     },
     "指定" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Specified"
+          }
+        }
+      }
     },
     "指定材料" : {
       "localizations" : {
@@ -4578,6 +4666,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "더하기 버튼을 누르고 있기"
+          }
+        }
+      }
+    },
+    "按顺序追加干员；技能 0 表示保持当前技能。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add operators in order. Skill 0 keeps the current skill."
           }
         }
       }
@@ -5415,10 +5513,30 @@
     },
     "移除作业" : {
       "localizations" : {
-        "ko" : {
+        "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작업 제거"
+            "value" : "Remove job"
+          }
+        }
+      }
+    },
+    "移除干员" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove operator"
+          }
+        }
+      }
+    },
+    "突袭" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Challenge"
           }
         }
       }
@@ -5534,8 +5652,25 @@
         }
       }
     },
+    "编辑…" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit…"
+          }
+        }
+      }
+    },
     "编队栏位" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Formation slot"
+          }
+        }
+      }
     },
     "繁中服（txwy）" : {
       "localizations" : {
@@ -5549,6 +5684,16 @@
     },
     "缩放算法" : {
 
+    },
+    "缺少一名干员时可尝试借助战；缺少多名干员时请更换作业。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Try a support unit if one operator is missing. Choose another job if several are missing."
+          }
+        }
+      }
     },
     "自动下载更新" : {
       "localizations" : {
@@ -5713,6 +5858,16 @@
         }
       }
     },
+    "自动编队可能无法识别带有「特别关注」标记的干员" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto formation may not recognize operators marked as favorites."
+          }
+        }
+      }
+    },
     "自动肉鸽" : {
       "localizations" : {
         "ko" : {
@@ -5817,10 +5972,24 @@
       }
     },
     "补充低信赖干员" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add low-trust operators"
+          }
+        }
+      }
     },
     "补漏" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "When Needed"
+          }
+        }
+      }
     },
     "装备：" : {
       "localizations" : {
@@ -6099,6 +6268,16 @@
         }
       }
     },
+    "跳过技能等级、模组等前置检查，可能导致作业无法正常运行；干员精英化等级仍须满足要求。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip skill and module requirements. The job may fail; elite level requirements still apply."
+          }
+        }
+      }
+    },
     "运行日志" : {
       "localizations" : {
         "ko" : {
@@ -6170,6 +6349,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결 설정"
+          }
+        }
+      }
+    },
+    "追加自定干员" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Additional operators"
           }
         }
       }
@@ -6271,7 +6460,14 @@
       }
     },
     "随机" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Random"
+          }
+        }
+      }
     },
     "随机奖励" : {
       "localizations" : {

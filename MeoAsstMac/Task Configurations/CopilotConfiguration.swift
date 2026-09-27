@@ -21,6 +21,7 @@ struct CopilotConfiguration: Codable, Hashable {
 
     var copilot_list = [CopilotItem]()
 
+    var enableLoop = false
     var loop_times = 1
 
     var use_sanity_potion = false
@@ -33,6 +34,7 @@ struct CopilotConfiguration: Codable, Hashable {
         let skill: Int
     }
 
+    var enableUserAdditional = false
     var user_additional = [UserUnit]()
 
     var add_trust = false
@@ -90,13 +92,24 @@ enum CopilotCategory: String, CaseIterable {
 }
 
 @Observable final class CopilotContext {
-    var config = CopilotConfiguration()
+    var config = CopilotConfiguration() {
+        didSet {
+            guard let data = try? JSONEncoder().encode(config) else { return }
+            savedConfig = data
+        }
+    }
+
+    @ObservationIgnored @Defaults("CopilotConfiguration") private var savedConfig = Data()
 
     @ObservationIgnored
     @Defaults("CopilotContentCategory")
     var category = CopilotCategory.bundled
 
     init() {
+        let decoder = JSONDecoder()
+        if let saved = try? decoder.decode(CopilotConfiguration.self, from: savedConfig) {
+            config = saved
+        }
     }
 
     struct ItemID: Hashable {

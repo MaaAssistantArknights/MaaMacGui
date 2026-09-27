@@ -133,6 +133,13 @@ extension NewViewModel {
         var config = copilot.config
         let type: MAATaskType
 
+        if !config.enableUserAdditional {
+            config.user_additional = []
+        }
+        if !config.enableLoop || copilot.category == .list {
+            config.loop_times = 1
+        }
+
         if copilot.category == .list {
             guard let kind = copilot.copilotSet?.kind else {
                 return
