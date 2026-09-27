@@ -146,11 +146,16 @@ extension NewViewModel {
             }
 
             config.filename = nil
-            config.copilot_list = copilot.copilotList.filter(\.isOn).map {
+            // A missing file makes Core reject the whole list, so skip entries whose file was removed.
+            let items = copilot.copilotList.filter {
+                $0.isOn && FileManager.default.fileExists(atPath: $0.url.path(percentEncoded: false))
+            }
+            config.copilot_list = items.enumerated().map { index, item in
                 .init(
-                    filename: $0.url.path(percentEncoded: false),
-                    nav_name_override: MAACopilot.navigationOverride(code: $0.stageCode),
-                    is_raid: $0.isRaid ?? false)
+                    id: index,
+                    filename: item.url.path(percentEncoded: false),
+                    nav_name_override: MAACopilot.navigationOverride(code: item.stageCode),
+                    is_raid: item.isRaid ?? false)
             }
 
             switch kind {

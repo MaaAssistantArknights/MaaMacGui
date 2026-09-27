@@ -33,7 +33,17 @@ struct CopilotView: View {
             }
         } else {
             switch context.content {
-            case .copilot(_, let kind, let copilot):
+            case .copilot(let url, let kind, let copilot):
+                Button("加入作业列表") {
+                    Task {
+                        if await context.addToList(at: url) {
+                            context.category = .list
+                            context.selection = nil
+                        }
+                    }
+                }
+                .buttonStyle(.bordered)
+                .disabled(context.copilotSet?.kind != nil && context.copilotSet?.kind != kind)
                 CopilotConfigView(kind: kind, isList: false, config: $context.config) {
                     CopilotDescriptionView(pilot: copilot)
                 }

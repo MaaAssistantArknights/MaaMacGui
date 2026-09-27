@@ -2989,6 +2989,26 @@
         }
       }
     },
+    "上移作业" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move job up"
+          }
+        }
+      }
+    },
+    "下移作业" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move job down"
+          }
+        }
+      }
+    },
     "下载作业" : {
       "localizations" : {
         "ko" : {
@@ -3153,6 +3173,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "창고 인식"
+          }
+        }
+      }
+    },
+    "以下文件未能加入作业列表" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The following files could not be added to the copilot list"
           }
         }
       }
@@ -3836,6 +3866,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사무실"
+          }
+        }
+      }
+    },
+    "加入作业列表" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add to job list"
           }
         }
       }
@@ -5914,6 +5954,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사용자 지정"
+          }
+        }
+      }
+    },
+    "自定义作业列表" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Custom job list"
           }
         }
       }

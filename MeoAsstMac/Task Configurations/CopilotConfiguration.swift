@@ -14,6 +14,7 @@ struct CopilotConfiguration: Codable, Hashable {
     var filename: String?
 
     struct CopilotItem: Codable, Hashable {
+        let id: Int
         let filename: String
         let nav_name_override: String?
         let is_raid: Bool
@@ -105,10 +106,46 @@ enum CopilotCategory: String, CaseIterable {
     @Defaults("CopilotContentCategory")
     var category = CopilotCategory.bundled
 
+    @ObservationIgnored @Defaults("CopilotTaskListState") private var savedTaskList = Data()
+
+    private struct TaskList: Codable {
+        var set: CopilotSet?
+        var items = [ListItem]()
+    }
+
+    private var taskList = TaskList() {
+        didSet {
+            saveTaskList()
+        }
+    }
+
+    private func saveTaskList() {
+        guard let data = try? JSONEncoder().encode(taskList) else { return }
+        savedTaskList = data
+    }
+
     init() {
         let decoder = JSONDecoder()
         if let saved = try? decoder.decode(CopilotConfiguration.self, from: savedConfig) {
             config = saved
+        }
+        if savedTaskList.isEmpty {
+            let defaults = UserDefaults.standard
+            let items = defaults.data(forKey: "CopilotTaskList")
+                .flatMap { try? decoder.decode([ListItem].self, from: $0) } ?? []
+            let set = defaults.data(forKey: "CopilotTaskListSet")
+                .flatMap { try? decoder.decode(CopilotSet.self, from: $0) }
+            taskList = TaskList(set: items.isEmpty ? nil : set, items: items)
+            saveTaskList()
+        } else if let saved = try? decoder.decode(TaskList.self, from: savedTaskList) {
+            taskList = saved
+        }
+
+        // Saved paths go stale when a job file is deleted or moves with an app update; Core rejects the whole list.
+        let items = taskList.items.filter { FileManager.default.fileExists(atPath: $0.url.path(percentEncoded: false)) }
+        if items.count != taskList.items.count {
+            taskList = TaskList(set: items.isEmpty ? nil : taskList.set, items: items)
+            saveTaskList()
         }
     }
 
@@ -149,14 +186,16 @@ enum CopilotCategory: String, CaseIterable {
 
     private(set) var content: Content?
 
-    struct CopilotSet {
+    struct CopilotSet: Codable {
         let kind: MAACopilot.Kind
         let data: CopilotSetData
     }
 
-    private(set) var copilotSet: CopilotSet?
+    var copilotSet: CopilotSet? {
+        taskList.set
+    }
 
-    struct ListItem: Identifiable {
+    struct ListItem: Codable, Identifiable {
         let url: URL
         let stageCode: String
         let stageName: String
@@ -169,23 +208,39 @@ enum CopilotCategory: String, CaseIterable {
         }
     }
 
-    var copilotList = [ListItem]() {
-        didSet {
-            if copilotList.isEmpty {
-                copilotSet = nil
-            }
+    var copilotList: [ListItem] {
+        get { taskList.items }
+        set {
+            taskList = TaskList(set: newValue.isEmpty ? nil : taskList.set, items: newValue)
         }
     }
 }
 
 extension CopilotContext {
+    @discardableResult
+    nonisolated(nonsending) func addToList(at url: URL) async -> Bool {
+        guard let copilot = MAACopilot(url: url),
+            let (kind, items) = await copilot.listItems(at: url),
+            !items.isEmpty,
+            copilotSet?.kind == nil || copilotSet?.kind == kind
+        else {
+            return false
+        }
+
+        let set = copilotSet ?? CopilotSet(
+            kind: kind,
+            data: .init(name: String(localized: "自定义作业列表"), description: "", copilot_ids: []))
+        let existing = Set(copilotList.map(\.id))
+        taskList = TaskList(set: set, items: copilotList + items.filter { !existing.contains($0.id) })
+        return true
+    }
+
     nonisolated(nonsending) func updateSet(at url: URL, set: CopilotSetData) async {
         guard let (kind, list) = await set.copilotList(at: url) else {
             return
         }
 
-        self.copilotSet = .init(kind: kind, data: set)
-        self.copilotList = list
+        taskList = TaskList(set: list.isEmpty ? nil : .init(kind: kind, data: set), items: list)
     }
 
     nonisolated(nonsending) func updateSet(at url: URL) async {
@@ -226,12 +281,11 @@ extension CopilotSetData {
         for copilotID in copilot_ids {
             let url = url.appending(path: "\(copilotID).json")
             guard let copilot = MAACopilot(url: url),
-                let level = await MAAProvider.shared.mapLevel(matching: copilot.stage_name)
+                let (kind, items) = await copilot.listItems(at: url)
             else {
                 return nil
             }
 
-            let kind = copilot.kind(code: level.code)
             if lastCopilotKind == nil {
                 lastCopilotKind = kind
             } else if lastCopilotKind != kind {
@@ -239,23 +293,7 @@ extension CopilotSetData {
                 return nil
             }
 
-            switch copilot.difficulty {
-            case nil, 0:
-                copilotList.append(.init(url: url, stageCode: level.code, stageName: level.name, isOn: true))
-            case 1:
-                copilotList.append(
-                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: false, isOn: true))
-            case 2:
-                copilotList.append(
-                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: true, isOn: true))
-            case 3:
-                copilotList.append(
-                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: false, isOn: true))
-                copilotList.append(
-                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: true, isOn: true))
-            default:
-                continue
-            }
+            copilotList.append(contentsOf: items)
         }
 
         return (lastCopilotKind ?? .regular, copilotList)
@@ -263,10 +301,35 @@ extension CopilotSetData {
 }
 
 extension MAACopilot {
-    enum Kind: Hashable {
+    enum Kind: String, Codable, Hashable {
         case regular
         case sss
         case paradox
+    }
+
+    func listItems(at url: URL) async -> (Kind, [CopilotContext.ListItem])? {
+        guard let level = await MAAProvider.shared.mapLevel(matching: stage_name) else {
+            return nil
+        }
+        let raidOptions: [Bool?]
+        switch difficulty {
+        case nil, 0:
+            raidOptions = [nil]
+        case 1:
+            raidOptions = [false]
+        case 2:
+            raidOptions = [true]
+        case 3:
+            raidOptions = [false, true]
+        default:
+            raidOptions = []
+        }
+        return (
+            kind(code: level.code),
+            raidOptions.map {
+                .init(url: url, stageCode: level.code, stageName: level.name, isRaid: $0, isOn: true)
+            }
+        )
     }
 
     func kind(code: String) -> Kind {
