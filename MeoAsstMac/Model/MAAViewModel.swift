@@ -33,6 +33,11 @@ import SwiftUI
     private var messageTask: Task<Void, Never>?
     weak var logStore: (any LogStore)?
 
+    /// 资源初始化（加载 MaaCore 资源等）只需在 App 生命周期内执行一次。
+    /// 关闭窗口后再次打开会重建 ContentView 并重新触发 `.task { initialize() }`，
+    /// 用此标志避免重复“获取资源”。
+    private var isInitialized = false
+
     // MARK: - Daily Tasks
 
     @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default"
@@ -175,10 +180,17 @@ import SwiftUI
 
 extension MAAViewModel {
     func initialize() async throws {
+        guard !isInitialized else { return }
+        isInitialized = true
         status = .pending
-        try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
-        try await loadResource(channel: clientChannel)
-        status = .idle
+        do {
+            try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
+            try await loadResource(channel: clientChannel)
+            status = .idle
+        } catch {
+            isInitialized = false
+            throw error
+        }
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
