@@ -77,6 +77,8 @@ private struct AddPopover: View {
     @Binding var showAdd: Bool
     @State private var showImportCopilot = false
     @State private var prtsCode = ""
+    @State private var rejectedURLs = [URL]()
+    @State private var showImportError = false
 
     var body: some View {
         VStack {
@@ -145,23 +147,64 @@ private struct AddPopover: View {
             allowsMultipleSelection: true,
             onCompletion: addCopilots
         )
+        .alert("以下文件未能加入作业列表", isPresented: $showImportError) {
+            Button("好", role: .cancel) {}
+        } message: {
+            Text(rejectedURLs.map { $0.path(percentEncoded: false) }.joined(separator: "\n"))
+        }
     }
 
     private func addCopilots(_ results: Result<[URL], Error>) {
         do {
             let urls = try results.get()
-            var lastURL: URL?
+            let selection = newModel.copilot.selection
+            let category = newModel.copilot.category
+            var importedURLs = [(source: URL, destination: URL)]()
+            var destinations = Set<URL>()
+            var rejected = [URL]()
             for url in urls {
                 guard url.startAccessingSecurityScopedResource() else {
-                    print("Failed to access \(url.path(percentEncoded: false))")
+                    rejected.append(url)
                     continue
                 }
                 defer {
                     url.stopAccessingSecurityScopedResource()
                 }
-                lastURL = try FileManager.default.copyCopilotToExternalDirectory(at: url)
+                do {
+                    let destination = try FileManager.default.copyCopilotToExternalDirectory(
+                        at: url, excluding: destinations)
+                    destinations.insert(destination)
+                    importedURLs.append((source: url, destination: destination))
+                } catch {
+                    rejected.append(url)
+                }
             }
-            newModel.lastImportedCopilot = lastURL
+            if urls.count > 1 {
+                Task { @MainActor in
+                    var added = false
+                    for imported in importedURLs {
+                        if await newModel.copilot.addToList(at: imported.destination) {
+                            added = true
+                        } else {
+                            rejected.append(imported.source)
+                        }
+                    }
+                    if newModel.copilot.selection == selection, newModel.copilot.category == category {
+                        if added {
+                            newModel.copilot.selection = nil
+                            newModel.copilot.category = .list
+                        } else {
+                            newModel.lastImportedCopilot = importedURLs.last?.destination
+                        }
+                    }
+                    rejectedURLs = rejected
+                    showImportError = !rejected.isEmpty
+                }
+            } else {
+                newModel.lastImportedCopilot = importedURLs.last?.destination
+                rejectedURLs = rejected
+                showImportError = !rejected.isEmpty
+            }
         } catch {
             print(error)
         }

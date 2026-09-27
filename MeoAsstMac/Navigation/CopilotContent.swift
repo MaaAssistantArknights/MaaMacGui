@@ -380,7 +380,7 @@ extension URL {
 extension CopilotContext {
     var isReady: Bool {
         if category == .list {
-            return copilotSet != nil && !copilotList.isEmpty
+            return copilotSet != nil && copilotList.contains(where: \.isOn)
         }
         if case .copilot = content {
             return true
@@ -431,8 +431,18 @@ extension CopilotContent.Item {
 // MARK: - Convenience Methods
 
 extension FileManager {
-    func copyCopilotToExternalDirectory(at url: URL) throws -> URL {
-        let dest = try externalCopilotURL(for: url)
+    func copyCopilotToExternalDirectory(at url: URL, excluding destinations: Set<URL> = []) throws -> URL {
+        var dest = try externalCopilotURL(for: url)
+        if destinations.contains(dest) {
+            let stem = dest.deletingPathExtension().lastPathComponent
+            let pathExtension = dest.pathExtension
+            var suffix = 2
+            repeat {
+                let name = "\(stem) \(suffix)" + (pathExtension.isEmpty ? "" : ".\(pathExtension)")
+                dest = URL.externalCopilotDirectory.appending(path: name)
+                suffix += 1
+            } while destinations.contains(dest) || fileExists(atPath: dest.path)
+        }
         try FileManager.default.copyItemOverwriting(at: url, to: dest)
         return dest
     }
