@@ -149,42 +149,52 @@ private struct SSSCopilotConfigView: View {
 
 private struct CopilotDescriptionView: View {
     let pilot: MAACopilot
+    @State private var level: MAAProvider.MapLevel?
 
     var body: some View {
-        if let title = pilot.doc?.title {
-            Text(title).font(.title2)
-        }
-        if let details = pilot.doc?.details {
-            Text(details)
-        }
+        VStack(alignment: .leading, spacing: 12) {
+            if let level {
+                Text(level.name.isEmpty ? level.code : "\(level.code) · \(level.name)")
+                    .font(.headline)
+            }
+            if let title = pilot.doc?.title {
+                Text(title).font(.title2)
+            }
+            if let details = pilot.doc?.details {
+                Text(details)
+            }
 
-        if let equipments = pilot.equipment {
-            Text("装备：") + Text(equipments.joined(separator: ", "))
-        }
+            if let equipments = pilot.equipment {
+                Text("装备：") + Text(equipments.joined(separator: ", "))
+            }
 
-        if let strategy = pilot.strategy {
-            Text(strategy)
-        }
+            if let strategy = pilot.strategy {
+                Text(strategy)
+            }
 
-        if pilot.opers.count > 0 {
-            VStack {
-                ForEach(pilot.opers, id: \.name) { oper in
-                    Text(oper.description)
+            if pilot.opers.count > 0 {
+                VStack {
+                    ForEach(pilot.opers, id: \.name) { oper in
+                        Text(oper.description)
+                    }
                 }
             }
-        }
 
-        if let groups = pilot.groups {
-            VStack {
-                ForEach(groups, id: \.name) { group in
-                    Text(group.name) + Text(verbatim: ": ")
-                        + Text(group.opers.map(\.description).joined(separator: " / "))
+            if let groups = pilot.groups {
+                VStack {
+                    ForEach(groups, id: \.name) { group in
+                        Text(group.name) + Text(verbatim: ": ")
+                            + Text(group.opers.map(\.description).joined(separator: " / "))
+                    }
                 }
             }
-        }
 
-        if let toolmen = pilot.tool_men {
-            Text(toolmen.sorted { $0.key < $1.key }.map { "\($1)\($0)" }.joined(separator: ", "))
+            if let toolmen = pilot.tool_men {
+                Text(toolmen.sorted { $0.key < $1.key }.map { "\($1)\($0)" }.joined(separator: ", "))
+            }
+        }
+        .task(id: pilot.stage_name) {
+            level = await MAAProvider.shared.mapLevel(matching: pilot.stage_name)
         }
     }
 }
