@@ -146,6 +146,7 @@ enum CopilotCategory: String, CaseIterable {
     struct ListItem: Identifiable {
         let url: URL
         let stageCode: String
+        let stageName: String
         var isRaid: Bool?
 
         var isOn = false
@@ -212,12 +213,12 @@ extension CopilotSetData {
         for copilotID in copilot_ids {
             let url = url.appending(path: "\(copilotID).json")
             guard let copilot = MAACopilot(url: url),
-                let code = await MAAProvider.shared.mapLevelCode(matching: copilot.stage_name)
+                let level = await MAAProvider.shared.mapLevel(matching: copilot.stage_name)
             else {
                 return nil
             }
 
-            let kind = copilot.kind(code: code)
+            let kind = copilot.kind(code: level.code)
             if lastCopilotKind == nil {
                 lastCopilotKind = kind
             } else if lastCopilotKind != kind {
@@ -227,14 +228,18 @@ extension CopilotSetData {
 
             switch copilot.difficulty {
             case nil, 0:
-                copilotList.append(.init(url: url, stageCode: code, isOn: true))
+                copilotList.append(.init(url: url, stageCode: level.code, stageName: level.name, isOn: true))
             case 1:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
+                copilotList.append(
+                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: false, isOn: true))
             case 2:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
+                copilotList.append(
+                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: true, isOn: true))
             case 3:
-                copilotList.append(.init(url: url, stageCode: code, isRaid: false, isOn: true))
-                copilotList.append(.init(url: url, stageCode: code, isRaid: true, isOn: true))
+                copilotList.append(
+                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: false, isOn: true))
+                copilotList.append(
+                    .init(url: url, stageCode: level.code, stageName: level.name, isRaid: true, isOn: true))
             default:
                 continue
             }

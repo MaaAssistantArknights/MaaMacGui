@@ -12,9 +12,41 @@ struct CopilotListContent: View {
 
     var body: some View {
         ForEach($context.copilotList) { $item in
-            Toggle(item.description, isOn: $item.isOn)
+            Toggle(isOn: $item.isOn) {
+                HStack(spacing: 6) {
+                    Text(stageTitle(item))
+                        .fontWeight(.medium)
+                        .lineLimit(1)
+                    if showsStageName(item) {
+                        Text(item.stageName)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                    if item.isRaid == true {
+                        Text("突袭")
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                }
+            }
+            .help(item.description)
         }
     }
+    private func stageTitle(_ item: CopilotContext.ListItem) -> String {
+        if let code = MAACopilot.navigationOverride(code: item.stageCode) {
+            return code
+        }
+        if !item.stageName.isEmpty {
+            return item.stageName
+        }
+        return item.stageCode
+    }
+
+    private func showsStageName(_ item: CopilotContext.ListItem) -> Bool {
+        let title = stageTitle(item)
+        return !item.stageName.isEmpty && item.stageName != title && !MAACopilot.isDecimalID(item.stageName)
+    }
+
 }
 
 struct CopilotListControls: View {
@@ -45,10 +77,19 @@ struct CopilotListControls: View {
 
 extension CopilotContext.ListItem: CustomStringConvertible {
     var description: String {
-        if isRaid == true {
-            return "\(stageCode)\(String(localized: "（突袭）"))"
+        let code = MAACopilot.navigationOverride(code: stageCode)
+        let stage: String
+        if let code {
+            stage = stageName.isEmpty || stageName == code ? code : "\(code) · \(stageName)"
+        } else if !stageName.isEmpty, !MAACopilot.isDecimalID(stageName) {
+            stage = stageName
         } else {
-            return stageCode
+            stage = stageCode
+        }
+        if isRaid == true {
+            return "\(stage)\(String(localized: "（突袭）"))"
+        } else {
+            return stage
         }
     }
 }

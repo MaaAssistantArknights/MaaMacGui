@@ -142,7 +142,7 @@ extension NewViewModel {
             config.copilot_list = copilot.copilotList.filter(\.isOn).map {
                 .init(
                     filename: $0.url.path(percentEncoded: false),
-                    nav_name_override: nil,
+                    nav_name_override: MAACopilot.navigationOverride(code: $0.stageCode),
                     is_raid: $0.isRaid ?? false)
             }
 

@@ -29,14 +29,25 @@ actor MAAProvider {
         }
     }
 
-    func mapLevelCode(matching key: String) -> String? {
+    struct MapLevel: Sendable {
+        let code: String
+        let name: String
+    }
+
+    func mapLevel(matching key: String) -> MapLevel? {
         let mapLevelKey = key.withCString {
             AsstGetMapLevelKey($0)
         }
         guard let code = mapLevelKey.code else {
             return nil
         }
-        return String(cString: code)
+        return MapLevel(
+            code: String(cString: code),
+            name: mapLevelKey.name.map { String(cString: $0) } ?? "")
+    }
+
+    func mapLevelCode(matching key: String) -> String? {
+        mapLevel(matching: key)?.code
     }
 
     func itemName(for id: String) -> String {
