@@ -310,6 +310,10 @@ extension MAAViewModel {
                     sanitySuffix = ""
                 }
                 logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+                notify(title: LocalizedStringResource("任务全部完成"), body: "用时 \(duration)\(sanitySuffix)")
+                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+                    notifySanityRecovery(at: recoveryTime)
+                }
                 break
             }
             return
@@ -330,10 +334,8 @@ extension MAAViewModel {
         }
 
         if info.taskchain == "Recruit", message.code == .TaskChainError {
-            // TODO: (Notification) Show the recruit-recognition error notification.
             // TODO: (ViewState) Show the recruit-recognition error in RecruitView.
-            let resource = LocalizedStringResource.identifyTheMistakes
-            _ = resource
+            notify(title: LocalizedStringResource("公招识别失败"))
         }
 
         let isCopilot = ["Copilot", "SSSCopilot"].contains(info.taskchain)
@@ -369,6 +371,9 @@ extension MAAViewModel {
             }
             if isCopilot {
                 logError(.combatError)
+            }
+            if info.taskchain != "Recruit" {
+                notify(title: LocalizedStringResource("任务执行出错"), body: taskchainName)
             }
 
         case .TaskChainStart:
@@ -621,13 +626,13 @@ extension MAAViewModel {
                 logError(.actingCommandError)
 
             case "FightMissionFailedAndStop":
-                // TODO: (Notification) Show the fight-failure notification.
+                notify(title: LocalizedStringResource("战斗失败并停止"))
                 logError(.fightMissionFailedAndStop)
 
             case "CheckEncounter-Uncollected":
                 // TODO: (LogCard) Update the uncollected-reward log card.
-                // TODO: (Notification) Show the uncollected-reward notification.
                 // TODO: (ExternalNotification) Send the uncollected-reward event.
+                notify(title: LocalizedStringResource("存在未领取的奖励"))
                 logWarn("MiniGame@InteractiveExhibition@UncollectedNotificationContent")
 
             case "RecruitRefreshConfirm":
@@ -686,7 +691,7 @@ extension MAAViewModel {
                 logInfo(.upperLimit)
 
             case "OfflineConfirm", "OfflineConfirmAfterBattle":
-                // TODO: (Notification) Show the game-disconnection notification.
+                notify(title: LocalizedStringResource("游戏已掉线"))
                 logError(.gameDrop)
                 Task {
                     do {
@@ -1027,16 +1032,16 @@ extension MAAViewModel {
             logTrace(.recruitingResults(tags: tagText))
 
         case "RecruitSpecialTag", "RecruitRobotTag":
-            // TODO: (Notification) Show the matching special-tag recruit notification.
-            guard let _: String = try? info.details["tag"] else {
-                return
-            }
-
-        case "RecruitPreservedTag":
-            // TODO: (Notification) Show the matching preserved-tag recruit notification.
             guard let tag: String = try? info.details["tag"] else {
                 return
             }
+            notify(title: LocalizedStringResource("公招特殊标签"), body: tag)
+
+        case "RecruitPreservedTag":
+            guard let tag: String = try? info.details["tag"] else {
+                return
+            }
+            notify(title: LocalizedStringResource("公招保底标签"), body: tag)
             logTrace(.recruitingTips(preserved: tag))
 
         case "RecruitResult":
@@ -1049,6 +1054,7 @@ extension MAAViewModel {
             }
             if level >= 5 {
                 logRare("\(level) ★ Tags")
+                notify(title: LocalizedStringResource("公招高稀有度"), body: "\(level) ★")
             } else {
                 logInfo("\(level) ★ Tags")
             }

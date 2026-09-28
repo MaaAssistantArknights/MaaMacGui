@@ -12,6 +12,14 @@ struct SystemSettingsView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
+
+            Toggle(isOn: $viewModel.useNotification) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("任务通知提醒")
+                    Text("任务完成、出错或掉线时发送系统通知提醒；任务全部完成时额外预约理智恢复提醒")
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
         }
         .padding()
     }

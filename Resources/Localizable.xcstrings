@@ -3163,6 +3163,29 @@
         }
       }
     },
+    "任务全部完成" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "All Tasks Completed"
+          }
+        }
+      }
+    },
+    "任务执行出错" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task Failed"
+          }
+        }
+      }
+    },
+    "任务通知提醒" : {
+
+    },
     "企鹅物流" : {
       "localizations" : {
         "ko" : {
@@ -3424,12 +3447,52 @@
         }
       }
     },
+    "公招保底标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preserved Recruitment Tag"
+          }
+        }
+      }
+    },
+    "公招特殊标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Special Recruitment Tag"
+          }
+        }
+      }
+    },
+    "公招识别失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recruitment Recognition Failed"
+          }
+        }
+      }
+    },
     "公招词条" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "공개 모집 태그"
+          }
+        }
+      }
+    },
+    "公招高稀有度" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "High-Rarity Recruitment"
           }
         }
       }
@@ -3911,6 +3974,16 @@
         }
       }
     },
+    "可以开始新一轮任务了" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can start a new task now."
+          }
+        }
+      }
+    },
     "可能需要设置系统代理。" : {
       "localizations" : {
         "ko" : {
@@ -4086,6 +4159,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "오랫동안 연결되지 않거나 오류가 발생하면 \"파일\" > \"PlayCover 연결…\"에서 최신 버전을 다운로드하여 사용해 보세요."
+          }
+        }
+      }
+    },
+    "存在未领取的奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uncollected Rewards"
           }
         }
       }
@@ -4448,6 +4531,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "알겠습니다, 계속 진행합니다."
+          }
+        }
+      }
+    },
+    "战斗失败并停止" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Combat Failed and Stopped"
           }
         }
       }
@@ -5185,6 +5278,16 @@
         }
       }
     },
+    "游戏已掉线" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Game Disconnected"
+          }
+        }
+      }
+    },
     "游戏设置" : {
       "localizations" : {
         "ko" : {
@@ -5297,6 +5400,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "교대"
+          }
+        }
+      }
+    },
+    "理智已恢复" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sanity Recovered"
           }
         }
       }
