@@ -57,4 +57,27 @@ extension MAALog.LogColor {
             return .red
         }
     }
+
+    /// 外部通知详情日志行中的颜色标记，与 WPF `UiLogColor` 的资源键保持一致。
+    var logTag: String {
+        switch self {
+        case .trace: "Trace"
+        case .info: "Info"
+        case .rare: "Rare"
+        case .warning: "Warning"
+        case .error: "Error"
+        }
+    }
+
+    /// 按 WPF `UiLogColor` 风格的资源键解析颜色标记（忽略大小写）。
+    init?(resourceKey: String) {
+        switch resourceKey.lowercased() {
+        case "trace": self = .trace
+        case "info": self = .info
+        case "rare": self = .rare
+        case "warning": self = .warning
+        case "error": self = .error
+        default: return nil
+        }
+    }
 }

@@ -70,13 +70,18 @@ struct MeoAsstMacApp: App {
                         Label("更新设置", systemImage: "square.and.arrow.down")
                     }
 
+                ExternalNotificationSettingsView()
+                    .tabItem {
+                        Label("外部通知", systemImage: "bell.badge")
+                    }
+
                 SystemSettingsView()
                     .tabItem {
                         Label("系统设置", systemImage: "wrench.adjustable")
                     }
             }
             .environmentObject(appViewModel)
-            .frame(maxWidth: 360, minHeight: 240)
+            .frame(maxWidth: 360, minHeight: 500)
         }
     }
 }

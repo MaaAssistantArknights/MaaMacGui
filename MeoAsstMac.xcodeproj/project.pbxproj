@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA0907FCF520D5B504290D80 /* ExternalNotificationConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88E22B6F77C123E444FF1CA /* ExternalNotificationConfig.swift */; };
+		01B70800DA034082F8004F41 /* ExternalNotificationProviders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A56EB01B085E8B13BA1BDED1 /* ExternalNotificationProviders.swift */; };
+		685F509F68A5B826089AFA95 /* ExternalNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF4D9090AD09B8B2BEFFB63 /* ExternalNotificationService.swift */; };
+		58261E0B3D4E077222C11161 /* SMTPClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABE21628A188E4A1593E113E /* SMTPClient.swift */; };
+		8EE14746E4135FD0A56640A6 /* ExternalNotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E063AA6058C51AA409DAAF93 /* ExternalNotificationSettingsView.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
 		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
@@ -151,6 +156,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		C88E22B6F77C123E444FF1CA /* ExternalNotificationConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalNotificationConfig.swift"; sourceTree = "<group>"; };
+		A56EB01B085E8B13BA1BDED1 /* ExternalNotificationProviders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalNotificationProviders.swift"; sourceTree = "<group>"; };
+		4AF4D9090AD09B8B2BEFFB63 /* ExternalNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalNotificationService.swift"; sourceTree = "<group>"; };
+		ABE21628A188E4A1593E113E /* SMTPClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SMTPClient.swift"; sourceTree = "<group>"; };
+		E063AA6058C51AA409DAAF93 /* ExternalNotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ExternalNotificationSettingsView.swift"; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
@@ -511,6 +521,7 @@
 				838FF82129FBB9E3000566A0 /* GameSettingsView.swift */,
 				83DD50B629BE385A000E84E7 /* UpdaterSettingsView.swift */,
 				92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */,
+				E063AA6058C51AA409DAAF93 /* ExternalNotificationSettingsView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -534,6 +545,10 @@
 				83191C8E3040AF0D00576DC0 /* TCPConnection.swift */,
 				83AAF81730416ACF003752BD /* ByteReader.swift */,
 				83B8E0D83053131B00AB0B56 /* HGCalendar.swift */,
+				ABE21628A188E4A1593E113E /* SMTPClient.swift */,
+				4AF4D9090AD09B8B2BEFFB63 /* ExternalNotificationService.swift */,
+				A56EB01B085E8B13BA1BDED1 /* ExternalNotificationProviders.swift */,
+				C88E22B6F77C123E444FF1CA /* ExternalNotificationConfig.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -626,6 +641,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA0907FCF520D5B504290D80 /* ExternalNotificationConfig.swift in Sources */,
+				01B70800DA034082F8004F41 /* ExternalNotificationProviders.swift in Sources */,
+				685F509F68A5B826089AFA95 /* ExternalNotificationService.swift in Sources */,
+				58261E0B3D4E077222C11161 /* SMTPClient.swift in Sources */,
+				8EE14746E4135FD0A56640A6 /* ExternalNotificationSettingsView.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,

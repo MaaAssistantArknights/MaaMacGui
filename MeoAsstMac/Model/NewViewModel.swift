@@ -214,6 +214,9 @@ protocol LogStore: AnyObject {
     func setOperBox(_ operBox: MAAOperBox?)
     func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode)
 
+    /// 当前日志列表（只读），供外部通知「输出详细信息」等消费方读取。
+    var logs: [MAALog] { get }
+
     var screencapCost: (min: Int, max: Int, avg: Int)? { get set }
     var lastScreencapWarningLevel: Int { get set }
     var hasPrintedFPSHighTip: Bool { get set }

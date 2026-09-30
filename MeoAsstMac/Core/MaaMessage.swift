@@ -274,7 +274,6 @@ extension MAAViewModel {
         if message.code == .AllTasksCompleted {
             // TODO: (LogCard) Update the all-tasks-completed log card.
             // TODO: (Notification) Show the all-tasks-completed notification.
-            // TODO: (ExternalNotification) Send the all-tasks-completed event.
             // TODO: (Notification) Schedule the sanity-recovery notification.
             // TODO: (PostAction) Execute the configured completion action.
             // TODO: (ViewState) Show the April Fools completion animation when applicable.
@@ -310,6 +309,7 @@ extension MAAViewModel {
                     sanitySuffix = ""
                 }
                 logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+                sendAllTasksCompletedExternalNotification(duration: duration, sanitySuffix: sanitySuffix)
                 break
             }
             return
@@ -356,7 +356,6 @@ extension MAAViewModel {
             // TODO: (Screenshot) Fetch the latest screenshot for the error card.
             // TODO: (Tooltip) Use the error screenshot as the log tooltip.
             // TODO: (Notification) Show the task-error notification.
-            // TODO: (ExternalNotification) Send the task-error event.
             // TODO: (Achievement) Record Copilot task errors.
             if let id = taskID(coreID: info.taskid) {
                 taskStatus[id] = .failure
@@ -370,6 +369,7 @@ extension MAAViewModel {
             if isCopilot {
                 logError(.combatError)
             }
+            sendTaskErrorExternalNotification(taskchainName: taskchainName)
 
         case .TaskChainStart:
             // macOS task items do not currently support custom display names.
@@ -627,8 +627,8 @@ extension MAAViewModel {
             case "CheckEncounter-Uncollected":
                 // TODO: (LogCard) Update the uncollected-reward log card.
                 // TODO: (Notification) Show the uncollected-reward notification.
-                // TODO: (ExternalNotification) Send the uncollected-reward event.
                 logWarn("MiniGame@InteractiveExhibition@UncollectedNotificationContent")
+                sendUncollectedRewardExternalNotification()
 
             case "RecruitRefreshConfirm":
                 logInfo(.labelsRefreshed)
@@ -1586,6 +1586,34 @@ extension Int {
 
 extension MAAViewModel {
     fileprivate static let SubTaskStopped = 20004
+}
+
+// MARK: - External Notification Bridges
+
+extension MAAViewModel {
+    /// 「所有任务完成」外部通知事件：详情日志 + 用时 + 理智恢复预估，正文格式对齐 WPF。
+    fileprivate func sendAllTasksCompletedExternalNotification(duration: String, sanitySuffix: String) {
+        // sanitySuffix 形如 "\n理智恢复…"，作为独立报告字段时去掉前导换行。
+        let sanityReport = sanitySuffix.hasPrefix("\n") ? String(sanitySuffix.dropFirst()) : ""
+        Task { _ = await ExternalNotificationService.allTasksCompleted(
+            duration: duration,
+            sanityReport: sanityReport,
+            detailLogs: ExternalNotificationService.detailLogs(from: logStore))
+        }
+    }
+
+    /// 「任务出错」外部通知事件：出错的任务链名称 + 详情日志。
+    fileprivate func sendTaskErrorExternalNotification(taskchainName: String) {
+        Task { _ = await ExternalNotificationService.taskError(
+            taskchainName: taskchainName,
+            detailLogs: ExternalNotificationService.detailLogs(from: logStore))
+        }
+    }
+
+    /// 「存在未领取的奖励」外部通知事件（小游戏奇遇）。
+    fileprivate func sendUncollectedRewardExternalNotification() {
+        Task { _ = await ExternalNotificationService.uncollectedReward() }
+    }
 }
 
 // MARK: - Convenience Methods
