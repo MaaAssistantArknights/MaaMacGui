@@ -95,6 +95,7 @@ enum UtilityEntry: Int, CaseIterable, Codable, Identifiable {
     case gacha
     case minigame
     case maatools
+    case playcoverDiagnostics
 }
 
 extension UtilityEntry: CustomStringConvertible {
@@ -114,6 +115,8 @@ extension UtilityEntry: CustomStringConvertible {
             return String(localized: "小游戏")
         case .maatools:
             return String(localized: "分辨率指南")
+        case .playcoverDiagnostics:
+            return String(localized: "PlayCover 环境检测")
         }
     }
 
@@ -133,6 +136,8 @@ extension UtilityEntry: CustomStringConvertible {
             return "gamecontroller.fill"
         case .maatools:
             return "macwindow"
+        case .playcoverDiagnostics:
+            return "stethoscope"
         }
     }
 

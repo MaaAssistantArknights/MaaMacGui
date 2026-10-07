@@ -7,7 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DDD1EECDAB6A750FB783DBB /* MaaImageDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 875E3F6AE88F7094B46AC3F5 /* MaaImageDiagnostics.swift */; };
+		3725F79C6918E0D647698D17 /* PlayCoverDiagnosticModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEDF5F394AC7CDB7AC4CF6AB /* PlayCoverDiagnosticModel.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
+		4A79BA6D193C69BA809DCEB9 /* PlayCoverRuntimeChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B6E023DFF574001BD2240D /* PlayCoverRuntimeChecks.swift */; };
+		56937680F092C961213FF46C /* PlayCoverStaticChecks.swift in Sources */ = {isa = PBXBuildFile; fileRef = D570F8C36D08CBC0EE89D113 /* PlayCoverStaticChecks.swift */; };
 		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
@@ -99,6 +103,7 @@
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
 		83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250C302F02B000080642 /* PixelPaintView.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
+		A5176CA4AF6E36CCFD76E58D /* PlayCoverDiagnosticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F53A503B2886EA0AD10A1C36 /* PlayCoverDiagnosticsView.swift */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
 		83D061F62CF81519008F0140 /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D061F52CF81519008F0140 /* FileLogger.swift */; };
@@ -119,6 +124,10 @@
 		92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */; };
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
+		B94D5C9BEE2538654603F217 /* ScreenCaptureProbe.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5E08CE0036EDEAD7584E1B6 /* ScreenCaptureProbe.swift */; };
+		CA02DF266136A47623BED81B /* PlayCoverDiagnosticModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = E262D80D727BE0FD4D759701 /* PlayCoverDiagnosticModels.swift */; };
+		E2DC08B28CCC760FC5765F01 /* MachOLibraries.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10E0655B9C2B0C72F815BB0 /* MachOLibraries.swift */; };
+		EEBD16061CA54BADC1259FCF /* PlayCoverAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D305E4CFF32851305DA56B /* PlayCoverAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -151,6 +160,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		16D305E4CFF32851305DA56B /* PlayCoverAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverAccess.swift; sourceTree = "<group>"; };
+		55B6E023DFF574001BD2240D /* PlayCoverRuntimeChecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverRuntimeChecks.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
@@ -255,12 +266,19 @@
 		83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = ONNXRuntime.xcframework; path = ../../build/ONNXRuntime.xcframework; sourceTree = "<group>"; };
 		83E9ED962DF693B20069CFE9 /* OTAFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OTAFetcher.swift; sourceTree = "<group>"; };
 		83FF5A9B2978FE27000AE831 /* resource */ = {isa = PBXFileReference; lastKnownFileType = folder; name = resource; path = ../../../../resource; sourceTree = "<group>"; };
+		875E3F6AE88F7094B46AC3F5 /* MaaImageDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaImageDiagnostics.swift; sourceTree = "<group>"; };
 		92CDF6212A065E55005669EC /* Codeable+JSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Codeable+JSON.swift"; sourceTree = "<group>"; };
 		92EB82862A0CD315006DD9D2 /* SystemSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemSettingsView.swift; sourceTree = "<group>"; };
 		92F78D4C2A0A7B2E00999BD0 /* TaskTimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerView.swift; sourceTree = "<group>"; };
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		C10E0655B9C2B0C72F815BB0 /* MachOLibraries.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MachOLibraries.swift; sourceTree = "<group>"; };
+		D570F8C36D08CBC0EE89D113 /* PlayCoverStaticChecks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverStaticChecks.swift; sourceTree = "<group>"; };
+		E262D80D727BE0FD4D759701 /* PlayCoverDiagnosticModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverDiagnosticModels.swift; sourceTree = "<group>"; };
+		E5E08CE0036EDEAD7584E1B6 /* ScreenCaptureProbe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenCaptureProbe.swift; sourceTree = "<group>"; };
+		F53A503B2886EA0AD10A1C36 /* PlayCoverDiagnosticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverDiagnosticsView.swift; sourceTree = "<group>"; };
+		FEDF5F394AC7CDB7AC4CF6AB /* PlayCoverDiagnosticModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayCoverDiagnosticModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -345,6 +363,7 @@
 		8329858E29EDAC7B009F7ED5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				F53A503B2886EA0AD10A1C36 /* PlayCoverDiagnosticsView.swift */,
 				83264A3A29EC0F2E0074E33A /* LogView.swift */,
 				83264ACA29EC0F2E0074E33A /* EditableTextList.swift */,
 				9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */,
@@ -421,6 +440,7 @@
 		833786CD28F188D800D39D6F /* MeoAsstMac */ = {
 			isa = PBXGroup;
 			children = (
+				D1A690570000000000000001 /* Diagnostics */,
 				833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */,
 				8329858F29EDAC91009F7ED5 /* Core */,
 				8341195129EC258D00044F45 /* Model */,
@@ -538,6 +558,21 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		D1A690570000000000000001 /* Diagnostics */ = {
+			isa = PBXGroup;
+			children = (
+				875E3F6AE88F7094B46AC3F5 /* MaaImageDiagnostics.swift */,
+				C10E0655B9C2B0C72F815BB0 /* MachOLibraries.swift */,
+				16D305E4CFF32851305DA56B /* PlayCoverAccess.swift */,
+				FEDF5F394AC7CDB7AC4CF6AB /* PlayCoverDiagnosticModel.swift */,
+				E262D80D727BE0FD4D759701 /* PlayCoverDiagnosticModels.swift */,
+				55B6E023DFF574001BD2240D /* PlayCoverRuntimeChecks.swift */,
+				D570F8C36D08CBC0EE89D113 /* PlayCoverStaticChecks.swift */,
+				E5E08CE0036EDEAD7584E1B6 /* ScreenCaptureProbe.swift */,
+			);
+			path = Diagnostics;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -626,6 +661,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DDD1EECDAB6A750FB783DBB /* MaaImageDiagnostics.swift in Sources */,
+				E2DC08B28CCC760FC5765F01 /* MachOLibraries.swift in Sources */,
+				EEBD16061CA54BADC1259FCF /* PlayCoverAccess.swift in Sources */,
+				3725F79C6918E0D647698D17 /* PlayCoverDiagnosticModel.swift in Sources */,
+				CA02DF266136A47623BED81B /* PlayCoverDiagnosticModels.swift in Sources */,
+				4A79BA6D193C69BA809DCEB9 /* PlayCoverRuntimeChecks.swift in Sources */,
+				56937680F092C961213FF46C /* PlayCoverStaticChecks.swift in Sources */,
+				B94D5C9BEE2538654603F217 /* ScreenCaptureProbe.swift in Sources */,
+				A5176CA4AF6E36CCFD76E58D /* PlayCoverDiagnosticsView.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,
