@@ -17,6 +17,16 @@
     "（突袭）" : {
 
     },
+    "（磨难）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : " (Adverse)"
+          }
+        }
+      }
+    },
     "[前往作业站…](https://prts.plus)" : {
 
     },
@@ -4550,6 +4560,36 @@
         }
       }
     },
+    "普通" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Normal"
+          }
+        }
+      }
+    },
+    "磨难" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adverse"
+          }
+        }
+      }
+    },
+    "磨难会在进入关卡时切换为突袭模式。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adverse switches the stage to Challenge Mode."
+          }
+        }
+      }
+    },
     "成功！" : {
 
     },
@@ -6531,6 +6571,12 @@
     },
     "难度" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Difficulty"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
