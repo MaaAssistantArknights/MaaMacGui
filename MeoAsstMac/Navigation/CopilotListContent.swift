@@ -25,7 +25,7 @@ struct CopilotListContent: View {
                                 .foregroundStyle(.secondary)
                                 .lineLimit(1)
                         }
-                        if item.isRaid == true {
+                        if context.copilotSet?.kind != .regular, item.isRaid == true {
                             Text("突袭")
                                 .font(.caption)
                                 .foregroundStyle(.orange)
@@ -33,6 +33,19 @@ struct CopilotListContent: View {
                     }
                 }
                 .help(item.description)
+                if context.copilotSet?.kind == .regular {
+                    Menu {
+                        difficultyButton(title: "普通", isRaid: false, itemID: itemID)
+                        difficultyButton(title: "磨难", isRaid: true, itemID: itemID)
+                    } label: {
+                        Text(item.isRaid == true ? "磨难" : "普通")
+                            .font(.caption)
+                            .foregroundStyle(item.isRaid == true ? Color.orange : Color.secondary)
+                    }
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
+                    .help("磨难会在进入关卡时切换为突袭模式。")
+                }
                 Button {
                     move(itemID, by: -1)
                 } label: {
@@ -71,6 +84,15 @@ struct CopilotListContent: View {
     private func showsStageName(_ item: CopilotContext.ListItem) -> Bool {
         let title = stageTitle(item)
         return !item.stageName.isEmpty && item.stageName != title && !MAACopilot.isDecimalID(item.stageName)
+    }
+
+    private func difficultyButton(title: LocalizedStringKey, isRaid: Bool, itemID: CopilotContext.ItemID) -> some View {
+        let current = context.copilotList.first { $0.id == itemID }?.isRaid == true
+        let taken = context.copilotList.contains { $0.id == .init(url: itemID.url, isRaid: isRaid) }
+        return Button(title) {
+            context.setRaid(itemID, isRaid: isRaid)
+        }
+        .disabled(taken && current != isRaid)
     }
 
     private func move(_ id: CopilotContext.ItemID, by offset: Int) {
@@ -121,7 +143,7 @@ extension CopilotContext.ListItem: CustomStringConvertible {
             stage = stageCode
         }
         if isRaid == true {
-            return "\(stage)\(String(localized: "（突袭）"))"
+            return "\(stage)\(String(localized: "（磨难）"))"
         } else {
             return stage
         }

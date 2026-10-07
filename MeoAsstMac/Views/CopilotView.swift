@@ -16,7 +16,9 @@ struct CopilotView: View {
             if let set = context.copilotSet {
                 switch context.content {
                 case .copilot(_, let kind, let copilot):
-                    CopilotConfigView(kind: kind, isList: true, config: $context.config) {
+                    CopilotConfigView(
+                        kind: kind, isList: true, config: $context.config, adverse: adverseSelection(context)
+                    ) {
                         CopilotDescriptionView(pilot: copilot)
                     }
                 case .invalid:
@@ -36,7 +38,8 @@ struct CopilotView: View {
             case .copilot(let url, let kind, let copilot):
                 Button("加入作业列表") {
                     Task {
-                        if await context.addToList(at: url) {
+                        let isRaid: Bool? = kind == .regular ? context.config.preferAdverse : nil
+                        if await context.addToList(at: url, isRaid: isRaid) {
                             context.category = .list
                             context.selection = nil
                         }
@@ -45,8 +48,15 @@ struct CopilotView: View {
                 .buttonStyle(.bordered)
                 // SSSCopilot takes a single filename only.
                 .disabled(kind == .sss || (context.copilotSet?.kind != nil && context.copilotSet?.kind != kind))
-                CopilotConfigView(kind: kind, isList: false, config: $context.config) {
+                CopilotConfigView(
+                    kind: kind, isList: false, config: $context.config, adverse: adverseSelection(context)
+                ) {
                     CopilotDescriptionView(pilot: copilot)
+                }
+                .onChange(of: url, initial: true) { _, _ in
+                    if kind == .regular {
+                        context.config.preferAdverse = copilot.difficulty == 2
+                    }
                 }
             case .set(let url, let set):
                 Button("激活此作业集") {
@@ -76,14 +86,21 @@ private struct CopilotConfigView<D: View>: View {
     let isList: Bool
 
     @Binding var config: CopilotConfiguration
+    var adverse: Binding<Bool>?
 
     let description: D
 
-    init(kind: MAACopilot.Kind, isList: Bool, config: Binding<CopilotConfiguration>, @ViewBuilder description: () -> D)
-    {
+    init(
+        kind: MAACopilot.Kind,
+        isList: Bool,
+        config: Binding<CopilotConfiguration>,
+        adverse: Binding<Bool>? = nil,
+        @ViewBuilder description: () -> D
+    ) {
         self.kind = kind
         self.isList = isList
         self._config = config
+        self.adverse = adverse
         self.description = description()
     }
 
@@ -92,7 +109,7 @@ private struct CopilotConfigView<D: View>: View {
             VStack(alignment: .leading, spacing: 16) {
                 switch kind {
                 case .regular:
-                    RegularCopilotConfigView(isList: isList, config: $config)
+                    RegularCopilotConfigView(isList: isList, config: $config, adverse: adverse)
                     Divider()
                 case .sss:
                     if !isList {
@@ -113,9 +130,33 @@ private struct CopilotConfigView<D: View>: View {
     }
 }
 
+@MainActor
+private func adverseSelection(_ context: CopilotContext) -> Binding<Bool>? {
+    if context.category == .list {
+        guard case .copilot = context.content, context.selection != nil else {
+            return nil
+        }
+        return Binding(
+            get: {
+                context.copilotList.first { $0.id == context.selection }?.isRaid == true
+            },
+            set: { newValue in
+                guard let id = context.selection else { return }
+                context.setRaid(id, isRaid: newValue)
+            })
+    }
+    guard case .copilot(_, .regular, _) = context.content else {
+        return nil
+    }
+    return Binding(
+        get: { context.config.preferAdverse },
+        set: { context.config.preferAdverse = $0 })
+}
+
 private struct RegularCopilotConfigView: View {
     let isList: Bool
     @Binding var config: CopilotConfiguration
+    var adverse: Binding<Bool>?
     @State private var showAdditionalEditor = false
 
     var body: some View {
@@ -165,9 +206,18 @@ private struct RegularCopilotConfigView: View {
 
         GroupBox("作业执行") {
             VStack(alignment: .leading, spacing: 10) {
-                if isList {
+                if let adverse {
+                    Picker("难度", selection: adverse) {
+                        Text("普通").tag(false)
+                        Text("磨难").tag(true)
+                    }
+                    .pickerStyle(.menu)
+                    .help("磨难会在进入关卡时切换为突袭模式。")
+                }
+                if isList || adverse?.wrappedValue == true {
                     Toggle("吃理智药", isOn: $config.use_sanity_potion)
-                } else {
+                }
+                if !isList {
                     CopilotLoopView(config: $config)
                 }
             }

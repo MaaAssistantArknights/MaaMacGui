@@ -41,6 +41,9 @@ struct CopilotConfiguration: Codable, Hashable {
     var add_trust = false
     var ignore_requirements = false
 
+    /// UI only. Single-job runs use this to switch into 磨难 / raid (`is_raid`).
+    var preferAdverse = false
+
     enum SupportUnitUsage: Int, CaseIterable, Codable {
         /// 不加助战干员
         case none = 0
@@ -78,7 +81,7 @@ extension CopilotConfiguration.SupportUnitUsage: CustomStringConvertible {
 }
 
 extension CopilotConfiguration {
-    /// JSON passed to Core. UI-only fields (`enableLoop`, `enableUserAdditional`) are omitted.
+    /// JSON passed to Core. UI-only fields (`enableLoop`, `enableUserAdditional`, `preferAdverse`) are omitted.
     /// `filename` and `copilot_list` are mutually exclusive; a null filename must not be sent or Core ignores the list.
     /// ParadoxCopilot reads its list from `list` instead of `copilot_list`.
     func coreParamsJSON(type: MAATaskType) throws -> String {
@@ -246,6 +249,10 @@ enum CopilotCategory: String, CaseIterable {
             guard oldValue != selection else {
                 return
             }
+            // Toggling 普通/磨难 keeps the same file; don't reload the detail.
+            guard oldValue?.url != selection?.url else {
+                return
+            }
             contentUpdateTask?.cancel()
             guard let url = selection?.url else {
                 content = nil
@@ -302,10 +309,27 @@ enum CopilotCategory: String, CaseIterable {
 }
 
 extension CopilotContext {
+    @MainActor func setRaid(_ id: ItemID, isRaid: Bool) {
+        guard let index = copilotList.firstIndex(where: { $0.id == id }) else {
+            return
+        }
+        if copilotList[index].isRaid == isRaid {
+            return
+        }
+        let updated = ItemID(url: id.url, isRaid: isRaid)
+        if copilotList.contains(where: { $0.id == updated }) {
+            return
+        }
+        copilotList[index].isRaid = isRaid
+        if selection == id {
+            selection = copilotList[index].id
+        }
+    }
+
     @discardableResult
-    nonisolated(nonsending) func addToList(at url: URL) async -> Bool {
+    nonisolated(nonsending) func addToList(at url: URL, isRaid: Bool? = nil) async -> Bool {
         guard let copilot = MAACopilot(url: url),
-            let (kind, items) = await copilot.listItems(at: url),
+            let (kind, items) = await copilot.listItems(at: url, isRaid: isRaid),
             !items.isEmpty,
             kind != .sss,
             copilotSet?.kind == nil || copilotSet?.kind == kind
@@ -397,22 +421,26 @@ extension MAACopilot {
         case paradox
     }
 
-    func listItems(at url: URL) async -> (Kind, [CopilotContext.ListItem])? {
+    func listItems(at url: URL, isRaid override: Bool? = nil) async -> (Kind, [CopilotContext.ListItem])? {
         guard let level = await MAAProvider.shared.mapLevel(matching: stage_name) else {
             return nil
         }
         let raidOptions: [Bool?]
-        switch difficulty {
-        case nil, 0:
-            raidOptions = [nil]
-        case 1:
-            raidOptions = [false]
-        case 2:
-            raidOptions = [true]
-        case 3:
-            raidOptions = [false, true]
-        default:
-            raidOptions = []
+        if let override {
+            raidOptions = [override]
+        } else {
+            switch difficulty {
+            case nil, 0:
+                raidOptions = [nil]
+            case 1:
+                raidOptions = [false]
+            case 2:
+                raidOptions = [true]
+            case 3:
+                raidOptions = [false, true]
+            default:
+                raidOptions = []
+            }
         }
         return (
             kind(code: level.code),
