@@ -139,6 +139,9 @@ extension NewViewModel {
         if !config.enableLoop || copilot.category == .list {
             config.loop_times = 1
         }
+        if copilot.category != .list {
+            config.use_sanity_potion = false
+        }
 
         if copilot.category == .list {
             guard let kind = copilot.copilotSet?.kind else {
@@ -183,7 +186,11 @@ extension NewViewModel {
             }
         }
 
-        guard let params = try? config.jsonString() else {
+        if config.filename == nil, config.copilot_list.isEmpty {
+            return
+        }
+
+        guard let params = try? config.coreParamsJSON(type: type) else {
             return
         }
 
