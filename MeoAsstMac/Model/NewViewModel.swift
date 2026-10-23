@@ -18,6 +18,8 @@ import Observation
     /// Observe changes to this value to detect the start of a copilot task.
     private(set) var copilotStartToken: UUID?
 
+    @ObservationIgnored @MainActor private var isStartingCopilot = false
+
     /// The progress of the current copilot download.
     ///
     /// A `nil` value indicates that no download is in progress.
@@ -127,8 +129,10 @@ extension NewViewModel {
         try await parent.stop()
     }
 
-    nonisolated(nonsending) func startCopilot() async throws {
-        copilotStartToken = UUID()
+    @MainActor func startCopilot() async throws {
+        guard !isStartingCopilot, parent.status == .idle else { return }
+        isStartingCopilot = true
+        defer { isStartingCopilot = false }
 
         var config = copilot.config
         let type: MAATaskType
@@ -211,6 +215,8 @@ extension NewViewModel {
             return
         }
 
+        guard parent.status == .idle else { return }
+        copilotStartToken = UUID()
         try await parent.startCopilot(type: type, params: params)
     }
 
