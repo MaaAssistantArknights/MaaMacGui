@@ -318,7 +318,7 @@ extension MAAViewModel {
         }
         try await handle?.stop()
         status = .idle
-        await finishDailyRunIfStopped()
+        await finishDailyRunIfStopped(allowInFlight: true)
     }
 
     func resetStatus() {
@@ -342,7 +342,8 @@ extension MAAViewModel {
         if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
     }
 
-    private func finishDailyRunIfStopped() async {
+    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
+        guard allowInFlight || !isStartStopInFlight else { return }
         guard let context = dailyRunCoordinator.active,
               [.running, .stopping].contains(context.status) else { return }
         guard await handle?.running != true,
@@ -554,7 +555,7 @@ extension MAAViewModel {
             do {
                 try dailyRunCoordinator.transition(.connecting, for: runID)
                 try await startTasks(snapshot: snapshot, runID: runID)
-                await finishDailyRunIfStopped()
+                await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
                 try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
