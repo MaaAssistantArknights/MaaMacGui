@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RoguelikeSettingsView: View {
     @Binding var config: RoguelikeConfiguration
+    var blackflowStartAvailable = false
 
     @Environment(\.defaultMinListRowHeight) private var rowHeight
 
@@ -191,6 +192,10 @@ struct RoguelikeSettingsView: View {
             }
         }
 
+        if config.theme == .BlackFlow, config.mode == .blackflowStart {
+            blackflowStartSettings()
+        }
+
         if config.theme == .BlackFlow, config.mode == .babyAnimal {
             Picker("目标襁褓动物", selection: $config.blackflowCultivationTarget) {
                 ForEach(RoguelikeConfiguration.BlackflowCultivation.allCases, id: \.self) {
@@ -198,6 +203,92 @@ struct RoguelikeSettingsView: View {
                 }
             }
         }
+    }
+}
+
+extension RoguelikeSettingsView {
+    @ViewBuilder fileprivate func blackflowStartSettings() -> some View {
+        Text("准备局进入第三层后重开；目标奖励命中后保留该局。此模式可能放弃当前未完成的探索。")
+            .font(.caption).foregroundStyle(.secondary)
+        ForEach(0..<2, id: \.self) { index in
+            Picker(index == 0 ? String(localized: "第一只动物") : String(localized: "第二只动物"), selection: animalBinding(index)) {
+                Text("不指定").tag(Optional<RoguelikeConfiguration.BlackflowCultivation>.none)
+                ForEach(RoguelikeConfiguration.BlackflowCultivation.allCases, id: \.self) {
+                    Text($0.description).tag(Optional($0))
+                }
+            }
+        }
+        Text("动物可以重复，羽蛇最多一只；不指定动物时只要求准备局进入第三层。")
+            .font(.caption).foregroundStyle(.secondary)
+        LabeledContent("目标奖励", value: "")
+        LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], alignment: .leading) {
+            ForEach(RoguelikeConfiguration.BlackflowStartReward.allCases, id: \.self) { reward in
+                Toggle(reward.description, isOn: rewardBinding(reward))
+                    .disabled(reward.requiresSerpent && !config.blackflowStart.animals.contains(.swaddledFeatheredSerpent))
+            }
+        }
+        Text("未指定羽蛇时，后六项奖励不参与命中条件；已保存的选择保留。")
+            .font(.caption).foregroundStyle(.secondary)
+        Picker("准备局分队", selection: $config.blackflowStart.preparationSquad) {
+            ForEach(RoguelikeConfiguration.Theme.BlackFlow.squads, id: \.self) { Text($0).tag($0) }
+        }
+        Picker("准备局职业组", selection: $config.blackflowStart.preparationRoles) {
+            ForEach(RoguelikeConfiguration.Theme.BlackFlow.roles, id: \.self) { Text($0).tag($0) }
+        }
+        TextField("准备局干员（不借助战）", text: $config.blackflowStart.preparationOperator)
+        Toggle("凹第一层实托邦", isOn: $config.blackflowStart.utopia)
+            .disabled(!config.blackflowStart.utopia && (!blackflowStartAvailable || config.difficulty.id < 6 || config.difficulty == .max))
+        Text(blackflowStartAvailable
+             ? String(localized: "已匹配开发 Core 与资源。实托邦需显式选择难度 6 或以上；目标局使用常规开局配置。")
+             : String(localized: "当前 Core 或资源未经实托邦能力验证。此选项仅向匹配的开发版本开放。"))
+            .font(.caption).foregroundStyle(.secondary)
+        if config.blackflowStart.utopia {
+            Text("目标局按下列顺序选择奖励；优先级中的羽蛇奖励不受准备局动物限制。")
+                .font(.caption).foregroundStyle(.secondary)
+            ForEach(Array(config.blackflowStart.rewardPriority.enumerated()), id: \.element) { index, reward in
+                HStack {
+                    Text(reward.description)
+                    Spacer()
+                    Button { config.blackflowStart.rewardPriority.swapAt(index, index - 1) } label: {
+                        Image(systemName: "arrow.up")
+                    }.disabled(index == 0).accessibilityLabel("上移奖励")
+                    Button { config.blackflowStart.rewardPriority.swapAt(index, index + 1) } label: {
+                        Image(systemName: "arrow.down")
+                    }.disabled(index + 1 == config.blackflowStart.rewardPriority.count).accessibilityLabel("下移奖励")
+                    Button { config.blackflowStart.rewardPriority.remove(at: index) } label: {
+                        Image(systemName: "minus.circle")
+                    }.accessibilityLabel("移除奖励")
+                }
+            }
+            Menu("添加奖励优先级") {
+                ForEach(RoguelikeConfiguration.BlackflowStartReward.allCases.filter {
+                    !config.blackflowStart.rewardPriority.contains($0)
+                }, id: \.self) { reward in
+                    Button(reward.description) { config.blackflowStart.rewardPriority.append(reward) }
+                }
+            }
+        }
+        if let error = config.blackflowStart.validationError {
+            Text(error).foregroundStyle(.red)
+        }
+    }
+
+    private func animalBinding(_ index: Int) -> Binding<RoguelikeConfiguration.BlackflowCultivation?> {
+        .init(get: {
+            config.blackflowStart.animals.indices.contains(index) ? config.blackflowStart.animals[index] : nil
+        }, set: { value in
+            if config.blackflowStart.animals.indices.contains(index) {
+                if let value { config.blackflowStart.animals[index] = value }
+                else { config.blackflowStart.animals.remove(at: index) }
+            } else if let value { config.blackflowStart.animals.append(value) }
+        })
+    }
+
+    private func rewardBinding(_ reward: RoguelikeConfiguration.BlackflowStartReward) -> Binding<Bool> {
+        .init(get: { config.blackflowStart.rewards & reward.bit != 0 }, set: { value in
+            if value { config.blackflowStart.rewards |= reward.bit }
+            else { config.blackflowStart.rewards &= ~reward.bit }
+        })
     }
 }
 
@@ -236,6 +327,8 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "刷常乐节点，第一层进洞，找不到需要的节点就重开")
         case (.babyAnimal, _):
             String(localized: "刷襁褓动物")
+        case (.blackflowStart, _):
+            String(localized: "黑流开局奖励")
         }
     }
 }

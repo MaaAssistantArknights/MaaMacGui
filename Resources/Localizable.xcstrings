@@ -1,6 +1,776 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "黑流开局奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BlackFlow starting rewards"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "검은 숲 시작 보상"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "黑流开局奖励"
+          }
+        }
+      }
+    },
+    "未编号物" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unnumbered Item"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미분류 물품"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未编号物"
+          }
+        }
+      }
+    },
+    "调查预付款" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Survey Advance"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "조사 선급금"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调查预付款"
+          }
+        }
+      }
+    },
+    "空间租赁" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Space Lease"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공간 임대"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空间租赁"
+          }
+        }
+      }
+    },
+    "退行补偿" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regression Compensation"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "퇴행 보상"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退行补偿"
+          }
+        }
+      }
+    },
+    "林间代步" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forest Ride"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "숲속 이동 수단"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "林间代步"
+          }
+        }
+      }
+    },
+    "巢寄生" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nest Parasitism"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "둥지 기생"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "巢寄生"
+          }
+        }
+      }
+    },
+    "襁褓天马" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Pegasus"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 페가수스"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓天马"
+          }
+        }
+      }
+    },
+    "襁褓骏鹰" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Hippogriff"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 히포그리프"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓骏鹰"
+          }
+        }
+      }
+    },
+    "襁褓巨龙" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Dragon"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 드래곤"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓巨龙"
+          }
+        }
+      }
+    },
+    "襁褓九头蛇" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Hydra"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 히드라"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓九头蛇"
+          }
+        }
+      }
+    },
+    "襁褓白泽" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Bai Ze"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 백택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓白泽"
+          }
+        }
+      }
+    },
+    "襁褓金乌" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Swaddled Golden Crow"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "포대기 속 금오"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "襁褓金乌"
+          }
+        }
+      }
+    },
+    "最多选择两只动物。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select up to two animals."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동물은 최대 두 마리까지 선택하세요."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多选择两只动物。"
+          }
+        }
+      }
+    },
+    "羽蛇最多选择一只。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select no more than one feathered serpent."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "깃털뱀은 최대 한 마리까지 선택하세요."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "羽蛇最多选择一只。"
+          }
+        }
+      }
+    },
+    "奖励位掩码必须介于 0 与 4095。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reward bitmask must be between 0 and 4095."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보상 비트 마스크는 0에서 4095 사이여야 합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "奖励位掩码必须介于 0 与 4095。"
+          }
+        }
+      }
+    },
+    "实托邦奖励优先级不能为空或重复。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utopia reward priority must be nonempty and contain no duplicates."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유토피아 보상 우선순위는 비어 있거나 중복될 수 없습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "实托邦奖励优先级不能为空或重复。"
+          }
+        }
+      }
+    },
+    "实托邦需要已验证的开发 Core 与资源，且显式选择难度 6 或以上。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utopia requires the verified development Core and resources, with an explicit difficulty of at least 6."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "유토피아에는 검증된 개발 Core 및 리소스와 명시적으로 선택한 6 이상의 난이도가 필요합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "实托邦需要已验证的开发 Core 与资源，且显式选择难度 6 或以上。"
+          }
+        }
+      }
+    },
+    "准备局进入第三层后重开；目标奖励命中后保留该局。此模式可能放弃当前未完成的探索。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart after the preparation run reaches floor 3; retain the target run when a reward matches. This mode may abandon an unfinished exploration."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 탐험이 3층에 도달하면 재시작하며 목표 보상에 적중한 탐험은 보존합니다. 현재 진행 중인 탐험을 포기할 수 있습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备局进入第三层后重开；目标奖励命中后保留该局。此模式可能放弃当前未完成的探索。"
+          }
+        }
+      }
+    },
+    "第一只动物" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First animal"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 번째 동물"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一只动物"
+          }
+        }
+      }
+    },
+    "第二只动物" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Second animal"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "두 번째 동물"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二只动物"
+          }
+        }
+      }
+    },
+    "动物可以重复，羽蛇最多一只；不指定动物时只要求准备局进入第三层。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Animals may repeat, with at most one feathered serpent. No animal selection only requires the preparation run to reach floor 3."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "동물은 중복 가능하지만 깃털뱀은 한 마리만 가능합니다. 미지정 시 준비 탐험의 3층 도달만 요구합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "动物可以重复，羽蛇最多一只；不指定动物时只要求准备局进入第三层。"
+          }
+        }
+      }
+    },
+    "目标奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target rewards"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 보상"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标奖励"
+          }
+        }
+      }
+    },
+    "未指定羽蛇时，后六项奖励不参与命中条件；已保存的选择保留。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Without a feathered serpent requirement, the last six rewards do not count as matches. Saved selections are retained."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "깃털뱀을 지정하지 않으면 마지막 여섯 보상은 적중 조건에서 제외됩니다. 저장된 선택은 유지됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未指定羽蛇时，后六项奖励不参与命中条件；已保存的选择保留。"
+          }
+        }
+      }
+    },
+    "准备局分队" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparation squad"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 탐험 분대"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备局分队"
+          }
+        }
+      }
+    },
+    "准备局职业组" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparation recruitment set"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 탐험 모집 조합"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备局职业组"
+          }
+        }
+      }
+    },
+    "准备局干员（不借助战）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preparation operator (no support)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 탐험 오퍼레이터 (지원 미사용)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备局干员（不借助战）"
+          }
+        }
+      }
+    },
+    "凹第一层实托邦" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Find Utopia on floor 1"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1층 유토피아 탐색"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "凹第一层实托邦"
+          }
+        }
+      }
+    },
+    "已匹配开发 Core 与资源。实托邦需显式选择难度 6 或以上；目标局使用常规开局配置。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Development Core and resources match. Utopia requires an explicit difficulty of at least 6; the target run uses your regular opening settings."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개발 Core 및 리소스가 일치합니다. 유토피아는 명시적으로 선택한 6 이상 난이도가 필요하며 목표 탐험은 일반 시작 설정을 사용합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已匹配开发 Core 与资源。实托邦需显式选择难度 6 或以上；目标局使用常规开局配置。"
+          }
+        }
+      }
+    },
+    "当前 Core 或资源未经实托邦能力验证。此选项仅向匹配的开发版本开放。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This Core or resource set has no verified Utopia capability. This option is available only with the matching development build."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 Core 또는 리소스의 유토피아 기능이 검증되지 않았습니다. 일치하는 개발 빌드에서만 사용할 수 있습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前 Core 或资源未经实托邦能力验证。此选项仅向匹配的开发版本开放。"
+          }
+        }
+      }
+    },
+    "目标局按下列顺序选择奖励；优先级中的羽蛇奖励不受准备局动物限制。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The target run selects rewards in this order. Feathered-serpent rewards in this priority list are independent of preparation animal requirements."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 탐험은 아래 순서로 보상을 선택합니다. 이 목록의 깃털뱀 보상은 준비 동물 조건의 제한을 받지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标局按下列顺序选择奖励；优先级中的羽蛇奖励不受准备局动物限制。"
+          }
+        }
+      }
+    },
+    "上移奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move reward up"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보상 위로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上移奖励"
+          }
+        }
+      }
+    },
+    "下移奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move reward down"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보상 아래로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下移奖励"
+          }
+        }
+      }
+    },
+    "移除奖励" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove reward"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보상 제거"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除奖励"
+          }
+        }
+      }
+    },
+    "添加奖励优先级" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add reward priority"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보상 우선순위 추가"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加奖励优先级"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

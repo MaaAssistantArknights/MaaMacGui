@@ -33,6 +33,8 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         ///
         /// 黑流树海主题专用模式
         case babyAnimal = 30001
+        /// 黑流树海准备局培育动物，目标局保留期望奖励或第一层实托邦
+        case blackflowStart = 30003
     }
 
     enum Theme: String, CaseIterable, Codable {
@@ -190,6 +192,12 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
 
     var jieFindPlaytimeTarget = JiePlaytimeTarget.ling
 
+    var blackflowStart = BlackflowStartOptions()
+
+    func params(blackflowStartAvailable: Bool) -> Params {
+        Params(config: self, blackflowStartAvailable: blackflowStartAvailable)
+    }
+
     var blackflowCultivationTarget = BlackflowCultivation.swaddledCat
 
     var supportsStartWithEliteTwo: Bool {
@@ -252,6 +260,12 @@ struct RoguelikeConfiguration: MAATaskConfiguration {
         let find_playTime_target: Int?
         let blackflow_strategy: String?
         let blackflow_cultivation_target: String?
+        let blackflow_start_animals: [String]?
+        let blackflow_start_rewards: Int?
+        let blackflow_start_utopia: Bool?
+        let blackflow_start_reward_priority: [String]?
+        let collectible_mode_roles: String?
+        let collectible_mode_core_char_list: [BlackflowStartOperator]?
     }
 
     var params: Params {
@@ -285,7 +299,7 @@ extension RoguelikeConfiguration.Theme {
         case .JieGarden:
             return commonModes + [.findPlaytime]
         case .BlackFlow:
-            return [.exp, .investment, .babyAnimal]
+            return [.exp, .investment, .babyAnimal, .blackflowStart]
         default:
             return commonModes
         }
@@ -311,6 +325,8 @@ extension RoguelikeConfiguration.Mode {
             String(localized: "刷常乐节点")
         case .babyAnimal:
             String(localized: "刷襁褓动物")
+        case .blackflowStart:
+            String(localized: "黑流开局奖励")
         }
     }
 }
@@ -431,14 +447,24 @@ extension RoguelikeConfiguration {
 }
 
 extension RoguelikeConfiguration.Params {
-    init(config: RoguelikeConfiguration) {
+    init(config: RoguelikeConfiguration, blackflowStartAvailable: Bool = false) {
+        let startRun = config.theme == .BlackFlow && config.mode == .blackflowStart
+        let utopia = startRun && config.blackflowStart.utopia && blackflowStartAvailable
+        self.blackflow_start_animals = startRun ? config.blackflowStart.animals.map(\.rawValue) : nil
+        self.blackflow_start_rewards = startRun ? config.blackflowStart.effectiveRewards : nil
+        self.blackflow_start_utopia = utopia ? true : nil
+        self.blackflow_start_reward_priority = utopia
+            ? config.blackflowStart.rewardPriority.map(\.rawValue) : nil
+        self.collectible_mode_roles = utopia ? config.blackflowStart.preparationRoles : nil
+        self.collectible_mode_core_char_list = utopia && !config.blackflowStart.preparationOperator.isEmpty
+            ? [.init(name: config.blackflowStart.preparationOperator, use_support: false)] : nil
         self.theme = config.theme.rawValue
         self.mode = config.mode.rawValue
         self.squad = config.squad
-        self.roles = config.roles
-        self.core_char = config.core_char
-        self.use_support = config.use_support
-        self.use_nonfriend_support = config.use_support ? config.use_nonfriend_support : nil
+        self.roles = startRun && !utopia ? config.blackflowStart.preparationRoles : config.roles
+        self.core_char = startRun && !utopia ? config.blackflowStart.preparationOperator : config.core_char
+        self.use_support = startRun && !utopia ? false : config.use_support
+        self.use_nonfriend_support = config.use_support && !(startRun && !utopia) ? config.use_nonfriend_support : nil
         self.starts_count = config.starts_count
         self.difficulty = config.difficulty.id
         self.stop_at_final_boss = config.mode == .exp && config.theme != .Phantom ? config.stop_at_final_boss : nil
@@ -461,7 +487,8 @@ extension RoguelikeConfiguration.Params {
             config.mode == .squad && config.monthly_squad_auto_iterate ? config.monthly_squad_check_comms : nil
         self.deep_exploration_auto_iterate = config.mode == .exploration ? config.deep_exploration_auto_iterate : nil
         self.collectible_mode_shopping = config.mode == .collectible ? config.collectible_mode_shopping : nil
-        self.collectible_mode_squad = config.mode == .collectible ? config.collectible_mode_squad : nil
+        self.collectible_mode_squad = startRun ? config.blackflowStart.preparationSquad
+            : (config.mode == .collectible ? config.collectible_mode_squad : nil)
         self.collectible_mode_start_list = config.checkedStartCollectibles
         self.find_playTime_target = config.checkedJiePlaytimeTarget
         self.blackflow_strategy = config.checkedBlackflowStrategy
@@ -519,8 +546,101 @@ extension RoguelikeConfiguration {
             ?? StartCollectibles()
         self.jieFindPlaytimeTarget =
             try container.decodeIfPresent(JiePlaytimeTarget.self, forKey: .jieFindPlaytimeTarget) ?? .ling
+        self.blackflowStart = try container.decodeIfPresent(BlackflowStartOptions.self, forKey: .blackflowStart)
+            ?? BlackflowStartOptions()
         self.blackflowCultivationTarget =
             try container.decodeIfPresent(BlackflowCultivation.self, forKey: .blackflowCultivationTarget)
             ?? .swaddledCat
+    }
+}
+
+
+extension RoguelikeConfiguration {
+    struct BlackflowStartOperator: Encodable {
+        let name: String
+        let use_support: Bool
+    }
+
+    enum BlackflowStartReward: String, Codable, CaseIterable {
+        case unnumberedItem = "unnumbered_item"
+        case surveyAdvance = "survey_advance"
+        case spaceLease = "space_lease"
+        case regressionCompensation = "regression_compensation"
+        case forestRide = "forest_ride"
+        case nestParasitism = "nest_parasitism"
+        case pegasus, hippogriff, dragon, hydra
+        case baiZe = "bai_ze"
+        case goldenCrow = "golden_crow"
+
+        var bit: Int { 1 << Self.allCases.firstIndex(of: self)! }
+        var requiresSerpent: Bool { bit >= 64 }
+        var description: String {
+            switch self {
+            case .unnumberedItem: String(localized: "未编号物")
+            case .surveyAdvance: String(localized: "调查预付款")
+            case .spaceLease: String(localized: "空间租赁")
+            case .regressionCompensation: String(localized: "退行补偿")
+            case .forestRide: String(localized: "林间代步")
+            case .nestParasitism: String(localized: "巢寄生")
+            case .pegasus: String(localized: "襁褓天马")
+            case .hippogriff: String(localized: "襁褓骏鹰")
+            case .dragon: String(localized: "襁褓巨龙")
+            case .hydra: String(localized: "襁褓九头蛇")
+            case .baiZe: String(localized: "襁褓白泽")
+            case .goldenCrow: String(localized: "襁褓金乌")
+            }
+        }
+    }
+
+    struct BlackflowStartOptions: Codable, Hashable, Sendable {
+        var animals: [BlackflowCultivation] = []
+        var rewards = 0
+        var utopia = false
+        var rewardPriority: [BlackflowStartReward] = []
+        var preparationSquad = "特勤分队"
+        var preparationRoles = "稳扎稳打"
+        var preparationOperator = ""
+
+        init() {}
+
+        init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            animals = try container.decodeIfPresent([BlackflowCultivation].self, forKey: .animals) ?? []
+            rewards = try container.decodeIfPresent(Int.self, forKey: .rewards) ?? 0
+            utopia = try container.decodeIfPresent(Bool.self, forKey: .utopia) ?? false
+            rewardPriority = try container.decodeIfPresent([BlackflowStartReward].self, forKey: .rewardPriority) ?? []
+            preparationSquad = try container.decodeIfPresent(String.self, forKey: .preparationSquad) ?? "特勤分队"
+            preparationRoles = try container.decodeIfPresent(String.self, forKey: .preparationRoles) ?? "稳扎稳打"
+            preparationOperator = try container.decodeIfPresent(String.self, forKey: .preparationOperator) ?? ""
+        }
+
+        var effectiveRewards: Int {
+            animals.contains(.swaddledFeatheredSerpent) ? rewards : rewards & 0x3F
+        }
+
+        var validationError: String? {
+            if animals.count > 2 { return String(localized: "最多选择两只动物。") }
+            if animals.filter({ $0 == .swaddledFeatheredSerpent }).count > 1 {
+                return String(localized: "羽蛇最多选择一只。")
+            }
+            if !(0...4095).contains(rewards) { return String(localized: "奖励位掩码必须介于 0 与 4095。") }
+            if utopia && (rewardPriority.isEmpty || Set(rewardPriority).count != rewardPriority.count) {
+                return String(localized: "实托邦奖励优先级不能为空或重复。")
+            }
+            return nil
+        }
+    }
+
+    func validateBlackflowStart(available: Bool) throws {
+        guard theme == .BlackFlow, mode == .blackflowStart else { return }
+        if let error = blackflowStart.validationError { throw BlackflowStartError(message: error) }
+        if blackflowStart.utopia && (!available || difficulty.id < 6 || difficulty == .max) {
+            throw BlackflowStartError(message: String(localized: "实托邦需要已验证的开发 Core 与资源，且显式选择难度 6 或以上。"))
+        }
+    }
+
+    struct BlackflowStartError: LocalizedError {
+        let message: String
+        var errorDescription: String? { message }
     }
 }

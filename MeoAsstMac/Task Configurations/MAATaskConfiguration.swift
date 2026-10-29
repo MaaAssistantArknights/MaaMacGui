@@ -31,7 +31,7 @@ extension MAATaskConfiguration {
 // MARK: JSON TaskParams
 
 extension MAAHandle {
-    func appendTask(_ task: MAATask) throws -> Int32 {
+    func appendTask(_ task: MAATask, blackflowStartAvailable: Bool = false) throws -> Int32 {
         switch task {
         case .startup(let config):
             return try appendTask(config: config)
@@ -50,7 +50,8 @@ extension MAAHandle {
         case .switchTheme(let config):
             return try appendTask(config: config)
         case .roguelike(let config):
-            return try appendTask(config: config)
+            try config.validateBlackflowStart(available: blackflowStartAvailable)
+            return try appendTask(type: config.type, params: config.params(blackflowStartAvailable: blackflowStartAvailable).jsonString())
         case .reclamation(let config):
             return try appendTask(config: config)
         }

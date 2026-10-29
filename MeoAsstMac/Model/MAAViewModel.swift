@@ -76,6 +76,8 @@ import SwiftUI
 
     @Published var scheduledDailyTaskTimers: [DailyTaskTimer] = []
 
+    @Published private(set) var blackflowStartAvailable = false
+
     // MARK: - OTA Resources
 
     @Published private var stageActivities = [String: MAAStageActivity]()
@@ -297,7 +299,15 @@ extension MAAViewModel {
     ///
     /// Should be called by `loadResource(url:channel:)`.
     private func loadResource(url: URL) async throws {
-        try await MAAProvider.shared.loadResource(path: url.path)
+        do {
+            try await MAAProvider.shared.loadResource(path: url.path)
+        } catch {
+            blackflowStartAvailable = false
+            throw error
+        }
+        if blackflowStartAvailable && !BlackflowStartSupport.permitsOverlay(at: url) {
+            blackflowStartAvailable = false
+        }
 
         if touchMode == .MacPlayTools {
             let platformResource = url.appendingPathComponent("resource")
@@ -340,6 +350,8 @@ extension MAAViewModel {
     ///
     /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
+        blackflowStartAvailable = BlackflowStartSupport.matchesLoadedCore() && !channel.isGlobal
+            && touchMode != .MacPlayTools && BlackflowStartSupport.matchesResources(at: Bundle.main.resourceURL!)
         let (preferUser, currentResourceVersion) = try resourceChannel.version()
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
 
@@ -473,10 +485,19 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
+        // Validate the entire enabled queue before appending any task. A rejected
+        // configuration must not leave earlier tasks queued on the reused handle.
+        let supportsBlackflowStart = blackflowStartAvailable && touchMode != .MacPlayTools && !clientChannel.isGlobal
+        for task in tasks where task.enabled {
+            if case .roguelike(let config) = task.task {
+                try config.validateBlackflowStart(available: supportsBlackflowStart)
+            }
+        }
+
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            if let coreID = try await handle?.appendTask(task.task, blackflowStartAvailable: supportsBlackflowStart) {
                 taskIDMap[coreID] = task.id
             }
         }
