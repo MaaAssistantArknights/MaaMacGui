@@ -125,6 +125,7 @@
 		B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */; };
 		A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */; };
 		A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */; };
+		F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -273,6 +274,7 @@
 		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/DailyTaskSchedule.swift; sourceTree = SOURCE_ROOT; };
 		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleOccurrenceStore.swift; sourceTree = SOURCE_ROOT; };
 		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleHandoff.swift; sourceTree = SOURCE_ROOT; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -301,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
 				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
 				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
 				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
@@ -645,6 +648,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
+				F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */,
 				A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */,
 				A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */,
 				B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */,
