@@ -210,6 +210,8 @@ extension RoguelikeSettingsView {
     @ViewBuilder fileprivate func blackflowStartSettings() -> some View {
         Text("准备局进入第三层后重开；目标奖励命中后保留该局。此模式可能放弃当前未完成的探索。")
             .font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
         ForEach(0..<2, id: \.self) { index in
             Picker(index == 0 ? String(localized: "第一只动物") : String(localized: "第二只动物"), selection: animalBinding(index)) {
                 Text("不指定").tag(Optional<RoguelikeConfiguration.BlackflowCultivation>.none)
@@ -220,6 +222,8 @@ extension RoguelikeSettingsView {
         }
         Text("动物可以重复，羽蛇最多一只；不指定动物时只要求准备局进入第三层。")
             .font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
         LabeledContent("目标奖励", value: "")
         LazyVGrid(columns: [.init(.flexible()), .init(.flexible())], alignment: .leading) {
             ForEach(RoguelikeConfiguration.BlackflowStartReward.allCases, id: \.self) { reward in
@@ -229,6 +233,8 @@ extension RoguelikeSettingsView {
         }
         Text("未指定羽蛇时，后六项奖励不参与命中条件；已保存的选择保留。")
             .font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
         Picker("准备局分队", selection: $config.blackflowStart.preparationSquad) {
             ForEach(RoguelikeConfiguration.Theme.BlackFlow.squads, id: \.self) { Text($0).tag($0) }
         }
@@ -242,9 +248,13 @@ extension RoguelikeSettingsView {
              ? String(localized: "已匹配开发 Core 与资源。实托邦需显式选择难度 6 或以上；目标局使用常规开局配置。")
              : String(localized: "当前 Core 或资源未经实托邦能力验证。此选项仅向匹配的开发版本开放。"))
             .font(.caption).foregroundStyle(.secondary)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .leading)
         if config.blackflowStart.utopia {
             Text("目标局按下列顺序选择奖励；优先级中的羽蛇奖励不受准备局动物限制。")
                 .font(.caption).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
             ForEach(Array(config.blackflowStart.rewardPriority.enumerated()), id: \.element) { index, reward in
                 HStack {
                     Text(reward.description)
@@ -270,6 +280,8 @@ extension RoguelikeSettingsView {
         }
         if let error = config.blackflowStart.validationError {
             Text(error).foregroundStyle(.red)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
