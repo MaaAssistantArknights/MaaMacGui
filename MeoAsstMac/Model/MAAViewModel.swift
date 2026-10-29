@@ -33,6 +33,8 @@ import SwiftUI
     // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
     @Published private(set) var isStartStopInFlight = false
     private var taskCompletionGeneration = UInt64(0)
+    private var dailyCompletionTask: Task<Void, Never>?
+    private var dailyFinishAttemptedRunID: UUID?
 
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
@@ -337,6 +339,10 @@ extension MAAViewModel {
 
     func resetStatus() {
         taskCompletionGeneration &+= 1
+        if let runID = dailyRunCoordinator.active?.id, dailyFinishAttemptedRunID == runID {
+            status = .pending
+            return
+        }
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -349,7 +355,20 @@ extension MAAViewModel {
         logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
-        Task { await finishDailyRunIfStopped() }
+        // Core emits AllTasksCompleted before its worker clears the running flag.
+        // Keep checking for this run until the native shutdown and any start/stop
+        // operation have finished; never let an old waiter finish a later run.
+        dailyCompletionTask?.cancel()
+        guard let runID = dailyRunCoordinator.active?.id else { return }
+        dailyCompletionTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self, self.dailyRunCoordinator.active?.id == runID else { return }
+                if await self.finishDailyRunIfStopped() { return }
+                guard self.dailyRunCoordinator.active?.id == runID,
+                      self.dailyRunCoordinator.active?.status != .postHook else { return }
+                do { try await Task.sleep(for: .milliseconds(250)) } catch { return }
+            }
+        }
     }
 
     func markDailyRunFailed() {
@@ -377,19 +396,29 @@ extension MAAViewModel {
         }
     }
 
-    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
-        guard allowInFlight || !isStartStopInFlight else { return }
+    @discardableResult
+    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async -> Bool {
+        guard allowInFlight || !isStartStopInFlight else { return false }
         guard let context = dailyRunCoordinator.active,
-              [.running, .stopping].contains(context.status) else { return }
+              [.running, .stopping].contains(context.status) else { return false }
         guard await handle?.running != true,
-              dailyRunCoordinator.active?.id == context.id else { return }
+              (allowInFlight || !Task.isCancelled),
+              (allowInFlight || !isStartStopInFlight),
+              dailyRunCoordinator.active?.id == context.id,
+              let currentStatus = dailyRunCoordinator.active?.status,
+              [.running, .stopping].contains(currentStatus) else { return false }
+        // Failed journal writes keep ownership and must not spin on duplicate callbacks.
+        guard dailyFinishAttemptedRunID != context.id else { return true }
+        dailyFinishAttemptedRunID = context.id
         do {
             try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
             dailyRunTasks = nil
+            status = .idle
         } catch {
             status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
         }
+        return true
     }
 
     func screenshot() async throws -> NSImage {

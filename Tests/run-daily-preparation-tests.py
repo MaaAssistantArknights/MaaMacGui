@@ -13,7 +13,7 @@ def declaration(source,pattern):
   depth+=(source[end]=='{')-(source[end]=='}');end+=1
  return source[match.start():end]
 parts=[declaration(model,r'^    enum Status:'),declaration(model,r'^    enum TaskStartResult:')]
-for pattern in [r'^    @Published private\(set\) var status = .*$',r'^    @Published private\(set\) var isStartStopInFlight = .*$',r'^    private var taskCompletionGeneration = .*$']:
+for pattern in [r'^    private var dailyCompletionTask: .*$', r'^    private var dailyFinishAttemptedRunID: .*$', r'^    @Published private\(set\) var status = .*$',r'^    @Published private\(set\) var isStartStopInFlight = .*$',r'^    private var taskCompletionGeneration = .*$']:
  parts.append(re.search(pattern,model,re.M)[0])
 for name in ['canStartTasks','beginTaskOperation','handleEarlyReturn','startCoreTasks','startDailyTasks','startTasks','finishDailyRunIfStopped','reconcileDailyRunStatus','discardPreparedDailyTasks','resetStatus']:
  pattern=rf'^    (?:private )?(?:func|var) {name}\b'
