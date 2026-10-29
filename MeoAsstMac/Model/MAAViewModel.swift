@@ -36,6 +36,8 @@ import SwiftUI
 
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
+    private(set) var dailyRunTasks: [DailyTask]?
+    private(set) var isApplyingDailyCallbackPatch = false
 
     var canStartTasks: Bool {
         status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil
@@ -310,6 +312,10 @@ extension MAAViewModel {
         if cancelScheduledStart {
             NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
         }
+        guard dailyRunCoordinator.active?.status != .postHook else {
+            logError("后置清理正在执行，请等待完成。")
+            throw MAAError.taskOperationInProgress
+        }
         try await beginTaskOperation(requiresIdle: false)
         defer { isStartStopInFlight = false }
         let achievementWasRunning = await handle?.running == true
@@ -350,6 +356,27 @@ extension MAAViewModel {
         if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
     }
 
+    private func discardPreparedDailyTasks(for runID: UUID) async -> Bool {
+        guard dailyRunCoordinator.active?.id == runID else { return false }
+        do {
+            try await handle?.stop()
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            guard await handle?.running != true else { throw MAAError.taskAlreadyRunning }
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            return true
+        } catch {
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            logError(verbatim: "Daily preparation cleanup: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
         guard allowInFlight || !isStartStopInFlight else { return }
         guard let context = dailyRunCoordinator.active,
@@ -358,6 +385,7 @@ extension MAAViewModel {
               dailyRunCoordinator.active?.id == context.id else { return }
         do {
             try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
+            dailyRunTasks = nil
         } catch {
             status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
@@ -532,6 +560,39 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
+    @discardableResult
+    func applyDailyTaskCallback(_ update: DailyTaskCallbackUpdate, coreID: Int32?) -> Bool {
+        guard let coreID, let context = dailyRunCoordinator.active,
+              [.running, .stopping].contains(context.status),
+              let id = taskIDMap[coreID],
+              let index = dailyRunTasks?.firstIndex(where: { $0.id == id }),
+              let original = dailyRunTasks?[index].task else { return false }
+        do {
+            let isCurrentProfile = context.profileID == dailyTaskProfile
+            guard let updated = try DailyRunProfilePatchStore.apply(
+                update, taskID: id, expected: original, profileID: context.profileID,
+                currentTasks: isCurrentProfile ? tasks : nil, directory: tasksDirectory) else {
+                logWarn("运行中的配置已被编辑，保留用户修改，未自动更新任务记录。")
+                return false
+            }
+            // Only the callback field changes the frozen run view. Other edits
+            // in the latest saved profile must not rewrite the running snapshot.
+            if let snapshotUpdate = update.applying(to: original, expecting: original),
+               let old = dailyRunTasks?[index] {
+                dailyRunTasks?[index] = DailyTask(id: old.id, task: snapshotUpdate, enabled: old.enabled)
+            }
+            if isCurrentProfile {
+                isApplyingDailyCallbackPatch = true
+                tasks = updated
+                isApplyingDailyCallbackPatch = false
+            }
+            return true
+        } catch {
+            logError(verbatim: "Run profile callback update failed: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     enum TaskStartResult: Equatable {
         case started
         case skipped
@@ -569,7 +630,15 @@ extension MAAViewModel {
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
-                try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                if await handle?.running == true {
+                    dailyRunOutcome = .failed
+                    try dailyRunCoordinator.transition(.running, for: runID)
+                    status = .busy
+                } else {
+                    let cleaned = await discardPreparedDailyTasks(for: runID)
+                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: cleaned)
+                    dailyRunTasks = nil
+                }
                 throw error
             }
         } catch {
@@ -610,6 +679,7 @@ extension MAAViewModel {
             runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        dailyRunTasks = runTasks
         try await ensureHandle()
 
         for task in runTasks {

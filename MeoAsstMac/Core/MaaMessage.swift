@@ -388,34 +388,33 @@ extension MAAViewModel {
         case .TaskChainCompleted:
             // TODO: (Achievement) Mirror WPF task-completion achievement progress.
             if info.taskchain == "Infrast" {
-                if let id = taskID(coreID: info.taskid),
-                    let task = tasks[id],
+                if let task = dailyTask(coreID: info.taskid),
                     case .infrast(let config) = task,
                     config.mode == .custom,
                     let plan = try? MAAInfrast(path: config.filename),
                     plan.plans.indices.contains(config.plan_index)
                 {
-                    let currentPlan = plan.plans[config.plan_index]
-                    logInfo(.customInfrastPlanIndexAutoSwitch)
-                    if let description = currentPlan.description_post, !description.isEmpty {
-                        logTrace(verbatim: description)
-                    }
-                    var newConfig = config
-                    newConfig.plan_index = (config.plan_index + 1) % plan.plans.count
-                    tasks[id] = .infrast(newConfig)
-                    let nextPlan = plan.plans[newConfig.plan_index]
-                    if let name = nextPlan.name, !name.isEmpty {
-                        logInfo(verbatim: name)
-                    }
-                    let periods = nextPlan.period?.compactMap { period in
-                        guard period.count >= 2 else { return String?.none }
-                        return "[ \(period[0]) – \(period[1]) ]"
-                    }
-                    if let periods, !periods.isEmpty {
-                        logTrace(verbatim: periods.joined(separator: ", "))
-                    }
-                    if let description = nextPlan.description, !description.isEmpty {
-                        logTrace(verbatim: description)
+                    let nextIndex = (config.plan_index + 1) % plan.plans.count
+                    if applyDailyTaskCallback(.infrastructurePlanIndex(nextIndex), coreID: info.taskid) {
+                        let currentPlan = plan.plans[config.plan_index]
+                        logInfo(.customInfrastPlanIndexAutoSwitch)
+                        if let description = currentPlan.description_post, !description.isEmpty {
+                            logTrace(verbatim: description)
+                        }
+                        let nextPlan = plan.plans[nextIndex]
+                        if let name = nextPlan.name, !name.isEmpty {
+                            logInfo(verbatim: name)
+                        }
+                        let periods = nextPlan.period?.compactMap { period in
+                            guard period.count >= 2 else { return String?.none }
+                            return "[ \(period[0]) – \(period[1]) ]"
+                        }
+                        if let periods, !periods.isEmpty {
+                            logTrace(verbatim: periods.joined(separator: ", "))
+                        }
+                        if let description = nextPlan.description, !description.isEmpty {
+                            logTrace(verbatim: description)
+                        }
                     }
                 }
             }
@@ -783,20 +782,10 @@ extension MAAViewModel {
             switch process.task {
             case "StageDrops-Stars-3":
                 // TODO: (Achievement) Record completed credit fights.
-                if let id = taskID(coreID: info.taskid),
-                    case .mall(var config) = tasks[id]
-                {
-                    config.creditFightDate = .now
-                    tasks[id] = .mall(config)
-                }
+                _ = applyDailyTaskCallback(.creditFightDate(.now), coreID: info.taskid)
                 logInfo(.completeTask(name: L(.creditFight)))
             case "VisitLimited":
-                if let id = taskID(coreID: info.taskid),
-                    case .mall(var config) = tasks[id]
-                {
-                    config.friendVisitDate = .now
-                    tasks[id] = .mall(config)
-                }
+                _ = applyDailyTaskCallback(.friendVisitDate(.now), coreID: info.taskid)
                 logInfo(.completeTask(name: L(.visiting)))
             case "VisitNextBlack":
                 logInfo(.completeTask(name: L(.visiting)))
@@ -1644,7 +1633,7 @@ extension MAAViewModel {
 
     func dailyTask(coreID: Int32?) -> MAATask? {
         guard let id = taskID(coreID: coreID) else { return nil }
-        return tasks[id]
+        return (dailyRunTasks ?? tasks).first(where: { $0.id == id })?.task
     }
 
     private func taskID(coreID: Int32?) -> UUID? {
