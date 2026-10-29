@@ -28,6 +28,8 @@ struct UtilityDetail: View {
                 MiniGameView()
             case .maatools:
                 MaaToolsView()
+            case .achievements:
+                AchievementView()
             case .none:
                 Text("请选择工具项目")
             }

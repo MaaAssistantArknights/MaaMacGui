@@ -51,6 +51,11 @@ extension Decodable {
 
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
+        if let data = try? message.details.serialize() {
+            for event in achievementEvents.consume(code: message.code, data: data) {
+                AchievementStore.shared.record(event)
+            }
+        }
         switch message.code {
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
@@ -166,7 +171,7 @@ extension MAAViewModel {
             }
             Task {
                 do {
-                    try await stop()
+                    try await stop(userRequested: false)
                 } catch {
                     logger.warning("Failed to stop after Disconnect: \(error)")
                 }
@@ -691,7 +696,7 @@ extension MAAViewModel {
                 logError(.gameDrop)
                 Task {
                     do {
-                        try await stop()
+                        try await stop(userRequested: false)
                     } catch {
                         logger.warning("Failed to stop after game disconnect: \(error)")
                     }

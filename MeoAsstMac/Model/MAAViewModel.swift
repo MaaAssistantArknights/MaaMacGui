@@ -18,6 +18,8 @@ import SwiftUI
         case pending
     }
 
+    var achievementEvents = AchievementEventAdapter()
+
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
@@ -205,6 +207,7 @@ import SwiftUI
 
         dailyRunCoordinator.didChange = { [weak self] in self?.objectWillChange.send() }
         initScheduledDailyTaskTimer()
+        AchievementStore.shared.recordLaunch()
     }
 
     deinit {
@@ -255,6 +258,7 @@ extension MAAViewModel {
         taskStatus.removeAll()
 
         guard requireConnect else { return }
+        achievementEvents.resetSession()
 
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
@@ -302,12 +306,13 @@ extension MAAViewModel {
         status = .busy
     }
 
-    func stop(cancelScheduledStart: Bool = true) async throws {
+    func stop(cancelScheduledStart: Bool = true, userRequested: Bool = true) async throws {
         if cancelScheduledStart {
             NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
         }
         try await beginTaskOperation(requiresIdle: false)
         defer { isStartStopInFlight = false }
+        let achievementWasRunning = await handle?.running == true
 
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
@@ -317,6 +322,9 @@ extension MAAViewModel {
             try dailyRunCoordinator.transition(.stopping, for: id)
         }
         try await handle?.stop()
+        if userRequested, cancelScheduledStart, achievementWasRunning {
+            AchievementStore.shared.record(.init(runID: dailyRunCoordinator.active?.id, metric: .manualStop, operation: .maximum))
+        }
         status = .idle
         await finishDailyRunIfStopped(allowInFlight: true)
     }
@@ -555,6 +563,9 @@ extension MAAViewModel {
             do {
                 try dailyRunCoordinator.transition(.connecting, for: runID)
                 try await startTasks(snapshot: snapshot, runID: runID)
+                if origin == .schedule {
+                    AchievementStore.shared.record(.init(runID: runID, metric: .scheduledStart))
+                }
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
@@ -606,6 +617,7 @@ extension MAAViewModel {
 
             if let coreID = try await handle?.appendTask(task.task) {
                 taskIDMap[coreID] = task.id
+                achievementEvents.register(taskID: coreID, runID: runID)
             }
         }
 
@@ -646,6 +658,14 @@ extension MAAViewModel {
     }
 }
 
+extension MAAViewModel {
+    private func appendTrackedTask(type: MAATaskType, params: String) async throws {
+        if let id = try await handle?.appendTask(type: type, params: params) {
+            achievementEvents.register(taskID: id, type: type.rawValue)
+        }
+    }
+}
+
 // MARK: Copilot
 
 extension MAAViewModel {
@@ -657,7 +677,7 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: type, params: params)
+        try await appendTrackedTask(type: type, params: params)
         try await startCoreTasks()
     }
 }
@@ -677,7 +697,7 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Recruit, params: params)
+        try await appendTrackedTask(type: .Recruit, params: params)
         try await startCoreTasks()
     }
 
@@ -689,7 +709,7 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Depot, params: "")
+        try await appendTrackedTask(type: .Depot, params: "")
         try await startCoreTasks()
     }
 
@@ -706,7 +726,7 @@ extension MAAViewModel {
         }
 
         try await ensureHandle(requireConnect: false)
-        try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
+        try await appendTrackedTask(type: .VideoRecognition, params: params)
         try await startCoreTasks()
     }
 
@@ -718,7 +738,7 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .OperBox, params: "")
+        try await appendTrackedTask(type: .OperBox, params: "")
         try await startCoreTasks()
     }
 
@@ -736,7 +756,7 @@ extension MAAViewModel {
         let data = try JSONSerialization.data(withJSONObject: params)
         let string = String(data: data, encoding: .utf8)
 
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
+        try await appendTrackedTask(type: .Custom, params: string ?? "")
         try await startCoreTasks()
     }
 
@@ -753,7 +773,7 @@ extension MAAViewModel {
         let data = try JSONSerialization.data(withJSONObject: params)
         let string = String(data: data, encoding: .utf8)
 
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
+        try await appendTrackedTask(type: .Custom, params: string ?? "")
         try await startCoreTasks()
     }
 }
