@@ -41,8 +41,17 @@ struct SecretFrontRun: Equatable {
     }
 
     mutating func observe(taskID: Int32, task: String, candidate: String? = nil) {
-        guard self.taskID == taskID, task.hasPrefix("MiniGame@SecretFront@") else { return }
-        let step = task.components(separatedBy: "@").last ?? task
+        guard self.taskID == taskID else { return }
+        let step: String
+        if task.hasPrefix("MiniGame@SecretFront@") {
+            step = task.components(separatedBy: "@").last ?? task
+        } else {
+            // Core's external callback strips everything through the last @.
+            // Bare names are safe only within this run's exact task ID and the
+            // whitelist below; a foreign qualified task must remain rejected.
+            guard !task.contains("@") else { return }
+            step = task
+        }
         let description: String
         switch step {
         case "SelectTeam": description = String(localized: "识别到分队选择页")

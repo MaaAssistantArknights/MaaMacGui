@@ -70,6 +70,75 @@ for index in 0..<250 {
 }
 check(run.messages.count == 200, "log bounded")
 
+// These are external callback envelopes, after AbstractTask::callback strips
+// the ProcessTask namespace. Keep the wire shape distinct from source task names.
+struct RawStepCallback: Decodable {
+    let message: Int
+    let details: Envelope
+    struct Envelope: Decodable {
+        let taskid: Int32
+        let subtask: String
+        let details: Step
+    }
+    struct Step: Decodable {
+        let task: String
+        let result: Result?
+    }
+    struct Result: Decodable { let text: String? }
+}
+let wireCallbacks = #"""
+    [
+        {"message":20001,"details":{"taskid":41,"subtask":"ProcessTask","taskchain":"Custom","details":{"task":"SelectTeam","exec_times":1,"result":{}}}},
+        {"message":20001,"details":{"taskid":41,"subtask":"ProcessTask","taskchain":"Custom","details":{"task":"Management","exec_times":1,"result":{}}}},
+        {"message":20001,"details":{"taskid":41,"subtask":"ProcessTask","taskchain":"Custom","details":{"task":"PreClickDetect","exec_times":1,"result":{"text":"游侠"}}}}
+    ]
+    """#.data(using: .utf8)!
+let callbacks = try decoder.decode([RawStepCallback].self, from: wireCallbacks)
+var wireRun = SecretFrontRun()
+wireRun.begin(taskID: 41, configuration: .init())
+for callback in callbacks {
+    check(callback.message == 20001 && callback.details.subtask == "ProcessTask", "production step callback shape")
+    wireRun.observe(
+        taskID: callback.details.taskid, task: callback.details.details.task,
+        candidate: callback.details.details.result?.text)
+    check(wireRun.lastStep != nil, "owned bare wire step is observed")
+}
+check(wireRun.messages.count == 4, "all three production wire steps are logged")
+check(wireRun.lastStep?.contains("游侠") == true, "wire candidate text retained")
+let observedWireRun = wireRun
+for task in ["MiniGame@PixelPaint@SelectTeam", "Other@Management", "Other@MiniGame@SecretFront@End", "Unknown", ""] {
+    wireRun.observe(taskID: 41, task: task)
+    check(wireRun == observedWireRun, "foreign qualified or unknown wire step rejected")
+}
+wireRun.observe(taskID: 42, task: "EventContinue")
+check(wireRun == observedWireRun, "bare step with foreign task ID rejected")
+wireRun.finish(taskID: 41, result: .failed)
+let terminatedWireRun = wireRun
+check(terminatedWireRun.lastStep?.contains("游侠") == true, "wire last step survives failure")
+wireRun.observe(taskID: 41, task: "End")
+check(wireRun == terminatedWireRun, "late bare callback ignored after failure")
+
+for step in [
+    "SelectTeam", "Intelligence", "Management", "Medicine", "SelectTeamOK", "RouteSelect",
+    "PreClickDetect", "Actions", "ContinueResult", "ActionContinue", "EventContinue", "EventDetected", "End",
+] {
+    var bareRun = SecretFrontRun()
+    var qualifiedRun = SecretFrontRun()
+    bareRun.begin(taskID: 51, configuration: .init())
+    qualifiedRun.begin(taskID: 51, configuration: .init())
+    bareRun.observe(taskID: 51, task: step)
+    qualifiedRun.observe(taskID: 51, task: "MiniGame@SecretFront@" + step)
+    check(bareRun.lastStep != nil, "whitelisted bare step recognized")
+    check(bareRun == qualifiedRun, "wire suffix and source task name describe the same observed step")
+}
+var boundedWireRun = SecretFrontRun()
+boundedWireRun.begin(taskID: 61, configuration: .init())
+for index in 0..<250 {
+    boundedWireRun.observe(taskID: 61, task: "PreClickDetect", candidate: "wire-event-\(index)")
+}
+check(boundedWireRun.messages.count == 200, "production wire logs stay bounded")
+check(boundedWireRun.lastStep?.contains("wire-event-249") == true, "bounded wire log preserves last step")
+
 let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
 try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
 defer { try? FileManager.default.removeItem(at: directory) }
