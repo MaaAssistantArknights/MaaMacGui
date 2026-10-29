@@ -66,6 +66,23 @@ struct DailyTask {}
         task.cancel()
         let cancelled = try await task.value
         check(cancelled.cancelled && !cancelled.succeeded, "cancellation result")
+        let childScript = root.appendingPathComponent("grace-child.zsh")
+        let cleanupMarker = root.appendingPathComponent("child-cleaned")
+        let childReady = root.appendingPathComponent("child-ready")
+        try """
+        trap '/bin/sleep 0.5; print cleaned > "$1"; exit 0' TERM
+        print ready > "$2"
+        while true; do /bin/sleep 1; done
+        """.write(to: childScript, atomically: true, encoding: .utf8)
+        let grace = try command("/bin/zsh -f \"$1\" \"$2\" \"$3\" & wait",
+                                arguments: [childScript.path, cleanupMarker.path, childReady.path])
+        let graceful = Task { try await runner.run(command: grace, context: context, outcome: nil, adbPath: "", workingDirectory: root) }
+        for _ in 0..<300 where !FileManager.default.fileExists(atPath: childReady.path) { try await Task.sleep(for: .milliseconds(10)) }
+        check(FileManager.default.fileExists(atPath: childReady.path), "child installed TERM cleanup")
+        graceful.cancel()
+        let graceResult = try await graceful.value
+        check(graceResult.cancelled && (try? String(contentsOf: cleanupMarker, encoding: .utf8)) == "cleaned\n",
+              "child receives full TERM grace after leader exits")
         let detached = try command("/bin/sleep 30 & print done")
         let detachedResult = try await runner.run(command: detached, context: context, outcome: nil, adbPath: "", workingDirectory: root)
         check(detachedResult.succeeded && detachedResult.stdout == "done\n", "orphan pipe holders reaped")

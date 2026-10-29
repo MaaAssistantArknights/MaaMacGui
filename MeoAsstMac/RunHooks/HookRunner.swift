@@ -19,6 +19,7 @@ private final class HookProcess: @unchecked Sendable {
     private var cancelled = false
     private var timedOut = false
     private var finished = false
+    private var terminationDeadline: DispatchTime?
 
     func install(_ child: pid_t) {
         lock.lock()
@@ -34,8 +35,13 @@ private final class HookProcess: @unchecked Sendable {
         terminate()
     }
     private func terminate() {
-        signalGroup(SIGTERM)
-        DispatchQueue.global().asyncAfter(deadline: .now() + 2) { self.signalGroup(SIGKILL) }
+        lock.lock()
+        guard !finished, pid > 0, terminationDeadline == nil else { lock.unlock(); return }
+        let deadline = DispatchTime.now() + 2
+        terminationDeadline = deadline
+        kill(-pid, SIGTERM)
+        lock.unlock()
+        DispatchQueue.global().asyncAfter(deadline: deadline) { self.signalGroup(SIGKILL) }
     }
     private func signalGroup(_ signal: Int32) {
         lock.lock(); defer { lock.unlock() }
@@ -43,12 +49,25 @@ private final class HookProcess: @unchecked Sendable {
         kill(-pid, signal)
     }
     func finishGroup(ownsUnreapedChild: Bool) -> (Bool, Bool) {
-        lock.lock(); defer { lock.unlock() }
-        // Keep the exited group leader unreaped until this final group signal.
-        // Its reserved PID prevents an unrelated process from reusing our PGID.
-        if ownsUnreapedChild, pid > 0 { kill(-pid, SIGKILL) }
-        finished = true
-        return (timedOut, cancelled)
+        while true {
+            lock.lock()
+            let now = DispatchTime.now().uptimeNanoseconds
+            if ownsUnreapedChild, let deadline = terminationDeadline, deadline.uptimeNanoseconds > now {
+                let remaining = deadline.uptimeNanoseconds - now
+                lock.unlock()
+                // The leader can exit before its children finish TERM cleanup.
+                // This runs on the process worker, never the main actor. Keep the
+                // zombie leader/PID reserved for the group's full grace period.
+                Thread.sleep(forTimeInterval: Double(remaining) / 1_000_000_000)
+                continue
+            }
+            // Final group signal still precedes waitpid, excluding PGID reuse.
+            if ownsUnreapedChild, pid > 0 { kill(-pid, SIGKILL) }
+            finished = true
+            let result = (timedOut, cancelled)
+            lock.unlock()
+            return result
+        }
     }
 }
 
