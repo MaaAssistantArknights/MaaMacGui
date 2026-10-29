@@ -39,6 +39,7 @@ struct MeoAsstMacApp: App {
                 .environmentObject(appViewModel)
                 .environment(newViewModel)
                 .onAppear {
+                    BackgroundScheduleService.shared.attach(to: appViewModel)
                     TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
                 }
         }

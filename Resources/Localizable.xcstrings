@@ -6757,6 +6757,798 @@
           }
         }
       }
+    },
+    "后台定时需要有效团队签名、共享容器和内嵌调度程序。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台定时需要有效团队签名、共享容器和内嵌调度程序。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background schedules require a valid team signature, shared container, and embedded agent."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 예약에는 유효한 팀 서명, 공유 컨테이너, 내장 예약 도우미가 필요합니다."
+          }
+        }
+      }
+    },
+    "后台定时计划无法发布；本次不会触发。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台定时计划无法发布；本次不会触发。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot publish background schedules. This trigger will not run."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 예약을 게시할 수 없어 이번 예약을 실행하지 않습니다."
+          }
+        }
+      }
+    },
+    "后台定时交接记录无法读取；已暂停交接。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台定时交接记录无法读取；已暂停交接。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot read background handoff records. Handoff is paused."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 인계 기록을 읽을 수 없어 인계를 일시 중지했습니다."
+          }
+        }
+      }
+    },
+    "退出后定时启动" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "退出后定时启动"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schedule after quitting"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "종료 후 예약 실행"
+          }
+        }
+      }
+    },
+    "启用退出后定时启动" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用退出后定时启动"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable schedules after quitting"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "종료 후 예약 실행 활성화"
+          }
+        }
+      }
+    },
+    "仅已登录会话；约 0–60 秒后唤起应用，另计初始化时间。唤醒后仅补跑 5 分钟内的计划，关机或未登录时不执行。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅已登录会话；约 0–60 秒后唤起应用，另计初始化时间。唤醒后仅补跑 5 分钟内的计划，关机或未登录时不执行。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requires a logged-in session. Opens the app about 0–60 seconds after the scheduled time, plus initialization time. After wake, catches up only within 5 minutes. Does not run while shut down or logged out."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인된 세션에서만 실행됩니다. 예약 시각 후 약 0–60초 내에 앱을 열며 초기화 시간이 추가됩니다. 잠자기 해제 후 5분 이내 예약만 보충 실행하고 종료 또는 로그아웃 상태에서는 실행하지 않습니다."
+          }
+        }
+      }
+    },
+    "刷新系统状态" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新系统状态"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh system status"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태 새로 고침"
+          }
+        }
+      }
+    },
+    "打开登录项设置" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开登录项设置"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open Login Items settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "로그인 항목 설정 열기"
+          }
+        }
+      }
+    },
+    "修复后台定时注册" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "修复后台定时注册"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repair background schedule registration"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 예약 등록 복구"
+          }
+        }
+      }
+    },
+    "系统状态：已启用" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统状态：已启用"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System status: enabled"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태: 활성화됨"
+          }
+        }
+      }
+    },
+    "系统状态：等待批准" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统状态：等待批准"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System status: approval required"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태: 승인 필요"
+          }
+        }
+      }
+    },
+    "系统状态：未注册" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统状态：未注册"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System status: not registered"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태: 등록되지 않음"
+          }
+        }
+      }
+    },
+    "系统状态：找不到调度程序" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统状态：找不到调度程序"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System status: agent not found"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태: 예약 도우미를 찾을 수 없음"
+          }
+        }
+      }
+    },
+    "系统状态：未知" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "系统状态：未知"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "System status: unknown"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시스템 상태: 알 수 없음"
+          }
+        }
+      }
+    },
+    "工具任务正在运行，本次已跳过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "工具任务正在运行，本次已跳过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A utility task is running. This schedule was skipped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 작업이 실행 중이므로 이번 예약을 건너뛰었습니다."
+          }
+        }
+      }
+    },
+    "日常任务正在运行，本次已跳过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "日常任务正在运行，本次已跳过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daily tasks are running. This schedule was skipped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일상 작업이 실행 중이므로 이번 예약을 건너뛰었습니다."
+          }
+        }
+      }
+    },
+    "另一条定时计划正在等待交接。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一条定时计划正在等待交接。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another schedule is waiting for handoff."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 예약이 인계를 기다리고 있습니다."
+          }
+        }
+      }
+    },
+    "等待停止或清理超过 30 秒，本次不再开始。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待停止或清理超过 30 秒，本次不再开始。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopping or cleanup took more than 30 seconds. This schedule will not start."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중지 또는 정리에 30초가 넘어 이번 예약을 시작하지 않습니다."
+          }
+        }
+      }
+    },
+    "后置清理未成功，本次不再开始。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后置清理未成功，本次不再开始。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Post-run cleanup did not succeed. This schedule will not start."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 후 정리에 실패하여 이번 예약을 시작하지 않습니다."
+          }
+        }
+      }
+    },
+    "停止当前任务失败，本次不再开始。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止当前任务失败，本次不再开始。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not stop the current task. This schedule will not start."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 작업을 중지하지 못해 이번 예약을 시작하지 않습니다."
+          }
+        }
+      }
+    },
+    "任务启动失败，请检查连接与配置。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务启动失败，请检查连接与配置。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task startup failed. Check the connection and configuration."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업을 시작하지 못했습니다. 연결과 설정을 확인하세요."
+          }
+        }
+      }
+    },
+    "任务入口正忙，本次已跳过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务入口正忙，本次已跳过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The task controller is busy. This schedule was skipped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 제어가 사용 중이므로 이번 예약을 건너뛰었습니다."
+          }
+        }
+      }
+    },
+    "等待期间已开始其他运行，定时交接已取消。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待期间已开始其他运行，定时交接已取消。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Another run started while waiting. The scheduled handoff was cancelled."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중 다른 실행이 시작되어 예약 인계를 취소했습니다."
+          }
+        }
+      }
+    },
+    "计划已修改或停用，定时交接已取消。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "计划已修改或停用，定时交接已取消。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The schedule changed or was disabled. Handoff was cancelled."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예약이 변경되거나 비활성화되어 인계를 취소했습니다."
+          }
+        }
+      }
+    },
+    "用户已取消本次定时启动。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用户已取消本次定时启动。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scheduled start was cancelled by the user."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사용자가 이번 예약 시작을 취소했습니다."
+          }
+        }
+      }
+    },
+    "同一批到期计划只执行一条，本次已跳过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同一批到期计划只执行一条，本次已跳过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only one schedule in this due batch runs. This schedule was skipped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "같은 일괄 예약에서는 하나만 실행하므로 이번 예약을 건너뛰었습니다."
+          }
+        }
+      }
+    },
+    "夏令时跳过了此本地时间。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "夏令时跳过了此本地时间。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This local time was skipped by daylight saving time."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "서머타임으로 이 현지 시각이 생략되었습니다."
+          }
+        }
+      }
+    },
+    "已超出本次定时触发窗口。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已超出本次定时触发窗口。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The scheduled trigger window has expired."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 예약 실행 허용 시간이 지났습니다."
+          }
+        }
+      }
+    },
+    "上次应用退出前的任务结果未知，不会自动重跑。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上次应用退出前的任务结果未知，不会自动重跑。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The previous run outcome is unknown. It will not be replayed automatically."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 앱 종료 전 실행 결과를 알 수 없어 자동으로 다시 실행하지 않습니다."
+          }
+        }
+      }
+    },
+    "等待应用接收后台定时请求。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待应用接收后台定时请求。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for the app to receive the background schedule."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱이 백그라운드 예약 요청을 받기를 기다립니다."
+          }
+        }
+      }
+    },
+    "应用已接收后台定时请求。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用已接收后台定时请求。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app received the background schedule."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱이 백그라운드 예약 요청을 받았습니다."
+          }
+        }
+      }
+    },
+    "应用未在 5 分钟内接收请求，本次已错过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "应用未在 5 分钟内接收请求，本次已错过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app did not receive the request within 5 minutes. This schedule was missed."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱이 5분 내에 요청을 받지 못해 이번 예약을 놓쳤습니다."
+          }
+        }
+      }
+    },
+    "后台请求已过期或计划已变更，本次不执行。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台请求已过期或计划已变更，本次不执行。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The background request expired or its schedule changed. It will not run."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 요청이 만료되거나 예약이 변경되어 실행하지 않습니다."
+          }
+        }
+      }
+    },
+    "无法唤起应用，本次不会自动重试。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法唤起应用，本次不会自动重试。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app could not be opened. This occurrence will not be retried automatically."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앱을 열지 못했습니다. 이번 예약을 자동으로 재시도하지 않습니다."
+          }
+        }
+      }
+    },
+    "后台请求无法保存，本次未开始。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台请求无法保存，本次未开始。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The background request could not be saved. This schedule did not start."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 요청을 저장하지 못해 이번 예약을 시작하지 않았습니다."
+          }
+        }
+      }
+    },
+    "同次恢复只补跑一条历史计划，本次已跳过。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同次恢复只补跑一条历史计划，本次已跳过。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only one historical schedule is recovered in this batch. This schedule was skipped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이번 복구에서는 이전 예약 하나만 실행하므로 이번 예약을 건너뛰었습니다."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

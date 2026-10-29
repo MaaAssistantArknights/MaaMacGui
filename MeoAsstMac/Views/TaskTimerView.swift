@@ -42,11 +42,13 @@ struct TaskTimerView: View {
                         Spacer()
                         Text(occurrence.result.displayName)
                     }
-                    .help(occurrence.detail)
+                    .help(occurrence.explanation)
+                    .accessibilityHint(occurrence.explanation)
                 }
             }
             .padding()
         }
+        BackgroundScheduleSettingsView().padding(.horizontal)
         Button("取消等待中的定时启动") { timerManager.cancelPendingStart() }
             .padding(.horizontal)
         .alert("允许阻止系统睡眠",
@@ -139,6 +141,36 @@ private extension ScheduleOccurrence.Result {
         case .cancelled: String(localized: "已取消")
         case .missed: String(localized: "已错过")
         case .interrupted: String(localized: "上次结果未知")
+        }
+    }
+}
+
+private extension ScheduleOccurrence {
+    var explanation: String {
+        switch detail {
+        case "utilityTaskBusy": String(localized: "工具任务正在运行，本次已跳过。")
+        case "dailyTaskBusy": String(localized: "日常任务正在运行，本次已跳过。")
+        case "anotherSchedulePending": String(localized: "另一条定时计划正在等待交接。")
+        case "handoffTimedOut": String(localized: "等待停止或清理超过 30 秒，本次不再开始。")
+        case "cleanupFailed": String(localized: "后置清理未成功，本次不再开始。")
+        case "stopFailed": String(localized: "停止当前任务失败，本次不再开始。")
+        case "startFailed": String(localized: "任务启动失败，请检查连接与配置。")
+        case "admissionRejected": String(localized: "任务入口正忙，本次已跳过。")
+        case "runChanged": String(localized: "等待期间已开始其他运行，定时交接已取消。")
+        case "scheduleChanged": String(localized: "计划已修改或停用，定时交接已取消。")
+        case "userCancelled": String(localized: "用户已取消本次定时启动。")
+        case "simultaneousSchedule": String(localized: "同一批到期计划只执行一条，本次已跳过。")
+        case "nonexistentLocalTime": String(localized: "夏令时跳过了此本地时间。")
+        case "triggerExpired": String(localized: "已超出本次定时触发窗口。")
+        case "previousRunOutcomeUnknown": String(localized: "上次应用退出前的任务结果未知，不会自动重跑。")
+        case "recoveryBatchLimit": String(localized: "同次恢复只补跑一条历史计划，本次已跳过。")
+        case "backgroundIntent": String(localized: "等待应用接收后台定时请求。")
+        case "guiAccepted": String(localized: "应用已接收后台定时请求。")
+        case "backgroundIntentExpired": String(localized: "应用未在 5 分钟内接收请求，本次已错过。")
+        case "staleBackgroundIntent": String(localized: "后台请求已过期或计划已变更，本次不执行。")
+        case "wakeFailed": String(localized: "无法唤起应用，本次不会自动重试。")
+        case "intentWriteFailed": String(localized: "后台请求无法保存，本次未开始。")
+        default: ""
         }
     }
 }

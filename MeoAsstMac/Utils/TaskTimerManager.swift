@@ -11,7 +11,7 @@ import Foundation
     private var plans: [DailyTaskSchedule] = []
     private var pulse: Timer?
     private var cancellables = Set<AnyCancellable>()
-    private var lastDay: Date?
+    private var triggerGrace: TimeInterval = 60
     private var sleepDisabled = false
     var sleepAssertionID: IOPMAssertionID = 0
     private var store = ScheduleOccurrenceStore(directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Schedule"))
@@ -60,6 +60,37 @@ import Foundation
     }
 
     private init() {}
+
+    func configureSharedDirectory(_ directory: URL) throws {
+        guard viewModel == nil else { throw BackgroundScheduleError.helperUnavailable }
+        let shared = ScheduleOccurrenceStore(directory: directory)
+        try shared.mergeHistory(from: store)
+        store = shared
+    }
+
+    func setBackgroundSchedulingEnabled(_ enabled: Bool) {
+        triggerGrace = enabled ? 300 : 60
+    }
+
+    func acceptBackgroundIntent(_ intent: BackgroundScheduleIntent) throws {
+        guard let viewModel, handoff != nil,
+              let plan = plans.first(where: { $0.id == intent.occurrence.planID && $0.isEnabled && $0.revision == intent.occurrence.revision })
+        else { throw BackgroundScheduleError.invalidIntent }
+        guard try store.acceptBackgroundIntent(intent.occurrence) else { return }
+        let snapshot = DailyRunSnapshot(profileID: intent.profileID, tasks: viewModel.tasks)
+        handoff?.submit(intent.occurrence, force: plan.forceStart, snapshot: snapshot)
+        reloadRecords()
+    }
+
+    func expireBackgroundIntents() throws {
+        try store.expireUndeliveredBackgroundIntents()
+        reloadRecords()
+    }
+
+    func rejectBackgroundIntent(_ occurrence: ScheduleOccurrence, detail: String) throws {
+        try store.rejectBackgroundIntent(occurrence.id, result: Date() > occurrence.expiresAt ? .missed : .cancelled, detail: detail)
+        reloadRecords()
+    }
 
     func connectToModel(viewModel: MAAViewModel) {
         guard self.viewModel !== viewModel else { return }
@@ -114,49 +145,16 @@ import Foundation
 
     private func checkDueSchedules() {
         defer { scheduleNextCheck() }
-        guard let viewModel else { return }
-        let now = Date()
-        let calendar = Calendar.autoupdatingCurrent
-        let today = calendar.startOfDay(for: now)
-        var days = [today]
-        if let lastDay, lastDay < today,
-           let yesterday = calendar.date(byAdding: .day, value: -1, to: today) { days.insert(yesterday, at: 0) }
-        lastDay = today
-        var due: [(DailyTaskSchedule, ScheduleOccurrence)] = []
-        for day in days {
-            for plan in plans.filter({ $0.isEnabled && $0.isValid }) {
-                guard let occurrence = ScheduleCalendar.occurrence(for: plan, on: day, calendar: calendar) else { continue }
-                let missingTimeDue = occurrence.result == .missed && (day < today || {
-                    let current = calendar.dateComponents([.hour, .minute], from: now)
-                    return (current.hour ?? 0) * 60 + (current.minute ?? 0) >= plan.hour * 60 + plan.minute
-                }())
-                guard occurrence.scheduledAt <= now || missingTimeDue else { continue }
-                if occurrence.result == .missed || now >= occurrence.expiresAt {
-                    do {
-                        if try store.claim(occurrence) {
-                            record(occurrence, result: .missed, detail: occurrence.result == .missed ? "nonexistentLocalTime" : "triggerExpired")
-                        }
-                    } catch { reportFailure(error); return }
-                } else {
-                    due.append((plan, occurrence))
-                }
+        guard let viewModel, viewModel.isCoreInitialized else { return }
+        do {
+            if let candidate = try BackgroundScheduleCheck.claimDue(plans: plans, now: .now,
+                    calendar: .autoupdatingCurrent, grace: triggerGrace, ledger: store, source: "") {
+                let snapshot = DailyRunSnapshot(profileID: viewModel.dailyTaskProfile, tasks: viewModel.tasks)
+                handoff?.submit(candidate.1, force: candidate.0.forceStart, snapshot: snapshot)
             }
-        }
-        due.sort { left, right in
-            left.1.scheduledAt == right.1.scheduledAt ? left.0.id.uuidString < right.0.id.uuidString : left.1.scheduledAt < right.1.scheduledAt
-        }
-        let snapshot = DailyRunSnapshot(profileID: viewModel.dailyTaskProfile, tasks: viewModel.tasks)
-        // Choose the stable winner before claiming. A second process that
-        // sees the winner already claimed must not promote the next plan.
-        for (index, item) in due.enumerated() {
-            do {
-                guard try store.claim(item.1) else { continue }
-                if index == 0 { handoff?.submit(item.1, force: item.0.forceStart, snapshot: snapshot) }
-                else { record(item.1, result: .skipped, detail: "simultaneousSchedule") }
-            } catch { reportFailure(error); return }
-        }
-        reloadRecords()
-        if let end = viewModel.dailyRunCoordinator.lastTerminal { recordTerminal(end) }
+            reloadRecords()
+            if let end = viewModel.dailyRunCoordinator.lastTerminal { recordTerminal(end) }
+        } catch { reportFailure(error) }
     }
 
     private func record(_ occurrence: ScheduleOccurrence, result: ScheduleOccurrence.Result,

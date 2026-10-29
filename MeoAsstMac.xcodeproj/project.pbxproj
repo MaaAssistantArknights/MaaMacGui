@@ -125,7 +125,29 @@
 		B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */; };
 		A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */; };
 		A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */; };
+		26095AA3A0212A69FF0F8EE5 /* DailyTaskSchedule.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */; };
+		B1676241FB7A32F7A3B1BF92 /* ScheduleOccurrenceStore.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */; };
+		CEB05820D47056629ECC9912 /* BackgroundScheduleSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FB0BD2F827CDBD73F022A68 /* BackgroundScheduleSchema.swift */; };
+		D47585559F09E984BED030BE /* BackgroundScheduleSchema.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 1FB0BD2F827CDBD73F022A68 /* BackgroundScheduleSchema.swift */; };
+		F1CA8032706D66C2ADF348BE /* BackgroundScheduleCheck.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93BB8670D0D09D7FCA1334D6 /* BackgroundScheduleCheck.swift */; };
+		18CDD1FAA3B9A4D3DCEBC1FF /* BackgroundScheduleCheck.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 93BB8670D0D09D7FCA1334D6 /* BackgroundScheduleCheck.swift */; };
+		2C46E20744CFBCE765230FC7 /* ScheduleSigning.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AA4AB8B9F1D336B5D97A859 /* ScheduleSigning.swift */; };
+		CFAA94A93F77C919DCD38ED5 /* ScheduleSigning.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 6AA4AB8B9F1D336B5D97A859 /* ScheduleSigning.swift */; };
+		E2634018F76DBCBF1FAA3074 /* BackgroundScheduleService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC57973905C03C41891EB781 /* BackgroundScheduleService.swift */; };
+		BCAD46240D494C047C5532E9 /* BackgroundScheduleSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D922FE93C61D8D59AACD6290 /* BackgroundScheduleSettingsView.swift */; };
+		6099ACB5AFC2894A6D6284C7 /* AgentMain.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 2A2DCE729E33DB96D7B22BFE /* AgentMain.swift */; };
+		B46C81685132E1296E600AEE /* MAAScheduleAgent in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 3389648EC99FC421E346CE7C; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		94C59E20479606E44D4FB124 /* ScheduleAgent.plist in LaunchAgents */ = {isa = PBXBuildFile; fileRef = 6250DA9C76813DDBFE5B7EA8; };
+		9B6C185C8729497448935CB7 /* ScheduleAgentLocation.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 1C3AC5D910863BF71F8DC4B6; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E761AD20F503BBF3553E43D0 /* Schedule agent proxy */ = {isa = PBXContainerItemProxy; containerPortal = 833786C328F188D800D39D6F; proxyType = 1; remoteGlobalIDString = 395372FCA1214017412399C1; remoteInfo = MAAScheduleAgent; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXTargetDependency section */
+		EAF0C5A66150E5D2ACF76931 /* MAAScheduleAgent */ = {isa = PBXTargetDependency; target = 395372FCA1214017412399C1; targetProxy = E761AD20F503BBF3553E43D0; };
+/* End PBXTargetDependency section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		83245A0528F467C400ED6D4C /* Embed Frameworks */ = {
@@ -151,10 +173,12 @@
 			dstSubfolderSpec = 6;
 			files = (
 				8337871328F1E03C00D39D6F /* adb in Embed Helper Tools */,
+				B46C81685132E1296E600AEE /* MAAScheduleAgent in Embed Helper Tools */,
 			);
 			name = "Embed Helper Tools";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		99CC0F10F486CB7A9BA6C1C7 /* Embed Launch Agent */ = {isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = Contents/Library/LaunchAgents; dstSubfolderSpec = 1; files = (94C59E20479606E44D4FB124,); name = "Embed Launch Agent"; runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -273,6 +297,15 @@
 		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/DailyTaskSchedule.swift; sourceTree = SOURCE_ROOT; };
 		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleOccurrenceStore.swift; sourceTree = SOURCE_ROOT; };
 		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleHandoff.swift; sourceTree = SOURCE_ROOT; };
+		1FB0BD2F827CDBD73F022A68 /* BackgroundScheduleSchema.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/BackgroundScheduleSchema.swift; sourceTree = SOURCE_ROOT; };
+		93BB8670D0D09D7FCA1334D6 /* BackgroundScheduleCheck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/BackgroundScheduleCheck.swift; sourceTree = SOURCE_ROOT; };
+		6AA4AB8B9F1D336B5D97A859 /* ScheduleSigning.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleSigning.swift; sourceTree = SOURCE_ROOT; };
+		AC57973905C03C41891EB781 /* BackgroundScheduleService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/BackgroundScheduleService.swift; sourceTree = SOURCE_ROOT; };
+		D922FE93C61D8D59AACD6290 /* BackgroundScheduleSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/BackgroundScheduleSettingsView.swift; sourceTree = SOURCE_ROOT; };
+		2A2DCE729E33DB96D7B22BFE /* AgentMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAAScheduleAgent/AgentMain.swift; sourceTree = SOURCE_ROOT; };
+		3389648EC99FC421E346CE7C /* MAAScheduleAgent */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MAAScheduleAgent; sourceTree = BUILT_PRODUCTS_DIR; };
+		6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MAAScheduleAgent/com.hguandl.MeoAsstMac.ScheduleAgent.plist; sourceTree = SOURCE_ROOT; };
+		1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleAgentLocation.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +327,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B2FFCD54D1535C456FE621D8 /* Agent Frameworks */ = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -301,6 +335,14 @@
 			isa = PBXGroup;
 			children = (
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */,
+				6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */,
+				2A2DCE729E33DB96D7B22BFE /* AgentMain.swift */,
+				D922FE93C61D8D59AACD6290 /* BackgroundScheduleSettingsView.swift */,
+				AC57973905C03C41891EB781 /* BackgroundScheduleService.swift */,
+				6AA4AB8B9F1D336B5D97A859 /* ScheduleSigning.swift */,
+				93BB8670D0D09D7FCA1334D6 /* BackgroundScheduleCheck.swift */,
+				1FB0BD2F827CDBD73F022A68 /* BackgroundScheduleSchema.swift */,
 				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
 				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
 				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
@@ -432,6 +474,7 @@
 			isa = PBXGroup;
 			children = (
 				833786CB28F188D800D39D6F /* MAA.app */,
+				3389648EC99FC421E346CE7C /* MAAScheduleAgent */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -568,10 +611,12 @@
 				833786C928F188D800D39D6F /* Resources */,
 				83245A0528F467C400ED6D4C /* Embed Frameworks */,
 				8337870D28F1DD8800D39D6F /* Embed Helper Tools */,
+				99CC0F10F486CB7A9BA6C1C7 /* Embed Launch Agent */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EAF0C5A66150E5D2ACF76931 /* MAAScheduleAgent */,
 			);
 			name = MAA;
 			packageProductDependencies = (
@@ -585,6 +630,7 @@
 			productReference = 833786CB28F188D800D39D6F /* MAA.app */;
 			productType = "com.apple.product-type.application";
 		};
+		395372FCA1214017412399C1 /* MAAScheduleAgent */ = {isa = PBXNativeTarget; buildConfigurationList = 77E476C2F5CBD6D37274CCF8; buildPhases = (164F234C7526D1F5B966B229,B2FFCD54D1535C456FE621D8,); buildRules = (); dependencies = (); name = MAAScheduleAgent; productName = MAAScheduleAgent; productReference = 3389648EC99FC421E346CE7C; productType = "com.apple.product-type.tool"; };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -620,6 +666,7 @@
 			projectRoot = "";
 			targets = (
 				833786CA28F188D800D39D6F /* MAA */,
+				395372FCA1214017412399C1 /* MAAScheduleAgent */,
 			);
 		};
 /* End PBXProject section */
@@ -645,6 +692,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
+				BCAD46240D494C047C5532E9 /* BackgroundScheduleSettingsView.swift in Sources */,
+				E2634018F76DBCBF1FAA3074 /* BackgroundScheduleService.swift in Sources */,
+				2C46E20744CFBCE765230FC7 /* ScheduleSigning.swift in Sources */,
+				F1CA8032706D66C2ADF348BE /* BackgroundScheduleCheck.swift in Sources */,
+				CEB05820D47056629ECC9912 /* BackgroundScheduleSchema.swift in Sources */,
 				A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */,
 				A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */,
 				B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */,
@@ -742,6 +794,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		164F234C7526D1F5B966B229 /* Agent Sources */ = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (9B6C185C8729497448935CB7,26095AA3A0212A69FF0F8EE5,B1676241FB7A32F7A3B1BF92,D47585559F09E984BED030BE,18CDD1FAA3B9A4D3DCEBC1FF,CFAA94A93F77C919DCD38ED5,6099ACB5AFC2894A6D6284C7,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
@@ -934,6 +987,8 @@
 			};
 			name = Release;
 		};
+		DF2B87389816CE5C7FCEEECE /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; }; name = Debug; };
+		A5F9F86FCE829AEC17280EFD /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; DEVELOPMENT_TEAM = 29V29Y67P2;}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -955,6 +1010,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		77E476C2F5CBD6D37274CCF8 /* Agent configuration list */ = {isa = XCConfigurationList; buildConfigurations = (DF2B87389816CE5C7FCEEECE,A5F9F86FCE829AEC17280EFD,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Debug; };
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
