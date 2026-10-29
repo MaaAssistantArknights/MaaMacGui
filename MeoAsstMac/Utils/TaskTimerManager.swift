@@ -16,10 +16,15 @@ import Foundation
     var sleepAssertionID: IOPMAssertionID = 0
     private var store = ScheduleOccurrenceStore(directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Schedule"))
 
-    private var handoff: ScheduleHandoff<DailyRunSnapshot>?
+    private struct ScheduleSnapshot {
+        let daily: DailyRunSnapshot
+        let recoveryEligible: @MainActor () -> Bool
+    }
 
-    private func makeHandoff() -> ScheduleHandoff<DailyRunSnapshot> {
-        ScheduleHandoff<DailyRunSnapshot>(
+    private var handoff: ScheduleHandoff<ScheduleSnapshot>?
+
+    private func makeHandoff() -> ScheduleHandoff<ScheduleSnapshot> {
+        ScheduleHandoff<ScheduleSnapshot>(
         timeout: .seconds(30),
         occupancy: { [weak self] in
             guard let model = self?.viewModel else { return .tool }
@@ -35,14 +40,15 @@ import Foundation
                   run.id == expectedID else { return false }
             return !model.isStartStopInFlight && run.status != .postHook && run.status != .stopping
         },
+        canForce: { $0.recoveryEligible() },
         stop: { [weak self] expectedID in
             guard let model = self?.viewModel else { throw CancellationError() }
             guard model.dailyRunCoordinator.active?.id == expectedID else { throw CancellationError() }
             try await model.stop(cancelScheduledStart: false)
         },
-        start: { [weak self] snapshot in
+        start: { [weak self] snapshot, needsRecovery, isCurrent in
             guard let model = self?.viewModel else { return .failed }
-            let result = await model.startDailyTasks(origin: .schedule, snapshot: snapshot)
+            let result = await model.startDailyTasks(origin: .schedule, snapshot: snapshot.daily, recoverGame: needsRecovery, recoveryCurrent: isCurrent)
             switch result {
             case .started:
                 let id = model.dailyRunCoordinator.active?.id ?? model.dailyRunCoordinator.lastTerminal?.id
@@ -77,7 +83,8 @@ import Foundation
               let plan = plans.first(where: { $0.id == intent.occurrence.planID && $0.isEnabled && $0.revision == intent.occurrence.revision })
         else { throw BackgroundScheduleError.invalidIntent }
         guard try store.acceptBackgroundIntent(intent.occurrence) else { return }
-        let snapshot = DailyRunSnapshot(profileID: intent.profileID, tasks: viewModel.tasks)
+        let daily = DailyRunSnapshot(profileID: intent.profileID, tasks: viewModel.tasks)
+        let snapshot = ScheduleSnapshot(daily: daily, recoveryEligible: viewModel.forceRecoveryEligibility(snapshot: daily))
         handoff?.submit(intent.occurrence, force: plan.forceStart, snapshot: snapshot)
         reloadRecords()
     }
@@ -149,7 +156,8 @@ import Foundation
         do {
             if let candidate = try BackgroundScheduleCheck.claimDue(plans: plans, now: .now,
                     calendar: .autoupdatingCurrent, grace: triggerGrace, ledger: store, source: "") {
-                let snapshot = DailyRunSnapshot(profileID: viewModel.dailyTaskProfile, tasks: viewModel.tasks)
+                let daily = DailyRunSnapshot(profileID: viewModel.dailyTaskProfile, tasks: viewModel.tasks)
+                let snapshot = ScheduleSnapshot(daily: daily, recoveryEligible: viewModel.forceRecoveryEligibility(snapshot: daily))
                 handoff?.submit(candidate.1, force: candidate.0.forceStart, snapshot: snapshot)
             }
             reloadRecords()

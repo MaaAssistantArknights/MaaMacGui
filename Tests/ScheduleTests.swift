@@ -58,14 +58,36 @@ import Foundation
         do { _ = try store.claim(edited); fatalError("corrupt ledger allowed a start") }
         catch ScheduleOccurrenceStore.StoreError.corruptLedger { assertions += 1 }
 
+        var recovery = ForcedGameRecovery(taskID: 42, chain: "Custom", requiresHome: true)
+        recovery.subtask(chain: "Custom", taskID: 0, name: "Home", algorithm: "MatchTemplate")
+        check(!recovery.verified, "home before chain start ignored")
+        recovery.chainStart(42)
+        recovery.subtask(chain: "Custom", taskID: 0, name: "Home", algorithm: "MatchTemplate")
+        recovery.chainFinish(42, success: true)
+        check(!recovery.verified, "home and chain complete still require all tasks")
+        recovery.allFinished([42])
+        check(recovery.verified, "matching chain and home template verify recovery")
+        var falseHome = ForcedGameRecovery(taskID: 43, chain: "Custom", requiresHome: true)
+        falseHome.chainStart(43)
+        falseHome.subtask(chain: "Custom", taskID: 0, name: "Home", algorithm: "MatchTemplate")
+        falseHome.subtask(chain: "Custom", taskID: 0, name: "ReturnButton", algorithm: "MatchTemplate")
+        falseHome.chainFinish(43, success: true); falseHome.allFinished([43])
+        check(!falseHome.verified, "later navigation invalidates stale home match")
+        var failedRecovery = ForcedGameRecovery(taskID: 44, chain: "Custom", requiresHome: true)
+        failedRecovery.chainStart(44); failedRecovery.subtask(chain: "Custom", taskID: 0, name: "Home", algorithm: "MatchTemplate")
+        failedRecovery.chainFinish(44, success: false); failedRecovery.allFinished([44])
+        check(!failedRecovery.verified, "task failure never verifies home")
+
         var state = ScheduleHandoff<Int>.Occupancy.idle
         var terminal: ScheduleHandoff<Int>.Terminal?
         var starts = [Int]()
         var stops = 0
         var reports = [(ScheduleOccurrence.Result, String)]()
         var valid = true
+        var eligible = true
         let handoff = ScheduleHandoff<Int>(timeout: .milliseconds(120), occupancy: { state },
-            terminal: { terminal }, canStop: { _ in true }, stop: { _ in stops += 1 }, start: { snapshot in
+            terminal: { terminal }, canStop: { _ in true }, canForce: { _ in eligible }, stop: { _ in stops += 1 }, start: { snapshot, recover, _ in
+                if snapshot == 4 { check(recover, "forced interrupted run requires recovery") } else if snapshot == 1 { check(!recover, "idle run needs no recovery") }
                 starts.append(snapshot); return .started(id)
             }, isCurrent: { _ in valid }, report: { _, result, reason, _ in reports.append((result, reason)) })
         handoff.submit(repeated, force: false, snapshot: 1)
@@ -75,6 +97,10 @@ import Foundation
         handoff.submit(repeated, force: true, snapshot: 2)
         check(starts == [1] && stops == 0 && reports.last?.1 == "utilityTaskBusy", "force leaves utility alone")
         state = .daily(id)
+        eligible = false
+        handoff.submit(repeated, force: true, snapshot: 99)
+        check(stops == 0 && reports.last?.1 == "forceRecoveryUnavailable", "unsupported recovery is rejected before stop")
+        eligible = true
         handoff.submit(repeated, force: false, snapshot: 3)
         check(stops == 0 && reports.last?.1 == "dailyTaskBusy", "ordinary schedule skips daily")
         handoff.submit(repeated, force: true, snapshot: 4)
@@ -107,15 +133,28 @@ import Foundation
         terminal = .init(id: id, cleanupSucceeded: false); state = .idle
         try await Task.sleep(for: .milliseconds(60))
         check(starts == [1, 4] && reports.last?.1 == "cleanupFailed", "failed cleanup never restarts")
+        valid = true; state = .daily(id)
+        var eligibleWhileWaiting = true
+        var scopeStops = 0
+        var scopeReports = [(ScheduleOccurrence.Result, String)]()
+        let scopeHandoff = ScheduleHandoff<Int>(timeout: .seconds(1), occupancy: { state }, terminal: { nil },
+            canStop: { _ in false }, canForce: { _ in eligibleWhileWaiting }, stop: { _ in scopeStops += 1 },
+            start: { _, _, _ in fatalError("changed scope started") }, isCurrent: { _ in true },
+            report: { _, result, detail, _ in scopeReports.append((result, detail)) })
+        scopeHandoff.submit(repeated, force: true, snapshot: 1)
+        try await Task.sleep(for: .milliseconds(20))
+        eligibleWhileWaiting = false
+        try await Task.sleep(for: .milliseconds(80))
+        check(scopeStops == 0 && scopeReports.last?.1 == "forceRecoveryUnavailable", "scope change while waiting cancels before stop")
         valid = true; state = .idle
         let failedStart = ScheduleHandoff<Int>(occupancy: { .idle }, terminal: { nil }, canStop: { _ in true }, stop: { _ in },
-            start: { _ in .failed }, isCurrent: { _ in true },
+            start: { _, _, _ in .failed }, isCurrent: { _ in true },
             report: { _, result, reason, _ in reports.append((result, reason)) })
         failedStart.submit(repeated, force: false, snapshot: 1)
         try await Task.sleep(for: .milliseconds(10))
         check(reports.last?.0 == .failed, "start failure reported")
         let stopError = ScheduleHandoff<Int>(occupancy: { .daily(id) }, terminal: { nil }, canStop: { _ in true },
-            stop: { _ in throw CancellationError() }, start: { _ in fatalError("stop failure starts") },
+            stop: { _ in throw CancellationError() }, start: { _, _, _ in fatalError("stop failure starts") },
             isCurrent: { _ in true }, report: { _, result, reason, _ in reports.append((result, reason)) })
         stopError.submit(repeated, force: true, snapshot: 1)
         try await Task.sleep(for: .milliseconds(10))
@@ -128,7 +167,7 @@ import Foundation
             canStop: { _ in canStop }, stop: { expected in
                 check(expected == id, "scheduler carries original run identity")
                 replacementStops += 1
-            }, start: { _ in fatalError("replaced run must not start scheduled task") },
+            }, start: { _, _, _ in fatalError("replaced run must not start scheduled task") },
             isCurrent: { _ in true }, report: { _, result, reason, _ in reports.append((result, reason)) })
         replacement.submit(repeated, force: true, snapshot: 99)
         try await Task.sleep(for: .milliseconds(10))

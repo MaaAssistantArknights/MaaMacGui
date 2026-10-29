@@ -51,6 +51,7 @@ extension Decodable {
 
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
+        if processForcedRecoveryMessage(message) { return }
         switch message.code {
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
@@ -248,6 +249,44 @@ extension MAAViewModel {
         default:
             break
         }
+    }
+}
+
+// Core's nested Custom process tasks can emit taskid 0. Only accept
+// those events between the exclusive recovery task's start and terminal marker.
+extension MAAViewModel {
+    private func processForcedRecoveryMessage(_ message: MaaMessage) -> Bool {
+        guard forceRecoveryInFlight else { return false }
+        // No other task owns Core during this stage; delayed callbacks from the
+        // stopped run must not reset or complete the newly reserved daily run.
+        let isTaskMessage = message.code == .AllTasksCompleted ||
+            (.TaskChainError ... .TaskChainStopped).contains(message.code) ||
+            (.SubTaskError ... .SubTaskStopped).contains(message.code)
+        guard isTaskMessage else { return false }
+        guard var recovery = forceRecovery else { return true }
+        let chain: String = (try? message.details["taskchain", as: String.self]) ?? ""
+        let id: Int32 = (try? message.details["taskid", as: Int32.self]) ?? -1
+        if message.code == .AllTasksCompleted {
+            guard let ids: [Int32] = try? message.details["finished_tasks", as: [Int32].self], ids.contains(recovery.taskID) else { return true }
+            recovery.allFinished(ids)
+        } else if chain == recovery.chain, id == recovery.taskID, message.code == .TaskChainStart {
+            recovery.chainStart(recovery.taskID)
+        } else if chain == recovery.chain, id == recovery.taskID,
+                  [.TaskChainCompleted, .TaskChainError, .TaskChainStopped].contains(message.code) {
+            recovery.chainFinish(recovery.taskID, success: message.code == .TaskChainCompleted)
+        } else if chain == recovery.chain, recovery.started, (id == 0 || id == recovery.taskID),
+                  (.SubTaskError ... .SubTaskStopped).contains(message.code) {
+            if message.code == .SubTaskStart {
+                let subtask: String = (try? message.details["subtask", as: String.self]) ?? ""
+                if subtask == "ProcessTask", let payload = try? message.details.value(forSubscript: "details") {
+                    let task: String = (try? payload["task", as: String.self]) ?? ""
+                    let algorithm: String = (try? payload["algorithm", as: String.self]) ?? ""
+                    recovery.subtask(chain: chain, taskID: id, name: task, algorithm: algorithm)
+                }
+            }
+        } else { return true }
+        forceRecovery = recovery
+        return true
     }
 }
 

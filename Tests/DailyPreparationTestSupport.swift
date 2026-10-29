@@ -18,6 +18,8 @@ import Observation
 }
 
 enum FixtureError: Error { case connection }
+struct ForcedRecoveryCleanupFailure: Error {}
+enum ForcedRecoveryFailure: Error { case notReady, timedOut }
 enum MAATaskType { case Copilot, SSSCopilot, ParadoxCopilot, Recruit, Depot, VideoRecognition, OperBox, Custom }
 @MainActor final class Core {
     var isRunning = false
@@ -86,8 +88,9 @@ struct VideoRecognitionConfiguration {
     var recruitConfirmTimes = 0
     func setDailyTasksDetailMode(_ mode: MAAViewModel.DailyTasksDetailMode) {}
 }
-enum ClientChannel { case official }
+enum ClientChannel { case official, bilibili }
 enum TouchMode { case MacPlayTools, maatouch }
+enum ToolsMode { case BGR, MacSCK }
 struct GameConfiguration {
     var client_type = ClientChannel.official
     var start_game_enabled = false
@@ -103,7 +106,8 @@ struct DailyTask {
     var enabled = true
 }
 @MainActor final class MAAViewModel: ObservableObject {
-    let dailyRunCoordinator = DailyRunCoordinator()
+    let dailyRunCoordinator: DailyRunCoordinator
+    init(journalURL: URL? = nil) { dailyRunCoordinator = DailyRunCoordinator(journalURL: journalURL) }
     private var dailyRunOutcome = DailyRunOutcome.completed
     private(set) var dailyRunTasks: [DailyTask]?
     var dailyTaskProfile = "Fixture"
@@ -116,21 +120,44 @@ struct DailyTask {
     }
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
+    private var forceRecoveryCleanupPending = false
+    private var forceRecoveryJournalFailureRunID: UUID? = nil
     var handle: Core? = Core()
     var logStore: TestLogStore? = TestLogStore()
     var tasks: [DailyTask] = []
     var clientChannel = ClientChannel.official
+    var connectionAddress = "127.0.0.1:5555"
+    var adbPath = "/test/adb"
+    var toolsMode = ToolsMode.BGR
+    var useGzip = false
+    var useAdbLite = true
     var touchMode = TouchMode.maatouch
     var taskIDMap: [Int32: UUID] = [:]
     var taskStatus: [UUID: Int] = [:]
     var messageTask: Task<Void, Never>?
     var achievementEvents = AchievementEventAdapter()
-    func startGame(client: ClientChannel) async -> Bool { true }
+    var startGameCount = 0
+    func startGame(client: ClientChannel) async -> Bool { startGameCount += 1; return true }
     var recruitConfig = RecruitConfiguration()
     var connectionGate: Gate?
     var failConnection = false
     var makeCoreBusyDuringEnsure = false
     var ensureCount = 0
+    var forceRecoveryInFlight = false
+    var forceRecovery: Int?
+    var failRecoveryCleanup = false
+    var recoverCalled = false
+    var recoveryGate: Gate?
+    func recoverGameToHome(runID: UUID, isCurrent: @escaping @MainActor () -> Bool) async throws {
+        recoverCalled = true
+        if let recoveryGate { await recoveryGate.wait() }
+        if failRecoveryCleanup {
+            handle?.isRunning = true
+            forceRecoveryCleanupPending = true
+            throw ForcedRecoveryCleanupFailure()
+        }
+        guard isCurrent() else { throw CancellationError() }
+    }
     var errors = [String]()
     var infos = [String]()
     var operationInFlightForTest: Bool { isStartStopInFlight }
