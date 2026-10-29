@@ -315,6 +315,7 @@ extension MAAViewModel {
             return
         }
 
+        if message.code == .TaskChainError { markDailyRunFailed() }
         if message.code == .TaskChainStopped {
             resetStatus()
             logTrace(.stopped)
