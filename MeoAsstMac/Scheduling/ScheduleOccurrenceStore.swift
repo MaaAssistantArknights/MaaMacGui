@@ -4,7 +4,7 @@ import Foundation
 /// One ledger and lock are shared by all trigger sources. Atomic replacement
 /// protects readers from partial writes; flock protects the read/modify/write.
 final class ScheduleOccurrenceStore: @unchecked Sendable {
-    struct Ledger: Codable {
+    struct Ledger: Codable, Equatable {
         var schemaVersion = 1
         var records: [String: ScheduleOccurrence] = [:]
         var latestLocalDates: [String: String] = [:]
@@ -88,8 +88,9 @@ final class ScheduleOccurrenceStore: @unchecked Sendable {
         } else {
             ledger = Ledger()
         }
+        let original = ledger
         let result = try operation(&ledger)
-        try JSONEncoder().encode(ledger).write(to: file, options: .atomic)
+        if ledger != original { try JSONEncoder().encode(ledger).write(to: file, options: .atomic) }
         return result
     }
 }
