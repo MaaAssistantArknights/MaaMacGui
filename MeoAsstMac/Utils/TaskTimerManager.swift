@@ -30,18 +30,15 @@ import Foundation
             guard let end = self?.viewModel?.dailyRunCoordinator.lastTerminal else { return nil }
             return .init(id: end.id, cleanupSucceeded: end.cleanupSucceeded == true)
         },
-        stop: { [weak self] in
+        canStop: { [weak self] expectedID in
+            guard let model = self?.viewModel, let run = model.dailyRunCoordinator.active,
+                  run.id == expectedID else { return false }
+            return !model.isStartStopInFlight && run.status != .postHook && run.status != .stopping
+        },
+        stop: { [weak self] expectedID in
             guard let model = self?.viewModel else { throw CancellationError() }
-            // Preparation and cleanup are owned by the coordinator. A stop
-            // rejected during admission can be retried until its bounded deadline.
-            while model.isStartStopInFlight {
-                try await Task.sleep(for: .milliseconds(50))
-                try Task.checkCancellation()
-            }
-            if let phase = model.dailyRunCoordinator.active?.status,
-               phase != .postHook && phase != .stopping {
-                try await model.stop(cancelScheduledStart: false)
-            }
+            guard model.dailyRunCoordinator.active?.id == expectedID else { throw CancellationError() }
+            try await model.stop(cancelScheduledStart: false)
         },
         start: { [weak self] snapshot in
             guard let model = self?.viewModel else { return .failed }

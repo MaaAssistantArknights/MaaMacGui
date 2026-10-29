@@ -65,7 +65,7 @@ import Foundation
         var reports = [(ScheduleOccurrence.Result, String)]()
         var valid = true
         let handoff = ScheduleHandoff<Int>(timeout: .milliseconds(120), occupancy: { state },
-            terminal: { terminal }, stop: { stops += 1 }, start: { snapshot in
+            terminal: { terminal }, canStop: { _ in true }, stop: { _ in stops += 1 }, start: { snapshot in
                 starts.append(snapshot); return .started(id)
             }, isCurrent: { _ in valid }, report: { _, result, reason, _ in reports.append((result, reason)) })
         handoff.submit(repeated, force: false, snapshot: 1)
@@ -108,18 +108,34 @@ import Foundation
         try await Task.sleep(for: .milliseconds(60))
         check(starts == [1, 4] && reports.last?.1 == "cleanupFailed", "failed cleanup never restarts")
         valid = true; state = .idle
-        let failedStart = ScheduleHandoff<Int>(occupancy: { .idle }, terminal: { nil }, stop: {},
+        let failedStart = ScheduleHandoff<Int>(occupancy: { .idle }, terminal: { nil }, canStop: { _ in true }, stop: { _ in },
             start: { _ in .failed }, isCurrent: { _ in true },
             report: { _, result, reason, _ in reports.append((result, reason)) })
         failedStart.submit(repeated, force: false, snapshot: 1)
         try await Task.sleep(for: .milliseconds(10))
         check(reports.last?.0 == .failed, "start failure reported")
-        let stopError = ScheduleHandoff<Int>(occupancy: { .daily(id) }, terminal: { nil },
-            stop: { throw CancellationError() }, start: { _ in fatalError("stop failure starts") },
+        let stopError = ScheduleHandoff<Int>(occupancy: { .daily(id) }, terminal: { nil }, canStop: { _ in true },
+            stop: { _ in throw CancellationError() }, start: { _ in fatalError("stop failure starts") },
             isCurrent: { _ in true }, report: { _, result, reason, _ in reports.append((result, reason)) })
         stopError.submit(repeated, force: true, snapshot: 1)
         try await Task.sleep(for: .milliseconds(10))
         check(reports.last?.1 == "stopFailed", "stop failure reported")
+        let replacementID = UUID()
+        state = .daily(id)
+        var canStop = false
+        var replacementStops = 0
+        let replacement = ScheduleHandoff<Int>(timeout: .seconds(1), occupancy: { state }, terminal: { terminal },
+            canStop: { _ in canStop }, stop: { expected in
+                check(expected == id, "scheduler carries original run identity")
+                replacementStops += 1
+            }, start: { _ in fatalError("replaced run must not start scheduled task") },
+            isCurrent: { _ in true }, report: { _, result, reason, _ in reports.append((result, reason)) })
+        replacement.submit(repeated, force: true, snapshot: 99)
+        try await Task.sleep(for: .milliseconds(10))
+        state = .daily(replacementID); canStop = true
+        try await Task.sleep(for: .milliseconds(60))
+        check(replacementStops == 0, "replacement run never receives old stop request")
+        check(reports.last?.0 == .cancelled && reports.last?.1 == "runChanged", "replacement cancels occurrence")
         print("PASS: \(assertions) scheduling assertions")
     }
 }

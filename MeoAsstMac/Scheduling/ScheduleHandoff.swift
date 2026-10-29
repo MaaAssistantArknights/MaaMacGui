@@ -9,7 +9,8 @@ import Foundation
 
     var occupancy: @MainActor () -> Occupancy
     var terminal: @MainActor () -> Terminal?
-    var stop: @MainActor () async throws -> Void
+    var canStop: @MainActor (UUID) -> Bool
+    var stop: @MainActor (UUID) async throws -> Void
     var start: @MainActor (Snapshot) async -> StartResult
     var isCurrent: @MainActor (ScheduleOccurrence) -> Bool
     var report: @MainActor (ScheduleOccurrence, ScheduleOccurrence.Result, String, UUID?) -> Void
@@ -19,13 +20,15 @@ import Foundation
     private let timeout: Duration
 
     init(timeout: Duration = .seconds(30), occupancy: @escaping @MainActor () -> Occupancy,
-         terminal: @escaping @MainActor () -> Terminal?, stop: @escaping @MainActor () async throws -> Void,
+         terminal: @escaping @MainActor () -> Terminal?, canStop: @escaping @MainActor (UUID) -> Bool,
+         stop: @escaping @MainActor (UUID) async throws -> Void,
          start: @escaping @MainActor (Snapshot) async -> StartResult,
          isCurrent: @escaping @MainActor (ScheduleOccurrence) -> Bool,
          report: @escaping @MainActor (ScheduleOccurrence, ScheduleOccurrence.Result, String, UUID?) -> Void) {
         self.timeout = timeout
         self.occupancy = occupancy
         self.terminal = terminal
+        self.canStop = canStop
         self.stop = stop
         self.start = start
         self.isCurrent = isCurrent
@@ -56,14 +59,24 @@ import Foundation
         work = Task { [weak self] in
             guard let self else { return }
             if case .daily(let previousID) = initial {
-                do { try await stop() }
-                catch {
-                    finish(occurrence, result: .failed, detail: "stopFailed")
-                    return
+                while current(occurrence), occupancy() != .idle {
+                    guard occupancy() == .daily(previousID) else {
+                        finish(occurrence, result: .cancelled, detail: "runChanged")
+                        return
+                    }
+                    if canStop(previousID) {
+                        do { try await stop(previousID) }
+                        catch {
+                            finish(occurrence, result: .failed, detail: "stopFailed")
+                            return
+                        }
+                        break
+                    }
+                    do { try await Task.sleep(for: .milliseconds(50)) } catch { return }
                 }
                 while current(occurrence), occupancy() != .idle {
-                    if occupancy() == .tool {
-                        finish(occurrence, result: .skipped, detail: "utilityTaskBusy")
+                    guard occupancy() == .daily(previousID) else {
+                        finish(occurrence, result: .cancelled, detail: "runChanged")
                         return
                     }
                     do { try await Task.sleep(for: .milliseconds(50)) } catch { return }
