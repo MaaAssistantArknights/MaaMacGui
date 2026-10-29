@@ -77,6 +77,14 @@ final class DailyRunCoordinator {
         return true
     }
 
+    func recordRecovery(for id: UUID, succeeded: Bool) throws {
+        guard active == nil, var context = lastTerminal, context.id == id else { return }
+        context.cleanupSucceeded = succeeded
+        try persist(context)
+        lastTerminal = context
+        didChange?()
+    }
+
     private func persist(_ context: RunContext) throws {
         guard let journalURL else { return }
         try FileManager.default.createDirectory(at: journalURL.deletingLastPathComponent(), withIntermediateDirectories: true)

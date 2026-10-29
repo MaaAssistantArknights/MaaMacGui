@@ -122,6 +122,9 @@
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
 		2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7743B34F2704668B4E0A0E9 /* RunContext.swift */; };
+		7B1B36888B12496B9DA5C1DB /* HookConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6855ABEC964286B70706AC /* HookConfiguration.swift */; };
+		175E0E7F43434EA4845EFF97 /* HookRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3621885B42794A3E8940DB36 /* HookRunner.swift */; };
+		4EED5734D98847338FFE7732 /* HookSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -267,6 +270,9 @@
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/RunContext.swift; sourceTree = SOURCE_ROOT; };
+		9A6855ABEC964286B70706AC /* HookConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookConfiguration.swift; sourceTree = SOURCE_ROOT; };
+		3621885B42794A3E8940DB36 /* HookRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookRunner.swift; sourceTree = SOURCE_ROOT; };
+		0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookSettingsView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +300,9 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */,
+				3621885B42794A3E8940DB36 /* HookRunner.swift */,
+				9A6855ABEC964286B70706AC /* HookConfiguration.swift */,
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
@@ -635,6 +644,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4EED5734D98847338FFE7732 /* HookSettingsView.swift in Sources */,
+				175E0E7F43434EA4845EFF97 /* HookRunner.swift in Sources */,
+				7B1B36888B12496B9DA5C1DB /* HookConfiguration.swift in Sources */,
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,

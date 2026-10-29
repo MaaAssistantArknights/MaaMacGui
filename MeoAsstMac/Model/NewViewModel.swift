@@ -118,6 +118,11 @@ import Observation
             self?.withMutation(keyPath: \.canStartTasks) {}
         }
         .store(in: &cancellables)
+
+        parent.$isTestingHook.sink { [weak self] _ in
+            self?.withMutation(keyPath: \.canStartTasks) {}
+        }
+        .store(in: &cancellables)
     }
 
     deinit {

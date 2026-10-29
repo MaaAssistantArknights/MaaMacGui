@@ -3,8 +3,12 @@ import SwiftUI
 struct SystemSettingsView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
+    @State private var showHooks = false
+
     var body: some View {
         VStack(alignment: .leading) {
+            Button("日常任务前后脚本…") { showHooks = true }
+
             Toggle(isOn: $viewModel.preventSystemSleeping) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("阻止系统睡眠")
@@ -21,6 +25,12 @@ struct SystemSettingsView: View {
             }
         }
         .padding()
+        .sheet(isPresented: $showHooks) {
+            VStack {
+                HookSettingsView(store: viewModel.hookSettings)
+                Button("完成") { showHooks = false }.keyboardShortcut(.defaultAction).padding(.bottom)
+            }.environmentObject(viewModel)
+        }
     }
 }
 
