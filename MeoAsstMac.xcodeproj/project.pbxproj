@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		225274591F2173E6A21B54F0 /* SwitchThemeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */; };
+		B80000000000000000000001 /* SecretFront.swift in Sources */ = {isa = PBXBuildFile; fileRef = B80000000000000000000002 /* SecretFront.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
 		830272A730A0F8D700027D4B /* Dawn.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; };
 		830272A830A0F8D700027D4B /* Dawn.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -156,6 +157,7 @@
 /* Begin PBXFileReference section */
 		2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeConfiguration.swift; sourceTree = "<group>"; };
 		714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeSettingsView.swift; sourceTree = "<group>"; };
+		B80000000000000000000002 /* SecretFront.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretFront.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		830272A530A0F8D000027D4B /* Dawn.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Dawn.xcframework; path = ../../build/Dawn.xcframework; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
@@ -486,6 +488,7 @@
 				8366DE0229F2F34100F715E8 /* MAAOperBox.swift */,
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
+				B80000000000000000000002 /* SecretFront.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
 				831100C33026440D00554899 /* NewViewModel.swift */,
 				836E997630534A200082748D /* StageActivity.swift */,
@@ -676,6 +679,7 @@
 				92F78D4F2A0B361C00999BD0 /* TaskTimerManager.swift in Sources */,
 				83DD50B729BE393C000E84E7 /* UpdaterSettingsView.swift in Sources */,
 				92CDF6222A065E55005669EC /* Codeable+JSON.swift in Sources */,
+				B80000000000000000000001 /* SecretFront.swift in Sources */,
 				83264A3E29EC22DE0074E33A /* MAAViewModel.swift in Sources */,
 				92F78D4D2A0A7B2E00999BD0 /* TaskTimerView.swift in Sources */,
 				8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */,

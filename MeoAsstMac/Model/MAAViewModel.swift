@@ -22,6 +22,7 @@ import SwiftUI
     var expiringMedicineUsedTimes = 0
 
     @Published private(set) var status = Status.idle
+    @Published var secretFrontRun = SecretFrontRun()
 
     private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
@@ -207,6 +208,7 @@ extension MAAViewModel {
             throw MAAError.handleNotRunning
         }
 
+        secretFrontRun = SecretFrontRun()
         logStore?.clearLogs()
         taskIDMap.removeAll()
         taskStatus.removeAll()
@@ -245,10 +247,12 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .busy) }
 
         try await handle?.stop()
+        if let id = secretFrontRun.taskID { secretFrontRun.finish(taskID: id, result: .stopped) }
         status = .idle
     }
 
     func resetStatus() {
+        secretFrontRun.release()
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -608,20 +612,56 @@ extension MAAViewModel {
         status = .busy
     }
 
-    func miniGame(name: String, params: Any? = nil) async throws {
+    var secretFrontUnavailableReason: String? {
+        guard !clientChannel.isGlobal else {
+            return String(localized: "当前服务器的隐秘战线资源尚未验证，暂不可用。")
+        }
+        guard let bundled = Bundle.main.resourceURL,
+            let (preferUser, _) = try? resourceChannel.version() else {
+            return String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+        }
+        let root = preferUser
+            ? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            : bundled
+        guard SecretFrontConfiguration.hasResources(in: root.appendingPathComponent("resource")) else {
+            return String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+        }
+        return nil
+    }
+
+    func miniGame(name: String, params: Any? = nil, secretFront: SecretFrontConfiguration? = nil) async throws {
+        guard status == .idle else { return }
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        try await ensureHandle()
-
-        let params = ["task_names": [name], "params": params]
-        let data = try JSONSerialization.data(withJSONObject: params)
-        let string = String(data: data, encoding: .utf8)
-
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        var didAppend = false
+        do {
+            if secretFront != nil, let reason = secretFrontUnavailableReason {
+                throw NSError(domain: "SecretFront", code: 1, userInfo: [NSLocalizedDescriptionKey: reason])
+            }
+            try await ensureHandle()
+            guard let handle else { throw MaaCoreError.appendTaskFailed }
+            var payload: [String: Any]
+            if let secretFront {
+                payload = secretFront.params
+            } else {
+                payload = ["task_names": [name]]
+                if let params { payload["params"] = params }
+            }
+            let data = try JSONSerialization.data(withJSONObject: payload)
+            let string = String(decoding: data, as: UTF8.self)
+            let id = try await handle.appendTask(type: .Custom, params: string)
+            didAppend = true
+            if let secretFront { secretFrontRun.begin(taskID: id, configuration: secretFront) }
+            // Publish before yielding: a fast completion callback must remain idle.
+            status = .busy
+            try await handle.start()
+        } catch {
+            if let id = secretFrontRun.taskID { secretFrontRun.finish(taskID: id, result: .failed) }
+            if didAppend { try? await handle?.stop() }
+            status = .idle
+            throw error
+        }
     }
 }
 

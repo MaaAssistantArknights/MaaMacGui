@@ -51,6 +51,20 @@ extension Decodable {
 
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
+        // A standalone Secret Front run must not be ended by a delayed callback
+        // from another Core task, including the global completion envelope.
+        if let activeID = secretFrontRun.taskID {
+            switch message.code {
+            case .AllTasksCompleted:
+                let ids: [Int32] = (try? message.details["finished_tasks"]) ?? []
+                guard ids.contains(activeID) else { return }
+            case .TaskChainError ... .TaskChainStopped, .SubTaskError ... .SubTaskStopped:
+                let id: Int32? = try? message.details["taskid"]
+                guard id == activeID else { return }
+            default: break
+            }
+        }
+        processSecretFrontMessage(message)
         switch message.code {
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
@@ -1648,6 +1662,31 @@ extension MAAViewModel {
             return id
         } else {
             return nil
+        }
+    }
+}
+
+// MARK: - Secret Front
+
+extension MAAViewModel {
+    private func processSecretFrontMessage(_ message: MaaMessage) {
+        guard let activeID = secretFrontRun.taskID else { return }
+        if message.code == .AllTasksCompleted {
+            let ids: [Int32] = (try? message.details["finished_tasks"]) ?? []
+            if ids.contains(activeID) { secretFrontRun.finish(taskID: activeID, result: .completed) }
+            return
+        }
+        guard let id: Int32 = try? message.details["taskid"], id == activeID else { return }
+        switch message.code {
+        case .SubTaskStart:
+            guard let subtask: String = try? message.details["subtask"], subtask == "ProcessTask",
+                let task: String = try? message.details["details"]["task"] else { return }
+            let candidate: String? = try? message.details["details"]["result"]["text"]
+            secretFrontRun.observe(taskID: id, task: task, candidate: candidate)
+        case .TaskChainCompleted: secretFrontRun.finish(taskID: id, result: .completed)
+        case .TaskChainStopped: secretFrontRun.finish(taskID: id, result: .stopped)
+        case .TaskChainError: secretFrontRun.finish(taskID: id, result: .failed)
+        default: break
         }
     }
 }
