@@ -1,6 +1,292 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "新热键注册失败且旧绑定未能恢复；当前未绑定，请重试" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "新热键注册失败且旧绑定未能恢复；当前未绑定，请重试"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The new shortcut failed and the old binding could not be restored. No shortcut is bound; try again."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "새 단축키 등록과 이전 단축키 복원에 실패했습니다. 현재 지정된 단축키가 없습니다. 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "启用全局热键" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启用全局热键"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enable global shortcuts"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전역 단축키 활성화"
+          }
+        }
+      }
+    },
+    "全局热键…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全局热键…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Global shortcuts…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전역 단축키…"
+          }
+        }
+      }
+    },
+    "组合须包含 Command 或 Control。开始仅在空闲时执行；停止使用与任务按钮相同的入口。无需输入监控权限。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "组合须包含 Command 或 Control。开始仅在空闲时执行；停止使用与任务按钮相同的入口。无需输入监控权限。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include Command or Control. Start runs only when idle; Stop uses the same task controls. Input Monitoring permission is not required."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command 또는 Control을 포함해야 합니다. 유휴 상태에서만 시작하며 중지는 작업 버튼과 동일하게 작동합니다. 입력 모니터링 권한은 필요하지 않습니다."
+          }
+        }
+      }
+    },
+    "开始日常任务" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始日常任务"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start daily tasks"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일일 작업 시작"
+          }
+        }
+      }
+    },
+    "停止当前任务" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止当前任务"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop current tasks"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 작업 중지"
+          }
+        }
+      }
+    },
+    "按下组合键，Esc 取消" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按下组合键，Esc 取消"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Press a shortcut; Escape cancels"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축키를 누르세요. Esc로 취소"
+          }
+        }
+      }
+    },
+    "未绑定" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未绑定"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unassigned"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "미지정"
+          }
+        }
+      }
+    },
+    "录制" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Record"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기록"
+          }
+        }
+      }
+    },
+    "无法安装全局热键处理器" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法安装全局热键处理器"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot install global shortcut handler"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "전역 단축키 처리기를 설치할 수 없습니다"
+          }
+        }
+      }
+    },
+    "热键须包含 Command 或 Control，开始和停止不能使用同一组合" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热键须包含 Command 或 Control，开始和停止不能使用同一组合"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Include Command or Control. Start and Stop must use different shortcuts."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Command 또는 Control을 포함하고 시작과 중지에 다른 단축키를 사용하세요."
+          }
+        }
+      }
+    },
+    "全局热键配置无效或系统处理器不可用" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "全局热键配置无效或系统处理器不可用"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut configuration is invalid or the system handler is unavailable"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축키 설정이 잘못되었거나 시스템 처리기를 사용할 수 없습니다"
+          }
+        }
+      }
+    },
+    "热键注册失败，组合可能已被系统或其他应用占用" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "热键注册失败，组合可能已被系统或其他应用占用"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shortcut registration failed. The combination may be in use by the system or another app."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축키 등록에 실패했습니다. 시스템이나 다른 앱에서 이미 사용 중일 수 있습니다."
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

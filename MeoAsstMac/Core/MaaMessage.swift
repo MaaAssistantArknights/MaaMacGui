@@ -315,7 +315,6 @@ extension MAAViewModel {
             return
         }
 
-        if message.code == .TaskChainError { markDailyRunFailed() }
         if message.code == .TaskChainStopped {
             resetStatus()
             logTrace(.stopped)
@@ -323,6 +322,10 @@ extension MAAViewModel {
 
         guard let info = TaskChainMessage(json: message.details, context: "TaskChain") else {
             return
+        }
+
+        if message.code == .TaskChainError, dailyTask(coreID: info.taskid) != nil {
+            markDailyRunFailed()
         }
 
         if info.taskchain == "CloseDown" {
@@ -1639,7 +1642,7 @@ extension MAAViewModel {
 
     func dailyTask(coreID: Int32?) -> MAATask? {
         guard let id = taskID(coreID: coreID) else { return nil }
-        return tasks[id]
+        return (dailyRunTasks ?? tasks)[id]
     }
 
     private func taskID(coreID: Int32?) -> UUID? {

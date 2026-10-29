@@ -138,7 +138,7 @@ import Foundation
         }
 
         Task {
-            switch await viewModel.startDailyTasks() {
+            switch await viewModel.startDailyTasks(origin: .schedule) {
             case .started:
                 print("Started daily task by scheduled timer (\(config.uniqueKey))")
             case .skipped:

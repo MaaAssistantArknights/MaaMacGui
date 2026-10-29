@@ -34,12 +34,15 @@ import SwiftUI
 
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
+    private(set) var dailyRunTasks: [DailyTask]?
+    let globalHotkeys = GlobalHotkeyService()
 
     var canStartTasks: Bool {
         status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil
     }
 
     private func beginTaskOperation(requiresIdle: Bool = true) async throws {
+        reconcileDailyRunStatus()
         guard !isStartStopInFlight else {
             logError("当前正在启动或停止任务，请稍后重试。")
             throw MAAError.taskOperationInProgress
@@ -203,6 +206,15 @@ import SwiftUI
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
+        globalHotkeys.command = { [weak self] command in
+            guard let self else { return false }
+            switch command {
+            case .start: return await self.startDailyTasks(origin: .hotkey) == .started
+            case .stop:
+                guard self.status != .idle || self.dailyRunCoordinator.active != nil else { return false }
+                do { try await self.stop(); return true } catch { return false }
+            }
+        }
         dailyRunCoordinator.didChange = { [weak self] in self?.objectWillChange.send() }
         initScheduledDailyTaskTimer()
     }
@@ -338,6 +350,12 @@ extension MAAViewModel {
         Task { await finishDailyRunIfStopped() }
     }
 
+    private func reconcileDailyRunStatus() {
+        if status == .idle, let phase = dailyRunCoordinator.active?.status {
+            status = phase == .running ? .busy : .pending
+        }
+    }
+
     func markDailyRunFailed() {
         if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
     }
@@ -350,6 +368,7 @@ extension MAAViewModel {
               dailyRunCoordinator.active?.id == context.id else { return }
         do {
             try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
+            dailyRunTasks = nil
         } catch {
             status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
@@ -536,6 +555,7 @@ extension MAAViewModel {
     }
 
     func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil) async -> TaskStartResult {
+        reconcileDailyRunStatus()
         guard canStartTasks else {
             return .skipped
         }
@@ -551,6 +571,7 @@ extension MAAViewModel {
             logStore?.setDailyTasksDetailMode(.log)
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
             guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
+            dailyRunTasks = snapshot.tasks
             dailyRunOutcome = .completed
             do {
                 try dailyRunCoordinator.transition(.connecting, for: runID)
@@ -558,7 +579,14 @@ extension MAAViewModel {
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
-                try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                if await handle?.running == true {
+                    dailyRunOutcome = .failed
+                    try dailyRunCoordinator.transition(.running, for: runID)
+                    status = .busy
+                } else {
+                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                    dailyRunTasks = nil
+                }
                 throw error
             }
         } catch {
@@ -599,6 +627,7 @@ extension MAAViewModel {
             runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        dailyRunTasks = runTasks
         try await ensureHandle()
 
         for task in runTasks {

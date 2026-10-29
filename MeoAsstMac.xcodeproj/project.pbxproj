@@ -122,6 +122,9 @@
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
 		2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7743B34F2704668B4E0A0E9 /* RunContext.swift */; };
+		D435C735FBB248EDAB963960 /* HotkeyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */; };
+		6289CAA0CEBE4173997CAB86 /* GlobalHotkeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */; };
+		38EB76370CAF45D89359D590 /* HotkeySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -267,6 +270,9 @@
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/RunContext.swift; sourceTree = SOURCE_ROOT; };
+		38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/HotkeyConfiguration.swift; sourceTree = SOURCE_ROOT; };
+		7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/GlobalHotkeyService.swift; sourceTree = SOURCE_ROOT; };
+		E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/HotkeySettingsView.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -294,6 +300,9 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */,
+				7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */,
+				38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */,
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
@@ -635,6 +644,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38EB76370CAF45D89359D590 /* HotkeySettingsView.swift in Sources */,
+				6289CAA0CEBE4173997CAB86 /* GlobalHotkeyService.swift in Sources */,
+				D435C735FBB248EDAB963960 /* HotkeyConfiguration.swift in Sources */,
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
