@@ -18,6 +18,8 @@ struct FightConfiguration: MAATaskConfiguration {
     var series: Int?
     var drops: [String: Int]?
 
+    var inventoryTarget: InventoryTarget? = nil
+
     var report_to_penguin: Bool
     var penguin_id: String
     var server: String
@@ -58,14 +60,48 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    typealias Params = Self
+    struct Params: Encodable {
+        fileprivate let configuration: FightConfiguration
+        func encode(to encoder: any Encoder) throws {
+            // A target must be prepared against a live snapshot before it reaches Core.
+            guard configuration.inventoryTarget == nil else { throw InventoryTargetError.recognitionRequired }
+            var container = encoder.container(keyedBy: CoreCodingKeys.self)
+            let c = configuration
+            try container.encode(c.stage, forKey: .stage)
+            try container.encodeIfPresent(c.medicine, forKey: .medicine)
+            try container.encode(c.medicine_expire_days, forKey: .medicine_expire_days)
+            try container.encodeIfPresent(c.stone, forKey: .stone)
+            try container.encodeIfPresent(c.times, forKey: .times)
+            try container.encodeIfPresent(c.series, forKey: .series)
+            try container.encodeIfPresent(c.drops, forKey: .drops)
+            try container.encode(c.report_to_penguin, forKey: .report_to_penguin)
+            try container.encode(c.penguin_id, forKey: .penguin_id)
+            try container.encode(c.server, forKey: .server)
+            try container.encode(c.client_type, forKey: .client_type)
+            try container.encode(c.DrGrandet, forKey: .DrGrandet)
+        }
+        private enum CoreCodingKeys: String, CodingKey {
+            case stage, medicine, medicine_expire_days, stone, times, series, drops
+            case report_to_penguin, penguin_id, server, client_type, DrGrandet
+        }
+    }
 
-    var params: Self {
-        self
+    var params: Params { Params(configuration: self) }
+
+    func preparingInventoryTarget(_ plan: InventoryTargetPlan) -> Self {
+        var prepared = self
+        if let target = inventoryTarget {
+            prepared.drops = [target.itemID: plan.requiredDrops]
+            prepared.inventoryTarget = nil
+        }
+        return prepared
     }
 
     // 掉落物品列表
     @MainActor static var dropItems: [(id: String, item: DropItem)] = []
+    @MainActor static var inventoryDropItems: [(id: String, item: DropItem)] {
+        dropItems.filter { InventoryTargetPlanner.supportsInventory(classification: $0.item.classifyType) }
+    }
     @MainActor static var id2index: [String: Int] = [:]  // (id -> idx of dropItems)
     static let _excludedValues = Set([
         3213, 3223, 3233, 3243,  // 双芯片
@@ -146,6 +182,7 @@ extension FightConfiguration {
         self.times = try container.decodeIfPresent(Int.self, forKey: .times)
         self.series = try container.decodeIfPresent(Int.self, forKey: .series)
         self.drops = try container.decodeIfPresent([String: Int].self, forKey: .drops)
+        self.inventoryTarget = try container.decodeIfPresent(InventoryTarget.self, forKey: .inventoryTarget)
         self.report_to_penguin = try container.decodeIfPresent(Bool.self, forKey: .report_to_penguin) ?? false
         self.penguin_id = try container.decodeIfPresent(String.self, forKey: .penguin_id) ?? ""
         self.server = try container.decodeIfPresent(String.self, forKey: .server) ?? "CN"

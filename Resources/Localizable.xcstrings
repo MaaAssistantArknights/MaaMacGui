@@ -1,6 +1,314 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "Inventory.TargetMode" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷至库存目标"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stop at inventory target"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재고 목표까지 전투"
+          }
+        }
+      }
+    },
+    "Inventory.Material" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标材料"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target material"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 재료"
+          }
+        }
+      }
+    },
+    "Inventory.SelectMaterial" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择材料"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a material"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재료 선택"
+          }
+        }
+      }
+    },
+    "Inventory.TargetQuantity" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标库存数量"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target inventory quantity"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 재고 수량"
+          }
+        }
+      }
+    },
+    "Inventory.CapturedAt" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "本次会话识别于"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recognized in this session"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 세션 인식 시간"
+          }
+        }
+      }
+    },
+    "Inventory.CurrentQuantity" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前估算库存"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current estimated inventory"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 예상 재고"
+          }
+        }
+      }
+    },
+    "Inventory.ChangeAccount" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已切换账号：使库存失效"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account changed: invalidate inventory"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "계정 변경: 재고 무효화"
+          }
+        }
+      }
+    },
+    "Inventory.SessionNotice" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请先在工具箱完成仓库识别，再把库存目标放在启用队列首位并关闭开始唤醒的自动启动。切换连接、服务器、配置或账号后必须重新识别；未知消耗不会自动追踪。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete Depot recognition in Utilities, put the target first in the enabled queue, and disable automatic game launch. Recognize again after changing connection, server, profile or account. Unobserved consumption is not tracked."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구에서 창고 인식을 완료하고 활성 작업의 맨 앞에 목표를 배치한 뒤 게임 자동 실행을 끄세요. 연결, 서버, 프로필 또는 계정 변경 후 다시 인식해야 합니다. 관측되지 않은 소비는 추적하지 않습니다."
+          }
+        }
+      }
+    },
+    "Inventory.RecognitionRequired" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "需要在当前连接与配置下完成一次仓库识别；请前往工具箱 → 仓库材料。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Complete Depot recognition for the current connection and profile in Utilities → Depot."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "도구 → 창고에서 현재 연결과 프로필의 창고 인식을 완료하세요."
+          }
+        }
+      }
+    },
+    "Inventory.InvalidTarget" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "库存目标无效：请选择已知材料和 0–2147483647 的数量。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid inventory target: choose a known material and a quantity from 0 to 2147483647."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알려진 재료와 0–2147483647 사이의 수량을 선택하세요."
+          }
+        }
+      }
+    },
+    "Inventory.MultipleTargets" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每轮最多启用一个库存目标任务。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only one inventory target is supported per run."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행당 재고 목표 하나만 지원합니다."
+          }
+        }
+      }
+    },
+    "Inventory.UnsafeOrder" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请将库存目标放在所有启用任务之前，并关闭自动启动游戏。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Put the inventory target before every enabled task and disable automatic game launch."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재고 목표를 모든 활성 작업 앞에 배치하고 게임 자동 실행을 끄세요."
+          }
+        }
+      }
+    },
+    "Inventory.StalePreparation" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "准备期间库存作用域已变化，请重新识别。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inventory scope changed during preparation. Recognize again."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "준비 중 재고 범위가 변경되었습니다. 다시 인식하세요."
+          }
+        }
+      }
+    },
+    "Inventory.AlreadyReached" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "库存目标已达标，跳过本次刷理智。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inventory target already reached; skipping this Fight."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재고 목표를 달성하여 이번 전투를 건너뜁니다."
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

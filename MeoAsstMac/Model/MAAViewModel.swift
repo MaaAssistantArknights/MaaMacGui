@@ -72,7 +72,9 @@ import SwiftUI
 
     // MARK: - Daily Tasks
 
-    @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default"
+    @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default" {
+        didSet { if dailyTaskProfile != oldValue { invalidateInventory() } }
+    }
 
     enum DailyTasksDetailMode: Hashable {
         case taskConfig
@@ -83,6 +85,24 @@ import SwiftUI
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
+    @Published var inventory = InventorySnapshotAdapter()
+    var inventoryDepotTaskID: Int32?
+    var pendingInventoryDepot: MAADepot?
+    var inventoryDepotScope: InventoryScope?
+
+    var inventoryScope: InventoryScope {
+        InventoryScope(connection: "\(connectionAddress)|\(touchMode.rawValue)|\(toolsMode.rawValue)|\(useGzip)|\(useAdbLite)",
+                       server: clientChannel.rawValue, profile: dailyTaskProfile)
+    }
+
+    var currentInventorySnapshot: InventorySnapshot? { inventory.usableSnapshot(scope: inventoryScope) }
+
+    func invalidateInventory() {
+        inventory.invalidate()
+        inventoryDepotTaskID = nil
+        inventoryDepotScope = nil
+        pendingInventoryDepot = nil
+    }
 
     enum TaskStatus: Equatable {
         case cancel
@@ -128,17 +148,26 @@ import SwiftUI
 
     // MARK: - Connection Settings
 
-    @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
+    @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555" {
+        didSet { if connectionAddress != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAUseGzip") var useGzip = false
+    @AppStorage("MAAUseGzip") var useGzip = false {
+        didSet { if useGzip != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAUseAdbLite") var useAdbLite = true
+    @AppStorage("MAAUseAdbLite") var useAdbLite = true {
+        didSet { if useAdbLite != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR
+    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR {
+        didSet { if toolsMode != oldValue { invalidateInventory() } }
+    }
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
             guard touchMode != oldValue else { return }
+            invalidateInventory()
             if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
                 Task { try await loadResource(channel: clientChannel) }
             }
@@ -149,6 +178,7 @@ import SwiftUI
 
     @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.Official {
         didSet {
+            if clientChannel != oldValue { invalidateInventory() }
             updateChannel(channel: clientChannel)
         }
     }
@@ -251,6 +281,7 @@ extension MAAViewModel {
         taskStatus.removeAll()
 
         guard requireConnect else { return }
+        invalidateInventory()
 
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
@@ -521,6 +552,9 @@ extension MAAViewModel {
             try await startTasks()
             return .started
         } catch {
+            if let inventoryError = error as? InventoryTargetError {
+                logError(verbatim: inventoryError.localizedDescription)
+            }
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
             return .failed
@@ -531,14 +565,49 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
+        var runTasks = tasks
+        let scope = inventoryScope
+        let targets = runTasks.indices.filter { index in
+            guard runTasks[index].enabled, case .fight(let config) = runTasks[index].task else { return false }
+            return config.inventoryTarget != nil
+        }
+        try InventoryTargetPlanner.validateQueue(targetIndices: targets, firstEnabledIndex: runTasks.firstIndex(where: \.enabled))
+        var frozenPlan: InventoryTargetPlan?
+        var reachedTaskID: UUID?
+        var frozenItemID: String?
+        if let targetIndex = targets.first, case .fight(let config) = runTasks[targetIndex].task,
+           let target = config.inventoryTarget {
+            guard await handle?.connected == true else {
+                invalidateInventory()
+                throw InventoryTargetError.recognitionRequired
+            }
+            // Starting/relaunching the client after recognition invalidates its account scope.
+            guard !runTasks.contains(where: { task in
+                if task.enabled, case .startup(let startup) = task.task { return startup.start_game_enabled }
+                return false
+            }) else { throw InventoryTargetError.unsafeOrder }
+            try FightConfiguration.initDropItems("zh-cn")
+            let plan = try InventoryTargetPlanner.plan(target: target, snapshot: currentInventorySnapshot,
+                                                       knownItems: Set(FightConfiguration.inventoryDropItems.map(\.id)))
+            frozenPlan = plan
+            frozenItemID = target.itemID
+            if plan.requiredDrops == 0 {
+                runTasks[targetIndex].enabled = false
+                reachedTaskID = runTasks[targetIndex].id
+            } else {
+                runTasks[targetIndex] = DailyTask(id: runTasks[targetIndex].id,
+                    task: .fight(config.preparingInventoryTarget(plan)), enabled: true)
+            }
+        }
+
         var firstStart = true
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
@@ -548,26 +617,74 @@ extension MAAViewModel {
             }
         }
 
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .closedown(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
-        try await ensureHandle()
+        try Task.checkCancellation()
+        try await ensureHandle(requireConnect: frozenPlan == nil)
+        try Task.checkCancellation()
+        if let plan = frozenPlan {
+            guard inventoryScope == scope, let frozenItemID,
+                  await handle?.connected == true else { throw InventoryTargetError.stalePreparation }
+            try InventoryTargetPlanner.validateFrozen(plan, itemID: frozenItemID, snapshot: currentInventorySnapshot)
+        }
+        if let reachedTaskID {
+            taskStatus[reachedTaskID] = .success
+            logInfo("Inventory.AlreadyReached")
+        }
+        let inventoryRunID = UUID()
+        var inventoryFightIDs = Set<Int32>()
+        var appendedAnyTask = false
+        do {
+            for task in runTasks {
+                try Task.checkCancellation()
+                guard task.enabled else { continue }
 
-        for task in tasks {
-            guard task.enabled else { continue }
-
-            if let coreID = try await handle?.appendTask(task.task) {
-                taskIDMap[coreID] = task.id
+                if let coreID = try await handle?.appendTask(task.task) {
+                    appendedAnyTask = true
+                    taskIDMap[coreID] = task.id
+                    if case .fight = task.task { inventoryFightIDs.insert(coreID) }
+                }
             }
+            // Appending crosses actors. Re-check only after the last suspension,
+            // before submitting this frozen set to Core.
+            if let plan = frozenPlan {
+                let connected = await handle?.connected == true
+                guard inventoryScope == scope, connected, let frozenItemID else {
+                    throw InventoryTargetError.stalePreparation
+                }
+                try InventoryTargetPlanner.validateFrozen(plan, itemID: frozenItemID, snapshot: currentInventorySnapshot)
+            }
+            try Task.checkCancellation()
+            inventory.beginRun(id: inventoryRunID, taskIDs: inventoryFightIDs)
+            if let plan = frozenPlan {
+                logTrace(verbatim: "Inventory generation=\(plan.generation) run=\(inventoryRunID) base=\(plan.startInventory) drops=\(plan.requiredDrops)")
+            }
+            try await startCoreTasks(recordDailyTaskStart: true)
+        } catch {
+            if await handle?.running == true {
+                status = .busy
+            } else if appendedAnyTask {
+                // Assistant::stop clears m_tasks_list, including tasks appended
+                // while idle. A rejected preparation must never leak into a later run.
+                do { try await handle?.stop() }
+                catch {
+                    messageTask?.cancel()
+                    messageTask = nil
+                    handle = nil
+                }
+                taskIDMap.removeAll()
+                taskStatus.removeAll()
+                invalidateInventory()
+            }
+            throw error
         }
-
-        try await startCoreTasks(recordDailyTaskStart: true)
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -646,7 +763,8 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Depot, params: "")
+        inventoryDepotScope = inventoryScope
+        inventoryDepotTaskID = try await handle?.appendTask(type: .Depot, params: "")
         try await startCoreTasks()
     }
 

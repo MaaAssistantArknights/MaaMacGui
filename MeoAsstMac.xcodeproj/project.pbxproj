@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		225274591F2173E6A21B54F0 /* SwitchThemeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */; };
+		C70000000000000000000002 /* InventoryTarget.swift in Sources */ = {isa = PBXBuildFile; fileRef = C70000000000000000000001 /* InventoryTarget.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
 		830272A730A0F8D700027D4B /* Dawn.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; };
 		830272A830A0F8D700027D4B /* Dawn.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -156,6 +157,7 @@
 /* Begin PBXFileReference section */
 		2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeConfiguration.swift; sourceTree = "<group>"; };
 		714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeSettingsView.swift; sourceTree = "<group>"; };
+		C70000000000000000000001 /* InventoryTarget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InventoryTarget.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
 		830272A530A0F8D000027D4B /* Dawn.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Dawn.xcframework; path = ../../build/Dawn.xcframework; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 			children = (
 				8341195629EC58CF00044F45 /* MAACopilot.swift */,
 				832985B529EF1890009F7ED5 /* MAADepot.swift */,
+				C70000000000000000000001 /* InventoryTarget.swift */,
 				838FF82829FDE1FA000566A0 /* MAAError.swift */,
 				83531D6229F0A033008A5DF8 /* MAAInfrast.swift */,
 				8341195229EC25A900044F45 /* MAALog.swift */,
@@ -695,6 +698,7 @@
 				83264A2629EBC9C10074E33A /* ReclamationSettingsView.swift in Sources */,
 				836E9975305338150082748D /* FightStage.swift in Sources */,
 				832985B629EF1890009F7ED5 /* MAADepot.swift in Sources */,
+				C70000000000000000000002 /* InventoryTarget.swift in Sources */,
 				83D3283928F3048E00018D10 /* RoguelikeSettingsView.swift in Sources */,
 				92EB82872A0CD315006DD9D2 /* SystemSettingsView.swift in Sources */,
 				8315B0BD290E48F300AE7FDC /* StartupSettingsView.swift in Sources */,

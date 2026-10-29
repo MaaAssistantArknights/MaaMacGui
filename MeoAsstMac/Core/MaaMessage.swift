@@ -112,6 +112,12 @@ extension MAAViewModel {
         }
 
         switch what {
+        case "Disconnect", "Reconnecting", "Reconnected", "ResolutionChanged", "UnsupportedResolution", "TouchModeNotAvailable":
+            invalidateInventory()
+        default: break
+        }
+
+        switch what {
         case "Connected":
             // TODO: (ConnectionState) Store the connected ADB path and address, then clear the last connection error.
             if let address: String = try? details["details"]["address"] {
@@ -316,12 +322,31 @@ extension MAAViewModel {
         }
 
         if message.code == .TaskChainStopped {
+            invalidateInventory()
             resetStatus()
             logTrace(.stopped)
         }
 
         guard let info = TaskChainMessage(json: message.details, context: "TaskChain") else {
             return
+        }
+
+        if message.code == .TaskChainError || message.code == .TaskChainStopped {
+            invalidateInventory()
+        }
+        if info.taskchain == "Depot", info.taskid == inventoryDepotTaskID {
+            if message.code == .TaskChainCompleted, let depot = pendingInventoryDepot,
+               let scope = inventoryDepotScope, scope == inventoryScope {
+                do { try inventory.capture(items: depot.items, complete: depot.done, scope: scope) }
+                catch { invalidateInventory(); logError("Inventory.RecognitionRequired") }
+            }
+            if message.code == .TaskChainCompleted || message.code == .TaskChainError {
+                inventoryDepotTaskID = nil
+                pendingInventoryDepot = nil
+            }
+        }
+        if message.code == .TaskChainStart, info.taskchain != "Fight", info.taskchain != "Depot" {
+            invalidateInventory()
         }
 
         if info.taskchain == "CloseDown" {
@@ -818,6 +843,7 @@ private struct SubTaskExtraInfoMessage {
 @JSONRepresentable
 private struct StageDropItemDetails {
     let itemName: String
+    let itemId: String?
     let quantity: Int
     let addQuantity: Int
 }
@@ -940,7 +966,11 @@ extension MAAViewModel {
 
         case "Depot":
             // TODO: (Persistence) Persist Depot recognition results and synchronization metadata.
-            logStore?.setDepot(.init(json: info.details, context: "Depot"))
+            let depot = MAADepot(json: info.details, context: "Depot")
+            logStore?.setDepot(depot)
+            if info.what == "DepotInfo", info.taskid == inventoryDepotTaskID {
+                pendingInventoryDepot = depot
+            }
 
         case "OperBox":
             // TODO: (Persistence) Persist OperBox recognition results and synchronization metadata.
@@ -958,6 +988,21 @@ extension MAAViewModel {
             // TODO: (Achievement) Record sanity-spending progress.
             guard let dropInfo = StageDropsDetails(json: info.details, context: "StageDrops") else {
                 return
+            }
+            if info.taskchain == "Fight", let taskID = info.taskid {
+                let identified = dropInfo.stats.compactMap { item -> (String, Int)? in
+                    guard let id = item.itemId else { return nil }
+                    return (id, item.quantity)
+                }
+                // Incomplete IDs cannot safely update a current inventory.
+                if identified.count != dropInfo.stats.count || Set(identified.map(\.0)).count != identified.count {
+                    invalidateInventory()
+                } else {
+                    do {
+                        let delta = try inventory.merge(taskID: taskID, cumulative: Dictionary(uniqueKeysWithValues: identified), scope: inventoryScope)
+                        if !delta.isEmpty { logger.debug("Inventory generation=\(String(describing: self.inventory.snapshot?.generation)) run=\(String(describing: self.inventory.runID)) task=\(taskID) delta=\(String(describing: delta))") }
+                    } catch { logError("Inventory.RecognitionRequired") }
+                }
             }
             let drops = dropInfo.stats
                 .sorted {
