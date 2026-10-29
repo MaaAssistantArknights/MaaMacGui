@@ -58,7 +58,7 @@ struct GachaView: View {
                     gachaPoll(once: false)
                 }
             }
-            .disabled(viewModel.status != .idle)
+            .disabled(!viewModel.canStartTasks)
         }
         .padding()
         .animation(.default, value: submitted)

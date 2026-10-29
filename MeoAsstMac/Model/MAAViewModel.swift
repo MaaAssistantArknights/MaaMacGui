@@ -28,6 +28,43 @@ import SwiftUI
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
 
+    // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
+    @Published private(set) var isStartStopInFlight = false
+    private var taskCompletionGeneration = UInt64(0)
+
+    var canStartTasks: Bool {
+        status == .idle && !isStartStopInFlight
+    }
+
+    private func beginTaskOperation(requiresIdle: Bool = true) async throws {
+        guard !isStartStopInFlight else {
+            logError("当前正在启动或停止任务，请稍后重试。")
+            throw MAAError.taskOperationInProgress
+        }
+        guard !requiresIdle || status == .idle else {
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
+        }
+        // Reserve before querying the core actor: the await must not admit
+        // another start or stop even if a callback has exposed idle.
+        isStartStopInFlight = true
+        var accepted = false
+        defer {
+            if !accepted { isStartStopInFlight = false }
+        }
+
+        if requiresIdle {
+            let coreIsRunning = await handle?.running == true
+            guard !coreIsRunning, status == .idle else {
+                if coreIsRunning { status = .busy }
+                logError("任务正在运行，请先停止当前任务。")
+                throw MAAError.taskAlreadyRunning
+            }
+            try Task.checkCancellation()
+        }
+        accepted = true
+    }
+
     // MARK: - Core Callback
 
     private var messageTask: Task<Void, Never>?
@@ -204,7 +241,9 @@ extension MAAViewModel {
         }
 
         guard await handle?.running == false else {
-            throw MAAError.handleNotRunning
+            status = .busy
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
         }
 
         logStore?.clearLogs()
@@ -240,7 +279,29 @@ extension MAAViewModel {
         logTrace("Running")
     }
 
+    private func startCoreTasks(recordDailyTaskStart: Bool = false) async throws {
+        try await handle?.start()
+        // Reconcile the actual core after start. A reset may belong to a prior
+        // run; retry if a callback makes the awaited running snapshot stale.
+        var observedGeneration: UInt64
+        var coreIsRunning: Bool
+        repeat {
+            observedGeneration = taskCompletionGeneration
+            coreIsRunning = await handle?.running == true
+        } while observedGeneration != taskCompletionGeneration
+
+        guard coreIsRunning else {
+            resetStatus()
+            return
+        }
+        if recordDailyTaskStart { logStore?.taskStartTime = .now }
+        status = .busy
+    }
+
     func stop() async throws {
+        try await beginTaskOperation(requiresIdle: false)
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
@@ -249,6 +310,7 @@ extension MAAViewModel {
     }
 
     func resetStatus() {
+        taskCompletionGeneration &+= 1
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -431,13 +493,37 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
-    func tryStartTasks() async {
+    enum TaskStartResult: Equatable {
+        case started
+        case skipped
+        case failed
+    }
+
+    @discardableResult
+    func tryStartTasks() async -> Bool {
+        await startDailyTasks() == .started
+    }
+
+    func startDailyTasks() async -> TaskStartResult {
+        guard canStartTasks else {
+            return .skipped
+        }
+
+        do {
+            try await beginTaskOperation()
+        } catch {
+            return .skipped
+        }
+        defer { isStartStopInFlight = false }
+
         do {
             logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
+            return .started
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
+            return .failed
         }
     }
 
@@ -481,10 +567,7 @@ extension MAAViewModel {
             }
         }
 
-        try await handle?.start()
-        logStore?.taskStartTime = .now
-
-        status = .busy
+        try await startCoreTasks(recordDailyTaskStart: true)
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -524,14 +607,15 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func startCopilot(type: MAATaskType, params: String) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: type, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 }
 
@@ -539,6 +623,9 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -548,23 +635,25 @@ extension MAAViewModel {
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .Recruit, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func recognizeDepot() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .Depot, params: "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func recognizeVideo(video url: URL) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -575,23 +664,25 @@ extension MAAViewModel {
 
         try await ensureHandle(requireConnect: false)
         try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func recognizeOperBox() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .OperBox, params: "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func gachaPoll(once: Bool) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -603,12 +694,13 @@ extension MAAViewModel {
         let string = String(data: data, encoding: .utf8)
 
         try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func miniGame(name: String, params: Any? = nil) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -619,9 +711,7 @@ extension MAAViewModel {
         let string = String(data: data, encoding: .utf8)
 
         try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 }
 
