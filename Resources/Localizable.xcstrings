@@ -1904,6 +1904,29 @@
         }
       }
     },
+    "ExplorationExiting" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exiting exploration"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "탐험에서 나가는 중"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在退出探索"
+          }
+        }
+      }
+    },
     "FailedToOpenClient" : {
       "extractionState" : "manual",
       "localizations" : {

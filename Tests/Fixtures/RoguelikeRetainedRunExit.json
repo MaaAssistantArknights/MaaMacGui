@@ -1,0 +1,27 @@
+[
+  {
+    "event": "SubTaskStart",
+    "data": {
+      "subtask": "ProcessTask",
+      "details": {
+        "action": "ClickSelf",
+        "algorithm": "MatchTemplate",
+        "exec_times": 1,
+        "max_times": 2147483647,
+        "task": "ExitThenAbandon"
+      }
+    }
+  },
+  {
+    "event": "SubTaskExtraInfo",
+    "data": {
+      "subtask": "ProcessTask",
+      "details": {
+        "exec_times": 0,
+        "max_times": 0,
+        "task": "Abandon"
+      },
+      "what": "ExceededLimit"
+    }
+  }
+]

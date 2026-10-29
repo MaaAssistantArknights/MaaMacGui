@@ -645,8 +645,8 @@ extension MAAViewModel {
                 logInfo(.infrastDormDoubleConfirmed)
 
             case "ExitThenAbandon":
-                // TODO: (Achievement) Record Roguelike retreats.
-                logWarn(.explorationAbandoned)
+                // Exiting the map can also preserve the current exploration.
+                logInfo(.explorationExiting)
 
             case "StartAction":
                 // WPF retains this callback branch but currently performs no operation.
