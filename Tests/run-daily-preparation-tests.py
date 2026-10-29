@@ -15,7 +15,7 @@ def declaration(source,pattern):
 parts=[declaration(model,r'^    enum Status:'),declaration(model,r'^    enum TaskStartResult:')]
 for pattern in [r'^    private var dailyCompletionTask: .*$', r'^    private var dailyFinishAttemptedRunID: .*$', r'^    @Published private\(set\) var status = .*$',r'^    @Published private\(set\) var isStartStopInFlight = .*$',r'^    private var taskCompletionGeneration = .*$']:
  parts.append(re.search(pattern,model,re.M)[0])
-for name in ['canStartTasks','beginTaskOperation','handleEarlyReturn','startCoreTasks','startDailyTasks','startTasks','finishDailyRunIfStopped','reconcileDailyRunStatus','discardPreparedDailyTasks','resetStatus']:
+for name in ['canStartTasks','beginTaskOperation','handleEarlyReturn','startCoreTasks','startDailyTasks','startTasks','finishDailyRunIfStopped','reconcileDailyRunStatus','discardPreparedDailyTasks','resetStatus','waitForDailyRunCompletion','forceRecoveryEligibility']:
  pattern=rf'^    (?:private )?(?:func|var) {name}\b'
  if re.search(pattern,model,re.M):parts.append(declaration(model,pattern))
 for name in ['dailyTask','taskID']:parts.append(declaration(message,rf'^    (?:private )?func {name}\('))

@@ -19,7 +19,7 @@ def declaration(pattern):
     return source[match.start():end]
 
 members = '\n'.join(declaration(r'^    (?:private )?func ' + name + r'\b') for name in
-                    ['resetStatus', 'finishDailyRunIfStopped'])
+                    ['resetStatus', 'waitForDailyRunCompletion', 'finishDailyRunIfStopped'])
 header = '''import Foundation
 struct DailyTask {}
 @MainActor final class Gate {
@@ -48,6 +48,8 @@ struct DailyTask {}
  init(journalURL: URL? = nil) { dailyRunCoordinator = DailyRunCoordinator(journalURL: journalURL) }
  var dailyRunOutcome = DailyRunOutcome.completed
  var isStartStopInFlight = false
+ var forceRecoveryCleanupPending = false; var forceRecoveryJournalFailureRunID: UUID? = nil
+ var forceRecoveryInFlight = false; var forceRecovery: Int?; var messageTask: Task<Void, Never>?
  var handle: Core? = Core()
  var canStartTasks: Bool { status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil }
  var dailyRunTasks: [DailyTask]?

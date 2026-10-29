@@ -10,8 +10,9 @@ import Foundation
     var occupancy: @MainActor () -> Occupancy
     var terminal: @MainActor () -> Terminal?
     var canStop: @MainActor (UUID) -> Bool
+    var canForce: @MainActor (Snapshot) -> Bool
     var stop: @MainActor (UUID) async throws -> Void
-    var start: @MainActor (Snapshot) async -> StartResult
+    var start: @MainActor (Snapshot, Bool, @escaping @MainActor () -> Bool) async -> StartResult
     var isCurrent: @MainActor (ScheduleOccurrence) -> Bool
     var report: @MainActor (ScheduleOccurrence, ScheduleOccurrence.Result, String, UUID?) -> Void
     private(set) var pending: ScheduleOccurrence?
@@ -21,14 +22,16 @@ import Foundation
 
     init(timeout: Duration = .seconds(30), occupancy: @escaping @MainActor () -> Occupancy,
          terminal: @escaping @MainActor () -> Terminal?, canStop: @escaping @MainActor (UUID) -> Bool,
+         canForce: @escaping @MainActor (Snapshot) -> Bool = { _ in true },
          stop: @escaping @MainActor (UUID) async throws -> Void,
-         start: @escaping @MainActor (Snapshot) async -> StartResult,
+         start: @escaping @MainActor (Snapshot, Bool, @escaping @MainActor () -> Bool) async -> StartResult,
          isCurrent: @escaping @MainActor (ScheduleOccurrence) -> Bool,
          report: @escaping @MainActor (ScheduleOccurrence, ScheduleOccurrence.Result, String, UUID?) -> Void) {
         self.timeout = timeout
         self.occupancy = occupancy
         self.terminal = terminal
         self.canStop = canStop
+        self.canForce = canForce
         self.stop = stop
         self.start = start
         self.isCurrent = isCurrent
@@ -49,6 +52,10 @@ import Foundation
             report(occurrence, .skipped, "dailyTaskBusy", nil)
             return
         }
+        if case .daily = initial, force, !canForce(snapshot) {
+            report(occurrence, .skipped, "forceRecoveryUnavailable", nil)
+            return
+        }
         pending = occurrence
         if case .daily = initial {
             deadline = Task { [weak self, timeout] in
@@ -60,6 +67,10 @@ import Foundation
             guard let self else { return }
             if case .daily(let previousID) = initial {
                 while current(occurrence), occupancy() != .idle {
+                    guard canForce(snapshot) else {
+                        finish(occurrence, result: .cancelled, detail: "forceRecoveryUnavailable")
+                        return
+                    }
                     guard occupancy() == .daily(previousID) else {
                         finish(occurrence, result: .cancelled, detail: "runChanged")
                         return
@@ -75,6 +86,10 @@ import Foundation
                     do { try await Task.sleep(for: .milliseconds(50)) } catch { return }
                 }
                 while current(occurrence), occupancy() != .idle {
+                    guard canForce(snapshot) else {
+                        finish(occurrence, result: .cancelled, detail: "forceRecoveryUnavailable")
+                        return
+                    }
                     guard occupancy() == .daily(previousID) else {
                         finish(occurrence, result: .cancelled, detail: "runChanged")
                         return
@@ -82,6 +97,10 @@ import Foundation
                     do { try await Task.sleep(for: .milliseconds(50)) } catch { return }
                 }
                 guard current(occurrence) else { return }
+                guard canForce(snapshot) else {
+                    finish(occurrence, result: .cancelled, detail: "forceRecoveryUnavailable")
+                    return
+                }
                 guard let end = terminal(), end.id == previousID, end.cleanupSucceeded else {
                     finish(occurrence, result: .cancelled, detail: "cleanupFailed")
                     return
@@ -91,7 +110,11 @@ import Foundation
             deadline?.cancel()
             // The run coordinator reserves its run before its first await. The
             // snapshot was captured at the occurrence, before a possible stop.
-            let result = await start(snapshot)
+            guard Date() <= occurrence.expiresAt else {
+                finish(occurrence, result: .missed, detail: "handoffExpired")
+                return
+            }
+            let result = await start(snapshot, initial != .idle, { [weak self] in self?.current(occurrence) == true && self?.canForce(snapshot) == true })
             guard pending?.id == occurrence.id else { return }
             switch result {
             case .started(let id): finish(occurrence, result: .started, runID: id)
@@ -129,4 +152,31 @@ import Foundation
         work = nil
         report(occurrence, result, detail, runID)
     }
+}
+
+/// State for a single isolated Core recovery task. Core nested ProcessTask
+/// callbacks can have taskid 0, so the chain start marker scopes these events.
+struct ForcedGameRecovery {
+    let taskID: Int32
+    let chain: String
+    let requiresHome: Bool
+    var started = false
+    var lastWasHome = false
+    var completed = false
+    var allCompleted = false
+    var failed = false
+
+    mutating func chainStart(_ id: Int32) { if id == taskID { started = true } }
+    mutating func subtask(chain: String, taskID id: Int32, name: String, algorithm: String) {
+        guard started, !completed, chain == self.chain, id == 0 || id == taskID else { return }
+        // Both resource tasks are MatchTemplate checks for the home menu.
+        lastWasHome = ["Home", "StartUp"].contains(name) && algorithm == "MatchTemplate"
+    }
+    mutating func chainFinish(_ id: Int32, success: Bool) {
+        guard started, id == taskID else { return }
+        completed = true
+        if !success { failed = true }
+    }
+    mutating func allFinished(_ ids: [Int32]) { if ids.contains(taskID) { allCompleted = true } }
+    var verified: Bool { started && completed && allCompleted && (!requiresHome || lastWasHome) && !failed }
 }

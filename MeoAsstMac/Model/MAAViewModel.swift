@@ -30,6 +30,10 @@ import SwiftUI
 
     // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
     @Published private(set) var isStartStopInFlight = false
+    var forceRecovery: ForcedGameRecovery?
+    var forceRecoveryInFlight = false
+    private var forceRecoveryCleanupPending = false
+    private var forceRecoveryJournalFailureRunID: UUID? = nil
     private var taskCompletionGeneration = UInt64(0)
     private var dailyCompletionTask: Task<Void, Never>?
     private var dailyFinishAttemptedRunID: UUID?
@@ -352,8 +356,12 @@ extension MAAViewModel {
         // Core emits AllTasksCompleted before its worker clears the running flag.
         // Keep checking for this run until the native shutdown and any start/stop
         // operation have finished; never let an old waiter finish a later run.
-        dailyCompletionTask?.cancel()
         guard let runID = dailyRunCoordinator.active?.id else { return }
+        waitForDailyRunCompletion(runID: runID)
+    }
+
+    private func waitForDailyRunCompletion(runID: UUID) {
+        dailyCompletionTask?.cancel()
         dailyCompletionTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self, self.dailyRunCoordinator.active?.id == runID else { return }
@@ -394,13 +402,27 @@ extension MAAViewModel {
     private func finishDailyRunIfStopped(allowInFlight: Bool = false) async -> Bool {
         guard allowInFlight || !isStartStopInFlight else { return false }
         guard let context = dailyRunCoordinator.active,
-              [.running, .stopping].contains(context.status) else { return false }
+              [.running, .stopping].contains(context.status) || forceRecoveryCleanupPending else { return false }
         guard await handle?.running != true,
               (allowInFlight || !Task.isCancelled),
               (allowInFlight || !isStartStopInFlight),
               dailyRunCoordinator.active?.id == context.id,
               let currentStatus = dailyRunCoordinator.active?.status,
-              [.running, .stopping].contains(currentStatus) else { return false }
+              [.running, .stopping].contains(currentStatus) || forceRecoveryCleanupPending else { return false }
+        // A failed recovery retains Core and suppresses its callbacks until it is
+        // observably idle. Only then may its queued work and handle be discarded.
+        if forceRecoveryCleanupPending {
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            forceRecovery = nil
+            forceRecoveryCleanupPending = false
+            forceRecoveryInFlight = false
+            if forceRecoveryJournalFailureRunID == context.id {
+                status = .pending
+                return true
+            }
+        }
         // Failed journal writes keep ownership and must not spin on duplicate callbacks.
         guard dailyFinishAttemptedRunID != context.id else { return true }
         dailyFinishAttemptedRunID = context.id
@@ -627,7 +649,7 @@ extension MAAViewModel {
         await startDailyTasks() == .started
     }
 
-    func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil) async -> TaskStartResult {
+    func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil, recoverGame: Bool = false, recoveryCurrent: (@MainActor () -> Bool)? = nil) async -> TaskStartResult {
         reconcileDailyRunStatus()
         guard canStartTasks else {
             return .skipped
@@ -644,20 +666,35 @@ extension MAAViewModel {
             logStore?.setDailyTasksDetailMode(.log)
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
             guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
+            forceRecoveryJournalFailureRunID = nil
             dailyRunOutcome = .completed
             dailyRunTasks = snapshot.tasks
+            if recoverGame { forceRecoveryInFlight = true }
+            defer { if recoverGame && !forceRecoveryCleanupPending { forceRecoveryInFlight = false } }
             do {
                 try dailyRunCoordinator.transition(.connecting, for: runID)
-                try await startTasks(snapshot: snapshot, runID: runID)
+                try await startTasks(snapshot: snapshot, runID: runID, recoverGame: recoverGame, recoveryCurrent: recoveryCurrent)
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
-                if await handle?.running == true {
+                let recoveryCleanupFailed = error is ForcedRecoveryCleanupFailure
+                let coreRunning = await handle?.running == true
+                if recoveryCleanupFailed {
+                    dailyRunOutcome = .failed
+                    status = .busy
+                    do { try dailyRunCoordinator.transition(.running, for: runID) }
+                    catch {
+                        forceRecoveryJournalFailureRunID = runID
+                        logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                    }
+                    // Even a journal failure must not prevent safe eventual Core release.
+                    waitForDailyRunCompletion(runID: runID)
+                } else if coreRunning {
                     dailyRunOutcome = .failed
                     try dailyRunCoordinator.transition(.running, for: runID)
                     status = .busy
                 } else {
-                    let cleaned = await discardPreparedDailyTasks(for: runID)
+                    let cleaned = await discardPreparedDailyTasks(for: runID) && !(error is ForcedRecoveryCleanupFailure)
                     try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: cleaned)
                     dailyRunTasks = nil
                 }
@@ -670,7 +707,7 @@ extension MAAViewModel {
         }
     }
 
-    private func startTasks(snapshot: DailyRunSnapshot, runID: UUID) async throws {
+    private func startTasks(snapshot: DailyRunSnapshot, runID: UUID, recoverGame: Bool = false, recoveryCurrent: (@MainActor () -> Bool)? = nil) async throws {
         var runTasks = snapshot.tasks
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
@@ -685,6 +722,10 @@ extension MAAViewModel {
             runTasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
+                // Do not launch or switch a PlayCover game before recovery proves
+                // the current session is safe. This mode must be configured without
+                // automatic game launch for forced handoff.
+                if recoverGame { throw ForcedRecoveryFailure.notReady }
                 guard await startGame(client: config.client_type) else {
                     throw MAAError.gameStartFailed
                 }
@@ -704,9 +745,15 @@ extension MAAViewModel {
         dailyRunTasks = runTasks
         try await ensureHandle()
         try Task.checkCancellation()
+        if recoverGame {
+            try await recoverGameToHome(runID: runID, isCurrent: recoveryCurrent ?? { true })
+            forceRecoveryInFlight = false
+        }
+        try Task.checkCancellation()
 
         for task in runTasks {
             try Task.checkCancellation()
+            if recoverGame, recoveryCurrent?() == false { throw CancellationError() }
             guard task.enabled else { continue }
 
             if let coreID = try await handle?.appendTask(task.task) {
@@ -715,8 +762,99 @@ extension MAAViewModel {
         }
 
         try Task.checkCancellation()
+        if recoverGame, recoveryCurrent?() == false { throw CancellationError() }
         try dailyRunCoordinator.transition(.running, for: runID)
         try await startCoreTasks(recordDailyTaskStart: true)
+    }
+
+    /// Freeze the target at the occurrence, not after the previous run stops.
+    /// Reject unsupported PlayCover auto-launch before stopping the old run.
+    func forceRecoveryEligibility(snapshot: DailyRunSnapshot) -> @MainActor () -> Bool {
+        let channel = clientChannel
+        let address = connectionAddress
+        let adb = adbPath
+        let touch = touchMode
+        let tools = toolsMode
+        let gzip = useGzip
+        let adbLite = useAdbLite
+        let supportsRecovery = !(touch == .MacPlayTools && snapshot.tasks.contains { task in
+            guard task.enabled, case .startup(let config) = task.task else { return false }
+            return config.start_game_enabled
+        })
+        return { [weak self] in
+            guard let self else { return false }
+            return supportsRecovery && self.dailyTaskProfile == snapshot.profileID &&
+                self.clientChannel == channel && self.connectionAddress == address && self.adbPath == adb &&
+                self.touchMode == touch && self.toolsMode == tools && self.useGzip == gzip && self.useAdbLite == adbLite
+        }
+    }
+
+    /// After an interrupted run, Core can be idle while the game is still in battle.
+    /// Recover in an isolated task and require a real home-template callback before
+    /// any of the user's tasks may be queued.
+    private func recoverGameToHome(runID: UUID, isCurrent: @escaping @MainActor () -> Bool, timeout: TimeInterval = 300, cleanupTimeout: TimeInterval = 5) async throws {
+        guard let handle, dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
+        let expires = Date().addingTimeInterval(timeout)
+        do {
+            // Native StartUp disables retries into a new fight, game launch and account switching.
+            let startup = StartupConfiguration(client_type: clientChannel, start_game_enabled: false, account_name: "")
+            try await runRecoveryTask(handle: handle, runID: runID, type: .StartUp,
+                                      params: startup.params.jsonString(), chain: "StartUp", requiresHome: false, expires: expires, isCurrent: isCurrent)
+            // Confirm the actual home screen separately; chain completion alone is not proof.
+            let verify = try ["task_names": ["Home"]].jsonString()
+            try await runRecoveryTask(handle: handle, runID: runID, type: .Custom,
+                                      params: verify, chain: "Custom", requiresHome: true, expires: expires, isCurrent: isCurrent)
+        } catch {
+            var cleaned = false
+            do {
+                try await handle.stop()
+                let cleanupDeadline = Date().addingTimeInterval(cleanupTimeout)
+                repeat {
+                    if await handle.running == false { cleaned = true; break }
+                    // Cleanup must continue even when the caller was cancelled.
+                    await Task.detached { try? await Task.sleep(for: .milliseconds(50)) }.value
+                } while Date() < cleanupDeadline
+            } catch { cleaned = false }
+            guard cleaned else {
+                // Keep Core and callback isolation until a later idle observation.
+                forceRecoveryCleanupPending = true
+                throw ForcedRecoveryCleanupFailure()
+            }
+            messageTask?.cancel()
+            messageTask = nil
+            self.handle = nil
+            forceRecovery = nil
+            throw error
+        }
+    }
+
+    private func runRecoveryTask(handle: MAAHandle, runID: UUID, type: MAATaskType, params: String,
+                                 chain: String, requiresHome: Bool, expires: Date, isCurrent: @escaping @MainActor () -> Bool) async throws {
+        try Task.checkCancellation()
+        guard isCurrent(), dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
+        guard Date() <= expires else { throw ForcedRecoveryFailure.timedOut }
+        let taskID = try await handle.appendTask(type: type, params: params)
+        try Task.checkCancellation()
+        guard isCurrent(), dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
+        guard Date() <= expires else { throw ForcedRecoveryFailure.timedOut }
+        forceRecovery = ForcedGameRecovery(taskID: taskID, chain: chain, requiresHome: requiresHome)
+        try await handle.start()
+        while Date() <= expires {
+            try Task.checkCancellation()
+            guard isCurrent(), dailyRunCoordinator.active?.id == runID, let state = forceRecovery else { throw CancellationError() }
+            if state.failed { throw ForcedRecoveryFailure.notReady }
+            if state.completed && state.allCompleted {
+                guard state.verified else { throw ForcedRecoveryFailure.notReady }
+                if await handle.running == false {
+                    try Task.checkCancellation()
+                    guard Date() <= expires, isCurrent(), dailyRunCoordinator.active?.id == runID, forceRecovery?.taskID == taskID else { throw CancellationError() }
+                    forceRecovery = nil
+                    return
+                }
+            }
+            try await Task.sleep(for: .milliseconds(250))
+        }
+        throw ForcedRecoveryFailure.timedOut
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -954,3 +1092,6 @@ extension MAAViewModel {
         try await client.terminate()
     }
 }
+
+private enum ForcedRecoveryFailure: Error { case notReady, timedOut }
+private struct ForcedRecoveryCleanupFailure: Error {}
