@@ -31,6 +31,8 @@ import SwiftUI
     // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
     @Published private(set) var isStartStopInFlight = false
     private var taskCompletionGeneration = UInt64(0)
+    private var dailyCompletionTask: Task<Void, Never>?
+    private var dailyFinishAttemptedRunID: UUID?
 
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
@@ -356,7 +358,25 @@ extension MAAViewModel {
         logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
-        Task { await finishDailyRunIfStopped() }
+        // Core emits AllTasksCompleted before its worker clears the running flag.
+        // Keep checking for this run until the native shutdown and any start/stop
+        // operation have finished; never let an old waiter finish a later run.
+        if let active = dailyRunCoordinator.active,
+           active.status == .postHook || dailyFinishAttemptedRunID == active.id {
+            status = .pending
+            return
+        }
+        dailyCompletionTask?.cancel()
+        guard let runID = dailyRunCoordinator.active?.id else { return }
+        dailyCompletionTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self, self.dailyRunCoordinator.active?.id == runID else { return }
+                if await self.finishDailyRunIfStopped() { return }
+                guard self.dailyRunCoordinator.active?.id == runID,
+                      self.dailyRunCoordinator.active?.status != .postHook else { return }
+                do { try await Task.sleep(for: .milliseconds(250)) } catch { return }
+            }
+        }
     }
 
     private func reconcileDailyRunStatus() {
@@ -394,14 +414,22 @@ extension MAAViewModel {
         }
     }
 
-    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
-        guard allowInFlight || !isStartStopInFlight else { return }
+    @discardableResult
+    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async -> Bool {
+        guard allowInFlight || !isStartStopInFlight else { return false }
         guard let context = dailyRunCoordinator.active,
-              [.running, .stopping].contains(context.status) else { return }
+              [.running, .stopping].contains(context.status) else { return false }
         guard await handle?.running != true,
+              (allowInFlight || !Task.isCancelled),
+              (allowInFlight || !isStartStopInFlight),
               dailyRunCoordinator.active?.id == context.id,
-              dailyRunCoordinator.active?.status != .postHook else { return }
+              let currentStatus = dailyRunCoordinator.active?.status,
+              [.running, .stopping].contains(currentStatus) else { return false }
+        // A persistence or hook failure must not spin and repeatedly write the journal.
+        guard dailyFinishAttemptedRunID != context.id else { return true }
+        dailyFinishAttemptedRunID = context.id
         await finishDailyRun(context.id, outcome: dailyRunOutcome)
+        return true
     }
 
     private func finishDailyRun(_ id: UUID, outcome: DailyRunOutcome, preparationCleanupSucceeded: Bool = true) async {

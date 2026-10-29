@@ -106,7 +106,7 @@ struct DailyTask {
     var enabled = true
 }
 @MainActor final class MAAViewModel: ObservableObject {
-    let dailyRunCoordinator = DailyRunCoordinator()
+    let dailyRunCoordinator: DailyRunCoordinator
     private var dailyRunOutcome = DailyRunOutcome.completed
     private(set) var dailyRunTasks: [DailyTask]?
     let hookSettings = HookSettingsStore(defaults: UserDefaults(suiteName: hookTestSuite)!)
@@ -124,7 +124,8 @@ struct DailyTask {
     func logTrace(verbatim value: String) {}
     func logWarn(verbatim value: String) {}
     func logWarn(_ value: String) {}
-    init() {
+    init(journalURL: URL? = nil) {
+        dailyRunCoordinator = DailyRunCoordinator(journalURL: journalURL)
         // PRODUCTION_DAILY_RUN_CHANGE
     }
     // PRODUCTION_MODEL_MEMBERS

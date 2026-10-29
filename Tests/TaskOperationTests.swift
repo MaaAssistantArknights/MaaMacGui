@@ -555,7 +555,7 @@ import Observation
             postOnly.hookSettings.configuration = HookConfiguration()
             try? FileManager.default.removeItem(at: output)
             let slowPost = MAAViewModel()
-            slowPost.hookSettings.configuration = HookConfiguration(enabled: true, after: hook("slowpost", "print post >> \"$1\"; /bin/sleep 1"))
+            slowPost.hookSettings.configuration = HookConfiguration(enabled: true, after: hook("slowpost", "print post >> \"$1\"; /bin/sleep 1; print completed >> \"$1\""))
             _ = await slowPost.startDailyTasks()
             slowPost.handle?.isRunning = false
             slowPost.reportIdleCallback()
@@ -571,8 +571,29 @@ import Observation
                   "rejected stop preserves cleanup status and ownership")
             check(await slowPost.startDailyTasks() == .skipped, "post in flight blocks next pre")
             for _ in 0..<300 where slowPost.dailyRunCoordinator.active != nil { try? await Task.sleep(for: .milliseconds(10)) }
-            check(lines() == ["post"], "repeated terminal callback does not rerun post")
+            check(lines() == ["post", "completed"] && slowPost.dailyRunCoordinator.lastTerminal?.cleanupSucceeded == true, "repeated terminal callback preserves and completes post exactly once")
             slowPost.hookSettings.configuration = HookConfiguration()
+
+            // Real coordinator journal I/O fails after the accepted run begins.
+            // No periodic retry may spam the journal or release its ownership.
+            let journalParent = root.appendingPathComponent("journal")
+            try! FileManager.default.createDirectory(at: journalParent, withIntermediateDirectories: true)
+            let brokenJournal = MAAViewModel(journalURL: journalParent.appendingPathComponent("run.json"))
+            _ = await brokenJournal.startDailyTasks()
+            let brokenID = brokenJournal.dailyRunCoordinator.active!.id
+            try! FileManager.default.moveItem(at: journalParent, to: root.appendingPathComponent("journal-original"))
+            try! Data("blocked".utf8).write(to: journalParent)
+            brokenJournal.handle?.isRunning = false
+            brokenJournal.reportIdleCallback()
+            try? await Task.sleep(for: .milliseconds(900))
+            let journalErrors = brokenJournal.errors.filter { $0.contains("Daily run journal:") }.count
+            check(journalErrors == 1 && brokenJournal.dailyRunCoordinator.active?.id == brokenID && brokenJournal.status == .pending,
+                  "journal failure is attempted once and retains run ownership")
+            brokenJournal.reportIdleCallback()
+            try? await Task.sleep(for: .milliseconds(600))
+            check(brokenJournal.errors.filter { $0.contains("Daily run journal:") }.count == 1 && brokenJournal.status == .pending,
+                  "duplicate completion does not retry failed journal or expose idle")
+
             let failedPost = MAAViewModel()
             failedPost.hookSettings.configuration = HookConfiguration(enabled: true, after: hook("failedpost", "exit 23"))
             _ = await failedPost.startDailyTasks()
