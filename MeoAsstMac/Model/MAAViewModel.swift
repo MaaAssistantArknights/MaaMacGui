@@ -34,12 +34,20 @@ import SwiftUI
 
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
+    private(set) var dailyRunTasks: [DailyTask]?
 
     var canStartTasks: Bool {
         status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil
     }
 
+    private func reconcileDailyRunStatus() {
+        if status == .idle, let phase = dailyRunCoordinator.active?.status {
+            status = phase == .running ? .busy : .pending
+        }
+    }
+
     private func beginTaskOperation(requiresIdle: Bool = true) async throws {
+        reconcileDailyRunStatus()
         guard !isStartStopInFlight else {
             logError("当前正在启动或停止任务，请稍后重试。")
             throw MAAError.taskOperationInProgress
@@ -107,12 +115,7 @@ import SwiftUI
 
     @AppStorage("MAAScheduledDailyTaskTimer") var serializedScheduledDailyTaskTimers: String?
 
-    struct DailyTaskTimer: Codable {
-        let id: UUID
-        var hour: Int
-        var minute: Int
-        var isEnabled: Bool
-    }
+    typealias DailyTaskTimer = DailyTaskSchedule
 
     @Published var scheduledDailyTaskTimers: [DailyTaskTimer] = []
 
@@ -350,6 +353,7 @@ extension MAAViewModel {
               dailyRunCoordinator.active?.id == context.id else { return }
         do {
             try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
+            dailyRunTasks = nil
         } catch {
             status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
@@ -536,6 +540,7 @@ extension MAAViewModel {
     }
 
     func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil) async -> TaskStartResult {
+        reconcileDailyRunStatus()
         guard canStartTasks else {
             return .skipped
         }
@@ -552,13 +557,21 @@ extension MAAViewModel {
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
             guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
             dailyRunOutcome = .completed
+            dailyRunTasks = snapshot.tasks
             do {
                 try dailyRunCoordinator.transition(.connecting, for: runID)
                 try await startTasks(snapshot: snapshot, runID: runID)
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
-                try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                if await handle?.running == true {
+                    dailyRunOutcome = .failed
+                    try dailyRunCoordinator.transition(.running, for: runID)
+                    status = .busy
+                } else {
+                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                    dailyRunTasks = nil
+                }
                 throw error
             }
         } catch {
@@ -599,9 +612,12 @@ extension MAAViewModel {
             runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        dailyRunTasks = runTasks
         try await ensureHandle()
+        try Task.checkCancellation()
 
         for task in runTasks {
+            try Task.checkCancellation()
             guard task.enabled else { continue }
 
             if let coreID = try await handle?.appendTask(task.task) {
@@ -609,6 +625,7 @@ extension MAAViewModel {
             }
         }
 
+        try Task.checkCancellation()
         try dailyRunCoordinator.transition(.running, for: runID)
         try await startCoreTasks(recordDailyTaskStart: true)
     }

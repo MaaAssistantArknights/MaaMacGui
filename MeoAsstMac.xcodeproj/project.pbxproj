@@ -122,6 +122,9 @@
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
 		2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7743B34F2704668B4E0A0E9 /* RunContext.swift */; };
+		B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */; };
+		A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */; };
+		A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -267,6 +270,9 @@
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/RunContext.swift; sourceTree = SOURCE_ROOT; };
+		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/DailyTaskSchedule.swift; sourceTree = SOURCE_ROOT; };
+		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleOccurrenceStore.swift; sourceTree = SOURCE_ROOT; };
+		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleHandoff.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -295,6 +301,9 @@
 			isa = PBXGroup;
 			children = (
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
+				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
+				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
 				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
@@ -636,6 +645,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
+				A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */,
+				A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */,
+				B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,

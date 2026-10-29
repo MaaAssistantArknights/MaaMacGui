@@ -1639,7 +1639,7 @@ extension MAAViewModel {
 
     func dailyTask(coreID: Int32?) -> MAATask? {
         guard let id = taskID(coreID: coreID) else { return nil }
-        return tasks[id]
+        return (dailyRunTasks ?? tasks)[id]
     }
 
     private func taskID(coreID: Int32?) -> UUID? {
