@@ -32,8 +32,11 @@ import SwiftUI
     @Published private(set) var isStartStopInFlight = false
     private var taskCompletionGeneration = UInt64(0)
 
+    let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
+    private var dailyRunOutcome = DailyRunOutcome.completed
+
     var canStartTasks: Bool {
-        status == .idle && !isStartStopInFlight
+        status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil
     }
 
     private func beginTaskOperation(requiresIdle: Bool = true) async throws {
@@ -41,7 +44,7 @@ import SwiftUI
             logError("当前正在启动或停止任务，请稍后重试。")
             throw MAAError.taskOperationInProgress
         }
-        guard !requiresIdle || status == .idle else {
+        guard !requiresIdle || (status == .idle && dailyRunCoordinator.active == nil) else {
             logError("任务正在运行，请先停止当前任务。")
             throw MAAError.taskAlreadyRunning
         }
@@ -200,6 +203,7 @@ import SwiftUI
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
+        dailyRunCoordinator.didChange = { [weak self] in self?.objectWillChange.send() }
         initScheduledDailyTaskTimer()
     }
 
@@ -298,15 +302,23 @@ extension MAAViewModel {
         status = .busy
     }
 
-    func stop() async throws {
+    func stop(cancelScheduledStart: Bool = true) async throws {
+        if cancelScheduledStart {
+            NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
+        }
         try await beginTaskOperation(requiresIdle: false)
         defer { isStartStopInFlight = false }
 
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
+        dailyRunOutcome = .cancelled
+        if let id = dailyRunCoordinator.active?.id {
+            try dailyRunCoordinator.transition(.stopping, for: id)
+        }
         try await handle?.stop()
         status = .idle
+        await finishDailyRunIfStopped(allowInFlight: true)
     }
 
     func resetStatus() {
@@ -323,6 +335,25 @@ extension MAAViewModel {
         logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
+        Task { await finishDailyRunIfStopped() }
+    }
+
+    func markDailyRunFailed() {
+        if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
+    }
+
+    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
+        guard allowInFlight || !isStartStopInFlight else { return }
+        guard let context = dailyRunCoordinator.active,
+              [.running, .stopping].contains(context.status) else { return }
+        guard await handle?.running != true,
+              dailyRunCoordinator.active?.id == context.id else { return }
+        do {
+            try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
+        } catch {
+            status = .pending
+            logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+        }
     }
 
     func screenshot() async throws -> NSImage {
@@ -504,7 +535,7 @@ extension MAAViewModel {
         await startDailyTasks() == .started
     }
 
-    func startDailyTasks() async -> TaskStartResult {
+    func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil) async -> TaskStartResult {
         guard canStartTasks else {
             return .skipped
         }
@@ -518,8 +549,18 @@ extension MAAViewModel {
 
         do {
             logStore?.setDailyTasksDetailMode(.log)
-            try await startTasks()
-            return .started
+            let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
+            guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
+            dailyRunOutcome = .completed
+            do {
+                try dailyRunCoordinator.transition(.connecting, for: runID)
+                try await startTasks(snapshot: snapshot, runID: runID)
+                await finishDailyRunIfStopped(allowInFlight: true)
+                return .started
+            } catch {
+                try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                throw error
+            }
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
@@ -527,18 +568,19 @@ extension MAAViewModel {
         }
     }
 
-    private func startTasks() async throws {
+    private func startTasks(snapshot: DailyRunSnapshot, runID: UUID) async throws {
+        var runTasks = snapshot.tasks
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         var firstStart = true
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
@@ -548,18 +590,18 @@ extension MAAViewModel {
             }
         }
 
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .closedown(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
         try await ensureHandle()
 
-        for task in tasks {
+        for task in runTasks {
             guard task.enabled else { continue }
 
             if let coreID = try await handle?.appendTask(task.task) {
@@ -567,6 +609,7 @@ extension MAAViewModel {
             }
         }
 
+        try dailyRunCoordinator.transition(.running, for: runID)
         try await startCoreTasks(recordDailyTaskStart: true)
     }
 
