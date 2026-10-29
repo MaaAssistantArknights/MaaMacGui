@@ -40,9 +40,12 @@ struct PeepView: View {
                 .foregroundStyle(.secondary)
         }
         .frame(minWidth: 360, minHeight: 280)
-        .task(id: automatic) {
+        .task {
             if preview.frame == nil { await preview.refresh(from: viewModel) }
-            while automatic && !Task.isCancelled {
+        }
+        .task(id: automatic) {
+            guard automatic else { return }
+            while !Task.isCancelled {
                 do { try await Task.sleep(for: .seconds(preview.error == nil ? 1 : 5)) } catch { return }
                 guard !Task.isCancelled else { return }
                 await preview.refresh(from: viewModel)
