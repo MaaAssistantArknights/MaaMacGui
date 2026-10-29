@@ -526,6 +526,14 @@ import Observation
             slowPost.reportIdleCallback()
             for _ in 0..<300 where slowPost.dailyRunCoordinator.active?.status != .postHook { try? await Task.sleep(for: .milliseconds(10)) }
             slowPost.reportIdleCallback()
+            let stopsBeforeCleanup = slowPost.handle?.stopCount
+            let statusDuringCleanup = slowPost.status
+            var cleanupStopRejected = false
+            do { try await slowPost.stop() } catch { cleanupStopRejected = true }
+            check(cleanupStopRejected && slowPost.handle?.stopCount == stopsBeforeCleanup,
+                  "post cleanup rejects stop without calling Core")
+            check(slowPost.status == statusDuringCleanup && slowPost.dailyRunCoordinator.active?.status == .postHook,
+                  "rejected stop preserves cleanup status and ownership")
             check(await slowPost.startDailyTasks() == .skipped, "post in flight blocks next pre")
             for _ in 0..<300 where slowPost.dailyRunCoordinator.active != nil { try? await Task.sleep(for: .milliseconds(10)) }
             check(lines() == ["post"], "repeated terminal callback does not rerun post")

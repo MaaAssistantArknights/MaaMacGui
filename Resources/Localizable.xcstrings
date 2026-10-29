@@ -1,6 +1,50 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "后置清理正在执行，请等待完成。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后置清理正在执行，请等待完成。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Post-run cleanup is in progress. Wait for it to finish."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 후 정리가 진행 중입니다. 완료될 때까지 기다려 주세요."
+          }
+        }
+      }
+    },
+    "运行中的配置已被编辑，保留用户修改，未自动更新任务记录。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运行中的配置已被编辑，保留用户修改，未自动更新任务记录。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The running profile was edited. Your changes were kept; its task record was not updated automatically."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 중인 설정이 편집되어 사용자 변경을 보존했습니다. 작업 기록은 자동으로 덮어쓰지 않았습니다."
+          }
+        }
+      }
+    },
     "启用日常任务脚本" : {
       "localizations" : {
         "zh-Hans" : {

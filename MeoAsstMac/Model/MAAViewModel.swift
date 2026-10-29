@@ -35,6 +35,7 @@ import SwiftUI
     let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
     private(set) var dailyRunTasks: [DailyTask]?
+    private(set) var isApplyingDailyCallbackPatch = false
     let hookSettings = HookSettingsStore()
     private var runHookConfiguration = HookConfiguration()
     private var dailyStartCancelled = false
@@ -314,6 +315,10 @@ extension MAAViewModel {
     func stop(cancelScheduledStart: Bool = true) async throws {
         if cancelScheduledStart {
             NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
+        }
+        guard dailyRunCoordinator.active?.status != .postHook else {
+            logError("后置清理正在执行，请等待完成。")
+            throw MAAError.taskOperationInProgress
         }
         if let context = dailyRunCoordinator.active,
            [.preparing, .preHook, .connecting].contains(context.status) {
@@ -645,6 +650,39 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
+    @discardableResult
+    func applyDailyTaskCallback(_ update: DailyTaskCallbackUpdate, coreID: Int32?) -> Bool {
+        guard let coreID, let context = dailyRunCoordinator.active,
+              [.running, .stopping].contains(context.status),
+              let id = taskIDMap[coreID],
+              let index = dailyRunTasks?.firstIndex(where: { $0.id == id }),
+              let original = dailyRunTasks?[index].task else { return false }
+        do {
+            let isCurrentProfile = context.profileID == dailyTaskProfile
+            guard let updated = try DailyRunProfilePatchStore.apply(
+                update, taskID: id, expected: original, profileID: context.profileID,
+                currentTasks: isCurrentProfile ? tasks : nil, directory: tasksDirectory) else {
+                logWarn("运行中的配置已被编辑，保留用户修改，未自动更新任务记录。")
+                return false
+            }
+            // Only the callback field changes the frozen run view. Other edits
+            // in the latest saved profile must not rewrite the running snapshot.
+            if let snapshotUpdate = update.applying(to: original, expecting: original),
+               let old = dailyRunTasks?[index] {
+                dailyRunTasks?[index] = DailyTask(id: old.id, task: snapshotUpdate, enabled: old.enabled)
+            }
+            if isCurrentProfile {
+                isApplyingDailyCallbackPatch = true
+                tasks = updated
+                isApplyingDailyCallbackPatch = false
+            }
+            return true
+        } catch {
+            logError(verbatim: "Run profile callback update failed: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     enum TaskStartResult: Equatable {
         case started
         case skipped

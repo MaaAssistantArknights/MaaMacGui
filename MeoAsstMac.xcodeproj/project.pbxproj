@@ -125,6 +125,7 @@
 		7B1B36888B12496B9DA5C1DB /* HookConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A6855ABEC964286B70706AC /* HookConfiguration.swift */; };
 		175E0E7F43434EA4845EFF97 /* HookRunner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3621885B42794A3E8940DB36 /* HookRunner.swift */; };
 		4EED5734D98847338FFE7732 /* HookSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */; };
+		F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -273,6 +274,7 @@
 		9A6855ABEC964286B70706AC /* HookConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookConfiguration.swift; sourceTree = SOURCE_ROOT; };
 		3621885B42794A3E8940DB36 /* HookRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookRunner.swift; sourceTree = SOURCE_ROOT; };
 		0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/HookSettingsView.swift; sourceTree = SOURCE_ROOT; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +302,7 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
 				0FC2C19F5DD0469BBD8F1A7F /* HookSettingsView.swift */,
 				3621885B42794A3E8940DB36 /* HookRunner.swift */,
 				9A6855ABEC964286B70706AC /* HookConfiguration.swift */,
@@ -644,6 +647,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */,
 				4EED5734D98847338FFE7732 /* HookSettingsView.swift in Sources */,
 				175E0E7F43434EA4845EFF97 /* HookRunner.swift in Sources */,
 				7B1B36888B12496B9DA5C1DB /* HookConfiguration.swift in Sources */,
