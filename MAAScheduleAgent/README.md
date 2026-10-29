@@ -1,5 +1,7 @@
 # Background schedule agent
 
+The sandboxed command-line target embeds its own processed Info.plist into the Mach-O `__TEXT,__info_plist` section, with a bundle identifier distinct from the GUI. Debug dylib support is disabled for this tool. This is required for sandbox initialization; see [Apple’s ServiceManagement packaging example](https://developer.apple.com/forums/thread/802443).
+
 The app embeds `MAAScheduleAgent` in `Contents/MacOS` and its fixed launchd plist in `Contents/Library/LaunchAgents`. Registration uses `SMAppService.agent(plistName:)`; the app never installs files directly into a user's Library/LaunchAgents directory.
 
 The helper runs once at load and every 60 seconds while the user is logged in. It reads the published schedule, claims one occurrence in the shared ledger, writes a data-only inbox envelope, and opens only the application bundle containing that helper. It does not link MaaCore or invoke adb, a shell, or user scripts. The GUI validates the envelope after Core/resource initialization and dispatches it through the foreground scheduling handoff.

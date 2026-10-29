@@ -306,6 +306,7 @@
 		3389648EC99FC421E346CE7C /* MAAScheduleAgent */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MAAScheduleAgent; sourceTree = BUILT_PRODUCTS_DIR; };
 		6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MAAScheduleAgent/com.hguandl.MeoAsstMac.ScheduleAgent.plist; sourceTree = SOURCE_ROOT; };
 		1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleAgentLocation.swift; sourceTree = SOURCE_ROOT; };
+		26E08575B7270EEEA23DC4E3 /* Agent Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MAAScheduleAgent/Info.plist; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -335,6 +336,7 @@
 			isa = PBXGroup;
 			children = (
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				26E08575B7270EEEA23DC4E3 /* Agent Info.plist */,
 				1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */,
 				6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */,
 				2A2DCE729E33DB96D7B22BFE /* AgentMain.swift */,
@@ -987,8 +989,8 @@
 			};
 			name = Release;
 		};
-		DF2B87389816CE5C7FCEEECE /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; }; name = Debug; };
-		A5F9F86FCE829AEC17280EFD /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; DEVELOPMENT_TEAM = 29V29Y67P2;}; name = Release; };
+		DF2B87389816CE5C7FCEEECE /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = MAAScheduleAgent/Info.plist; INFOPLIST_EXPAND_BUILD_SETTINGS = YES; CREATE_INFOPLIST_SECTION_IN_BINARY = YES; ENABLE_DEBUG_DYLIB = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; }; name = Debug; };
+		A5F9F86FCE829AEC17280EFD /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_ENTITLEMENTS = MAAScheduleAgent/MAAScheduleAgent.entitlements; CODE_SIGN_STYLE = Automatic; ENABLE_HARDENED_RUNTIME = YES; GENERATE_INFOPLIST_FILE = NO; INFOPLIST_FILE = MAAScheduleAgent/Info.plist; INFOPLIST_EXPAND_BUILD_SETTINGS = YES; CREATE_INFOPLIST_SECTION_IN_BINARY = YES; ENABLE_DEBUG_DYLIB = NO; MACH_O_TYPE = mh_execute; PRODUCT_BUNDLE_IDENTIFIER = com.hguandl.MeoAsstMac.ScheduleAgent; PRODUCT_NAME = MAAScheduleAgent; SDKROOT = macosx; MACOSX_DEPLOYMENT_TARGET = 14.0; SKIP_INSTALL = YES; SWIFT_VERSION = 5.0; SWIFT_STRICT_CONCURRENCY = complete; SWIFT_INSTALL_OBJC_HEADER = NO; DEVELOPMENT_TEAM = 29V29Y67P2;}; name = Release; };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
