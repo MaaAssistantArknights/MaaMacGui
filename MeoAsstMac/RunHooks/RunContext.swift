@@ -73,6 +73,7 @@ final class DailyRunCoordinator {
         lastTerminal = context
         active = nil
         didChange?()
+        NotificationCenter.default.post(name: Notification.Name("MAADailyRunFinished"), object: context)
         return true
     }
 
