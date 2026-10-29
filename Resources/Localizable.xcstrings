@@ -6449,6 +6449,292 @@
     },
     "龙门币-6/5" : {
 
+    },
+    "Peep.Title" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "窥屏"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Screen preview"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 미리보기"
+          }
+        }
+      }
+    },
+    "Peep.Automatic" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动刷新（1 秒）"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto refresh (1 second)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "자동 새로 고침 (1초)"
+          }
+        }
+      }
+    },
+    "Peep.Refresh" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷新画面"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh image"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 새로 고침"
+          }
+        }
+      }
+    },
+    "Peep.ReadAt" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "读取于"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Read at"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽은 시각"
+          }
+        }
+      }
+    },
+    "Peep.CaptureRequested" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "空闲时已请求截图"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture requested while idle"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기 중 캡처 요청함"
+          }
+        }
+      }
+    },
+    "Peep.CachedFrame" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运行中读取缓存"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cached frame while running"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 중 캐시 화면 읽기"
+          }
+        }
+      }
+    },
+    "Peep.Waiting" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "等待画面"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Waiting for an image"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 대기 중"
+          }
+        }
+      }
+    },
+    "Peep.ConnectionHint" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先通过现有任务建立连接，再刷新。此工具不会启动任务或重新连接。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connect using an existing task, then refresh. Preview does not start tasks or reconnect."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "기존 작업으로 연결한 후 새로 고침하세요. 미리보기는 작업을 시작하거나 다시 연결하지 않습니다."
+          }
+        }
+      }
+    },
+    "Peep.TimestampHint" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "时间表示读取时刻。核心不提供帧采集时间；画面可能来自缓存。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Time indicates when the image was read. Core provides no frame capture timestamp; the image may be cached."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간은 화면을 읽은 시각입니다. 코어는 캡처 시각을 제공하지 않으며 캐시 화면일 수 있습니다."
+          }
+        }
+      }
+    },
+    "Peep.Disconnected" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚未连接或连接已断开，请通过现有任务重新连接。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not connected or disconnected. Reconnect using an existing task."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결되지 않았거나 연결이 끊어졌습니다. 기존 작업으로 다시 연결하세요."
+          }
+        }
+      }
+    },
+    "Peep.CaptureInProgress" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一截图请求仍在核心处理中，请稍后刷新。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Core is still processing the previous capture. Try again later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "코어에서 이전 캡처를 처리 중입니다. 나중에 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "Peep.Timeout" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "截图等待超时。核心请求仍可能在处理中。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capture timed out. The native request may still be processing."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "캡처 대기 시간이 초과되었습니다. 코어 요청은 계속 처리 중일 수 있습니다."
+          }
+        }
+      }
+    },
+    "Peep.NoFrame" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "尚无可读取画面，或取图失败。已显示的画面可能过期。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No readable frame, or image retrieval failed. Any displayed image may be outdated."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽을 수 있는 화면이 없거나 화면을 가져오지 못했습니다. 표시된 화면은 오래된 화면일 수 있습니다."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
