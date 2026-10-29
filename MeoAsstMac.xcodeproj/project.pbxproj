@@ -139,6 +139,7 @@
 		B46C81685132E1296E600AEE /* MAAScheduleAgent in Embed Helper Tools */ = {isa = PBXBuildFile; fileRef = 3389648EC99FC421E346CE7C; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		94C59E20479606E44D4FB124 /* ScheduleAgent.plist in LaunchAgents */ = {isa = PBXBuildFile; fileRef = 6250DA9C76813DDBFE5B7EA8; };
 		9B6C185C8729497448935CB7 /* ScheduleAgentLocation.swift in Agent Sources */ = {isa = PBXBuildFile; fileRef = 1C3AC5D910863BF71F8DC4B6; };
+		F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -307,6 +308,7 @@
 		6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MAAScheduleAgent/com.hguandl.MeoAsstMac.ScheduleAgent.plist; sourceTree = SOURCE_ROOT; };
 		1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleAgentLocation.swift; sourceTree = SOURCE_ROOT; };
 		26E08575B7270EEEA23DC4E3 /* Agent Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = MAAScheduleAgent/Info.plist; sourceTree = SOURCE_ROOT; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -336,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
 				26E08575B7270EEEA23DC4E3 /* Agent Info.plist */,
 				1C3AC5D910863BF71F8DC4B6 /* ScheduleAgentLocation.swift */,
 				6250DA9C76813DDBFE5B7EA8 /* ScheduleAgent.plist */,
@@ -694,6 +697,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
+				F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */,
 				BCAD46240D494C047C5532E9 /* BackgroundScheduleSettingsView.swift in Sources */,
 				E2634018F76DBCBF1FAA3074 /* BackgroundScheduleService.swift in Sources */,
 				2C46E20744CFBCE765230FC7 /* ScheduleSigning.swift in Sources */,
