@@ -17,6 +17,7 @@ struct TaskButtons: View {
             }
         }
         .keyboardShortcut("R", modifiers: .command)
+        .disabled(!viewModel.canStartTasks)
 
         Button("停止任务") {
             Task {

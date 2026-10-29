@@ -76,6 +76,11 @@ import Observation
         return parent.status
     }
 
+    @MainActor var canStartTasks: Bool {
+        access(keyPath: \.canStartTasks)
+        return parent.canStartTasks
+    }
+
     var dailyTasksDetailMode = MAAViewModel.DailyTasksDetailMode.log
 
     @MainActor init(parent: MAAViewModel) {
@@ -105,6 +110,12 @@ import Observation
 
         parent.$status.sink { [weak self] _ in
             self?.withMutation(keyPath: \.status) {}
+            self?.withMutation(keyPath: \.canStartTasks) {}
+        }
+        .store(in: &cancellables)
+
+        parent.$isStartStopInFlight.sink { [weak self] _ in
+            self?.withMutation(keyPath: \.canStartTasks) {}
         }
         .store(in: &cancellables)
     }
@@ -128,8 +139,6 @@ extension NewViewModel {
     }
 
     nonisolated(nonsending) func startCopilot() async throws {
-        copilotStartToken = UUID()
-
         var config = copilot.config
         let type: MAATaskType
 
@@ -176,6 +185,7 @@ extension NewViewModel {
         }
 
         try await parent.startCopilot(type: type, params: params)
+        copilotStartToken = UUID()
     }
 
     nonisolated(nonsending) func recognizeVideo(url: URL) async throws {
