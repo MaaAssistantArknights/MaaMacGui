@@ -31,6 +31,18 @@ import Observation
             ("MiniGame", { try await $0.miniGame(name: "Fixture") }),
         ]
 
+        do {
+            let model = MAAViewModel()
+            let id = try! model.dailyRunCoordinator.begin(profileID: "Fixture", origin: .manual)!
+            let bridge = NewViewModel(parent: model)
+            check(!bridge.canStartTasks, "run ownership disables bridge with idle core")
+            let released = ObservationFlag()
+            withObservationTracking { _ = bridge.canStartTasks } onChange: { released.set() }
+            _ = try! model.dailyRunCoordinator.finish(id, outcome: .completed, cleanupSucceeded: true)
+            check(released.isSet && bridge.canStartTasks,
+                  "terminal ownership release notifies bridge without status/in-flight mutation")
+        }
+
         // Review 1: a busy core must not be touched or have its visible status reset.
         for (name, start) in starts {
             let model = MAAViewModel()

@@ -87,6 +87,11 @@ import Observation
         self.parent = parent
         parent.logStore = self
 
+        parent.objectWillChange.sink { [weak self] _ in
+            self?.withMutation(keyPath: \.canStartTasks) {}
+        }
+        .store(in: &cancellables)
+
         do {
             let dir = FileManager.default
                 .urls(for: .applicationSupportDirectory, in: .userDomainMask)

@@ -117,6 +117,9 @@ struct DailyTask {
     func logTrace(verbatim value: String) {}
     func logWarn(verbatim value: String) {}
     func logWarn(_ value: String) {}
+    init() {
+        // PRODUCTION_DAILY_RUN_CHANGE
+    }
     // PRODUCTION_MODEL_MEMBERS
     enum DailyTasksDetailMode { case log }
     struct DailyTaskTimer {
