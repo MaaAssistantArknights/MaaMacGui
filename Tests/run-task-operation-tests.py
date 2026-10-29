@@ -32,7 +32,7 @@ parts += [re.search(r'^    (?:@Published private\(set\) |private )var isStartSto
 for pattern in [r'^    private var taskCompletionGeneration = .*$', r'^    enum TaskStartResult:']:
     if re.search(pattern, model, re.M):
         parts.append(declaration(model, pattern) if 'enum' in pattern else re.search(pattern, model, re.M)[0])
-for name in ['canStartTasks', 'beginTaskOperation', 'startCoreTasks', 'startDailyTasks', 'reconcileDailyRunStatus', 'finishDailyRunIfStopped']:
+for name in ['canStartTasks', 'beginTaskOperation', 'startCoreTasks', 'startDailyTasks', 'reconcileDailyRunStatus', 'discardPreparedDailyTasks', 'finishDailyRunIfStopped']:
     pattern = rf'^    (?:private )?(?:func|var) {name}\b'
     if re.search(pattern, model, re.M): parts.append(declaration(model, pattern))
 for name in ['stop', 'resetStatus', 'tryStartTasks', 'startTasks', 'handleEarlyReturn', 'startCopilot', 'recognizeRecruit',

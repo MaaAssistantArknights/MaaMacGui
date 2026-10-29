@@ -125,6 +125,7 @@
 		D435C735FBB248EDAB963960 /* HotkeyConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */; };
 		6289CAA0CEBE4173997CAB86 /* GlobalHotkeyService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */; };
 		38EB76370CAF45D89359D590 /* HotkeySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */; };
+		F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -273,6 +274,7 @@
 		38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/HotkeyConfiguration.swift; sourceTree = SOURCE_ROOT; };
 		7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/GlobalHotkeyService.swift; sourceTree = SOURCE_ROOT; };
 		E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Hotkeys/HotkeySettingsView.swift; sourceTree = SOURCE_ROOT; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +302,7 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
 				E78B60E254D04E2E91F4FA92 /* HotkeySettingsView.swift */,
 				7F6DFDA2D2384CB1800C898E /* GlobalHotkeyService.swift */,
 				38A31B3C3C9145DBAFB0BA95 /* HotkeyConfiguration.swift */,
@@ -644,6 +647,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */,
 				38EB76370CAF45D89359D590 /* HotkeySettingsView.swift in Sources */,
 				6289CAA0CEBE4173997CAB86 /* GlobalHotkeyService.swift in Sources */,
 				D435C735FBB248EDAB963960 /* HotkeyConfiguration.swift in Sources */,

@@ -441,6 +441,17 @@ import Observation
             check(!model.operationInFlightForTest, "post-start probe releases ownership")
         }
         #endif
+        do {
+            let model = MAAViewModel()
+            let id = try! model.dailyRunCoordinator.begin(profileID: "Fixture", origin: .manual)!
+            try! model.dailyRunCoordinator.transition(.postHook, for: id)
+            let before = model.status
+            var rejected = false
+            do { try await model.stop() } catch { rejected = true }
+            check(rejected && model.handle?.stopCount == 0, "cleanup stop rejected without Core stop")
+            check(model.status == before && model.dailyRunCoordinator.active?.status == .postHook,
+                  "cleanup stop preserves status and context")
+        }
         print("\(assertions) assertions; \(failures) failures")
         if failures != 0 { exit(1) }
     }

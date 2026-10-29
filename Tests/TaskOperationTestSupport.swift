@@ -115,6 +115,8 @@ struct DailyTask {
     var clientChannel = ClientChannel.official
     var touchMode = TouchMode.maatouch
     var taskIDMap: [Int32: UUID] = [:]
+    var taskStatus: [UUID: Int] = [:]
+    var messageTask: Task<Void, Never>?
     func startGame(client: ClientChannel) async -> Bool { true }
     var recruitConfig = RecruitConfiguration()
     var connectionGate: Gate?
