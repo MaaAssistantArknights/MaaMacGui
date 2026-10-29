@@ -77,6 +77,15 @@ expect(utopia["collectible_mode_squad"] as? String == "特勤分队", "Preparati
 expect(
     (utopia["collectible_mode_core_char_list"] as? [[String: Any]])?.first?["name"] as? String == "机械师",
     "Preparation opening")
+config.blackflowStart.preparationOperator = ""
+config.use_support = true
+config.use_nonfriend_support = true
+let emptyPreparation = try params(config, supported: true)
+expect(emptyPreparation["core_char"] as? String == "目标干员", "Target operator preserved with empty preparation")
+expect(emptyPreparation["use_support"] as? Bool == true, "Target support preference preserved")
+expect((emptyPreparation["collectible_mode_core_char_list"] as? [[String: Any]])?.isEmpty == true,
+       "Empty preparation emits explicit list instead of inheriting target support")
+config.blackflowStart.preparationOperator = "机械师"
 config.blackflowStart.utopia = false
 let phase1 = try params(config)
 expect(phase1["core_char"] as? String == "机械师", "Phase1 preparation uses legacy opening keys")

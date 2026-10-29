@@ -456,8 +456,11 @@ extension RoguelikeConfiguration.Params {
         self.blackflow_start_reward_priority = utopia
             ? config.blackflowStart.rewardPriority.map(\.rawValue) : nil
         self.collectible_mode_roles = utopia ? config.blackflowStart.preparationRoles : nil
-        self.collectible_mode_core_char_list = utopia && !config.blackflowStart.preparationOperator.isEmpty
-            ? [.init(name: config.blackflowStart.preparationOperator, use_support: false)] : nil
+        // An explicit empty list prevents Core from falling back to the target
+        // run's operator list, which may include support units.
+        self.collectible_mode_core_char_list = utopia
+            ? (config.blackflowStart.preparationOperator.isEmpty
+                ? [] : [.init(name: config.blackflowStart.preparationOperator, use_support: false)]) : nil
         self.theme = config.theme.rawValue
         self.mode = config.mode.rawValue
         self.squad = config.squad
