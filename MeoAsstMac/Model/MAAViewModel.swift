@@ -372,6 +372,28 @@ extension MAAViewModel {
         }
     }
 
+    /// A stopped core can still own successfully appended tasks from a failed preparation.
+    private func discardPreparedDailyTasks(for runID: UUID) async -> Bool {
+        guard dailyRunCoordinator.active?.id == runID else { return false }
+        do {
+            try await handle?.stop()
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            guard await handle?.running != true else { throw MAAError.taskAlreadyRunning }
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            return true
+        } catch {
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            logError(verbatim: "Daily preparation cleanup: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
         guard allowInFlight || !isStartStopInFlight else { return }
         guard let context = dailyRunCoordinator.active,
@@ -382,16 +404,16 @@ extension MAAViewModel {
         await finishDailyRun(context.id, outcome: dailyRunOutcome)
     }
 
-    private func finishDailyRun(_ id: UUID, outcome: DailyRunOutcome) async {
+    private func finishDailyRun(_ id: UUID, outcome: DailyRunOutcome, preparationCleanupSucceeded: Bool = true) async {
         guard let context = dailyRunCoordinator.active, context.id == id, context.status != .postHook else { return }
         do {
             try dailyRunCoordinator.transition(.postHook, for: id)
             status = .pending
-            var cleanupSucceeded = true
+            var cleanupSucceeded = preparationCleanupSucceeded
             if runHookConfiguration.enabled, let command = runHookConfiguration.after {
                 do {
                     let result = try await executeHook(command, context: context, outcome: outcome, cancellable: false)
-                    cleanupSucceeded = result.succeeded
+                    cleanupSucceeded = result.succeeded && cleanupSucceeded
                 } catch {
                     cleanupSucceeded = false
                     logError(verbatim: "Post-run script: \(error.localizedDescription)")
@@ -735,7 +757,9 @@ extension MAAViewModel {
                     try dailyRunCoordinator.transition(.running, for: runID)
                     status = .busy
                 } else {
-                    await finishDailyRun(runID, outcome: dailyStartCancelled || Task.isCancelled ? .cancelled : .failed)
+                    let cleaned = await discardPreparedDailyTasks(for: runID)
+                    await finishDailyRun(runID, outcome: dailyStartCancelled || Task.isCancelled ? .cancelled : .failed,
+                                         preparationCleanupSucceeded: cleaned)
                 }
                 throw error
             }

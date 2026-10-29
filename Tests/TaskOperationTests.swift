@@ -465,6 +465,29 @@ import Observation
             check(bridge.canStartTasks, "tool bridge reenables after hook test")
         }
 
+        // Failed partial preparation must never leak its native queue into the next run.
+        for failStop in [false, true] {
+            let model = MAAViewModel()
+            let core = model.handle!
+            model.tasks = [.init(task: .fixture), .init(task: .fixture)]
+            core.failAppendAt = 2
+            core.failStop = failStop
+            let result = await model.startDailyTasks()
+            check(result == .failed && core.startCount == 0, "partial append failure never starts Core")
+            check(model.taskIDMap.isEmpty, "failed preparation clears callback ownership")
+            check(model.dailyRunCoordinator.lastTerminal?.cleanupSucceeded == !failStop,
+                  "preparation cleanup failure remains visible in terminal record")
+            if failStop {
+                check(model.handle == nil, "failed native cleanup isolates the old handle")
+            } else {
+                check(core.queued.isEmpty, "Core.stop clears the partial queue")
+                core.failAppendAt = nil
+                model.tasks = [.init(task: .fixture)]
+                check(await model.startDailyTasks() == .started && core.queued.count == 1,
+                      "the next run starts only its newly appended queue")
+            }
+        }
+
         // C3: production lifecycle + real local scripts, fake Core boundary only.
         do {
             let root = FileManager.default.temporaryDirectory.appendingPathComponent("maa-hook-lifecycle-\(UUID())")

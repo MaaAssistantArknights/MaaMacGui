@@ -34,6 +34,9 @@ enum MAATaskType { case Copilot, SSSCopilot, ParadoxCopilot, Recruit, Depot, Vid
             return runningReturnsSnapshot ? snapshot : isRunning
         }
     }
+    var queued = [UUID]()
+    var failAppendAt: Int?
+    var startCount = 0
     var appendCount = 0
     var stopCount = 0
     var preStartGate: Gate?
@@ -47,9 +50,12 @@ enum MAATaskType { case Copilot, SSSCopilot, ParadoxCopilot, Recruit, Depot, Vid
     }
     func appendTask(_ task: DailyTask.Kind) async throws -> Int32 {
         appendCount += 1
+        if appendCount == failAppendAt { throw FixtureError.connection }
+        queued.append(UUID())
         return Int32(appendCount)
     }
     func start() async throws {
+        startCount += 1
         if let preStartGate { await preStartGate.wait() }
         if failStart { throw FixtureError.connection }
         isRunning = true
@@ -60,6 +66,7 @@ enum MAATaskType { case Copilot, SSSCopilot, ParadoxCopilot, Recruit, Depot, Vid
         if let stopGate { await stopGate.wait() }
         if failStop { throw FixtureError.connection }
         isRunning = false
+        queued.removeAll()
     }
 }
 struct RecruitConfiguration {
@@ -134,6 +141,8 @@ struct DailyTask {
     var clientChannel = ClientChannel.official
     var touchMode = TouchMode.maatouch
     var taskIDMap: [Int32: UUID] = [:]
+    var taskStatus: [UUID: Int] = [:]
+    var messageTask: Task<Void, Never>?
     func startGame(client: ClientChannel) async -> Bool { true }
     var recruitConfig = RecruitConfiguration()
     var connectionGate: Gate?
