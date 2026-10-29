@@ -130,4 +130,41 @@ defer { try? FileManager.default.removeItem(at: temp) }
 expect(BlackflowStartSupport.permitsOverlay(at: temp), "Unrelated OTA")
 try Data("{}".utf8).write(to: temp.appendingPathComponent("resource/tasks.json"))
 expect(!BlackflowStartSupport.permitsOverlay(at: temp), "Legacy task override rejects")
+// A real filesystem alias must attest the same bytes with the same relative keys.
+let fixtureRoot = temp.resolvingSymlinksInPath().appendingPathComponent("fingerprint-fixture")
+let resource = fixtureRoot.appendingPathComponent("resource")
+let fixtureFiles: [String: Data] = [
+    "tasks/fixture.json": Data("{\"fixture\":1}".utf8),
+    "roguelike/BlackFlow/fixture.json": Data("{\"route\":1}".utf8),
+    "template/Roguelike/BlackFlow/fixture.png": Data([0, 1, 2]),
+]
+for (path, data) in fixtureFiles {
+    let file = resource.appendingPathComponent(path)
+    try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+    try data.write(to: file)
+}
+let alias = temp.appendingPathComponent("long-resource-root-symbolic-link-alias")
+try FileManager.default.createSymbolicLink(at: alias, withDestinationURL: fixtureRoot)
+let original = try BlackflowStartSupport.fingerprintResources(at: resource)
+expect(try! BlackflowStartSupport.fingerprintResources(at: alias.appendingPathComponent("resource")) == original,
+       "Real symbolic-link alias preserves the resource fingerprint")
+expect(original == "c787a3e983de9858552692b8abc15c826d3c1e28ac7502fa4595d3c305a94280", "Stable relative-key resource fingerprint contract unchanged")
+try Data("changed".utf8).write(to: resource.appendingPathComponent("tasks/fixture.json"))
+let changed = try BlackflowStartSupport.fingerprintResources(at: resource)
+expect(changed != original, "Changed bytes alter the fingerprint")
+expect(try! BlackflowStartSupport.fingerprintResources(at: alias.appendingPathComponent("resource")) == changed,
+       "Alias still observes changed resource bytes")
+expect(!BlackflowStartSupport.matchesResources(at: fixtureRoot) && !BlackflowStartSupport.matchesResources(at: alias),
+       "Unattested resources fail closed through either path")
+if CommandLine.arguments.count == 4 {
+    let root = URL(fileURLWithPath: CommandLine.arguments[3])
+    let bundleAlias = temp.appendingPathComponent("real-attested-bundle-alias")
+    try FileManager.default.createSymbolicLink(at: bundleAlias, withDestinationURL: root)
+    expect(BlackflowStartSupport.matchesResources(at: bundleAlias), "Real attested bundle survives symlink alias")
+}
+if let ota = ProcessInfo.processInfo.environment["MAA_TEST_OTA_ROOT"] {
+    let overlayAlias = temp.appendingPathComponent("real-reviewed-overlay-alias")
+    try FileManager.default.createSymbolicLink(at: overlayAlias, withDestinationURL: URL(fileURLWithPath: ota))
+    expect(BlackflowStartSupport.permitsOverlay(at: overlayAlias), "Reviewed overlay survives symlink alias")
+}
 print("PASS \(checks) BlackFlow start checks")

@@ -67,6 +67,7 @@ enum BlackflowStartSupport {
     }
 
     static func fingerprintResources(at resource: URL) throws -> String? {
+        let resource = resource.resolvingSymlinksInPath().standardizedFileURL
         var files: [URL] = []
         for path in resourcePaths {
             let directory = resource.appendingPathComponent(path)
@@ -77,12 +78,15 @@ enum BlackflowStartSupport {
                 return nil
             }
             for case let file as URL in enumerator {
-                if try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true { files.append(file) }
+                if try file.resourceValues(forKeys: [.isRegularFileKey]).isRegularFile == true {
+                    files.append(file.resolvingSymlinksInPath().standardizedFileURL)
+                }
             }
         }
         guard !files.isEmpty else { return nil }
         var hash = SHA256()
         for file in files.sorted(by: { $0.path < $1.path }) {
+            guard file.path.hasPrefix(resource.path + "/") else { return nil }
             let relativePath = String(file.path.dropFirst(resource.path.count + 1))
             hash.update(data: Data(relativePath.utf8))
             hash.update(data: Data([0]))
@@ -97,6 +101,7 @@ enum BlackflowStartSupport {
     static let compatibleOTATaskFingerprint = "e0180578c98f7666aeeeb033d2ac2ec657589fee5258025af904859f1d8d7b9a"
 
     static func permitsOverlay(at root: URL) -> Bool {
+        let root = root.resolvingSymlinksInPath().standardizedFileURL
         if matchesResources(at: root) { return true }
         let resource = root.appendingPathComponent("resource")
         guard
