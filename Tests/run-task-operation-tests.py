@@ -29,7 +29,7 @@ def declaration(source, pattern):
 parts = [declaration(model, r'^    enum Status:')]
 parts += [re.search(r'^    @Published private\(set\) var status = .*$', model, re.M)[0]]
 parts += [re.search(r'^    (?:@Published private\(set\) |private )var isStartStopInFlight = .*$', model, re.M)[0]]
-for pattern in [r'^    private var taskCompletionGeneration = .*$', r'^    enum TaskStartResult:']:
+for pattern in [r'^    private var dailyCompletionTask: .*$', r'^    private var dailyFinishAttemptedRunID: .*$', r'^    private var taskCompletionGeneration = .*$', r'^    enum TaskStartResult:']:
     if re.search(pattern, model, re.M):
         parts.append(declaration(model, pattern) if 'enum' in pattern else re.search(pattern, model, re.M)[0])
 for name in ['canStartTasks', 'beginTaskOperation', 'startCoreTasks', 'startDailyTasks', 'reconcileDailyRunStatus', 'discardPreparedDailyTasks', 'finishDailyRunIfStopped']:
