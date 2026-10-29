@@ -10,6 +10,7 @@ struct HotkeySettingsView: View {
     @State private var recordingError: String?
     @State private var layoutRevision = 0
     @State private var waitingForRelease = false
+    @State private var releaseKeyCode: UInt16?
 
     init(service: GlobalHotkeyService) {
         self.service = service
@@ -27,10 +28,12 @@ struct HotkeySettingsView: View {
                 Text("按下组合键，Esc 取消").foregroundStyle(.secondary)
                 HotkeyCapture { event in
                     if event.type == .keyUp {
-                        if waitingForRelease { finishRecording() }
+                        if waitingForRelease, event.keyCode == releaseKeyCode { finishRecording() }
                         return
                     }
+                    guard !waitingForRelease else { return }
                     if event.keyCode == 53 {
+                        releaseKeyCode = event.keyCode
                         waitingForRelease = true
                         return
                     }
@@ -43,6 +46,7 @@ struct HotkeySettingsView: View {
                     recordingError = nil
                     // Resume registration only after the primary key is released;
                     // re-registering a saved chord while held could fire a task.
+                    releaseKeyCode = event.keyCode
                     waitingForRelease = true
                 }.frame(height: 32)
             }
@@ -84,6 +88,7 @@ struct HotkeySettingsView: View {
     private func finishRecording() {
         recording = nil
         waitingForRelease = false
+        releaseKeyCode = nil
         if service.isRecording { service.endRecording() }
     }
 }
@@ -105,6 +110,28 @@ private struct HotkeyCapture: NSViewRepresentable {
 
     final class CaptureView: NSView {
         var captured: ((NSEvent) -> Void)?
+        private var keyUpMonitor: Any?
+
+        override func viewDidMoveToWindow() {
+            super.viewDidMoveToWindow()
+            if let keyUpMonitor { NSEvent.removeMonitor(keyUpMonitor) }
+            keyUpMonitor = nil
+            guard window != nil else { return }
+            // Command key equivalents do not reliably deliver keyUp to NSView.
+            // This monitor sees only this app's events while this recorder owns focus.
+            keyUpMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyUp) { [weak self] event in
+                guard let self, self.window?.firstResponder === self else { return event }
+                self.captured?(event)
+                return nil
+            }
+        }
+
+        deinit {
+            MainActor.assumeIsolated {
+                if let keyUpMonitor { NSEvent.removeMonitor(keyUpMonitor) }
+            }
+        }
+
         override var acceptsFirstResponder: Bool { true }
         override func keyDown(with event: NSEvent) { if !event.isARepeat { captured?(event) } }
         override func keyUp(with event: NSEvent) { captured?(event) }

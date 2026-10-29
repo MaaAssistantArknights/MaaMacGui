@@ -13,7 +13,7 @@ final class GlobalHotkeyService: ObservableObject {
     private var references: [EventHotKeyRef] = []
     private var eventHandler: EventHandlerRef?
     private var held = Set<UInt32>()
-    private var dispatching = false
+    private var dispatching = Set<UInt32>()
     private var activeConfiguration: HotkeyConfiguration?
     private static let signature: OSType = 0x4D41414B
 
@@ -74,6 +74,7 @@ final class GlobalHotkeyService: ObservableObject {
     }
 
     func endRecording() {
+        guard isRecording else { return }
         isRecording = false
         if configuration.enabled { _ = register(configuration) }
     }
@@ -116,11 +117,11 @@ final class GlobalHotkeyService: ObservableObject {
     func handleHotkeyEvent(_ id: UInt32, pressed: Bool) {
         guard !isRecording, activeConfiguration != nil else { return }
         if !pressed { held.remove(id); return }
-        guard held.insert(id).inserted, !dispatching, let action = HotkeyCommand(rawValue: id), let command else { return }
-        dispatching = true
+        guard held.insert(id).inserted, !dispatching.contains(id), let action = HotkeyCommand(rawValue: id), let command else { return }
+        dispatching.insert(id)
         Task { @MainActor [weak self] in
             let accepted = await command(action)
-            self?.dispatching = false
+            self?.dispatching.remove(id)
             if accepted {
                 NotificationCenter.default.post(name: Notification.Name("MAAHotkeyCommandAccepted"), object: nil,
                                                 userInfo: ["command": action == .start ? "start" : "stop"])

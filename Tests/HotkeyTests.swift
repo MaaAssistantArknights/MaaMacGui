@@ -64,6 +64,22 @@ import Carbon
         check(child.terminationStatus == 0, "other app unregisters")
         check(service.save(HotkeyConfiguration(enabled: true, start: chordB)), "registration succeeds after owner exit")
         check(GlobalHotkeyService(defaults: defaults).configuration.start == chordB, "saved preference restored")
+        check(service.save(HotkeyConfiguration(enabled: true, start: chordA, stop: chordB)), "both commands registered")
+        var dispatched = [HotkeyCommand]()
+        service.command = { command in
+            dispatched.append(command)
+            if command == .start { try? await Task.sleep(for: .milliseconds(200)) }
+            return true
+        }
+        service.handleHotkeyEvent(1, pressed: true)
+        for _ in 0..<20 { await Task.yield() }
+        service.handleHotkeyEvent(2, pressed: true)
+        service.handleHotkeyEvent(2, pressed: true)
+        for _ in 0..<20 { await Task.yield() }
+        check(dispatched == [.start, .stop], "stop reaches coordinator while start awaits preparation; repeated stop suppressed")
+        service.handleHotkeyEvent(1, pressed: false)
+        service.handleHotkeyEvent(2, pressed: false)
+        try await Task.sleep(for: .milliseconds(250))
         service.beginRecording()
         check(service.isRecording, "recording state")
         let third = GlobalHotkeyService(defaults: UserDefaults(suiteName: suite + "Third")!)
