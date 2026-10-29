@@ -16,6 +16,7 @@ struct AwardConfiguration: MAATaskConfiguration {
     var orundum: Bool
     var mining: Bool
     var specialaccess: Bool
+    var signinevent: Bool
 
     var title: String {
         type.description
@@ -42,6 +43,9 @@ struct AwardConfiguration: MAATaskConfiguration {
         if specialaccess {
             awards.append(String(localized: "专享月卡"))
         }
+        if signinevent {
+            awards.append(String(localized: "签到活动"))
+        }
         return awards.joined(separator: " ")
     }
 
@@ -67,5 +71,6 @@ extension AwardConfiguration {
         self.orundum = try container.decodeIfPresent(Bool.self, forKey: .orundum) ?? false
         self.mining = try container.decodeIfPresent(Bool.self, forKey: .mining) ?? false
         self.specialaccess = try container.decodeIfPresent(Bool.self, forKey: .specialaccess) ?? false
+        self.signinevent = try container.decodeIfPresent(Bool.self, forKey: .signinevent) ?? false
     }
 }
