@@ -350,6 +350,27 @@ extension MAAViewModel {
         if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
     }
 
+    private func discardPreparedDailyTasks(for runID: UUID) async -> Bool {
+        guard dailyRunCoordinator.active?.id == runID else { return false }
+        do {
+            try await handle?.stop()
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            guard await handle?.running != true else { throw MAAError.taskAlreadyRunning }
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            return true
+        } catch {
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            logError(verbatim: "Daily preparation cleanup: \(error.localizedDescription)")
+            return false
+        }
+    }
+
     private func finishDailyRunIfStopped(allowInFlight: Bool = false) async {
         guard allowInFlight || !isStartStopInFlight else { return }
         guard let context = dailyRunCoordinator.active,
@@ -607,7 +628,8 @@ extension MAAViewModel {
                     try dailyRunCoordinator.transition(.running, for: runID)
                     status = .busy
                 } else {
-                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: true)
+                    let cleaned = await discardPreparedDailyTasks(for: runID)
+                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: cleaned)
                     dailyRunTasks = nil
                 }
                 throw error

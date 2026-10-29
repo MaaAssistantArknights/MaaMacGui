@@ -108,6 +108,11 @@ import Observation
             logs.append(.init(date: .now, content: content, color: .error))
         }
 
+        parent.objectWillChange.sink { [weak self] _ in
+            self?.withMutation(keyPath: \.canStartTasks) {}
+        }
+        .store(in: &cancellables)
+
         parent.$status.sink { [weak self] _ in
             self?.withMutation(keyPath: \.status) {}
             self?.withMutation(keyPath: \.canStartTasks) {}
