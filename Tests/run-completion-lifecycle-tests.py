@@ -19,9 +19,12 @@ def declaration(pattern):
     return source[match.start():end]
 
 members = '\n'.join(declaration(r'^    (?:private )?func ' + name + r'\b') for name in
-                    ['resetStatus', 'finishDailyRunIfStopped'])
+                    ['resetStatus', 'finishDailyRunIfStopped', 'startDailyTasks', 'stop'])
 header = '''import Foundation
 struct DailyTask {}
+enum MAAError: Error { case taskOperationInProgress }
+enum TaskStartResult: Equatable { case started, skipped, failed }
+enum ProbeError: Error { case startFailed }
 @MainActor final class Gate {
  var entered = false; var continuation: CheckedContinuation<Void, Never>?
  func wait() async { entered = true; await withCheckedContinuation { continuation = $0 } }
@@ -30,11 +33,14 @@ struct DailyTask {}
 @MainActor final class Core {
  var value = true; var gate: Gate?
  var running: Bool { get async { if let g = gate { gate = nil; await g.wait() }; return value } }
+ func stop() async {}
 }
 @MainActor final class LogStore {
+ enum DetailMode { case log }
  var screencapCost: Int?; var lastScreencapWarningLevel = 0
  var hasPrintedFPSHighTip = false; var taskStartTime: Date?
  var sanityReport: Int?; var fightReport: Int?; var stoneUsedTimes = 0; var recruitConfirmTimes = 0
+ func setDailyTasksDetailMode(_ mode: DetailMode) {}
 }
 @MainActor final class Probe {
  enum Status { case idle, pending, busy }
@@ -51,9 +57,24 @@ struct DailyTask {}
  var handle: Core? = Core()
  var canStartTasks: Bool { status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil }
  var dailyRunTasks: [DailyTask]?
+ var failGate: Gate?
+ var dailyTaskProfile = "S"
+ var tasks: [DailyTask] = []
  var finishes = 0
  var errors: [String] = []
  func logError(verbatim: String) { errors.append(verbatim) }
+ func logError(_ message: String) { errors.append(message) }
+ func logInfo(_ message: String) {}
+ func reconcileDailyRunStatus() {}
+ func beginTaskOperation(requiresIdle: Bool = true) async throws {}
+ func handleEarlyReturn(backTo: Status) { if status == .pending { status = backTo } }
+ func discardPreparedDailyTasks(for runID: UUID) async -> Bool { true }
+ func startTasks(snapshot: DailyRunSnapshot, runID: UUID) async throws {
+  status = .pending
+  defer { handleEarlyReturn(backTo: .idle) }
+  if let gate = failGate { failGate = nil; await gate.wait() }
+  throw ProbeError.startFailed
+ }
  func stopCompletion() async { await finishDailyRunIfStopped(allowInFlight: true) }
  func observeFinishes() {
   dailyRunCoordinator.didChange = { [weak self] in
@@ -144,7 +165,36 @@ main = '''
    && failure.dailyRunCoordinator.active == nil && failure.dailyRunCoordinator.lastTerminal?.id == failureID
    && failure.status == .idle && failure.canStartTasks,
    "journal failure must attempt once, drop ownership and keep runs startable")
-  print("Completion lifecycle: 10 production-path assertions passed")
+  let startDir = FileManager.default.temporaryDirectory.appendingPathComponent("maa-start-failure-journal-" + UUID().uuidString)
+  let startProbe = Probe(journalURL: startDir.appendingPathComponent("journal.json"))
+  startProbe.observeFinishes()
+  startProbe.status = .idle
+  startProbe.handle?.value = false
+  let startGate = Gate(); startProbe.failGate = startGate
+  let startTask = Task { await startProbe.startDailyTasks(origin: .hotkey) }
+  while !startGate.entered { await Task.yield() }
+  try FileManager.default.removeItem(at: startDir)
+  try Data("obstruction".utf8).write(to: startDir)
+  defer { try? FileManager.default.removeItem(at: startDir) }
+  startGate.release()
+  let startResult = await startTask.value
+  precondition(startResult == .failed && startProbe.dailyRunCoordinator.active == nil
+   && startProbe.canStartTasks && startProbe.finishes == 1 && startProbe.errors.count == 2,
+   "start failure with a broken journal must log, abandon and stay startable")
+  let stopDir = FileManager.default.temporaryDirectory.appendingPathComponent("maa-stop-journal-" + UUID().uuidString)
+  let stopProbe = Probe(journalURL: stopDir.appendingPathComponent("journal.json"))
+  stopProbe.observeFinishes()
+  let stopRun = try stopProbe.dailyRunCoordinator.begin(profileID: "T", origin: .manual)!
+  try stopProbe.dailyRunCoordinator.transition(.running, for: stopRun)
+  try FileManager.default.removeItem(at: stopDir)
+  try Data("obstruction".utf8).write(to: stopDir)
+  defer { try? FileManager.default.removeItem(at: stopDir) }
+  stopProbe.handle?.value = false
+  try await stopProbe.stop()
+  precondition(stopProbe.dailyRunCoordinator.active == nil && stopProbe.canStartTasks
+   && stopProbe.finishes == 1 && stopProbe.errors.count == 2,
+   "stop with a broken journal must still stop the core and release the run")
+  print("Completion lifecycle: 12 production-path assertions passed")
  }
 }
 '''

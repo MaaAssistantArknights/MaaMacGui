@@ -679,13 +679,27 @@ extension MAAViewModel {
                 await finishDailyRunIfStopped(allowInFlight: true)
                 return .started
             } catch {
+                let runOutcome: DailyRunOutcome = error is CancellationError ? .cancelled : .failed
                 if await handle?.running == true {
                     dailyRunOutcome = .failed
-                    try dailyRunCoordinator.transition(.running, for: runID)
+                    do {
+                        try dailyRunCoordinator.transition(.running, for: runID)
+                    } catch {
+                        // The journal is best-effort: keep following the actual
+                        // core state even when the write fails.
+                        logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                    }
                     status = .busy
                 } else {
                     let cleaned = await discardPreparedDailyTasks(for: runID)
-                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: cleaned)
+                    // A failed journal write must not strand the run in
+                    // .preparing/.connecting where no terminal path admits it.
+                    do {
+                        try dailyRunCoordinator.finish(runID, outcome: runOutcome, cleanupSucceeded: cleaned)
+                    } catch {
+                        logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                        dailyRunCoordinator.abandon(runID, outcome: runOutcome)
+                    }
                     dailyRunTasks = nil
                 }
                 throw error

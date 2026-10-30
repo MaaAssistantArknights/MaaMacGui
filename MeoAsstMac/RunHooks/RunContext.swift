@@ -57,8 +57,11 @@ final class DailyRunCoordinator {
     func transition(_ phase: DailyRunPhase, for id: UUID) throws {
         guard var context = active, context.id == id, context.status != .postHook else { return }
         context.status = phase
-        try persist(context)
+        // Advance in-memory state before the journal write: a failing write
+        // must not strand the run in a phase no terminal path admits. The
+        // stale on-disk record is marked interrupted at the next launch.
         active = context
+        try persist(context)
         didChange?()
     }
 
