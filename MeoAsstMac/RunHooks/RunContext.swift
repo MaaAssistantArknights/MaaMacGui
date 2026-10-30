@@ -77,6 +77,21 @@ final class DailyRunCoordinator {
         return true
     }
 
+    /// Forced in-memory terminal state when the journal cannot be written.
+    /// The journal is a best-effort audit record; a broken disk must not wedge
+    /// the run lifecycle. The stale on-disk record is marked interrupted at
+    /// the next launch.
+    func abandon(_ id: UUID, outcome: DailyRunOutcome) {
+        guard var context = active, context.id == id else { return }
+        context.status = .finished
+        context.finishedAt = .now
+        context.outcome = outcome
+        context.cleanupSucceeded = nil
+        lastTerminal = context
+        active = nil
+        didChange?()
+    }
+
     private func persist(_ context: RunContext) throws {
         guard let journalURL else { return }
         try FileManager.default.createDirectory(at: journalURL.deletingLastPathComponent(), withIntermediateDirectories: true)

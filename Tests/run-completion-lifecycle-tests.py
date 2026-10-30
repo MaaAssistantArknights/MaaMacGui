@@ -129,6 +129,7 @@ main = '''
   let dir = FileManager.default.temporaryDirectory.appendingPathComponent("maa-failing-journal-" + UUID().uuidString)
   let journal = dir.appendingPathComponent("journal.json")
   let failure = Probe(journalURL: journal)
+  failure.observeFinishes()
   let failureID = try failure.dailyRunCoordinator.begin(profileID: "E", origin: .schedule)!
   try failure.dailyRunCoordinator.transition(.running, for: failureID)
   try FileManager.default.removeItem(at: dir)
@@ -139,7 +140,10 @@ main = '''
   try await Task.sleep(for: .milliseconds(800))
   failure.resetStatus() // Duplicate callbacks must not retry a failed journal.
   try await Task.sleep(for: .milliseconds(350))
-  precondition(failure.errors.count == 1 && failure.dailyRunCoordinator.active?.id == failureID && failure.status == .pending, "journal failure must stop retries and preserve ownership")
+  precondition(failure.errors.count == 1 && failure.finishes == 1
+   && failure.dailyRunCoordinator.active == nil && failure.dailyRunCoordinator.lastTerminal?.id == failureID
+   && failure.status == .idle && failure.canStartTasks,
+   "journal failure must attempt once, drop ownership and keep runs startable")
   print("Completion lifecycle: 10 production-path assertions passed")
  }
 }

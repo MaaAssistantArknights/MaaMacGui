@@ -333,7 +333,13 @@ extension MAAViewModel {
 
         dailyRunOutcome = .cancelled
         if let id = dailyRunCoordinator.active?.id {
-            try dailyRunCoordinator.transition(.stopping, for: id)
+            // The journal is best-effort audit state: a failing write must not
+            // keep the core running when the user asked to stop.
+            do {
+                try dailyRunCoordinator.transition(.stopping, for: id)
+            } catch {
+                logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+            }
         }
         try await handle?.stop()
         status = .idle
@@ -416,7 +422,8 @@ extension MAAViewModel {
               dailyRunCoordinator.active?.id == context.id,
               let currentStatus = dailyRunCoordinator.active?.status,
               [.running, .stopping].contains(currentStatus) else { return false }
-        // Failed journal writes keep ownership and must not spin on duplicate callbacks.
+        // Attempt each run's finish at most once; duplicate callbacks must not
+        // spin on a broken journal.
         guard dailyFinishAttemptedRunID != context.id else { return true }
         dailyFinishAttemptedRunID = context.id
         do {
@@ -424,8 +431,12 @@ extension MAAViewModel {
             dailyRunTasks = nil
             status = .idle
         } catch {
-            status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+            // A failed journal write must not wedge the app: drop ownership in
+            // memory so another run can still start and stop.
+            dailyRunCoordinator.abandon(context.id, outcome: dailyRunOutcome)
+            dailyRunTasks = nil
+            status = .idle
         }
         return true
     }
