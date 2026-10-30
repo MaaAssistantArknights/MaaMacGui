@@ -277,8 +277,8 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
-		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/RunContext.swift; sourceTree = SOURCE_ROOT; };
-		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
+		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunContext.swift; sourceTree = "<group>"; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRunProfilePatch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -306,8 +306,6 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
-				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
 				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
@@ -316,6 +314,15 @@
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B7743B36F2704668B4E0A0EB /* RunHooks */ = {
+			isa = PBXGroup;
+			children = (
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
+				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+			);
+			path = RunHooks;
 			sourceTree = "<group>";
 		};
 		83264A2729EBEB9B0074E33A /* Task Configurations */ = {
@@ -445,6 +452,7 @@
 			children = (
 				833786CE28F188D800D39D6F /* MeoAsstMacApp.swift */,
 				8329858F29EDAC91009F7ED5 /* Core */,
+				B7743B36F2704668B4E0A0EB /* RunHooks */,
 				8341195129EC258D00044F45 /* Model */,
 				8329858E29EDAC7B009F7ED5 /* Views */,
 				832985B729EF98D0009F7ED5 /* Navigation */,
