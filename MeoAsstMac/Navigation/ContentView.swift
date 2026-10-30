@@ -31,7 +31,9 @@ struct ContentView: View {
                 try await viewModel.initialize()
                 // Core initialization/errors own the first window. Announcements load afterward without blocking it.
                 await announcements.refresh()
-                if announcements.automaticallyShow && announcements.hasUnread && viewModel.status == .idle {
+                if !Task.isCancelled, announcements.automaticallyShow, announcements.hasUnread,
+                    viewModel.status == .idle
+                {
                     openWindow(id: "community-announcements")
                 }
             } catch {

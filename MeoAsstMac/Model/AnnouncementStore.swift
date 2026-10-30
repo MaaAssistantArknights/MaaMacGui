@@ -32,7 +32,9 @@ import Foundation
             guard FileManager.default.fileExists(atPath: path.path) else { return }
             let size = try path.resourceValues(forKeys: [.fileSizeKey]).fileSize ?? Int.max
             guard size <= AnnouncementService.maximumBytes * 6 + 16 * 1024 else { throw AnnouncementError.invalidCache }
-            let entry = try JSONDecoder().decode(CachedAnnouncement.self, from: Data(contentsOf: path))
+            // Bounded by the size guard above (~1.5MB worst case); mappedIfSafe avoids copying it on the main thread.
+            let cached = try Data(contentsOf: path, options: .mappedIfSafe)
+            let entry = try JSONDecoder().decode(CachedAnnouncement.self, from: cached)
             try entry.validate(for: source)
             announcement = entry
         } catch {
@@ -76,6 +78,8 @@ import Foundation
             retryAfter = nil
             error = nil
         } catch is CancellationError {
+        } catch let error as URLError where error.code == .cancelled {
+            // URLSession async calls throw URLError.cancelled, not CancellationError, when the task ends.
         } catch {
             retryAfter = now.addingTimeInterval(5 * 60)
             self.error = String(localized: "Announcement.RefreshFailed")

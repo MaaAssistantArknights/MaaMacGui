@@ -35,15 +35,21 @@ actor Fetcher {
     var calls = 0
     var content: String? = "# First\nAnnouncement"
     var failure = false
+    var cancelled = false
     var delayed = false
-    func configure(content: String? = "# First\nAnnouncement", failure: Bool = false, delayed: Bool = false) {
+    func configure(
+        content: String? = "# First\nAnnouncement", failure: Bool = false, cancelled: Bool = false,
+        delayed: Bool = false
+    ) {
         self.content = content
         self.failure = failure
+        self.cancelled = cancelled
         self.delayed = delayed
     }
     func fetch(_ source: AnnouncementSource, _ etag: String?) async throws -> AnnouncementResponse {
         calls += 1
         if delayed { try await Task.sleep(for: .milliseconds(50)) }
+        if cancelled { throw URLError(.cancelled) }
         if failure { throw URLError(.notConnectedToInternet) }
         return AnnouncementResponse(content: content, etag: "fixture-etag")
     }
@@ -215,6 +221,17 @@ actor Fetcher {
             fetch: { _, _ in AnnouncementResponse(content: "Valid", etag: nil) })
         await badStorage.refresh(now: now)
         check(badStorage.announcement == nil && badStorage.error != nil, "failed atomic save no false cache success")
+        let cancelledFetcher = Fetcher()
+        await cancelledFetcher.configure(cancelled: true)
+        let cancelledStore = AnnouncementStore(
+            source: source, cacheDirectory: root.appendingPathComponent("cancelled"), defaults: defaults,
+            fetch: { try await cancelledFetcher.fetch($0, $1) })
+        await cancelledStore.refresh(now: now)
+        check(
+            cancelledStore.announcement == nil && cancelledStore.error == nil,
+            "cancelled refresh is not a failure")
+        await cancelledStore.refresh(now: now)
+        check(await cancelledFetcher.calls == 2, "cancelled refresh sets no backoff")
         print("Passed \(checks) production announcement assertions")
     }
 }
