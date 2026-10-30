@@ -1,6 +1,7 @@
 import AppKit
 import Carbon
 import Combine
+import os
 
 /// Exclusive registration needs no global keyboard monitor or Input Monitoring permission.
 @MainActor
@@ -16,13 +17,19 @@ final class GlobalHotkeyService: ObservableObject {
     private var dispatching = Set<UInt32>()
     private var activeConfiguration: HotkeyConfiguration?
     private static let signature: OSType = 0x4D41414B
+    private static let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "GlobalHotkey")
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         configuration = defaults.data(forKey: "MAAGlobalHotkeys")
             .flatMap { try? JSONDecoder().decode(HotkeyConfiguration.self, from: $0) } ?? HotkeyConfiguration()
         installHandler()
-        if configuration.enabled { _ = register(configuration) }
+        if configuration.enabled, !register(configuration) {
+            // A stored configuration may no longer register, e.g. one written
+            // by an older build carrying a chord the system-reserved blacklist
+            // now rejects. Surface that instead of silently disabling all keys.
+            Self.logger.warning("Stored hotkey configuration failed to register: \(self.errorMessage ?? "unknown error", privacy: .public)")
+        }
     }
 
     deinit { MainActor.assumeIsolated { shutdown() } }
