@@ -67,6 +67,14 @@ struct HotkeySettingsView: View {
             layoutRevision += 1
         }
         .onDisappear { if service.isRecording { service.endRecording() } }
+        // A lost keyUp (focus moved away or app deactivated while the key was
+        // held) must not wedge recording: recover shortly after.
+        .task(id: waitingForRelease) {
+            guard waitingForRelease else { return }
+            try? await Task.sleep(for: .seconds(2))
+            guard waitingForRelease else { return }
+            finishRecording()
+        }
     }
 
     private func row(_ command: HotkeyCommand, title: LocalizedStringKey) -> some View {
