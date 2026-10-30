@@ -30,10 +30,12 @@ struct TaskTimerView: View {
             .alert("重置定时记录",
                    isPresented: $showingLedgerResetConfirmation,
                    actions: {
+                       // 取消置首：macOS alert 首按钮即 Return 默认键，
+                       // 默认动作必须是最安全的那个（Esc 仍归 .cancel）。
+                       Button("取消", role: .cancel) {}
                        Button("删除并重建", role: .destructive) {
                            timerManager.resetScheduleLedger()
                        }
-                       Button("取消", role: .cancel) {}
                    }, message: {
                        Text("将删除无法读取的定时记录文件并重建空记录；刚触发过且仍在触发窗口内的定时可能再执行一次。")
                    })
