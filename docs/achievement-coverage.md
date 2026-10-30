@@ -1,8 +1,8 @@
 # 本地成就覆盖
 
-WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4dcf` 的 `AchievementTrackerHelper.cs` `_allAchievements`，共 111 项。本 PR 提供 45 项引擎定义，其中 41 项当前接入事件。表中“已实现”指生产适配已接入且有本地逻辑测试；不表示真实游戏或高阈值累计已验收。其余逐项保留具体接入依赖；不声明 Windows 全量对齐。
+WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4dcf` 的 `AchievementTrackerHelper.cs` `_allAchievements`，共 111 项。本 PR 提供 45 项引擎定义，其中 39 项当前接入事件；PeekScreen 与 HotkeyMagician 已订阅跨 PR 通知，依赖 #174/#177 合并后生效。表中“已实现”指生产适配已接入且有本地逻辑测试；不表示真实游戏或高阈值累计已验收。其余逐项保留具体接入依赖；不声明 Windows 全量对齐。
 
-事件计数：StageDrops `cur_times` 是本批成功关数，缺失按 WPF 算 1；不同时累计 FightTimes。药按 UseMedicine.count；临期单批按 is_expiring=true 的 count 最大值。公招刷新按每次成功回调计 1，忽略累计显示 count。非六星累计/连续进度按 RecruitResult 计，六星将连续进度重置为 1，严格保留该固定 WPF 版本现行规则。UnlockClues 后可能进入识别错误分支，SendClues 只表示打开传递页面；交流与赠送进度暂停新增，等待可验证的成功及数量事件。已保存的旧进度不自动清除。GamePass 按 ProcessTask 开始事件；难度只接受成功结算的实际 difficulty。存款取 deposit 最大值。每个 native 接收生成新 envelope；相同 envelope 重分发可去重，相同内容的两个真实接收均计。没有 Core event ID 的消息不能保证跨崩溃恰好一次。
+事件计数：StageDrops `cur_times` 是本批成功关数，缺失按 WPF 算 1；不同时累计 FightTimes。药按 UseMedicine.count；临期单批按 is_expiring=true 的 count 最大值。公招刷新按每次成功回调计 1，忽略累计显示 count。非六星累计/连续进度按 RecruitResult 计，六星将连续进度重置为 1，严格保留该固定 WPF 版本现行规则；已解锁后该重置不再回退展示值。UnlockClues 后可能进入识别错误分支，SendClues 只表示打开传递页面；交流与赠送进度暂停新增，等待可验证的成功及数量事件。已保存的旧进度不自动清除。GamePass 按 ProcessTask 开始事件；难度只接受成功结算的实际 difficulty。存款取 deposit 最大值。每个 native 接收生成新 envelope；相同 envelope 重分发可去重，相同内容的两个真实接收均计。没有 Core event ID 的消息不能保证跨崩溃恰好一次。
 
 同一安装跨配置共享；不代表游戏账号，不同步，不扫描旧日志。最近 2048 个 envelope ID 与最近运行累计持久保存；解锁 ID 本身永久幂等。旧 schema 1 缺定义保留，未知未来 schema 只读拒绝覆盖；损坏数据先留备份再恢复。隐藏成就解锁前不展示标题或条件。只在原子保存成功后提示。
 
@@ -46,11 +46,11 @@ WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4
 | `Pioneer3` | 依赖未交付 | 需 Mac 可确认的“使用未发布版本的 MAA（隐藏）”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:638`，当前阶段未接该 GUI/历史事件 |
 | `MosquitoLeg` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
 | `RealGacha` | 依赖未交付 | 需 Mac 可确认的“真正的抽卡”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:641`，当前阶段未接该 GUI/历史事件 |
-| `PeekScreen` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
+| `PeekScreen` | 依赖未交付 | AchievementStore 已订阅 MAAPreviewFrameDisplayed 通知；依赖 #174 合并后生效 |
 | `CustomizationMaster` | 平台不适用 | 依赖 WPF 专属窗口、主题、通知、代理或彩蛋交互；Mac 无等价产品契约 |
 | `LogSupervisor` | 依赖未交付 | 需 LogView 持续可见时长事件，不用点击查看替代 |
 | `TaskChainKing` | 依赖未交付 | 需 Mac 可确认的“任务链王”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:646`，当前阶段未接该 GUI/历史事件 |
-| `HotkeyMagician` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
+| `HotkeyMagician` | 依赖未交付 | AchievementStore 已订阅 MAAHotkeyCommandAccepted 通知；依赖 #177 合并后生效 |
 | `WarehouseMiser` | 依赖未交付 | 需完整仓库成功与范围适配 C7，当前基础仓库 UI 不建立可信完整快照 |
 | `HrSpecialist` | 依赖未交付 | 需 Mac 可确认的“人事部专员”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:650`，当前阶段未接该 GUI/历史事件 |
 | `HrSeniorSpecialist` | 依赖未交付 | 需 Mac 可确认的“人事部高级专员”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:651`，当前阶段未接该 GUI/历史事件 |
