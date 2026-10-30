@@ -800,8 +800,10 @@ extension MAAViewModel {
             let startup = StartupConfiguration(client_type: clientChannel, start_game_enabled: false, account_name: "")
             try await runRecoveryTask(handle: handle, runID: runID, type: .StartUp,
                                       params: startup.params.jsonString(), chain: "StartUp", requiresHome: false, expires: expires, isCurrent: isCurrent)
-            // Confirm the actual home screen separately; chain completion alone is not proof.
-            let verify = try ["task_names": ["Home"]].jsonString()
+            // StartUp intentionally stops at ReturnButton after a battle. Use Core's
+            // quick-switch recognition to navigate when available, then require a
+            // matched Home callback; an unknown screen fails closed.
+            let verify = try ["task_names": ["Home", "Home@QuickSwitch@ToHome@Entry", "Home@QuickSwitch@ToHome@Open"]].jsonString()
             try await runRecoveryTask(handle: handle, runID: runID, type: .Custom,
                                       params: verify, chain: "Custom", requiresHome: true, expires: expires, isCurrent: isCurrent)
         } catch {

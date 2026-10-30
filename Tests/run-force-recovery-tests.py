@@ -28,10 +28,12 @@ struct StartupConfiguration { var client_type: Channel; var start_game_enabled: 
  var isRunning = false; var stopFails = false; var stopped = 0
  var stopDelay: Duration?
  var onStart: (() -> Void)?; var appendCount: Int32 = 0; var startCount = 0
+ var lastParams = ""
  var holdAppend = false; var appendGate: CheckedContinuation<Void,Never>?
  var running: Bool { get async { isRunning } }
  func appendTask(type: MAATaskType, params: String) async throws -> Int32 {
   appendCount += 1
+  lastParams = params
   if holdAppend { await withCheckedContinuation { appendGate = $0 } }
   if type == .Custom { precondition(params.contains("Home") && !params.contains("StartUpBegin")) }
   return appendCount
@@ -70,6 +72,27 @@ main = '''
   }
   try await ok.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
   precondition(ok.handle != nil && ok.forceRecovery == nil && core.stopped == 0)
+  // Replay the captured stage-page outcome: StartUp ends there, Home-only fails,
+  // and the resource quick-switch path reaches a separately recognized Home.
+  let stage = Probe(); let stageCore = stage.handle!; stage.dailyRunCoordinator.active = .init(id:run)
+  stageCore.onStart = { [weak stage, weak stageCore] in
+   guard let stage, let stageCore, let state = stage.forceRecovery else { return }
+   stage.forceRecovery?.chainStart(state.taskID)
+   var success = true
+   if state.requiresHome {
+    let names = (try? JSONSerialization.jsonObject(with: Data(stageCore.lastParams.utf8)) as? [String:[String]])?["task_names"] ?? []
+    success = names.contains("Home@QuickSwitch@ToHome@Open") && names.contains("Home@QuickSwitch@ToHome@Entry")
+    if success {
+     stage.forceRecovery?.subtask(chain:state.chain,taskID:state.taskID,name:"Open",algorithm:"MatchTemplate")
+     stage.forceRecovery?.subtask(chain:state.chain,taskID:state.taskID,name:"Entry",algorithm:"MatchTemplate")
+     stage.forceRecovery?.subtask(chain:state.chain,taskID:state.taskID,name:"Home",algorithm:"MatchTemplate")
+    }
+   }
+   stage.forceRecovery?.chainFinish(state.taskID,success:success)
+   stage.forceRecovery?.allFinished([state.taskID]); stageCore.isRunning = false
+  }
+  try await stage.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
+  precondition(stage.handle != nil && stageCore.stopped == 0, "stage page must navigate and verify home")
   let notHome = Probe(); let bad = notHome.handle!; notHome.dailyRunCoordinator.active = .init(id:run)
   bad.onStart = { [weak notHome] in
    guard let state = notHome?.forceRecovery else { return }
