@@ -332,6 +332,13 @@ extension MAAViewModel {
         }
         if isStartStopInFlight {
             guard dailyStartInFlight else {
+                // 已知权衡：工具类入口（startCopilot/recognize* 等）只经
+                // beginTaskOperation 占用、不置 dailyStartInFlight，其异步连
+                // 接窗口内 stop() 仍会落到此处抛 taskOperationInProgress。
+                // 这属于 #161 串行化设计的既有语义（启动/停止互斥准入），
+                // 占用窗口以核心连接超时为界（有界等待，无数据风险）；把上
+                // 方的启动取消请求位推广到工具入口随 #161 一并处理，不在此
+                // 处重构。
                 logError("当前正在启动或停止任务，请稍后重试。")
                 throw MAAError.taskOperationInProgress
             }
