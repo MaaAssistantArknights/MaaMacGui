@@ -486,7 +486,9 @@ extension MAAViewModel {
             + " exit=\(result.exitCode) timeout=\(result.timedOut) cancelled=\(result.cancelled)")
         if !result.stdout.isEmpty { logTrace(verbatim: result.stdout) }
         if !result.stderr.isEmpty { logWarn(verbatim: result.stderr) }
-        if result.stdoutTruncated || result.stderrTruncated { logWarn("脚本输出已截断（每个输出流最多 32 KiB）") }
+        if result.stdoutTruncated || result.stderrTruncated {
+            logWarn("脚本输出未完整读取（每个输出流最多保留 32 KiB；若有后台进程仍持有输出管道，将在宽限后停止读取）")
+        }
         return result
     }
 

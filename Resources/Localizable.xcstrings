@@ -529,24 +529,46 @@
         }
       }
     },
-    "脚本输出已截断（每个输出流最多 32 KiB）" : {
+    "脚本以 /bin/zsh -f 运行，不加载 ~/.zshrc 等用户 shell 配置；PATH 固定为 /usr/bin:/bin:/usr/sbin:/sbin，Homebrew 等第三方工具请使用绝对路径。" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "脚本输出已截断（每个输出流最多 32 KiB）"
+            "value" : "脚本以 /bin/zsh -f 运行，不加载 ~/.zshrc 等用户 shell 配置；PATH 固定为 /usr/bin:/bin:/usr/sbin:/sbin，Homebrew 等第三方工具请使用绝对路径。"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Script output truncated (32 KiB per stream)"
+            "value" : "Scripts run via /bin/zsh -f, so user shell configuration such as ~/.zshrc is not loaded; PATH is fixed to /usr/bin:/bin:/usr/sbin:/sbin — use absolute paths for Homebrew and other third-party tools."
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크립트 출력이 잘렸습니다(출력 스트림당 최대 32 KiB)"
+            "value" : "스크립트는 /bin/zsh -f로 실행되므로 ~/.zshrc 같은 사용자 셸 설정을 불러오지 않습니다. PATH는 /usr/bin:/bin:/usr/sbin:/sbin으로 고정되며, Homebrew 등 외부 도구는 절대 경로를 사용하세요."
+          }
+        }
+      }
+    },
+    "脚本输出未完整读取（每个输出流最多保留 32 KiB；若有后台进程仍持有输出管道，将在宽限后停止读取）" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脚本输出未完整读取（每个输出流最多保留 32 KiB；若有后台进程仍持有输出管道，将在宽限后停止读取）"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Script output not fully captured (32 KiB per stream; reading also stops after a grace period if a background process still holds the pipe)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "스크립트 출력을 완전히 읽지 못했습니다(출력 스트림당 최대 32 KiB 보관. 백그라운드 프로세스가 파이프를 계속 잡고 있으면 일정 시간 후 읽기를 중단합니다)"
           }
         }
       }

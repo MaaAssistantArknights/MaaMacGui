@@ -20,6 +20,8 @@ struct HookSettingsView: View {
             }
             Text("工作目录：应用支持目录中的 RunHooks。每行一个参数，原样传递；环境提供 MAA_RUN_ID、MAA_PROFILE_ID、MAA_RUN_ORIGIN、MAA_RUN_RESULT 和 MAA_ADB_PATH。")
                 .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
+            Text("脚本以 /bin/zsh -f 运行，不加载 ~/.zshrc 等用户 shell 配置；PATH 固定为 /usr/bin:/bin:/usr/sbin:/sbin，Homebrew 等第三方工具请使用绝对路径。")
+                .font(.caption).foregroundStyle(.secondary).textSelection(.enabled)
             if let previous = viewModel.dailyRunCoordinator.lastTerminal,
                previous.outcome == .interrupted || previous.cleanupSucceeded == false,
                previous.cleanupSucceeded != true {

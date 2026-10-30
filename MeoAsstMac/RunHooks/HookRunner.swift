@@ -74,6 +74,15 @@ private final class HookProcess: @unchecked Sendable {
 /// Drains both streams concurrently, retaining at most 32 KiB of each.
 struct HookRunner {
     static let outputLimit = 32 * 1024
+    /// How long pipe EOF is still awaited after the leader was reaped. A
+    /// descendant that escaped the process group via setsid survives every
+    /// kill(-pid, ...) and can hold the pipes open forever, so draining must
+    /// stay bounded: after this grace the partial output is kept and reading
+    /// is abandoned (the foreground command has already finished).
+    static let drainGrace: TimeInterval = 5
+    /// Longest single poll(2) wait inside a drain; tightening the read deadline
+    /// takes effect within one slice.
+    static let pollSliceMs = 250
 
     func run(command: HookCommand, context: RunContext, outcome: DailyRunOutcome?, adbPath: String,
              workingDirectory: URL, timeout: TimeInterval = 60) async throws -> HookResult {
@@ -138,7 +147,10 @@ struct HookRunner {
         control.install(child)
         let expiry = DispatchWorkItem { control.cancel(timeout: true) }
         DispatchQueue.global().asyncAfter(deadline: .now() + timeout, execute: expiry)
-        let stdout = StreamDrain(fd: out[0]), stderr = StreamDrain(fd: err[0])
+        // Absolute backstop: even if the reap path below never tightens it, both
+        // drains stop once the timeout, TERM grace and drain grace have elapsed.
+        let backstop = DispatchTime.now() + timeout + Self.drainGrace + 2
+        let stdout = StreamDrain(fd: out[0], deadline: backstop), stderr = StreamDrain(fd: err[0], deadline: backstop)
         let drains = DispatchGroup()
         for stream in [stdout, stderr] {
             drains.enter()
@@ -151,6 +163,12 @@ struct HookRunner {
         let flags = control.finishGroup(ownsUnreapedChild: waited == 0)
         var status: Int32 = 0
         while waitpid(child, &status, 0) == -1 && errno == EINTR {}
+        // The leader is reaped, so the foreground command has finished. A
+        // setsid descendant escapes every group signal above while keeping the
+        // pipe write ends open; give EOF a short grace, then abandon the drain.
+        let pipeGrace = DispatchTime.now() + Self.drainGrace
+        stdout.stopReadingNoLaterThan(pipeGrace)
+        stderr.stopReadingNoLaterThan(pipeGrace)
         drains.wait()
         let exitCode = status & 0x7f == 0 ? (status >> 8) & 0xff : 128 + (status & 0x7f)
         return HookResult(exitCode: exitCode, stdout: String(decoding: stdout.data, as: UTF8.self),
@@ -159,21 +177,71 @@ struct HookRunner {
     }
 }
 
+/// Reads one pipe until EOF or until an absolute deadline passes, retaining at
+/// most 32 KiB. poll() replaces a plain blocking read so a descendant holding
+/// the write end open forever cannot pin the reader thread as well.
 private final class StreamDrain: @unchecked Sendable {
     let fd: Int32
-    var data = Data()
-    var truncated = false
-    init(fd: Int32) { self.fd = fd }
+    private let lock = NSLock()
+    private var store = Data()
+    private var overLimit = false
+    private var abandoned = false
+    private var deadline: DispatchTime
+
+    init(fd: Int32, deadline: DispatchTime) {
+        self.fd = fd
+        self.deadline = deadline
+    }
+
+    /// Only ever tightens the read deadline, never extends it.
+    func stopReadingNoLaterThan(_ limit: DispatchTime) {
+        lock.lock()
+        if limit.uptimeNanoseconds < deadline.uptimeNanoseconds { deadline = limit }
+        lock.unlock()
+    }
+
+    var data: Data {
+        lock.lock(); defer { lock.unlock() }
+        return store
+    }
+
+    /// Incomplete output: past the size limit, or reading was abandoned at the
+    /// deadline with a pipe holder still alive.
+    var truncated: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return overLimit || abandoned
+    }
+
     func readAll() {
         defer { close(fd) }
         var buffer = [UInt8](repeating: 0, count: 8192)
+        var watched = pollfd(fd: fd, events: Int16(POLLIN), revents: 0)
         while true {
+            lock.lock(); let stopAt = deadline; lock.unlock()
+            let now = DispatchTime.now()
+            if now.uptimeNanoseconds >= stopAt.uptimeNanoseconds {
+                lock.lock(); abandoned = true; lock.unlock()
+                return
+            }
+            // Sliced so a deadline tightened by the reaper (or any other thread)
+            // is noticed within one slice; a single full-window poll would sleep
+            // through it until the fd itself wakes up.
+            let millis = Int32(min((stopAt.uptimeNanoseconds - now.uptimeNanoseconds) / 1_000_000 + 1,
+                                   UInt64(HookRunner.pollSliceMs)))
+            let ready = poll(&watched, 1, millis)
+            if ready == -1 {
+                if errno == EINTR { continue }
+                return
+            }
+            if ready == 0 { continue }  // Timeout: the deadline is re-checked above.
             let count = Darwin.read(fd, &buffer, buffer.count)
             if count < 0 && errno == EINTR { continue }
-            guard count > 0 else { break }
-            let remaining = HookRunner.outputLimit - data.count
-            if count > remaining { truncated = true }
-            if remaining > 0 { data.append(contentsOf: buffer.prefix(min(count, remaining))) }
+            guard count > 0 else { return }
+            lock.lock()
+            let remaining = HookRunner.outputLimit - store.count
+            if count > remaining { overLimit = true }
+            if remaining > 0 { store.append(contentsOf: buffer.prefix(min(count, remaining))) }
+            lock.unlock()
         }
     }
 }

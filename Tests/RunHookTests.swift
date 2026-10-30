@@ -86,6 +86,19 @@ struct DailyTask {}
         let detached = try command("/bin/sleep 30 & print done")
         let detachedResult = try await runner.run(command: detached, context: context, outcome: nil, adbPath: "", workingDirectory: root)
         check(detachedResult.succeeded && detachedResult.stdout == "done\n", "orphan pipe holders reaped")
+        // start_new_session=True puts the sleeper outside the hook process group
+        // while it keeps inheriting both pipe write ends, so no group signal can
+        // reach it and EOF only arrives after the drain grace is abandoned.
+        let escape = try command("""
+        /usr/bin/python3 -c 'import subprocess; subprocess.Popen(["/bin/sleep", "30"], start_new_session=True)'
+        print leader-done
+        """)
+        let escapeStart = Date()
+        let escaped = try await runner.run(command: escape, context: context, outcome: nil, adbPath: "", workingDirectory: root)
+        let escapeElapsed = Date().timeIntervalSince(escapeStart)
+        check(escaped.succeeded && escaped.stdout == "leader-done\n", "setsid descendant cannot block completion")
+        check(escaped.stdoutTruncated && escaped.stderrTruncated, "abandoned drain reported as truncated")
+        check(escapeElapsed > 4 && escapeElapsed < 15, "pipe drain abandoned after grace")
         let suite = "MAAHookTests-\(UUID())"
         let defaults = UserDefaults(suiteName: suite)!
         defer { defaults.removePersistentDomain(forName: suite) }
