@@ -48,7 +48,7 @@ struct DailyTask {}
  init(journalURL: URL? = nil) { dailyRunCoordinator = DailyRunCoordinator(journalURL: journalURL) }
  var dailyRunOutcome = DailyRunOutcome.completed
  var isStartStopInFlight = false
- var forceRecoveryCleanupPending = false; var forceRecoveryJournalFailureRunID: UUID? = nil
+ var forceRecoveryCleanupPending = false
  var forceRecoveryInFlight = false; var forceRecovery: Int?; var messageTask: Task<Void, Never>?
  var handle: Core? = Core()
  var canStartTasks: Bool { status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil }
@@ -139,9 +139,9 @@ main = '''
   failure.handle?.value = false
   failure.resetStatus()
   try await Task.sleep(for: .milliseconds(800))
-  failure.resetStatus() // Duplicate callbacks must not retry a failed journal.
+  failure.resetStatus() // Duplicate callbacks cannot finish twice.
   try await Task.sleep(for: .milliseconds(350))
-  precondition(failure.errors.count == 1 && failure.dailyRunCoordinator.active?.id == failureID && failure.status == .pending, "journal failure must stop retries and preserve ownership")
+  precondition(failure.dailyRunCoordinator.journalDegraded && failure.dailyRunCoordinator.active == nil && failure.dailyRunCoordinator.lastTerminal?.id == failureID && failure.status == .idle && failure.canStartTasks, "journal failure must degrade to memory mode and still release ownership")
   print("Completion lifecycle: 10 production-path assertions passed")
  }
 }

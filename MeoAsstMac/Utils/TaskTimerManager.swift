@@ -41,6 +41,11 @@ import Foundation
             return !model.isStartStopInFlight && run.status != .postHook && run.status != .stopping
         },
         canForce: { $0.recoveryEligible() },
+        canCancelPending: { [weak self] in
+            // 启动越过最终取消检查点（即将 startCoreTasks）后，取消已无法
+            // 生效：保留 pending，由实际启动/终态结果如实落账。
+            self?.viewModel?.startupCancellationLocked != true
+        },
         stop: { [weak self] expectedID in
             guard let model = self?.viewModel else { throw CancellationError() }
             guard model.dailyRunCoordinator.active?.id == expectedID else { throw CancellationError() }

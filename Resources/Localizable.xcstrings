@@ -6115,6 +6115,28 @@
         }
       }
     },
+    "运行日志写入失败，本次运行仅在内存中跟踪，重启后将按中断恢复处理。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运行日志写入失败，本次运行仅在内存中跟踪，重启后将按中断恢复处理。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The run journal could not be written. This run is tracked in memory only and will be treated as interrupted after a restart."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 로그를 작성할 수 없어 이번 실행은 메모리에서만 추적되며, 다시 시작하면 중단된 것으로 처리됩니다."
+          }
+        }
+      }
+    },
     "运行窗口化的《明日方舟》时，请尝试双击标题栏调整窗口大小，切换并保持为较大的窗口。" : {
 
     },

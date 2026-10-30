@@ -51,21 +51,17 @@ import Foundation
   try! FileManager.default.removeItem(at:journalRoot)
   try! Data().write(to:journalRoot)
   journalGate.release()
-  check(await journalWork.value == .failed && journalModel.handle === journalCore && journalCore.isRunning && !journalModel.canStartTasks, "journal transition error retains live Core and blocks start")
+  check(await journalWork.value == .failed && journalModel.handle === journalCore && journalCore.isRunning && !journalModel.canStartTasks, "recovery cleanup failure retains live Core and blocks start")
   journalCore.isRunning = false
   try? await Task.sleep(for:.milliseconds(650))
-  check(journalModel.handle == nil && journalModel.dailyRunCoordinator.active != nil && !journalModel.canStartTasks && !journalModel.forceRecoveryInFlight, "journal error releases only idle Core while run stays blocked")
-  check(journalModel.errors.filter { $0.contains("Daily run journal:") }.count == 1, "journal failure logs once without a retry loop")
-  let oldJournalRun=journalModel.dailyRunCoordinator.active!.id
-  try! FileManager.default.removeItem(at:journalRoot)
-  try! FileManager.default.createDirectory(at:journalRoot, withIntermediateDirectories:true)
-  try! journalModel.dailyRunCoordinator.finish(oldJournalRun,outcome:.failed,cleanupSucceeded:true)
-  journalModel.resetStatus(); journalModel.handle = Core(); journalModel.recoveryGate = nil
-  let nextJournalCore=journalModel.handle!
-  check(await journalModel.startDailyTasks(recoverGame:true) == .failed && !journalModel.canStartTasks, "next run cleanup retains occupancy")
-  nextJournalCore.isRunning = false
+  check(journalModel.handle == nil && journalModel.dailyRunCoordinator.active == nil && journalModel.canStartTasks && !journalModel.forceRecoveryInFlight, "journal fault releases occupancy once idle")
+  check(journalModel.dailyRunCoordinator.journalDegraded, "journal fault degrades to memory mode")
+  journalModel.recoveryGate = nil; journalModel.failRecoveryCleanup = false; journalModel.handle = Core()
+  check(await journalModel.startDailyTasks() == .started && journalModel.warns.count == 1, "degraded journal does not block the next run and is surfaced")
+  journalModel.handle?.isRunning = false
+  journalModel.resetStatus()
   try? await Task.sleep(for:.milliseconds(350))
-  check(journalModel.dailyRunCoordinator.active == nil && journalModel.dailyRunCoordinator.lastTerminal?.outcome == .failed, "prior journal failure cannot poison next run")
+  check(journalModel.dailyRunCoordinator.active == nil && journalModel.dailyRunCoordinator.lastTerminal?.outcome == .completed, "degraded run finishes normally in memory")
   let playcover=MAAViewModel(); playcover.touchMode = .MacPlayTools
   playcover.tasks=[.init(task:.startup(.init(start_game_enabled:true)))]
   check(await playcover.startDailyTasks(recoverGame:true) == .failed && playcover.startGameCount == 0 && playcover.handle?.appendCount == 0, "forced PlayCover auto-launch must fail before any device action")

@@ -182,6 +182,25 @@ import Foundation
         try await Task.sleep(for: .milliseconds(60))
         check(replacementStops == 0, "replacement run never receives old stop request")
         check(reports.last?.0 == .cancelled && reports.last?.1 == "runChanged", "replacement cancels occurrence")
+        // r3 A-P2-2:启动越过最终取消检查点后,取消请求已无法阻止运行完成——
+        // 此刻不得把将要完成的运行记成“已取消”,应保留 pending 由实际结果收口。
+        var startStillCancellable = true
+        var lockedReports = [(ScheduleOccurrence.Result, String)]()
+        let lockedHandoff = ScheduleHandoff<Int>(occupancy: { .idle }, terminal: { nil },
+            canStop: { _ in true }, canCancelPending: { startStillCancellable }, stop: { _ in },
+            start: { _, _, _ in
+                startStillCancellable = false // 越过启动方最终取消检查点
+                try? await Task.sleep(for: .milliseconds(40))
+                return .started(id)
+            }, isCurrent: { _ in true },
+            report: { _, result, detail, _ in lockedReports.append((result, detail)) })
+        lockedHandoff.submit(repeated, force: false, snapshot: 1)
+        try await Task.sleep(for: .milliseconds(10))
+        lockedHandoff.cancelPending()
+        try await Task.sleep(for: .milliseconds(5))
+        check(lockedReports.isEmpty, "cancel past the final startup checkpoint is ignored mid-start")
+        try await Task.sleep(for: .milliseconds(60))
+        check(lockedReports.count == 1 && lockedReports[0].0 == .started, "locked startup records its real started result")
         print("PASS: \(assertions) scheduling assertions")
     }
 }

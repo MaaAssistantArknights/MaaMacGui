@@ -111,6 +111,9 @@ struct DailyTask {
     private var dailyRunOutcome = DailyRunOutcome.completed
     var dailyStartInFlight = false
     var startupCancellationRequested = false
+    var startupCancellationLocked = false
+    var warns = [String]()
+    func logWarn(_ text: String) { warns.append(text) }
     private(set) var dailyRunTasks: [DailyTask]?
     var dailyTaskProfile = "Fixture"
     func logError(verbatim value: String) { errors.append(value) }
@@ -123,7 +126,6 @@ struct DailyTask {
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
     private var forceRecoveryCleanupPending = false
-    private var forceRecoveryJournalFailureRunID: UUID? = nil
     var handle: Core? = Core()
     var logStore: TestLogStore? = TestLogStore()
     var tasks: [DailyTask] = []

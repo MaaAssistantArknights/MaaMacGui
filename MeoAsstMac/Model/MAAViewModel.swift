@@ -34,10 +34,13 @@ import SwiftUI
     // 最长约 5 分钟）也能请求取消，而不是只能报错。
     private var dailyStartInFlight = false
     private var startupCancellationRequested = false
+    // 启动越过最终取消检查点（即将 startCoreTasks）后置位：此后取消请求已无法
+    // 阻止本次运行完成，定时台账不得再把该运行记成“已取消”。仅由
+    // startDailyTasks 在无挂起点的同步段设置，随 dailyStartInFlight 一并复位。
+    private(set) var startupCancellationLocked = false
     var forceRecovery: ForcedGameRecovery?
     var forceRecoveryInFlight = false
     private var forceRecoveryCleanupPending = false
-    private var forceRecoveryJournalFailureRunID: UUID? = nil
     private var taskCompletionGeneration = UInt64(0)
     private var dailyCompletionTask: Task<Void, Never>?
     private var dailyFinishAttemptedRunID: UUID?
@@ -344,6 +347,8 @@ extension MAAViewModel {
             }
             // 启动占用期也允许停止：请求取消进行中的启动（含强制恢复），由启动
             // 路径既有的取消检查点收尾，本次运行按“已取消”落账后释放占用。
+            // 若启动已越过最终取消检查点（startupCancellationLocked），本请求
+            // 不再生效：运行将自然完成并按实际结果落账。
             // 定时启动的任务树同时会被上方通知取消，双通道互为兜底。
             startupCancellationRequested = true
             logInfo("已请求取消正在进行的任务启动，请稍候。")
@@ -448,10 +453,6 @@ extension MAAViewModel {
             forceRecovery = nil
             forceRecoveryCleanupPending = false
             forceRecoveryInFlight = false
-            if forceRecoveryJournalFailureRunID == context.id {
-                status = .pending
-                return true
-            }
         }
         // Failed journal writes keep ownership and must not spin on duplicate callbacks.
         guard dailyFinishAttemptedRunID != context.id else { return true }
@@ -695,13 +696,20 @@ extension MAAViewModel {
         // 此处尚无挂起点，清除历史取消请求不会与 stop() 竞争。
         dailyStartInFlight = true
         startupCancellationRequested = false
-        defer { dailyStartInFlight = false }
+        startupCancellationLocked = false
+        defer {
+            dailyStartInFlight = false
+            startupCancellationLocked = false
+        }
 
         do {
             logStore?.setDailyTasksDetailMode(.log)
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
             guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
-            forceRecoveryJournalFailureRunID = nil
+            if dailyRunCoordinator.journalDegraded {
+                // 日志已降级为内存模式：运行照常执行，仅提示跟踪方式与重启后果。
+                logWarn("运行日志写入失败，本次运行仅在内存中跟踪，重启后将按中断恢复处理。")
+            }
             dailyRunOutcome = .completed
             dailyRunTasks = snapshot.tasks
             if recoverGame { forceRecoveryInFlight = true }
@@ -717,11 +725,8 @@ extension MAAViewModel {
                 if recoveryCleanupFailed {
                     dailyRunOutcome = .failed
                     status = .busy
-                    do { try dailyRunCoordinator.transition(.running, for: runID) }
-                    catch {
-                        forceRecoveryJournalFailureRunID = runID
-                        logError(verbatim: "Daily run journal: \(error.localizedDescription)")
-                    }
+                    // 日志故障已在协调器内降级为内存模式，相位照常推进，运行仍可收口。
+                    try? dailyRunCoordinator.transition(.running, for: runID)
                     // Even a journal failure must not prevent safe eventual Core release.
                     waitForDailyRunCompletion(runID: runID)
                 } else if coreRunning {
@@ -800,6 +805,10 @@ extension MAAViewModel {
 
         try checkStartupCancellation()
         if recoverGame, recoveryCurrent?() == false { throw CancellationError() }
+        // 最终取消检查点：越过此处后核心即将 start，取消请求不再能阻止本次
+        // 运行完成。置位锁定标志，让 stop()/“取消等待中的定时启动”不再把
+        // 该运行记成“已取消”，台账由实际启动/终态结果收口（r3 A-P2-2）。
+        startupCancellationLocked = true
         try dailyRunCoordinator.transition(.running, for: runID)
         try await startCoreTasks(recordDailyTaskStart: true)
     }
