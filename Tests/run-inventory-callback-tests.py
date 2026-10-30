@@ -11,8 +11,18 @@ messages = (root / "MeoAsstMac/Core/MaaMessage.swift").read_text()
 model = (root / "MeoAsstMac/Model/MAAViewModel.swift").read_text()
 
 
+def find(source, marker):
+    # The exact source slices below are the test contract: they pin the probe
+    # to the real production branches. A miss means production code moved and
+    # the anchors need updating, not an arbitrary harness failure.
+    try:
+        return source.index(marker)
+    except ValueError:
+        raise SystemExit(f"FAIL: production source anchor not found: {marker!r}")
+
+
 def function(source, signature):
-    start = source.index(signature)
+    start = find(source, signature)
     body = source.index("{", start)
     depth = 0
     for end in range(body, len(source)):
@@ -22,14 +32,14 @@ def function(source, signature):
             depth -= 1
             if depth == 0:
                 return source[start : end + 1]
-    raise ValueError(f"Unclosed function: {signature}")
+    raise SystemExit(f"FAIL: no closing brace for extracted function: {signature!r}")
 
 
 extra = function(messages, "    private func processSubTaskExtraInfo(")
 # Keep the actual account-switch case and the complete Fight inventory branch.
 # Logging and the rest of the callback's UI work are outside this probe's scope.
-account = extra[extra.index('        case "AccountSwitch":') : extra.index('        case "StageInfo":')]
-stage = extra[extra.index('            if info.taskchain == "Fight", let taskID = info.taskid {') : extra.index("            let drops = dropInfo.stats")]
+account = extra[find(extra, '        case "AccountSwitch":') : find(extra, '        case "StageInfo":')]
+stage = extra[find(extra, '            if info.taskchain == "Fight", let taskID = info.taskid {') : find(extra, "            let drops = dropInfo.stats")]
 invalidate = function(model, "    func invalidateInventory()")
 
 probe = r'''

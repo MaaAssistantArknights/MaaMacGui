@@ -3,7 +3,11 @@ from pathlib import Path
 import subprocess,tempfile
 root=Path(__file__).resolve().parents[1]
 source=(root/'MeoAsstMac/Model/MAAViewModel.swift').read_text()
-a=source.index('    private func startTasks() async throws {');start=source.index('{',a);depth=0
+def anchor(source,marker):
+ # The signature string is the test contract with the production source.
+ try:return source.index(marker)
+ except ValueError:raise SystemExit(f"FAIL: production source anchor not found: {marker!r}")
+a=anchor(source,'    private func startTasks() async throws {');start=source.index('{',a);depth=0
 for b in range(start,len(source)):
     if source[b]=='{':depth+=1
     elif source[b]=='}':
