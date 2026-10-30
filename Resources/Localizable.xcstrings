@@ -1,6 +1,13 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "BlackFlowStartRunRecognitionFailed" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Starting rewards could not be recognized or the page is unavailable. The task stopped; check the game screen." } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "시작 보상을 인식하지 못했거나 화면을 사용할 수 없어 작업을 중지했습니다. 게임 화면을 확인하세요." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "开局奖励识别失败或页面不可用，已停止；请检查游戏画面。" } }
+      }
+    },
     "黑流开局奖励" : {
       "localizations" : {
         "en" : {

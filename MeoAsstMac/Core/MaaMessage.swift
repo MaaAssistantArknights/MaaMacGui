@@ -1338,6 +1338,12 @@ extension MAAViewModel {
                 logInfo(.blackFlowMilestoneChanged(id: milestoneId, status: status))
             }
 
+        case "BlackFlowStartRun":
+            let status: String = (try? info.details["status"]) ?? ""
+            if ["reward_recognition_failed", "reward_page_missing", "reward_unrecognized"].contains(status) {
+                logWarn(verbatim: String(localized: "BlackFlowStartRunRecognitionFailed", defaultValue: "开局奖励识别失败或页面不可用，已停止；请检查游戏画面。"))
+            }
+
         case "BlackFlowStrategyStarted":
             // TODO: (Localization) Localize the BlackFlow profile value.
             let profile: String = (try? info.details["profile"]) ?? ""
