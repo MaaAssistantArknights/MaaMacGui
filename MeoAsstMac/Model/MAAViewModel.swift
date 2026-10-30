@@ -325,7 +325,8 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
-        dailyRunOutcome = .cancelled
+        // A chain error recorded before this stop must survive as the run outcome.
+        if dailyRunOutcome != .failed { dailyRunOutcome = .cancelled }
         if let id = dailyRunCoordinator.active?.id {
             try dailyRunCoordinator.transition(.stopping, for: id)
         }
