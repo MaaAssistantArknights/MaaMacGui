@@ -1345,8 +1345,14 @@ extension MAAViewModel {
 
         case "BlackFlowStartRun":
             let status: String = (try? info.details["status"]) ?? ""
-            if ["reward_recognition_failed", "reward_page_missing", "reward_unrecognized"].contains(status) {
+            switch status {
+            case "reward_recognition_failed", "reward_page_missing", "reward_unrecognized":
                 logWarn(verbatim: String(localized: "BlackFlowStartRunRecognitionFailed", defaultValue: "开局奖励识别失败或页面不可用，已停止；请检查游戏画面。"))
+            case "preparing", "target_run", "reward_picked", "reward_missed", "completed":
+                // Progress reports are not failures.
+                break
+            default:
+                logWarn(verbatim: String(localized: "BlackFlowStartRunUnknownStatus", defaultValue: "黑流开局出现未识别状态：\(status)，请检查任务结果。"))
             }
 
         case "BlackFlowStrategyStarted":

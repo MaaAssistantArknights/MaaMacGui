@@ -10,9 +10,10 @@ case=source[start:end]
 catalog=json.loads((root/'Resources/Localizable.xcstrings').read_text())
 packet=json.loads((root/'Tests/Fixtures/BlackFlowStartRunFailure.json').read_text())
 assert packet['what']=='BlackFlowStartRun' and packet['taskchain']=='Roguelike' and packet['details']['status']=='reward_recognition_failed'
-localizations=catalog['strings']['BlackFlowStartRunRecognitionFailed']['localizations']
-for locale in ('zh-Hans', 'en', 'ko'):
-    assert localizations[locale]['stringUnit']['value'], locale
+for key in ('BlackFlowStartRunRecognitionFailed', 'BlackFlowStartRunUnknownStatus'):
+    localizations=catalog['strings'][key]['localizations']
+    for locale in ('zh-Hans', 'en', 'ko'):
+        assert localizations[locale]['stringUnit']['value'], (key, locale)
 derived=Path(sys.argv[1]); packages=Path(sys.argv[2]); products=derived/'Build/Products/Debug'
 probe='''import Foundation
 import JBird
@@ -32,9 +33,11 @@ let captured = try JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileU
 let details = captured["details"] as! [String: Any]
 try handle(details["status"] as! String)
 precondition(warnings.count == 4, "captured callback must produce a warning")
-try handle("preparing"); try handle("completed")
-precondition(warnings.count == 4, "progress and completion are not failures")
-print("PASS 6 BlackFlow start-run callback checks")
+for status in ["preparing", "target_run", "reward_picked", "reward_missed", "completed"] { try handle(status) }
+precondition(warnings.count == 4, "progress, target-run and reward reports are not failures")
+try handle("reward_timeout")
+precondition(warnings.count == 5, "unknown terminal statuses must still warn")
+print("PASS 8 BlackFlow start-run callback checks")
 '''
 with tempfile.TemporaryDirectory(prefix='maa-blackflow-status-') as d:
  p=Path(d); (p/'main.swift').write_text(probe)
