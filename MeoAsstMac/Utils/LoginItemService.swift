@@ -28,13 +28,17 @@ import ServiceManagement
 
     var status: SMAppService.Status { readStatus() }
 
-    // Explicit executor hop: a synchronous ServiceManagement call must not block settings.
-    @concurrent func register() async throws {
-        try registerOperation()
+    // Explicit executor hop: a synchronous ServiceManagement call must not block
+    // settings. A detached task avoids the @concurrent attribute (Swift 6.2) so the
+    // app target also builds with older toolchains.
+    func register() async throws {
+        let operation = registerOperation
+        try await Task.detached(priority: .userInitiated) { try operation() }.value
     }
 
-    @concurrent func unregister() async throws {
-        try await unregisterOperation()
+    func unregister() async throws {
+        let operation = unregisterOperation
+        try await Task.detached(priority: .userInitiated) { try await operation() }.value
     }
 
     func openSettings() {
