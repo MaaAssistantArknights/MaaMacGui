@@ -7,6 +7,7 @@
 
 import CoreGraphics
 import Foundation
+import ImageIO
 import JBirdCore
 import MaaCore
 import OSLog
@@ -196,10 +197,11 @@ actor MAAHandle {
         }
     }
 
-    func getImage() throws -> CGImage {
+    func getImage(maxPixelSize: Int? = nil) throws -> CGImage {
         let data = try PreviewImageBuffer.read(nullSize: AsstGetNullSize()) { buffer in
             AsstGetImage(handle, buffer.baseAddress, AsstSize(buffer.count))
         }
+        if let image = Self.downsampled(data, maxPixelSize: maxPixelSize) { return image }
         guard let provider = CGDataProvider(data: data as CFData),
             let image = CGImage(
                 pngDataProviderSource: provider, decode: nil,
@@ -210,8 +212,22 @@ actor MAAHandle {
         return image
     }
 
+    /// A preview-sized destination never needs full-resolution pixels; ImageIO downsamples while
+    /// decoding instead of materializing a whole bitmap for the GPU to shrink. Returns nil when
+    /// the caller wants full resolution or the source cannot be read.
+    private static func downsampled(_ data: Data, maxPixelSize: Int?) -> CGImage? {
+        guard let maxPixelSize, maxPixelSize > 0,
+            let source = CGImageSourceCreateWithData(data as CFData, nil)
+        else { return nil }
+        return CGImageSourceCreateThumbnailAtIndex(source, 0, [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+        ] as CFDictionary)
+    }
+
     /// A preview never creates a task, reconnects, or resets the queue. Check native running on this actor.
-    func previewImage(requestFresh: Bool) async throws -> (CGImage, Bool) {
+    func previewImage(requestFresh: Bool, maxPixelSize: Int? = nil) async throws -> (CGImage, Bool) {
         try Task.checkCancellation()
         guard connected else { throw PreviewError.disconnected }
         guard previewCallID == nil else { throw PreviewError.captureInProgress }
@@ -243,7 +259,7 @@ actor MAAHandle {
         }
         try Task.checkCancellation()
         guard connected else { throw PreviewError.disconnected }
-        return (try getImage(), requested)
+        return (try getImage(maxPixelSize: maxPixelSize), requested)
     }
 
     private func cancelPreviewWaiter(token: UUID, error: Error) {

@@ -19,8 +19,10 @@ final class BufferAllocations {
     var reads = 0
     var delay = false
     var failure = false
-    func previewFrame() async throws -> PreviewFrame {
+    var lastMaxPixelSize: Int?
+    func previewFrame(maxPixelSize: Int? = nil) async throws -> PreviewFrame {
         reads += 1
+        lastMaxPixelSize = maxPixelSize
         if delay { try await Task.sleep(for: .seconds(1)) }
         if failure { throw PreviewError.disconnected }
         return PreviewFrame(image: NSImage(size: NSSize(width: 2, height: 2)), readAt: Date(), requestedCapture: true)
@@ -109,10 +111,34 @@ final class BufferAllocations {
                                         allocate: allocations.allocate) { _ in UInt64.max - 1 }
         }
         check(allocations.live == 0 && allocations.released == 1005, "invalid results release buffers")
+        do {
+            let truncated = try PreviewImageBuffer.read(nullSize: .max, capacity: 32, maximumCapacity: 128,
+                                                       allocate: allocations.allocate) { bytes in
+                for i in 0..<20 { bytes[i] = UInt8(i) }
+                return 20
+            }
+            check(truncated == Data((0..<20).map(UInt8.init)), "no-copy buffer keeps only written bytes")
+        }
+        check(allocations.live == 0 && allocations.released == 1006, "truncated no-copy buffer releases once")
+        do {
+            var filled = PreviewImageBuffer.allocate(4096)
+            let written: UInt64 = filled.withUnsafeMutableBytes { bytes in
+                for i in 0..<9 { bytes[i] = UInt8(i + 1) }
+                return 9
+            }
+            filled.count = Int(written)
+            check(filled == Data((1...9).map(UInt8.init)), "production allocation truncates to written bytes")
+        }
+        rejects("production failure chain stays bounded") {
+            try PreviewImageBuffer.read(nullSize: .max) { _ in .max }
+        }
         let source = MAAViewModel()
         let model = PeepViewModel()
         await model.refresh(from: source)
         check(model.frame != nil && model.error == nil && !model.isReading, "successful frame")
+        check(source.lastMaxPixelSize == nil, "first frame decodes at full size")
+        await model.refresh(from: source, maxPixelSize: 1234)
+        check(source.lastMaxPixelSize == 1234 && model.frame != nil, "refresh forwards pixel limit")
         source.failure = true
         await model.refresh(from: source)
         check(model.frame != nil && model.error != nil && !model.isReading, "retain old frame with failure")

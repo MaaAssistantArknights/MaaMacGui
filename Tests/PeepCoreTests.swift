@@ -149,6 +149,8 @@ extension Bool { var isTrue: Bool { self } }
         check(retriedFrame.1, "preview recovers without old callback or new handle")
         _ = try await core.previewImage(requestFresh: false)
         check(native.requests == 5, "cached read adds no request")
+        let smallThumbnail = try await core.previewImage(requestFresh: false, maxPixelSize: 1024)
+        check(smallThumbnail.0.width == 2 && smallThumbnail.0.height == 2, "downsampling never upscales")
         let newer = Task { try await core.previewImage(requestFresh: true) }
         while native.requests < 6 { await Task.yield() }
         await core.cancelStale(oldToken)
@@ -179,6 +181,10 @@ extension Bool { var isTrue: Bool { self } }
         let largeFrame = try await core.previewImage(requestFresh: true)
         check(largeFrame.0.width == 2048 && largeFrame.0.height == 1536 && !largeFrame.1,
               "production getImage retries and decodes large PNG")
+        let cappedFrame = try await core.previewImage(requestFresh: true, maxPixelSize: 512)
+        let cappedLongest = max(cappedFrame.0.width, cappedFrame.0.height)
+        check(cappedLongest <= 512 && cappedLongest >= 500 && !cappedFrame.1,
+              "downsampling caps preview decode to requested pixels")
         print("Passed \(checks) production actor preview assertions")
     }
 }

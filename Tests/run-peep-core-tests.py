@@ -4,7 +4,7 @@ from pathlib import Path
 import subprocess, tempfile
 root = Path(__file__).resolve().parents[1]
 source = (root / "MeoAsstMac/Core/Maa.swift").read_text()
-methods = source[source.index("    func getImage() throws"):source.index("\nenum MAATaskType:")]
+methods = source[source.index("    func getImage(maxPixelSize: Int? = nil) throws"):source.index("\nenum MAATaskType:")]
 resume = source[source.index("    private func resumeCall("):source.index("    private func waitFor(")]
 preamble = (root / "Tests/PeepCoreTests.swift").read_text()
 actor = """

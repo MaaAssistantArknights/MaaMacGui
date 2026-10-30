@@ -5,10 +5,19 @@ enum PreviewImageBuffer {
     static let capacity = 8 * 1024 * 1024
     static let maximumCapacity = 64 * 1024 * 1024
 
+    /// The core writes the image before reporting its length, so buffers need no zero fill;
+    /// `Data(count:)` would zero 120 MiB across one no-image retry chain.
+    static func allocate(_ capacity: Int) -> Data {
+        let bytes = UnsafeMutableRawPointer.allocate(byteCount: capacity, alignment: 1)
+        return Data(bytesNoCopy: bytes, count: capacity, deallocator: .custom { bytes, _ in
+            bytes.deallocate()
+        })
+    }
+
     static func read(
         nullSize: UInt64, capacity: Int = capacity,
         maximumCapacity: Int = maximumCapacity,
-        allocate: (Int) -> Data = { Data(count: $0) },
+        allocate: (Int) -> Data = allocate,
         using read: (UnsafeMutableRawBufferPointer) -> UInt64
     ) throws -> Data {
         guard capacity > 0, capacity <= maximumCapacity, maximumCapacity <= self.maximumCapacity else {

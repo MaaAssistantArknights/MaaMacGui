@@ -17,13 +17,13 @@ extension Notification.Name {
     private var generation = UUID()
     private var request: Task<Void, Never>?
 
-    func refresh(from viewModel: MAAViewModel) async {
+    func refresh(from viewModel: MAAViewModel, maxPixelSize: Int? = nil) async {
         guard !isReading else { return }
         let token = generation
         isReading = true
         let request = Task { [weak self] in
             do {
-                let frame = try await viewModel.previewFrame()
+                let frame = try await viewModel.previewFrame(maxPixelSize: maxPixelSize)
                 try Task.checkCancellation()
                 guard let self, self.generation == token else { return }
                 self.frame = frame
