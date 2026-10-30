@@ -34,7 +34,9 @@ import SwiftUI
     private var dailyCompletionTask: Task<Void, Never>?
     private var dailyFinishAttemptedRunID: UUID?
 
-    let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
+    let dailyRunCoordinator = DailyRunCoordinator(
+        journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
+            .appendingPathComponent("DailyRunJournal.json"))
     private var dailyRunOutcome = DailyRunOutcome.completed
     private(set) var dailyRunTasks: [DailyTask]?
     private(set) var isApplyingDailyCallbackPatch = false
@@ -454,14 +456,19 @@ extension MAAViewModel {
         } catch {
             status = .pending
             logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+            // Ownership is deliberately retained to avoid retry loops, so make
+            // the resulting stuck state visible and actionable for the user.
+            logError("运行日志写入失败，本次运行将保持未完成状态，重启应用后即可恢复。")
         }
     }
 
-    private func executeHook(_ command: HookCommand, context: RunContext, outcome: DailyRunOutcome?, cancellable: Bool = true) async throws -> HookResult {
+    private func executeHook(_ command: HookCommand, context: RunContext, outcome: DailyRunOutcome?,
+                             cancellable: Bool = true) async throws -> HookResult {
         let directory = Self.userDirectory.appendingPathComponent("RunHooks", isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let configuredTimeout = TimeInterval(runHookConfiguration.timeoutSeconds)
-        let timeout = runTerminationDeadline.map { min(configuredTimeout, $0.timeIntervalSinceNow) } ?? configuredTimeout
+        let timeout = runTerminationDeadline.map { min(configuredTimeout, $0.timeIntervalSinceNow) }
+            ?? configuredTimeout
         guard timeout > 0 else { throw CancellationError() }
         let adb = adbPath
         let task = Task { try await HookRunner().run(command: command, context: context, outcome: outcome,
@@ -470,11 +477,13 @@ extension MAAViewModel {
         defer { activeHookTask = nil }
         let result: HookResult
         if cancellable {
-            result = try await withTaskCancellationHandler(operation: { try await task.value }, onCancel: { task.cancel() })
+            result = try await withTaskCancellationHandler(operation: { try await task.value },
+                                                           onCancel: { task.cancel() })
         } else {
             result = try await task.value
         }
-        logInfo(verbatim: "Script run=\(context.id) result=\(outcome?.rawValue ?? "preparing") exit=\(result.exitCode) timeout=\(result.timedOut) cancelled=\(result.cancelled)")
+        logInfo(verbatim: "Script run=\(context.id) result=\(outcome?.rawValue ?? "preparing")"
+            + " exit=\(result.exitCode) timeout=\(result.timedOut) cancelled=\(result.cancelled)")
         if !result.stdout.isEmpty { logTrace(verbatim: result.stdout) }
         if !result.stderr.isEmpty { logWarn(verbatim: result.stderr) }
         if result.stdoutTruncated || result.stderrTruncated { logWarn("脚本输出已截断（每个输出流最多 32 KiB）") }
@@ -486,7 +495,8 @@ extension MAAViewModel {
         isTestingHook = true
         defer { isTestingHook = false }
         runHookConfiguration = hookSettings.configuration
-        let context = RunContext(id: UUID(), origin: .manual, profileID: dailyTaskProfile, status: .preHook, startedAt: .now)
+        let context = RunContext(id: UUID(), origin: .manual, profileID: dailyTaskProfile,
+                                 status: .preHook, startedAt: .now)
         do {
             let result = try await executeHook(command, context: context, outcome: nil)
             hookTestResult = "Exit \(result.exitCode)\n\(result.stdout)\n\(result.stderr)"
@@ -760,7 +770,8 @@ extension MAAViewModel {
         do {
             logStore?.setDailyTasksDetailMode(.log)
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
-            guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
+            guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin)
+            else { return .skipped }
             dailyRunTasks = snapshot.tasks
             dailyRunOutcome = .completed
             dailyStartCancelled = false
@@ -770,7 +781,10 @@ extension MAAViewModel {
                 logStore?.clearLogs()
                 if runHookConfiguration.enabled, let command = runHookConfiguration.before {
                     try dailyRunCoordinator.transition(.preHook, for: runID)
-                    let result = try await executeHook(command, context: dailyRunCoordinator.active!, outcome: nil)
+                    guard let activeRun = dailyRunCoordinator.active, activeRun.id == runID else {
+                        throw CancellationError()
+                    }
+                    let result = try await executeHook(command, context: activeRun, outcome: nil)
                     guard result.succeeded else { throw CancellationError() }
                 }
                 if dailyStartCancelled { throw CancellationError() }

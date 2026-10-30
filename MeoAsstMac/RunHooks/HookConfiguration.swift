@@ -9,7 +9,8 @@ struct HookCommand: Codable, Equatable {
 
     func resolve() throws -> URL {
         var stale = false
-        let url = try URL(resolvingBookmarkData: bookmark, options: [.withSecurityScope, .withoutUI], bookmarkDataIsStale: &stale)
+        let url = try URL(resolvingBookmarkData: bookmark, options: [.withSecurityScope, .withoutUI],
+                          bookmarkDataIsStale: &stale)
         guard !stale else { throw HookError.permissionRequired }
         return url
     }

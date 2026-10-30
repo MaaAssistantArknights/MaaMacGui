@@ -77,7 +77,8 @@ struct HookRunner {
 
     func run(command: HookCommand, context: RunContext, outcome: DailyRunOutcome?, adbPath: String,
              workingDirectory: URL, timeout: TimeInterval = 60) async throws -> HookResult {
-        guard !command.arguments.contains(where: { $0.contains("\0") }), !context.profileID.contains("\0") else {
+        guard !command.arguments.contains(where: { $0.contains("\0") }), !context.profileID.contains("\0"),
+              !adbPath.contains("\0") else {
             throw HookError.invalidExecutable
         }
         let url = try command.resolve()
@@ -96,8 +97,9 @@ struct HookRunner {
             return try await withCheckedThrowingContinuation { continuation in
                 DispatchQueue.global(qos: .userInitiated).async {
                     do {
-                        let result = try Self.execute(executable: executable, arguments: arguments, environment: environment,
-                                                      directory: workingDirectory, timeout: min(max(timeout, 1), 300), control: control)
+                        let result = try Self.execute(executable: executable, arguments: arguments,
+                                                      environment: environment, directory: workingDirectory,
+                                                      timeout: min(max(timeout, 1), 300), control: control)
                         continuation.resume(returning: result)
                     } catch { continuation.resume(throwing: error) }
                 }

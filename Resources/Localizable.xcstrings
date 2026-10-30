@@ -1,6 +1,116 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "运行日志写入失败，本次运行将保持未完成状态，重启应用后即可恢复。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "运行日志写入失败，本次运行将保持未完成状态，重启应用后即可恢复。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to write the run journal. This run stays unfinished; restart the app to recover."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "실행 기록 쓰기에 실패했습니다. 이번 실행은 미완료 상태로 유지되며, 앱을 재시작하면 복구할 수 있습니다."
+          }
+        }
+      }
+    },
+    "选择…" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "选择…"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose…"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선택…"
+          }
+        }
+      }
+    },
+    "完成" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完成"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Done"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "완료"
+          }
+        }
+      }
+    },
+    "当前正在启动或停止任务，请稍后重试。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前正在启动或停止任务，请稍后重试。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A start or stop operation is already in progress. Please try again later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 시작 또는 정지가 진행 중입니다. 잠시 후 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "任务正在运行，请先停止当前任务。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务正在运行，请先停止当前任务。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tasks are running. Please stop the current tasks first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업이 실행 중입니다. 먼저 현재 작업을 정지하세요."
+          }
+        }
+      }
+    },
     "后置清理正在执行，请等待完成。" : {
       "localizations" : {
         "zh-Hans" : {

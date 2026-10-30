@@ -87,7 +87,8 @@ final class DailyRunCoordinator {
 
     private func persist(_ context: RunContext) throws {
         guard let journalURL else { return }
-        try FileManager.default.createDirectory(at: journalURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: journalURL.deletingLastPathComponent(),
+                                                withIntermediateDirectories: true)
         try JSONEncoder().encode(context).write(to: journalURL, options: .atomic)
     }
 }
