@@ -52,7 +52,7 @@ struct SystemSettingsView_Previews: PreviewProvider {
                     set: { enabled in Task { await service.setEnabled(enabled) } }
                 )
             )
-            .disabled(service.isUpdating)
+            .disabled(service.hasPendingOperation)
 
             Text("登录后仅打开应用，不会自动开始日常任务")
                 .font(.caption).foregroundStyle(.secondary)
@@ -70,7 +70,7 @@ struct SystemSettingsView_Previews: PreviewProvider {
                     Button("取消登录项申请") {
                         Task { await service.setEnabled(false) }
                     }
-                    .disabled(service.isUpdating)
+                    .disabled(service.hasPendingOperation)
                 }
             }
         }
@@ -97,7 +97,7 @@ struct SystemSettingsView_Previews: PreviewProvider {
 #if DEBUG
 @MainActor private struct PreviewLoginItem: LoginItemManaging {
     let status: SMAppService.Status
-    func register() throws {}
+    func register() async throws {}
     func unregister() async throws {}
     func openSettings() {}
 }

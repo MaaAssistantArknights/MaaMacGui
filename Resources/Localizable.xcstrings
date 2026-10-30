@@ -1,6 +1,28 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "登录项操作超时，系统可能仍在处理。可重试等待结果，或打开系统登录项设置检查。": {
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The login item request timed out and may still be processing. Retry to wait for the result, or check Login Items in System Settings."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로그인 항목 요청 시간이 초과되었지만 시스템에서 아직 처리 중일 수 있습니다. 다시 시도하여 결과를 기다리거나 시스템 설정의 로그인 항목을 확인하세요."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "登录项操作超时，系统可能仍在处理。可重试等待结果，或打开系统登录项设置检查。"
+          }
+        }
+      }
+    },
     "登录时启动 MAA": {
       "localizations": {
         "en": {
