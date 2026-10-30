@@ -254,6 +254,95 @@ private final class BlockingLoginOperation: @unchecked Sendable {
         stuckFake.registration?.resume()
         await stuckRegistration.value
 
+        // The convergence predicate's register direction: a timed-out registration
+        // the system enabled behind the UI must be unlocked by refresh(), and its
+        // late failure must not surface as a fresh error or re-issue the request.
+        let settledRegisterFake = FakeLoginItem()
+        let settledRegisterService = LoginItemService(
+            manager: settledRegisterFake, operationTimeout: .milliseconds(50))
+        settledRegisterFake.status = .notRegistered
+        settledRegisterFake.suspendRegistration = true
+        let settledRegistration = Task { await settledRegisterService.setEnabled(true) }
+        await eventually("Settled-case registration must start") { settledRegisterFake.registration != nil }
+        await eventually("Settled-case registration must time out") { !settledRegisterService.isUpdating }
+        await settledRegistration.value
+        precondition(
+            settledRegisterService.hasPendingOperation && settledRegisterService.errorMessage != nil,
+            "A stalled registration must stay tracked until it settles or refresh() reconciles it")
+        settledRegisterFake.status = .enabled  // The system finished the registration behind the UI.
+        settledRegisterService.refresh()
+        precondition(
+            !settledRegisterService.hasPendingOperation && settledRegisterService.errorMessage == nil
+                && settledRegisterService.status == .enabled,
+            "Refresh must unlock a pending registration the system already enabled")
+        let settledRegistrations = settledRegisterFake.registrations
+        await settledRegisterService.setEnabled(true)
+        precondition(
+            settledRegisterFake.registrations == settledRegistrations,
+            "An unlocked settled registration must not be re-issued")
+        settledRegisterFake.failure = NSError(
+            domain: "LoginItemTest", code: 7,
+            userInfo: [NSLocalizedDescriptionKey: "Late settled-registration failure"])
+        settledRegisterFake.registration?.resume()
+        try? await Task.sleep(for: .milliseconds(150))
+        precondition(
+            settledRegisterService.errorMessage == nil && !settledRegisterService.hasPendingOperation
+                && !settledRegisterService.isUpdating && settledRegisterService.status == .enabled,
+            "A late failure for a reconciled registration must be discarded, not shown as a fresh error")
+
+        // Two successive refresh() reconciliations bump the generation twice; stale
+        // results from both abandoned requests must be discarded inside the pending
+        // window of the third request, which settles on its own result.
+        let chainFake = FakeLoginItem()
+        let chainService = LoginItemService(manager: chainFake, operationTimeout: .milliseconds(50))
+        chainFake.status = .enabled
+        chainFake.suspendCancellation = true
+        Task { await chainService.setEnabled(false) }  // Request A: removal, generation 0.
+        await eventually("Chain request A must start") { chainFake.cancellation != nil }
+        await eventually("Chain request A must time out") { !chainService.isUpdating }
+        let staleRemovalA = chainFake.cancellation
+        chainFake.cancellation = nil
+        chainFake.status = .notRegistered  // The system settled A behind the UI.
+        chainService.refresh()  // First reconciliation abandons A's eventual result.
+        precondition(!chainService.hasPendingOperation)
+        chainFake.suspendRegistration = true
+        Task { await chainService.setEnabled(true) }  // Request B: registration, generation 1.
+        await eventually("Chain request B must start") { chainFake.registration != nil }
+        await eventually("Chain request B must time out") { !chainService.isUpdating }
+        let staleRegistrationB = chainFake.registration
+        chainFake.registration = nil
+        chainFake.status = .enabled  // The system settled B behind the UI.
+        chainService.refresh()  // Second reconciliation abandons B's eventual result.
+        precondition(
+            !chainService.hasPendingOperation && chainService.status == .enabled,
+            "Both reconciliations must unlock their own abandoned requests")
+        Task { await chainService.setEnabled(false) }  // Request C: removal, generation 2.
+        await eventually("Chain request C must start") { chainFake.cancellation != nil }
+        precondition(
+            chainService.isUpdating && chainService.hasPendingOperation,
+            "The third request must be tracked and awaited")
+        chainFake.failure = NSError(
+            domain: "LoginItemTest", code: 8,
+            userInfo: [NSLocalizedDescriptionKey: "Stale chain failure A"])
+        staleRemovalA?.resume()  // A's abandoned removal finally reports failure.
+        chainFake.failure = NSError(
+            domain: "LoginItemTest", code: 9,
+            userInfo: [NSLocalizedDescriptionKey: "Stale chain failure B"])
+        staleRegistrationB?.resume()  // B's abandoned registration finally reports failure.
+        try? await Task.sleep(for: .milliseconds(200))
+        precondition(
+            chainService.hasPendingOperation && !chainService.isUpdating
+                && chainService.errorMessage != nil
+                && chainService.errorMessage != "Stale chain failure A"
+                && chainService.errorMessage != "Stale chain failure B",
+            "Stale results from two abandoned generations must leave the third request's tracking and its own deadline intact")
+        chainFake.failure = nil
+        chainFake.cancellation?.resume()
+        await eventually("Chain request C must settle on its own result") {
+            chainService.status == .notRegistered && !chainService.hasPendingOperation
+                && !chainService.isUpdating && chainService.errorMessage == nil
+        }
+
         // Exercise the production adapter, including synchronous blocking before
         // an asynchronous unregister call has a chance to suspend.
         for enabled in [true, false] {
@@ -277,7 +366,7 @@ private final class BlockingLoginOperation: @unchecked Sendable {
             precondition(blockedService.errorMessage == nil)
         }
         print(
-            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results, refresh reconciliation, stale-result isolation and blocked production adapter"
+            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results, refresh reconciliation, register-direction reconciliation, stale-result isolation, multi-generation stale chain and blocked production adapter"
         )
     }
 }
