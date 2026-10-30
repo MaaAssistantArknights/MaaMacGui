@@ -398,6 +398,12 @@ extension MAAViewModel {
     }
 
     private func updateChannel(channel: MAAClientChannel) {
+        // Refresh the cached availability gate synchronously so it already
+        // reflects the new channel while the async resource reload below is
+        // still running; the global-channel branch performs no IO. The reload
+        // refreshes it again once the new resources are loaded.
+        refreshSecretFrontAvailability()
+
         for (index, task) in tasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
@@ -618,25 +624,24 @@ extension MAAViewModel {
     /// Secret Front availability depends on the client channel and the loaded
     /// resource tree. The check reads and parses resource files synchronously,
     /// so cache the outcome instead of recomputing it in every view update;
-    /// `loadResource`/`reloadResources` refresh it whenever resources change.
+    /// `loadResource`/`reloadResources` refresh it whenever resources change,
+    /// and channel switches refresh it immediately in `updateChannel`.
     private func refreshSecretFrontAvailability() {
-        guard !clientChannel.isGlobal else {
-            secretFrontUnavailableReason = String(localized: "当前服务器的隐秘战线资源尚未验证，暂不可用。")
-            return
-        }
+        secretFrontUnavailableReason = SecretFrontConfiguration.unavailableReason(
+            isGlobalChannel: clientChannel.isGlobal,
+            resourceRoot: { secretFrontResourceRoot() }
+        )
+    }
+
+    private func secretFrontResourceRoot() -> URL? {
         guard let bundled = Bundle.main.resourceURL,
             let (preferUser, _) = try? resourceChannel.version() else {
-            secretFrontUnavailableReason = String(localized: "缺少隐秘战线资源，请更新资源后重试。")
-            return
+            return nil
         }
         let root = preferUser
             ? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             : bundled
-        guard SecretFrontConfiguration.hasResources(in: root.appendingPathComponent("resource")) else {
-            secretFrontUnavailableReason = String(localized: "缺少隐秘战线资源，请更新资源后重试。")
-            return
-        }
-        secretFrontUnavailableReason = nil
+        return root.appendingPathComponent("resource")
     }
 
     func miniGame(name: String, params: Any? = nil, secretFront: SecretFrontConfiguration? = nil) async throws {
@@ -645,6 +650,7 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         var didAppend = false
+        var beganRun = false
         do {
             if secretFront != nil, let reason = secretFrontUnavailableReason {
                 throw NSError(domain: "SecretFront", code: 1, userInfo: [NSLocalizedDescriptionKey: reason])
@@ -662,17 +668,21 @@ extension MAAViewModel {
             let string = String(decoding: data, as: UTF8.self)
             let id = try await handle.appendTask(type: .Custom, params: string)
             didAppend = true
-            if let secretFront { secretFrontRun.begin(taskID: id, configuration: secretFront) }
+            if let secretFront {
+                secretFrontRun.begin(taskID: id, configuration: secretFront)
+                beganRun = true
+            }
             // Publish before yielding: a fast completion callback must remain idle.
             status = .busy
             try await handle.start()
         } catch {
             // Failures caught here are startup-phase errors (connect, append,
             // start); in-run failures arrive as callbacks instead, so report a
-            // startup failure rather than an in-game task failure.
-            if let id = secretFrontRun.taskID {
-                secretFrontRun.finishStartupFailure(taskID: id)
-            }
+            // startup failure rather than an in-game task failure. Only a run
+            // begun by this call may be finished: a taskID still owned by an
+            // earlier run (possible under leftover status pollution) must not
+            // be reported or released here.
+            secretFrontRun.finishStartupFailureIfOwned(beganRun: beganRun)
             if didAppend {
                 do {
                     try await handle?.stop()

@@ -101,6 +101,25 @@ struct SecretFrontRun: Equatable {
         self.taskID = nil
     }
 
+    /// Finishes a startup failure only for a run begun by the same call:
+    /// `beganRun` stays false until `begin` succeeded in that call. A taskID
+    /// still owned by an earlier run (possible under leftover status
+    /// pollution) must not be reported or released by a later failed start.
+    mutating func finishStartupFailureIfOwned(beganRun: Bool) {
+        guard beganRun, let taskID else { return }
+        finishStartupFailure(taskID: taskID)
+    }
+
+    /// Decides whether a global AllTasksCompleted envelope may end the active
+    /// run. A missing, malformed, or empty finished_tasks list still means
+    /// Core has finished everything, so it is treated as terminal instead of
+    /// being dropped (dropping it would leave the status stuck at .busy);
+    /// genuinely foreign non-empty lists are still rejected.
+    static func acceptsCompletionEnvelope(ids: [Int32]?, activeID: Int32) -> Bool {
+        guard let ids, !ids.isEmpty else { return true }
+        return ids.contains(activeID)
+    }
+
     mutating func release() { taskID = nil }
 
     private mutating func appendDiagnosis() {
@@ -130,6 +149,23 @@ extension SecretFrontConfiguration.Event {
 /// Presence is only a prerequisite: Core append validates task construction;
 /// recognition and platform/OTA override behavior require runtime validation.
 extension SecretFrontConfiguration {
+    /// Decides Secret Front availability for a channel. Global channels are
+    /// unverified regardless of resources, and that branch never evaluates
+    /// `resourceRoot` (no filesystem access): channel switches refresh the
+    /// cached availability gate synchronously on the main actor. Returns the
+    /// localized unavailability reason, or nil when the channel is available.
+    static func unavailableReason(
+        isGlobalChannel: Bool, resourceRoot: () -> URL?
+    ) -> String? {
+        guard !isGlobalChannel else {
+            return String(localized: "当前服务器的隐秘战线资源尚未验证，暂不可用。")
+        }
+        guard let root = resourceRoot(), hasResources(in: root) else {
+            return String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+        }
+        return nil
+    }
+
     static func hasResources(in directory: URL) -> Bool {
         let candidates = ["tasks.json", "tasks/tasks.json", "tasks/MiniGame/SecretFront.json"]
         let required = ["Begin", "Run", "SelectTeam", "Actions", "End"]

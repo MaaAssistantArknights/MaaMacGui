@@ -56,12 +56,10 @@ extension MAAViewModel {
         if let activeID = secretFrontRun.taskID {
             switch message.code {
             case .AllTasksCompleted:
-                let ids: [Int32] = (try? message.details["finished_tasks"]) ?? []
-                // A missing, malformed, or empty finished_tasks list still means
-                // Core has finished everything; treat it as terminal instead of
-                // dropping the envelope, which would leave the status stuck at
-                // .busy. Genuinely foreign non-empty lists are still rejected.
-                guard ids.isEmpty || ids.contains(activeID) else { return }
+                let ids: [Int32]? = try? message.details["finished_tasks"]
+                // Missing/malformed/empty lists are terminal; foreign non-empty
+                // lists are rejected. See SecretFrontRun.acceptsCompletionEnvelope.
+                guard SecretFrontRun.acceptsCompletionEnvelope(ids: ids, activeID: activeID) else { return }
             case .TaskChainError ... .TaskChainStopped, .SubTaskError ... .SubTaskStopped:
                 let id: Int32? = try? message.details["taskid"]
                 guard id == activeID else { return }

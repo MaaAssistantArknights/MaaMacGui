@@ -75,6 +75,29 @@ for index in 0..<250 {
 }
 check(run.messages.count == 200, "log bounded")
 
+// Completion-envelope acceptance: missing/malformed/empty finished_tasks is
+// terminal; foreign non-empty lists are rejected (see MaaMessage.processMessage).
+check(SecretFrontRun.acceptsCompletionEnvelope(ids: nil, activeID: 41), "missing finished_tasks treated as terminal")
+check(SecretFrontRun.acceptsCompletionEnvelope(ids: [], activeID: 41), "empty finished_tasks treated as terminal")
+check(SecretFrontRun.acceptsCompletionEnvelope(ids: [41], activeID: 41), "own task id accepted")
+check(SecretFrontRun.acceptsCompletionEnvelope(ids: [7, 41], activeID: 41), "list containing own task id accepted")
+check(!SecretFrontRun.acceptsCompletionEnvelope(ids: [7], activeID: 41), "foreign non-empty list rejected")
+check(!SecretFrontRun.acceptsCompletionEnvelope(ids: [7, 8], activeID: 41), "all-foreign list rejected")
+
+// Startup-failure ownership: only a run begun by the same call may be
+// finished by its catch path; a stale run must survive a later failed start.
+var staleRun = SecretFrontRun()
+staleRun.begin(taskID: 12, configuration: .init())
+staleRun.finishStartupFailureIfOwned(beganRun: false)
+check(staleRun.taskID == 12 && staleRun.messages.count == 1, "failed restart leaves an earlier run untouched")
+staleRun.finishStartupFailureIfOwned(beganRun: true)
+check(staleRun.taskID == nil && staleRun.messages.count == 2, "startup failure finishes the run begun by this call")
+var releasedRun = SecretFrontRun()
+releasedRun.begin(taskID: 13, configuration: .init())
+releasedRun.release()
+releasedRun.finishStartupFailureIfOwned(beganRun: true)
+check(releasedRun.taskID == nil && releasedRun.messages.count == 1, "run released by a callback is not re-reported")
+
 // Core's ProcessTask callbacks report fully-qualified task names (task->name
 // verbatim, no namespace stripping). These bare-name envelopes only exercise
 // the defensive fallback branch, not the production wire shape.
@@ -166,6 +189,27 @@ try FileManager.default.createDirectory(
 try JSONSerialization.data(withJSONObject: definitions).write(
     to: directory.appendingPathComponent("tasks/MiniGame/SecretFront.json"))
 check(SecretFrontConfiguration.hasResources(in: directory), "split resources recognized")
+
+// Availability decision powering the cached gate: the global-channel branch
+// must not probe resources (channel switches refresh it synchronously).
+var probedRoot = false
+let globalReason = SecretFrontConfiguration.unavailableReason(isGlobalChannel: true, resourceRoot: {
+    probedRoot = true
+    return directory
+})
+check(globalReason != nil && !probedRoot, "global channel unverified without probing resources")
+check(
+    SecretFrontConfiguration.unavailableReason(isGlobalChannel: false, resourceRoot: { nil }) != nil,
+    "missing resource root unavailable")
+check(
+    SecretFrontConfiguration.unavailableReason(isGlobalChannel: false, resourceRoot: { directory }) == nil,
+    "recognized resource root available")
+let bareDirectory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+try FileManager.default.createDirectory(at: bareDirectory, withIntermediateDirectories: true)
+defer { try? FileManager.default.removeItem(at: bareDirectory) }
+check(
+    SecretFrontConfiguration.unavailableReason(isGlobalChannel: false, resourceRoot: { bareDirectory }) != nil,
+    "resource root without secret-front files unavailable")
 if CommandLine.arguments.count > 1 {
     check(
         SecretFrontConfiguration.hasResources(in: URL(fileURLWithPath: CommandLine.arguments[1])),
