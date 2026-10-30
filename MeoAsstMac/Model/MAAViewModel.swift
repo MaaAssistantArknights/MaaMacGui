@@ -408,7 +408,8 @@ extension MAAViewModel {
               let currentStatus = dailyRunCoordinator.active?.status,
               [.running, .stopping].contains(currentStatus) else { return false }
         // Failed journal writes keep ownership and must not spin on duplicate callbacks.
-        guard dailyFinishAttemptedRunID != context.id else { return true }
+        // An explicit stop retries so a recovered journal can still release the run.
+        guard allowInFlight || dailyFinishAttemptedRunID != context.id else { return true }
         dailyFinishAttemptedRunID = context.id
         do {
             try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
