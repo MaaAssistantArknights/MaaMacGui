@@ -174,6 +174,49 @@ private final class BlockingLoginOperation: @unchecked Sendable {
             service.status == .enabled && service.errorMessage == nil,
             "A completed late failure must allow a fresh retry")
 
+        // A timed-out request the system later settled must be unlocked by refresh();
+        // an unsettled one must keep guarding against overlapping mutations.
+        let settledFake = FakeLoginItem()
+        let settledService = LoginItemService(manager: settledFake, operationTimeout: .milliseconds(50))
+        settledFake.status = .enabled
+        settledFake.suspendCancellation = true
+        let settledRemoval = Task { await settledService.setEnabled(false) }
+        await eventually("Settled-case removal must start") { settledFake.cancellation != nil }
+        await eventually("Settled-case removal must time out") { !settledService.isUpdating }
+        precondition(settledService.hasPendingOperation && settledService.errorMessage != nil)
+        settledFake.status = .notRegistered  // The system finished the removal behind the UI.
+        settledService.refresh()
+        precondition(
+            !settledService.hasPendingOperation && settledService.errorMessage == nil,
+            "Refresh must unlock a pending request the system already settled")
+        await settledRemoval.value
+        let settledRemovals = settledFake.cancellations
+        await settledService.setEnabled(false)
+        precondition(
+            settledFake.cancellations == settledRemovals,
+            "An unlocked settled request must not be re-issued")
+        settledFake.failure = NSError(
+            domain: "LoginItemTest", code: 4,
+            userInfo: [NSLocalizedDescriptionKey: "Late removal failure"])
+        settledFake.cancellation?.resume()
+        await eventually("A late result must not relock a reconciled request") {
+            settledService.errorMessage != nil && !settledService.hasPendingOperation
+                && !settledService.isUpdating
+        }
+
+        let stuckFake = FakeLoginItem()
+        let stuckService = LoginItemService(manager: stuckFake, operationTimeout: .milliseconds(50))
+        stuckFake.suspendRegistration = true
+        let stuckRegistration = Task { await stuckService.setEnabled(true) }
+        await eventually("Unsettled-case registration must start") { stuckFake.registration != nil }
+        await eventually("Unsettled-case registration must time out") { !stuckService.isUpdating }
+        stuckService.refresh()
+        precondition(
+            stuckService.hasPendingOperation,
+            "Refresh must keep guarding a request the system has not settled")
+        stuckFake.registration?.resume()
+        await stuckRegistration.value
+
         // Exercise the production adapter, including synchronous blocking before
         // an asynchronous unregister call has a chance to suspend.
         for enabled in [true, false] {
@@ -197,7 +240,7 @@ private final class BlockingLoginOperation: @unchecked Sendable {
             precondition(blockedService.errorMessage == nil)
         }
         print(
-            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results and blocked production adapter"
+            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results, refresh reconciliation and blocked production adapter"
         )
     }
 }

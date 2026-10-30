@@ -71,6 +71,15 @@ import ServiceManagement
 
     func refresh() {
         status = manager.status
+        // A timed-out request may have settled in the system by now; the authoritative
+        // status is the in-app escape hatch that re-enables controls without a restart.
+        if let pending = pendingRequest, !isUpdating,
+            (pending ? status == .enabled : status == .notRegistered)
+        {
+            pendingRequest = nil
+            errorMessage = nil
+            failedRequest = nil
+        }
     }
 
     func openSettings() {
