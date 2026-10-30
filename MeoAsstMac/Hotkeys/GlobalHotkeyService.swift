@@ -51,6 +51,11 @@ final class GlobalHotkeyService: ObservableObject {
             errorMessage = String(localized: "热键须包含 Command 或 Control，开始和停止不能使用同一组合")
             return false
         }
+        // Reject before unregistering so a reserved chord keeps current bindings.
+        guard !candidate.hasReservedChord else {
+            errorMessage = String(localized: "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键")
+            return false
+        }
         let previous = configuration
         unregister()
         if candidate.enabled, !register(candidate) {
@@ -86,7 +91,7 @@ final class GlobalHotkeyService: ObservableObject {
     }
 
     private func register(_ value: HotkeyConfiguration) -> Bool {
-        guard eventHandler != nil, value.isValid else {
+        guard eventHandler != nil, value.isValid, !value.hasReservedChord else {
             errorMessage = String(localized: "全局热键配置无效或系统处理器不可用")
             return false
         }

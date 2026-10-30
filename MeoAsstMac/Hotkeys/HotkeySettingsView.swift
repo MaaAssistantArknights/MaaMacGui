@@ -42,6 +42,10 @@ struct HotkeySettingsView: View {
                         recordingError = String(localized: "热键须包含 Command 或 Control，开始和停止不能使用同一组合")
                         return
                     }
+                    guard !chord.isSystemReserved else {
+                        recordingError = String(localized: "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键")
+                        return
+                    }
                     if recording == .start { draft.start = chord } else { draft.stop = chord }
                     recordingError = nil
                     // Resume registration only after the primary key is released;

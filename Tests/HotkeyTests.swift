@@ -88,6 +88,10 @@ import Carbon
         service.endRecording()
         check(!service.isRecording, "recording end")
         check(service.save(HotkeyConfiguration()), "clear disable unregister")
+        check(HotkeyChord(keyCode: 12, modifiers: UInt32(cmdKey)).isSystemReserved, "system quit chord reserved")
+        check(!HotkeyChord(keyCode: 12, modifiers: UInt32(cmdKey | controlKey | shiftKey)).isSystemReserved, "decorated quit chord allowed")
+        check(!service.save(HotkeyConfiguration(enabled: true, start: HotkeyChord(keyCode: 49, modifiers: UInt32(cmdKey)))), "reserved space chord rejected")
+        check(!service.configuration.enabled && service.errorMessage != nil, "reserved rejection keeps current bindings")
         print("HotkeyTests: \(count) assertions passed; exclusive native conflict used two processes")
     }
 }

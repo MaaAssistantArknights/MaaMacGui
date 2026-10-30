@@ -12,6 +12,19 @@ struct HotkeyChord: Codable, Equatable, Hashable {
             && ![54, 55, 56, 57, 58, 59, 60, 61, 62, 63].contains(keyCode)
     }
 
+    /// Chords whose exclusive registration would swallow an OS-wide shortcut:
+    /// quit/close/hide/minimize (⌘Q/⌘W/⌘H/⌘M), the input-source and emoji
+    /// panels (Space under ⌘/⌃), and the screenshot range (⌘⇧3…6).
+    var isSystemReserved: Bool {
+        let command = modifiers & UInt32(cmdKey) != 0
+        let control = modifiers & UInt32(controlKey) != 0
+        let option = modifiers & UInt32(optionKey) != 0
+        let shift = modifiers & UInt32(shiftKey) != 0
+        if keyCode == 49 { return command || control }
+        if (20...23).contains(keyCode) { return command && shift && !control && !option }
+        return command && !control && !option && !shift && [4, 12, 13, 46].contains(keyCode)
+    }
+
     init(keyCode: UInt32, modifiers: UInt32) { self.keyCode = keyCode; self.modifiers = modifiers }
     init(event: NSEvent) {
         keyCode = UInt32(event.keyCode)
@@ -50,6 +63,10 @@ struct HotkeyConfiguration: Codable, Equatable {
     var stop: HotkeyChord?
     var isValid: Bool {
         (start?.isValid ?? true) && (stop?.isValid ?? true) && (start == nil || start != stop)
+    }
+
+    var hasReservedChord: Bool {
+        (start?.isSystemReserved ?? false) || (stop?.isSystemReserved ?? false)
     }
 }
 
