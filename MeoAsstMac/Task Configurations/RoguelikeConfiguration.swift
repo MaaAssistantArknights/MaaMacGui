@@ -642,8 +642,9 @@ extension RoguelikeConfiguration {
         }
     }
 
-    struct BlackflowStartError: LocalizedError {
+    struct BlackflowStartError: LocalizedError, CustomStringConvertible {
         let message: String
         var errorDescription: String? { message }
+        var description: String { message }
     }
 }
