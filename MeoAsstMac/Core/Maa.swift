@@ -248,7 +248,14 @@ actor MAAHandle {
 
     private func cancelPreviewWaiter(token: UUID, error: Error) {
         guard previewToken == token else { return }
-        // Native screencap has no cancellation API. Keep its call ID reserved until its callback arrives.
+        // Cancellation keeps the native reservation until its callback or deadline. A missing
+        // callback must not block all future previews; call IDs keep late replies out of a retry.
+        if case PreviewError.timedOut = error {
+            previewCallID = nil
+            previewToken = nil
+            previewTimeout?.cancel()
+            previewTimeout = nil
+        }
         let waiter = previewWaiter
         previewWaiter = nil
         waiter?.resume(throwing: error)

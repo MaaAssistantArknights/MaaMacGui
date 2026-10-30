@@ -1,5 +1,20 @@
 import SwiftUI
 
+final class BufferAllocations {
+    var allocated = 0
+    var released = 0
+    var live: Int { allocated - released }
+
+    func allocate(_ capacity: Int) -> Data {
+        allocated += 1
+        let bytes = UnsafeMutableRawPointer.allocate(byteCount: capacity, alignment: 1)
+        return Data(bytesNoCopy: bytes, count: capacity, deallocator: .custom { bytes, _ in
+            bytes.deallocate()
+            self.released += 1
+        })
+    }
+}
+
 @MainActor final class MAAViewModel {
     var reads = 0
     var delay = false
@@ -23,7 +38,8 @@ import SwiftUI
             do {
                 _ = try read()
                 check(false, name)
-            } catch { check(true, name) }
+            } catch PreviewError.invalidImage { check(true, name) }
+            catch { fatalError("wrong error for \(name): \(error)") }
         }
         let full = try PreviewImageBuffer.read(nullSize: .max, capacity: 4) { bytes in
             for i in 0..<4 { bytes[i] = UInt8(i) }
@@ -35,17 +51,64 @@ import SwiftUI
             return 1
         }
         check(short == Data([9]), "actual length, no uninitialized tail")
-        rejects("null sentinel") { try PreviewImageBuffer.read(nullSize: .max, capacity: 4) { _ in .max } }
+        let largeSize = 9 * 1024 * 1024
+        var capacities = [Int]()
+        let large = try PreviewImageBuffer.read(nullSize: .max) { bytes in
+            capacities.append(bytes.count)
+            guard bytes.count >= largeSize else { return .max }
+            bytes[0] = 17
+            bytes[largeSize - 1] = 23
+            return UInt64(largeSize)
+        }
+        check(large.count == largeSize && large.first == 17 && large.last == 23, "image larger than 8 MiB")
+        check(capacities == [8 * 1024 * 1024, 16 * 1024 * 1024], "null-size retry grows capacity")
+        rejects("null sentinel") { try PreviewImageBuffer.read(nullSize: .max, capacity: 4, maximumCapacity: 4) { _ in .max } }
         rejects("zero bytes") { try PreviewImageBuffer.read(nullSize: .max, capacity: 4) { _ in 0 } }
-        rejects("overflow result") { try PreviewImageBuffer.read(nullSize: .max, capacity: 4) { _ in 5 } }
+        rejects("overflow result") { try PreviewImageBuffer.read(nullSize: .max, capacity: 4, maximumCapacity: 4) { _ in 5 } }
         rejects("zero capacity") { try PreviewImageBuffer.read(nullSize: .max, capacity: 0) { _ in 0 } }
         rejects("negative capacity") { try PreviewImageBuffer.read(nullSize: .max, capacity: -1) { _ in 0 } }
         rejects("unbounded allocation") { try PreviewImageBuffer.read(nullSize: .max, capacity: .max) { _ in 0 } }
+        rejects("unbounded retry limit") {
+            try PreviewImageBuffer.read(nullSize: .max, maximumCapacity: .max) { _ in 0 }
+        }
+        var reportedCapacities = [Int]()
+        let reported = try PreviewImageBuffer.read(nullSize: .max, capacity: 32, maximumCapacity: 128) { bytes in
+            reportedCapacities.append(bytes.count)
+            guard bytes.count >= 100 else { return 100 }
+            bytes[0] = 42
+            return 100
+        }
+        check(reported.count == 100 && reported.first == 42, "reported length can grow buffer")
+        check(reportedCapacities == [32, 100], "bounded reported length used for retry")
+        let allocations = BufferAllocations()
         for _ in 0..<1000 {
-            rejects("repeated failure releases owned data") {
-                try PreviewImageBuffer.read(nullSize: .max, capacity: 32) { _ in .max }
+            rejects("failed read rejects") {
+                try PreviewImageBuffer.read(nullSize: .max, capacity: 32, maximumCapacity: 32,
+                                            allocate: allocations.allocate) { _ in .max }
+            }
+            check(allocations.live == 0, "every failed read releases its buffer")
+        }
+        check(allocations.allocated == 1000 && allocations.released == 1000, "all failed allocations accounted for")
+        var retryCapacities = [Int]()
+        rejects("bounded retry failure") {
+            try PreviewImageBuffer.read(nullSize: .max, capacity: 32, maximumCapacity: 128,
+                                        allocate: allocations.allocate) { bytes in
+                retryCapacities.append(bytes.count)
+                check(allocations.live == 1, "previous attempt released before retry")
+                return .max
             }
         }
+        check(retryCapacities == [32, 64, 128], "sentinel retry stops at limit")
+        check(allocations.live == 0 && allocations.released == 1003, "exhausted retries release all buffers")
+        rejects("zero-length read releases buffer") {
+            try PreviewImageBuffer.read(nullSize: .max, capacity: 32,
+                                        allocate: allocations.allocate) { _ in 0 }
+        }
+        rejects("impossible length releases buffer") {
+            try PreviewImageBuffer.read(nullSize: .max, capacity: 32,
+                                        allocate: allocations.allocate) { _ in UInt64.max - 1 }
+        }
+        check(allocations.live == 0 && allocations.released == 1005, "invalid results release buffers")
         let source = MAAViewModel()
         let model = PeepViewModel()
         await model.refresh(from: source)
