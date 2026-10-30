@@ -198,6 +198,15 @@ actor MAAHandle {
     }
 
     func getImage(maxPixelSize: Int? = nil) throws -> CGImage {
+        try decodeImage(maxPixelSize: maxPixelSize)
+    }
+
+    /// Nonisolated so previews can decode off this actor: the AsstGetImage copy plus ImageIO
+    /// decode cost roughly 10-80 ms per frame, and running them in an actor method would stall
+    /// the actor's cooperative thread once per second (alongside start/stop/appendTask and
+    /// pending call completions). `handle` is only assigned in `init`, so reading it here and
+    /// from the detached task below is safe; core serializes image access internally.
+    nonisolated private func decodeImage(maxPixelSize: Int?) throws -> CGImage {
         let data = try PreviewImageBuffer.read(nullSize: AsstGetNullSize()) { buffer in
             AsstGetImage(handle, buffer.baseAddress, AsstSize(buffer.count))
         }
@@ -259,7 +268,11 @@ actor MAAHandle {
         }
         try Task.checkCancellation()
         guard connected else { throw PreviewError.disconnected }
-        return (try getImage(maxPixelSize: maxPixelSize), requested)
+        // Decode detached instead of on the actor: see decodeImage. The detached task strongly
+        // captures `self`, so the handle outlives the read; awaiting its value keeps the
+        // caller's cancellation semantics (checked again by the caller after the return).
+        let image = try await Task.detached { try self.decodeImage(maxPixelSize: maxPixelSize) }.value
+        return (image, requested)
     }
 
     private func cancelPreviewWaiter(token: UUID, error: Error) {
