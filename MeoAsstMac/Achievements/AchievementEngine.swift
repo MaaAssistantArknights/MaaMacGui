@@ -96,7 +96,9 @@ struct AchievementEngine {
             switch operation {
             case .add: progress.value = Self.saturatedAdd(progress.value, value)
             case .maximum: progress.value = max(progress.value, value)
-            case .set: progress.value = value
+            case .set:
+                // A six-star streak reset must not regress an unlocked display.
+                if progress.unlockedAt == nil { progress.value = value }
             }
             if progress.unlockedAt == nil, progress.value >= definition.target {
                 progress.unlockedAt = now
