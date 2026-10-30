@@ -23,6 +23,7 @@ import SwiftUI
 
     @Published private(set) var status = Status.idle
     @Published var secretFrontRun = SecretFrontRun()
+    @Published private(set) var secretFrontUnavailableReason: String?
 
     private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
@@ -277,6 +278,7 @@ extension MAAViewModel {
 
     /// Reloads the resources from the documents directory after update.
     func reloadResources(channel: MAAClientChannel) async throws {
+        defer { refreshSecretFrontAvailability() }
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         try await loadResource(url: documentsDirectory, channel: channel)
     }
@@ -344,6 +346,7 @@ extension MAAViewModel {
     ///
     /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
+        defer { refreshSecretFrontAvailability() }
         let (preferUser, currentResourceVersion) = try resourceChannel.version()
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
 
@@ -612,21 +615,28 @@ extension MAAViewModel {
         status = .busy
     }
 
-    var secretFrontUnavailableReason: String? {
+    /// Secret Front availability depends on the client channel and the loaded
+    /// resource tree. The check reads and parses resource files synchronously,
+    /// so cache the outcome instead of recomputing it in every view update;
+    /// `loadResource`/`reloadResources` refresh it whenever resources change.
+    private func refreshSecretFrontAvailability() {
         guard !clientChannel.isGlobal else {
-            return String(localized: "当前服务器的隐秘战线资源尚未验证，暂不可用。")
+            secretFrontUnavailableReason = String(localized: "当前服务器的隐秘战线资源尚未验证，暂不可用。")
+            return
         }
         guard let bundled = Bundle.main.resourceURL,
             let (preferUser, _) = try? resourceChannel.version() else {
-            return String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+            secretFrontUnavailableReason = String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+            return
         }
         let root = preferUser
             ? FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             : bundled
         guard SecretFrontConfiguration.hasResources(in: root.appendingPathComponent("resource")) else {
-            return String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+            secretFrontUnavailableReason = String(localized: "缺少隐秘战线资源，请更新资源后重试。")
+            return
         }
-        return nil
+        secretFrontUnavailableReason = nil
     }
 
     func miniGame(name: String, params: Any? = nil, secretFront: SecretFrontConfiguration? = nil) async throws {
@@ -657,8 +667,19 @@ extension MAAViewModel {
             status = .busy
             try await handle.start()
         } catch {
-            if let id = secretFrontRun.taskID { secretFrontRun.finish(taskID: id, result: .failed) }
-            if didAppend { try? await handle?.stop() }
+            // Failures caught here are startup-phase errors (connect, append,
+            // start); in-run failures arrive as callbacks instead, so report a
+            // startup failure rather than an in-game task failure.
+            if let id = secretFrontRun.taskID {
+                secretFrontRun.finishStartupFailure(taskID: id)
+            }
+            if didAppend {
+                do {
+                    try await handle?.stop()
+                } catch {
+                    logError("停止任务失败: \(error.localizedDescription)")
+                }
+            }
             status = .idle
             throw error
         }

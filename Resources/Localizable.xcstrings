@@ -3321,6 +3321,28 @@
         }
       }
     },
+    "停止任务失败: %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to stop the task: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 중지 실패: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "停止任务失败: %@"
+          }
+        }
+      }
+    },
     "傀影" : {
       "localizations" : {
         "ko" : {
@@ -6778,6 +6800,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最后有效步骤：%@"
+          }
+        }
+      }
+    },
+    "SecretFrontStartupFailureLog" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secret Front failed to start"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "비밀 전선 시작 실패"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐秘战线启动失败"
           }
         }
       }

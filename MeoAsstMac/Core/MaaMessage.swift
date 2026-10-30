@@ -57,7 +57,11 @@ extension MAAViewModel {
             switch message.code {
             case .AllTasksCompleted:
                 let ids: [Int32] = (try? message.details["finished_tasks"]) ?? []
-                guard ids.contains(activeID) else { return }
+                // A missing, malformed, or empty finished_tasks list still means
+                // Core has finished everything; treat it as terminal instead of
+                // dropping the envelope, which would leave the status stuck at
+                // .busy. Genuinely foreign non-empty lists are still rejected.
+                guard ids.isEmpty || ids.contains(activeID) else { return }
             case .TaskChainError ... .TaskChainStopped, .SubTaskError ... .SubTaskStopped:
                 let id: Int32? = try? message.details["taskid"]
                 guard id == activeID else { return }

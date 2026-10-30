@@ -60,6 +60,11 @@ for result in [SecretFrontRun.Result.completed, .stopped, .failed] {
     run.finish(taskID: 9, result: result)
     check(run.taskID == nil, "terminal result releases ID")
 }
+run.begin(taskID: 8, configuration: .init())
+run.finishStartupFailure(taskID: 7)
+check(run.taskID == 8, "foreign startup failure ignored")
+run.finishStartupFailure(taskID: 8)
+check(run.taskID == nil && run.messages.count == 2, "startup failure releases ownership with its own report")
 run.begin(taskID: 10, configuration: .init())
 run.release()
 run.observe(taskID: 10, task: "MiniGame@SecretFront@End")
@@ -70,8 +75,9 @@ for index in 0..<250 {
 }
 check(run.messages.count == 200, "log bounded")
 
-// These are external callback envelopes, after AbstractTask::callback strips
-// the ProcessTask namespace. Keep the wire shape distinct from source task names.
+// Core's ProcessTask callbacks report fully-qualified task names (task->name
+// verbatim, no namespace stripping). These bare-name envelopes only exercise
+// the defensive fallback branch, not the production wire shape.
 struct RawStepCallback: Decodable {
     let message: Int
     let details: Envelope
@@ -97,13 +103,13 @@ let callbacks = try decoder.decode([RawStepCallback].self, from: wireCallbacks)
 var wireRun = SecretFrontRun()
 wireRun.begin(taskID: 41, configuration: .init())
 for callback in callbacks {
-    check(callback.message == 20001 && callback.details.subtask == "ProcessTask", "production step callback shape")
+    check(callback.message == 20001 && callback.details.subtask == "ProcessTask", "step callback envelope shape")
     wireRun.observe(
         taskID: callback.details.taskid, task: callback.details.details.task,
         candidate: callback.details.details.result?.text)
     check(wireRun.lastStep != nil, "owned bare wire step is observed")
 }
-check(wireRun.messages.count == 4, "all three production wire steps are logged")
+check(wireRun.messages.count == 4, "all three bare fallback steps are logged")
 check(wireRun.lastStep?.contains("游侠") == true, "wire candidate text retained")
 let observedWireRun = wireRun
 for task in ["MiniGame@PixelPaint@SelectTeam", "Other@Management", "Other@MiniGame@SecretFront@End", "Unknown", ""] {
@@ -136,7 +142,7 @@ boundedWireRun.begin(taskID: 61, configuration: .init())
 for index in 0..<250 {
     boundedWireRun.observe(taskID: 61, task: "PreClickDetect", candidate: "wire-event-\(index)")
 }
-check(boundedWireRun.messages.count == 200, "production wire logs stay bounded")
+check(boundedWireRun.messages.count == 200, "bare fallback logs stay bounded")
 check(boundedWireRun.lastStep?.contains("wire-event-249") == true, "bounded wire log preserves last step")
 
 let directory = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

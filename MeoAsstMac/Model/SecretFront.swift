@@ -46,8 +46,9 @@ struct SecretFrontRun: Equatable {
         if task.hasPrefix("MiniGame@SecretFront@") {
             step = task.components(separatedBy: "@").last ?? task
         } else {
-            // Core's external callback strips everything through the last @.
-            // Bare names are safe only within this run's exact task ID and the
+            // Core reports fully-qualified task names (task->name verbatim);
+            // bare names are a defensive fallback, not the production shape.
+            // They are safe only within this run's exact task ID and the
             // whitelist below; a foreign qualified task must remain rejected.
             guard !task.contains("@") else { return }
             step = task
@@ -87,13 +88,26 @@ struct SecretFrontRun: Equatable {
         case .stopped: append(String(localized: "隐秘战线已停止"))
         case .failed: append(String(localized: "隐秘战线任务失败，请检查游戏画面"))
         }
-        if let lastStep {
-            append(String(format: String(localized: "SecretFrontLastStepLog", defaultValue: "最后有效步骤：%@"), lastStep))
-        }
+        appendDiagnosis()
+        self.taskID = nil
+    }
+
+    /// A startup-phase failure (connect, append, or start) never touched the
+    /// game screen, so it must not be reported as an in-run task failure.
+    mutating func finishStartupFailure(taskID: Int32) {
+        guard self.taskID == taskID else { return }
+        append(String(localized: "SecretFrontStartupFailureLog", defaultValue: "隐秘战线启动失败"))
+        appendDiagnosis()
         self.taskID = nil
     }
 
     mutating func release() { taskID = nil }
+
+    private mutating func appendDiagnosis() {
+        if let lastStep {
+            append(String(format: String(localized: "SecretFrontLastStepLog", defaultValue: "最后有效步骤：%@"), lastStep))
+        }
+    }
 
     private mutating func append(_ message: String) {
         messages.append(message)
