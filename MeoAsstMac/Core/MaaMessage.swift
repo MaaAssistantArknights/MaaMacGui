@@ -1003,7 +1003,7 @@ extension MAAViewModel {
                     do {
                         let delta = try inventory.merge(taskID: taskID, cumulative: Dictionary(uniqueKeysWithValues: identified), scope: inventoryScope)
                         if !delta.isEmpty { logger.debug("Inventory generation=\(String(describing: self.inventory.snapshot?.generation)) run=\(String(describing: self.inventory.runID)) task=\(taskID) delta=\(String(describing: delta))") }
-                    } catch { logError("Inventory.RecognitionRequired") }
+                    } catch { logError(verbatim: error.localizedDescription) }
                 }
             }
             let drops = dropInfo.stats

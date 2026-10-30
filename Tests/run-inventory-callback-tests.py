@@ -61,6 +61,7 @@ final class Probe {
     var currentInventorySnapshot: InventorySnapshot? { inventory.usableSnapshot(scope: inventoryScope) }
     func logTrace(_ message: TestLog) {}
     func logError(_ message: String) {}
+    func logError(verbatim message: String) {}
 ''' + invalidate + r'''
     func process(_ info: Info, drops dropInfo: DropInfo = DropInfo(stats: [])) {
         switch info.what {
