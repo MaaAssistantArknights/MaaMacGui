@@ -1,6 +1,7 @@
 import CryptoKit
 import Foundation
 import MachO
+import OSLog
 
 /// A development-only protocol attestation, until a released Core capability contract is available.
 /// Matches dev-v2 4d948320d and its resources, never an inferred minimum version.
@@ -9,17 +10,48 @@ enum BlackflowStartSupport {
     static let resourceFingerprint = "90fb3155ca90c2b4497bb5825e4949fdf87fd8ab0c9316f4dde1a3c7165cc8b4"
     private static let resourcePaths = ["tasks", "roguelike/BlackFlow", "template/Roguelike/BlackFlow"]
 
+    private static let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "BlackflowStartSupport")
+
+    /// A loaded image and the application bundle are immutable while the process
+    /// runs, so their fingerprints are computed at most once per launch instead
+    /// of on every resource reload. Both probes are only read from the main actor.
+    nonisolated(unsafe) private static var loadedCoreMatch: Bool?
+    nonisolated(unsafe) private static var bundledResourcesMatch: Bool?
+
     static func matchesLoadedCore() -> Bool {
         #if DEBUG
+        if let loadedCoreMatch { return loadedCoreMatch }
         for index in 0..<_dyld_image_count() {
             guard let name = _dyld_get_image_name(index) else { continue }
             let url = URL(fileURLWithPath: String(cString: name))
             if url.lastPathComponent == "libMaaCore.dylib" {
-                return (try? executableFingerprint(at: url)) == coreFingerprint
+                let started = ContinuousClock.now
+                let matches = (try? executableFingerprint(at: url)) == coreFingerprint
+                loadedCoreMatch = matches
+                logFingerprintDuration("core", since: started)
+                return matches
             }
         }
         #endif
         return false
+    }
+
+    /// Cached probe for the immutable application bundle. Overlay roots change
+    /// across reloads and must keep using the uncached `matchesResources(at:)`.
+    static func matchesBundledResources(at root: URL) -> Bool {
+        if let bundledResourcesMatch { return bundledResourcesMatch }
+        let started = ContinuousClock.now
+        let matches = matchesResources(at: root)
+        bundledResourcesMatch = matches
+        logFingerprintDuration("bundled resources", since: started)
+        return matches
+    }
+
+    private static func logFingerprintDuration(_ subject: String, since started: ContinuousClock.Instant) {
+        #if DEBUG
+        let elapsed = String(describing: ContinuousClock.now - started)
+        logger.debug("BlackFlow start gate fingerprint (\(subject, privacy: .public)) took \(elapsed, privacy: .public)")
+        #endif
     }
 
     /// Ad-hoc signing changes __LINKEDIT and LC_CODE_SIGNATURE. Hash the UUID and all

@@ -351,7 +351,7 @@ extension MAAViewModel {
     /// Should be the outermost call to load resources.
     private func loadResource(channel: MAAClientChannel) async throws {
         blackflowStartAvailable = BlackflowStartSupport.matchesLoadedCore() && !channel.isGlobal
-            && touchMode != .MacPlayTools && BlackflowStartSupport.matchesResources(at: Bundle.main.resourceURL!)
+            && touchMode != .MacPlayTools && BlackflowStartSupport.matchesBundledResources(at: Bundle.main.resourceURL!)
         let (preferUser, currentResourceVersion) = try resourceChannel.version()
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
 
