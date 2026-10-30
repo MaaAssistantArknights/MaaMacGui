@@ -13,8 +13,11 @@ struct HotkeyChord: Codable, Equatable, Hashable {
     }
 
     /// Chords whose exclusive registration would swallow an OS-wide shortcut:
-    /// quit/close/hide/minimize (⌘Q/⌘W/⌘H/⌘M), the input-source and emoji
-    /// panels (Space under ⌘/⌃), and the screenshot range (⌘⇧3…6).
+    /// quit/close/hide/minimize and the universal edit commands under bare ⌘
+    /// (⌘Q/⌘W/⌘H/⌘M, ⌘A/⌘S/⌘Z/⌘X/⌘C/⌘V), Spaces/Mission Control/App Exposé
+    /// under bare ⌃ arrows, lock screen (⌃⌘Q), Hide Others (⌘⌥H), the
+    /// input-source and emoji panels (Space under ⌘/⌃), and the screenshot
+    /// range (⌘⇧3…6). Decorated variants are not OS defaults and stay free.
     var isSystemReserved: Bool {
         let command = modifiers & UInt32(cmdKey) != 0
         let control = modifiers & UInt32(controlKey) != 0
@@ -22,7 +25,11 @@ struct HotkeyChord: Codable, Equatable, Hashable {
         let shift = modifiers & UInt32(shiftKey) != 0
         if keyCode == 49 { return command || control }
         if (20...23).contains(keyCode) { return command && shift && !control && !option }
-        return command && !control && !option && !shift && [4, 12, 13, 46].contains(keyCode)
+        if (123...126).contains(keyCode) { return control && !command && !option && !shift }
+        if keyCode == 12 && command && control && !option && !shift { return true }
+        if keyCode == 4 && command && option && !control && !shift { return true }
+        return command && !control && !option && !shift
+            && [0, 1, 4, 6, 7, 8, 9, 12, 13, 46].contains(keyCode)
     }
 
     init(keyCode: UInt32, modifiers: UInt32) { self.keyCode = keyCode; self.modifiers = modifiers }

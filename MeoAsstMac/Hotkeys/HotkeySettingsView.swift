@@ -43,7 +43,7 @@ struct HotkeySettingsView: View {
                         return
                     }
                     guard !chord.isSystemReserved else {
-                        recordingError = String(localized: "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键")
+                        recordingError = String(localized: "该组合为系统保留或通用编辑快捷键（如 ⌘Q、⌘C、⌃→、⌘⇧4），不能注册为全局热键")
                         return
                     }
                     if recording == .start { draft.start = chord } else { draft.stop = chord }

@@ -53,7 +53,7 @@ final class GlobalHotkeyService: ObservableObject {
         }
         // Reject before unregistering so a reserved chord keeps current bindings.
         guard !candidate.hasReservedChord else {
-            errorMessage = String(localized: "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键")
+            errorMessage = String(localized: "该组合为系统保留或通用编辑快捷键（如 ⌘Q、⌘C、⌃→、⌘⇧4），不能注册为全局热键")
             return false
         }
         let previous = configuration

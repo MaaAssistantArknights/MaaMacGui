@@ -92,6 +92,15 @@ import Carbon
         check(!HotkeyChord(keyCode: 12, modifiers: UInt32(cmdKey | controlKey | shiftKey)).isSystemReserved, "decorated quit chord allowed")
         check(!service.save(HotkeyConfiguration(enabled: true, start: HotkeyChord(keyCode: 49, modifiers: UInt32(cmdKey)))), "reserved space chord rejected")
         check(!service.configuration.enabled && service.errorMessage != nil, "reserved rejection keeps current bindings")
+        check(HotkeyChord(keyCode: 8, modifiers: UInt32(cmdKey)).isSystemReserved, "bare copy chord reserved")
+        check(HotkeyChord(keyCode: 1, modifiers: UInt32(cmdKey)).isSystemReserved, "bare save chord reserved")
+        check(!HotkeyChord(keyCode: 8, modifiers: UInt32(cmdKey | optionKey)).isSystemReserved, "decorated copy chord allowed")
+        check(HotkeyChord(keyCode: 124, modifiers: UInt32(controlKey)).isSystemReserved, "bare control arrow reserved")
+        check(!HotkeyChord(keyCode: 124, modifiers: UInt32(controlKey | shiftKey)).isSystemReserved, "decorated control arrow allowed")
+        check(HotkeyChord(keyCode: 12, modifiers: UInt32(cmdKey | controlKey)).isSystemReserved, "lock screen chord reserved")
+        check(HotkeyChord(keyCode: 4, modifiers: UInt32(cmdKey | optionKey)).isSystemReserved, "hide others chord reserved")
+        check(!service.save(HotkeyConfiguration(enabled: true, start: HotkeyChord(keyCode: 8, modifiers: UInt32(cmdKey)))), "reserved edit chord rejected")
+        check(!service.configuration.enabled, "edit chord rejection keeps current bindings")
         print("HotkeyTests: \(count) assertions passed; exclusive native conflict used two processes")
     }
 }

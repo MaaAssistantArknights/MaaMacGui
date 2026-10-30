@@ -331,24 +331,24 @@
         }
       }
     },
-    "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键" : {
+    "该组合为系统保留或通用编辑快捷键（如 ⌘Q、⌘C、⌃→、⌘⇧4），不能注册为全局热键" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "该组合为系统保留快捷键（如 ⌘Q、⌘W、⌘Space、⌘⇧4），不能注册为全局热键"
+            "value" : "该组合为系统保留或通用编辑快捷键（如 ⌘Q、⌘C、⌃→、⌘⇧4），不能注册为全局热键"
           }
         },
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "This combination is a system-reserved shortcut (e.g. ⌘Q, ⌘W, ⌘Space, ⌘⇧4) and cannot be registered as a global hotkey"
+            "value" : "This combination is a system-reserved or common editing shortcut (e.g. ⌘Q, ⌘C, ⌃→, ⌘⇧4) and cannot be registered as a global hotkey"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시스템 예약 단축키(⌘Q, ⌘W, ⌘Space, ⌘⇧4 등)는 전역 단축키로 등록할 수 없습니다"
+            "value" : "시스템 예약 또는 공용 편집 단축키(⌘Q, ⌘C, ⌃→, ⌘⇧4 등)는 전역 단축키로 등록할 수 없습니다"
           }
         }
       }
