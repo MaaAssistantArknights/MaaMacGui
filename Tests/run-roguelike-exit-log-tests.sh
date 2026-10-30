@@ -14,7 +14,8 @@ source = Path('MeoAsstMac/Core/MaaMessage.swift').read_text()
 start = source.index('@JSONRepresentable\nprivate struct ProcessTaskDetails {')
 end = source.index('\nextension MAAViewModel', start)
 branch = source.index('            case "ExitThenAbandon":', end)
-next_case = source.index('\n            case ', branch + 1)
+abandon = source.index('            case "Abandon":', branch)
+next_case = source.index('\n            case ', abandon + 1)
 production = source[start:end] + '\nprivate func handleExit(_ process: ProcessTaskDetails) {\n switch process.task {\n' + source[branch:next_case] + '\n default: break\n }\n}\n'
 Path(sys.argv[1]).write_text('import Foundation\nimport JBird\n' + production + Path('Tests/RoguelikeExitLogTests.swift').read_text())
 PY

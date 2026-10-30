@@ -648,6 +648,11 @@ extension MAAViewModel {
                 // Exiting the map can also preserve the current exploration.
                 logInfo(.explorationExiting)
 
+            case "Abandon":
+                // A retained exit skips this task (reported as ExceededLimit),
+                // so reaching here means the exploration is truly abandoned.
+                logWarn(.explorationAbandoned)
+
             case "StartAction":
                 // WPF retains this callback branch but currently performs no operation.
                 break

@@ -35,6 +35,13 @@ for packet in packets {
 expect(entries.count == 1, "Only the start callback logs an exit")
 expect(entries[0].severity == "info", "Returning from the map is informational")
 expect(entries[0].resource == .explorationExiting, "Exiting does not claim abandonment or saved progress")
+// A truly abandoned exploration executes the "Abandon" task and must warn.
+private let abandoned = try ProcessTaskDetails(
+    json: JSON(JSONSerialization.data(withJSONObject: ["task": "Abandon", "exec_times": 1] as [String: Any])))
+handleExit(abandoned)
+expect(entries.count == 2, "Executing the abandon task is distinct from exiting the map")
+expect(entries[1].severity == "warning", "A real abandonment is a warning")
+expect(entries[1].resource == .explorationAbandoned, "The warning names the abandoned exploration")
 let strings = catalog["strings"] as! [String: Any]
 let message = strings[entries[0].resource.rawValue] as! [String: Any]
 let localizations = message["localizations"] as! [String: Any]
