@@ -199,9 +199,46 @@ private final class BlockingLoginOperation: @unchecked Sendable {
             domain: "LoginItemTest", code: 4,
             userInfo: [NSLocalizedDescriptionKey: "Late removal failure"])
         settledFake.cancellation?.resume()
-        await eventually("A late result must not relock a reconciled request") {
-            settledService.errorMessage != nil && !settledService.hasPendingOperation
-                && !settledService.isUpdating
+        try? await Task.sleep(for: .milliseconds(150))
+        precondition(
+            settledService.errorMessage == nil && !settledService.hasPendingOperation
+                && !settledService.isUpdating,
+            "A late result for a reconciled request must be discarded, not shown as a fresh error")
+
+        // A late result from a request that refresh() already reconciled must not
+        // disturb the pending bookkeeping of a newer in-flight request.
+        let staleFake = FakeLoginItem()
+        let staleService = LoginItemService(manager: staleFake, operationTimeout: .milliseconds(50))
+        staleFake.status = .enabled
+        staleFake.suspendCancellation = true
+        Task { await staleService.setEnabled(false) }
+        await eventually("Stale-case removal must start") { staleFake.cancellation != nil }
+        await eventually("Stale-case removal must time out") { !staleService.isUpdating }
+        precondition(staleService.hasPendingOperation)
+        staleFake.status = .notRegistered  // The system settled the removal behind the UI.
+        staleService.refresh()  // Reconciliation abandons the old removal's eventual result.
+        precondition(!staleService.hasPendingOperation)
+        staleFake.suspendRegistration = true
+        Task { await staleService.setEnabled(true) }
+        await eventually("Stale-case registration must start") { staleFake.registration != nil }
+        precondition(
+            staleService.isUpdating && staleService.hasPendingOperation,
+            "The successor request must be tracked and awaited")
+        staleFake.failure = NSError(
+            domain: "LoginItemTest", code: 6,
+            userInfo: [NSLocalizedDescriptionKey: "Stale removal failure"])
+        staleFake.cancellation?.resume()  // The abandoned removal finally reports failure.
+        try? await Task.sleep(for: .milliseconds(200))
+        precondition(
+            staleService.hasPendingOperation && !staleService.isUpdating
+                && staleService.errorMessage != nil
+                && staleService.errorMessage != "Stale removal failure",
+            "A stale late result must leave the successor's tracking and its own deadline intact")
+        staleFake.failure = nil
+        staleFake.registration?.resume()
+        await eventually("The successor must settle on its own result") {
+            staleService.status == .enabled && !staleService.hasPendingOperation
+                && !staleService.isUpdating && staleService.errorMessage == nil
         }
 
         let stuckFake = FakeLoginItem()
@@ -240,7 +277,7 @@ private final class BlockingLoginOperation: @unchecked Sendable {
             precondition(blockedService.errorMessage == nil)
         }
         print(
-            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results, refresh reconciliation and blocked production adapter"
+            "PASS: four statuses, opt-in, external changes, approval, failures, concurrency, registration/removal deadlines, bounded retry, late results, refresh reconciliation, stale-result isolation and blocked production adapter"
         )
     }
 }

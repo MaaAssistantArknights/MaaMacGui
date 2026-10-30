@@ -56,6 +56,7 @@ import ServiceManagement
     @Published private var pendingRequest: Bool?
     private var waiter: CheckedContinuation<Void, Never>?
     private var timeoutTask: Task<Void, Never>?
+    private var requestGeneration = 0
 
     var hasPendingOperation: Bool { pendingRequest != nil }
 
@@ -79,6 +80,9 @@ import ServiceManagement
             pendingRequest = nil
             errorMessage = nil
             failedRequest = nil
+            // Abandoning the request invalidates its eventual result: bump the
+            // generation so its late complete() cannot touch a successor request.
+            requestGeneration += 1
         }
     }
 
@@ -119,6 +123,8 @@ import ServiceManagement
         pendingRequest = enabled
         // Unstructured work deliberately outlives the UI deadline: cancellation
         // cannot stop the underlying OS request. Observe its eventual result.
+        // The generation token marks which tracked request the result belongs to.
+        let generation = requestGeneration
         Task { [weak self, manager] in
             let result: Result<Void, Error>
             do {
@@ -131,7 +137,7 @@ import ServiceManagement
             } catch {
                 result = .failure(error)
             }
-            self?.complete(result, enabled: enabled)
+            self?.complete(result, enabled: enabled, generation: generation)
         }
         await waitForPendingOperation()
     }
@@ -155,7 +161,11 @@ import ServiceManagement
         }
     }
 
-    private func complete(_ result: Result<Void, Error>, enabled: Bool) {
+    private func complete(_ result: Result<Void, Error>, enabled: Bool, generation: Int) {
+        // The tracked request may have been reconciled away by refresh() while its
+        // OS call was still in flight; the stale result must not clear the pending
+        // bookkeeping, deadline or error surface of a successor request.
+        guard generation == requestGeneration else { return }
         pendingRequest = nil
         refresh()
         switch result {
