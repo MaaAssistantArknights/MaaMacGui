@@ -93,7 +93,7 @@ struct HotkeySettingsView: View {
                 recordingError = nil
                 service.beginRecording()
             }
-            Button("清除") { if command == .start { draft.start = nil } else { draft.stop = nil } }
+            Button("清除热键") { if command == .start { draft.start = nil } else { draft.stop = nil } }
         }
     }
 

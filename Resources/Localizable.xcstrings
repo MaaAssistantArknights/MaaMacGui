@@ -5599,6 +5599,28 @@
     "清除" : {
 
     },
+    "清除热键" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清除热键"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Hotkey"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단축키 지우기"
+          }
+        }
+      }
+    },
     "游戏内历法：%@" : {
       "localizations" : {
         "en" : {
