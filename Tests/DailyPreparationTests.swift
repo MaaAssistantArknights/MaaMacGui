@@ -41,6 +41,25 @@ import Foundation
   quarantineCore.isRunning = false
   try? await Task.sleep(for:.milliseconds(350))
   check(quarantine.handle == nil && !quarantine.forceRecoveryInFlight && quarantine.dailyRunCoordinator.lastTerminal?.outcome == .failed, "idle observation releases quarantined handle and finishes failure")
+  // Regression: a stale forceRecoveryInFlight after a failed recovery cleanup
+  // (start/stop mutex already released) must not short-circuit a user stop.
+  let stuckStop=MAAViewModel(); let stuckCore=stuckStop.handle!
+  stuckStop.tasks=[.init(task:.fixture)]; stuckStop.failRecoveryCleanup = true
+  check(await stuckStop.startDailyTasks(recoverGame:true) == .failed, "cleanup failure reports failure")
+  check(stuckStop.forceRecoveryInFlight && !stuckStop.operationInFlightForTest && !stuckStop.canStartTasks && stuckCore.isRunning, "failed cleanup leaves stale recovery flag while the mutex is released")
+  try? await stuckStop.stop()
+  check(stuckCore.stopCount == 1 && !stuckCore.isRunning && stuckStop.handle == nil && !stuckStop.forceRecoveryInFlight, "stale recovery flag must not block a full stop of the stuck core")
+  check(stuckStop.dailyRunCoordinator.active == nil && stuckStop.dailyRunCoordinator.lastTerminal?.outcome == .cancelled && stuckStop.canStartTasks, "stop finishes the cleanup-failure run as cancelled and unblocks start")
+  // While recovery genuinely runs (inside startDailyTasks, mutex held), stop
+  // must keep requesting an abort instead of stopping Core underneath it.
+  let abortStop=MAAViewModel(); let abortCore=abortStop.handle!; let abortGate=Gate()
+  abortStop.recoveryGate=abortGate; abortStop.tasks=[.init(task:.fixture)]; var abortValid=true
+  let abortWork=Task { await abortStop.startDailyTasks(recoverGame:true, recoveryCurrent:{ abortValid }) }
+  for _ in 0..<10000 { if abortGate.entered { break }; await Task.yield() }
+  try? await abortStop.stop()
+  check(abortCore.stopCount == 0 && abortStop.infos.contains("正在中止恢复中的强制开始任务，请稍候。") && abortStop.dailyRunCoordinator.active != nil, "stop during live recovery requests an abort instead of stopping Core")
+  abortValid=false; abortGate.release()
+  check(await abortWork.value == .failed && abortCore.stopCount == 1 && abortStop.dailyRunCoordinator.active == nil, "aborted recovery unwinds through cleanup and finishes like a cancellation")
   let journalRoot=FileManager.default.temporaryDirectory.appendingPathComponent("maa-journal-fault-\(UUID())")
   defer { try? FileManager.default.removeItem(at:journalRoot) }
   let journalModel=MAAViewModel(journalURL:journalRoot.appendingPathComponent("run.json"))

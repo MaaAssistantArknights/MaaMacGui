@@ -34,6 +34,9 @@ final class DailyRunCoordinator {
     private(set) var lastTerminal: RunContext?
     /// True while the on-disk journal no longer accepts writes. The in-memory
     /// contract still holds, but the terminal record needs an escape hatch.
+    /// Diagnostic only: nothing reads this flag yet. It is reset on every
+    /// successful persist (begin/transition/finish) so one failed run cannot
+    /// report a stale failure for the next healthy run.
     private(set) var journalPersistFailed = false
     private let journalURL: URL?
     var didChange: (() -> Void)?
@@ -58,6 +61,7 @@ final class DailyRunCoordinator {
         let context = RunContext(id: UUID(), origin: origin, profileID: profileID,
                                  status: .preparing, startedAt: .now)
         try persist(context)
+        journalPersistFailed = false
         active = context
         didChange?()
         return context.id

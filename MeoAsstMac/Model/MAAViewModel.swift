@@ -319,9 +319,12 @@ extension MAAViewModel {
         if cancelScheduledStart {
             NotificationCenter.default.post(name: .MAACancelPendingScheduledStart, object: nil)
         }
-        if forceRecoveryInFlight {
-            // 强制恢复最长约 5 分钟并持有启动互斥;保留停止途径:请求中止恢复,
-            // 恢复循环会清理并释放 Core,随后本次运行按取消结束。
+        if forceRecoveryInFlight && isStartStopInFlight {
+            // 强制恢复最长约 5 分钟,且仅在 startDailyTasks 持有启动互斥期间运行;
+            // 该窗口内保留停止途径:请求中止恢复,恢复循环会清理并释放 Core,
+            // 随后本次运行按取消结束。互斥释放后 forceRecoveryInFlight 可能因
+            // 清理失败残留为 true(等待空闲观察清理),此时必须走完整停止,
+            // 否则卡死的 Core 将永远无法停止。
             forceRecoveryAbortRequested = true
             logInfo("正在中止恢复中的强制开始任务，请稍候。")
             return

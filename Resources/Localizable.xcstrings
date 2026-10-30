@@ -7593,6 +7593,94 @@
           }
         }
       }
+    },
+    "后台定时最多支持 %lld 条计划，请先删除不需要的计划。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "后台定时最多支持 %lld 条计划，请先删除不需要的计划。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Background scheduling supports at most %lld plans. Delete the plans you do not need first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "백그라운드 예약은 최대 %lld개의 계획을 지원합니다. 필요 없는 계획을 먼저 삭제하세요."
+          }
+        }
+      }
+    },
+    "正在中止恢复中的强制开始任务，请稍候。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在中止恢复中的强制开始任务，请稍候。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aborting the forced start task that is still recovering. Please wait."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "복구 중인 강제 시작 작업을 중단하는 중입니다. 잠시만 기다려 주세요."
+          }
+        }
+      }
+    },
+    "当前正在启动或停止任务，请稍后重试。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前正在启动或停止任务，请稍后重试。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A task is currently starting or stopping. Try again later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업을 시작하거나 중지하는 중입니다. 잠시 후 다시 시도하세요."
+          }
+        }
+      }
+    },
+    "任务正在运行，请先停止当前任务。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务正在运行，请先停止当前任务。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A task is running. Stop the current task first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업이 실행 중입니다. 현재 작업을 먼저 중지하세요."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"
