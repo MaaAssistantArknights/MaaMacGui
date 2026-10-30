@@ -3,6 +3,10 @@ import Foundation
 /// Shared by the GUI and the one-shot agent. No Core, game configuration, or
 /// executable paths cross this boundary.
 struct SchedulePublication: Codable, Equatable, Sendable {
+    /// Hard schema limit; the GUI mirrors it so a publication can never become
+    /// permanently invalid and retry-fail every poll.
+    static let maxPlanCount = 128
+
     var schemaVersion = 1
     let revision: UUID
     let enabled: Bool
@@ -12,7 +16,7 @@ struct SchedulePublication: Codable, Equatable, Sendable {
 
     func validate() throws {
         guard schemaVersion == 1, !profileID.isEmpty, profileID.count <= 256,
-              plans.count <= 128, Set(plans.map(\.id)).count == plans.count,
+              plans.count <= Self.maxPlanCount, Set(plans.map(\.id)).count == plans.count,
               plans.allSatisfy(\.isValid) else { throw BackgroundScheduleError.invalidPublication }
     }
 }
@@ -90,7 +94,12 @@ struct BackgroundScheduleFiles {
                 throw BackgroundScheduleError.invalidIntent
             }
         }
+        // Envelope file names are random UUIDs; consume in trigger order instead,
+        // with the same plan-ID tie-break as the ledger's claim winner.
+        result.sort { lhs, rhs in
+            (lhs.1.occurrence.scheduledAt, lhs.1.occurrence.planID.uuidString, lhs.1.occurrence.id)
+                < (rhs.1.occurrence.scheduledAt, rhs.1.occurrence.planID.uuidString, rhs.1.occurrence.id)
+        }
         return result
-
     }
 }

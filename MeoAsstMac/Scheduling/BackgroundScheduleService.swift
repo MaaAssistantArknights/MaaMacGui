@@ -7,6 +7,14 @@ import SwiftUI
     static let shared = BackgroundScheduleService()
     static let plistName = "com.hguandl.MeoAsstMac.ScheduleAgent.plist"
 
+    /// Poll cadence. The 300 s delivery window makes a 5 s consumption delay
+    /// immaterial while cutting idle-time XPC and disk traffic fivefold.
+    private static let pollInterval: TimeInterval = 5
+    /// Ledger expiry is bookkeeping for never-delivered intents; a 60 s cadence
+    /// stays far inside the 300 s delivery window while avoiding a full locked
+    /// ledger transaction on every poll.
+    private static let intentExpiryInterval: TimeInterval = 60
+
     @Published private(set) var status = SMAppService.Status.notRegistered
     @Published private(set) var available = false
     @Published private(set) var failure: String?
@@ -15,7 +23,13 @@ import SwiftUI
     private var files: BackgroundScheduleFiles?
     private var lastPublication: SchedulePublication?
     private var poll: Timer?
+    private var lastIntentExpiry: Date?
     private let service = SMAppService.agent(plistName: plistName)
+
+    /// Each source clears itself on its own success so one transient error can
+    /// neither wipe the other's message nor stick around forever.
+    private var publicationFailure: String? { didSet { failure = publicationFailure ?? inboxFailure } }
+    private var inboxFailure: String? { didSet { failure = publicationFailure ?? inboxFailure } }
 
     private init() {}
 
@@ -38,7 +52,7 @@ import SwiftUI
             print("Background schedule unavailable: \(error)")
         }
         poll?.invalidate()
-        let timer = Timer(timeInterval: 1, repeats: true) { [weak self] _ in
+        let timer = Timer(timeInterval: Self.pollInterval, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.refreshStatus()
                 self?.publishIfChanged()
@@ -83,8 +97,9 @@ import SwiftUI
         do {
             try files.publish(publication)
             lastPublication = publication
+            publicationFailure = nil
         } catch {
-            failure = String(localized: "后台定时计划无法发布；本次不会触发。")
+            publicationFailure = String(localized: "后台定时计划无法发布；本次不会触发。")
             print("Background schedule publication: \(error)")
         }
     }
@@ -92,9 +107,20 @@ import SwiftUI
     private func consumeIntents() {
         guard let files, let model, model.isCoreInitialized else { return }
         do {
-            try TaskTimerManager.shared.expireBackgroundIntents()
+            let expiryDue = lastIntentExpiry.map { Date().timeIntervalSince($0) >= Self.intentExpiryInterval } ?? true
+            if expiryDue {
+                try TaskTimerManager.shared.expireBackgroundIntents()
+                lastIntentExpiry = .now
+            }
+            // Listing an empty inbox is the only idle-time work; the publication
+            // read and the accept loop run only when an intent is waiting.
+            let intents = try files.intents()
+            guard !intents.isEmpty else {
+                inboxFailure = nil
+                return
+            }
             let publication = try files.publication()
-            for (url, intent) in try files.intents() {
+            for (url, intent) in intents {
                 guard enabled, intent.isValid(in: publication, now: .now),
                       intent.profileID == model.dailyTaskProfile else {
                     try TaskTimerManager.shared.rejectBackgroundIntent(intent.occurrence, detail: "staleBackgroundIntent")
@@ -104,8 +130,9 @@ import SwiftUI
                 try TaskTimerManager.shared.acceptBackgroundIntent(intent)
                 try FileManager.default.removeItem(at: url)
             }
+            inboxFailure = nil
         } catch {
-            failure = String(localized: "后台定时交接记录无法读取；已暂停交接。")
+            inboxFailure = String(localized: "后台定时交接记录无法读取；已暂停交接。")
             print("Background schedule inbox: \(error)")
         }
     }

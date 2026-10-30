@@ -119,15 +119,19 @@ final class ScheduleOccurrenceStore: @unchecked Sendable {
         }
     }
 
-    func expireUndeliveredBackgroundIntents(now: Date = .now) throws {
+    @discardableResult
+    func expireUndeliveredBackgroundIntents(now: Date = .now) throws -> Bool {
         try transaction { ledger in
+            var expired = false
             for (id, var record) in ledger.records where record.result == .pending &&
                 record.detail == "backgroundIntent" && record.expiresAt < now {
                 record.result = .missed
                 record.detail = "backgroundIntentExpired"
                 record.updatedAt = now
                 ledger.records[id] = record
+                expired = true
             }
+            return expired
         }
     }
 

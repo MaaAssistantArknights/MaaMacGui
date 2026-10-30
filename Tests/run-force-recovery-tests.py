@@ -51,6 +51,7 @@ typealias MAAHandle = Core
  let dailyRunCoordinator = Coordinator()
  var handle: Core? = Core()
  var forceRecovery: ForcedGameRecovery?
+ var forceRecoveryAbortRequested = false
  var forceRecoveryCleanupPending = false
  var messageTask: Task<Void,Never>?
 ''' + method.replace('private func','func',1) + '''
@@ -221,7 +222,17 @@ main = '''
   current = false; changedCore.appendGate?.resume(); changedCore.appendGate = nil
   do { try await changedWork.value; fatalError("scope change must cancel") } catch is CancellationError {}
   precondition(changedCore.startCount == 0 && changedCore.stopped == 1 && changed.handle == nil)
-  print("PASS: recovery success, missing home, timeout, cancellation, cleanup failure, delayed/stuck idle and scope change during append")
+  let abort = Probe(); let abortCore = abort.handle!; abort.dailyRunCoordinator.active = .init(id:run)
+  abortCore.onStart = { [weak abort] in
+   guard let abort, let state = abort.forceRecovery else { return }
+   abort.forceRecovery?.chainStart(state.taskID)
+  }
+  let abortWork = Task { try await abort.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2) }
+  while abortCore.startCount == 0 { await Task.yield() }
+  abort.forceRecoveryAbortRequested = true
+  do { try await abortWork.value; fatalError("user abort must not succeed") } catch is CancellationError {}
+  precondition(abortCore.stopped == 1 && !abortCore.isRunning && abort.handle == nil, "user abort during recovery cleans up like a cancellation")
+  print("PASS: recovery success, missing home, timeout, cancellation, cleanup failure, delayed/stuck idle, scope change during append and user abort")
  }
 }
 '''

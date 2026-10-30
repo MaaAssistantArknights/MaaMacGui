@@ -33,6 +33,7 @@ import SwiftUI
     @Published private(set) var isStartStopInFlight = false
     var forceRecovery: ForcedGameRecovery?
     var forceRecoveryInFlight = false
+    private var forceRecoveryAbortRequested = false
     private var forceRecoveryCleanupPending = false
     private var forceRecoveryJournalFailureRunID: UUID? = nil
     private var taskCompletionGeneration = UInt64(0)
@@ -316,7 +317,14 @@ extension MAAViewModel {
 
     func stop(cancelScheduledStart: Bool = true) async throws {
         if cancelScheduledStart {
-            NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
+            NotificationCenter.default.post(name: .MAACancelPendingScheduledStart, object: nil)
+        }
+        if forceRecoveryInFlight {
+            // 强制恢复最长约 5 分钟并持有启动互斥;保留停止途径:请求中止恢复,
+            // 恢复循环会清理并释放 Core,随后本次运行按取消结束。
+            forceRecoveryAbortRequested = true
+            logInfo("正在中止恢复中的强制开始任务，请稍候。")
+            return
         }
         guard dailyRunCoordinator.active?.status != .postHook else {
             logError("后置清理正在执行，请等待完成。")
@@ -330,7 +338,12 @@ extension MAAViewModel {
 
         dailyRunOutcome = .cancelled
         if let id = dailyRunCoordinator.active?.id {
-            try dailyRunCoordinator.transition(.stopping, for: id)
+            do { try dailyRunCoordinator.transition(.stopping, for: id) }
+            catch {
+                // Journal 无法写入时仍允许用户停止:放弃本次落盘记录,仅推进内存状态。
+                logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                dailyRunCoordinator.abandon(id)
+            }
         }
         try await handle?.stop()
         status = .idle
@@ -669,6 +682,7 @@ extension MAAViewModel {
             let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
             guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
             forceRecoveryJournalFailureRunID = nil
+            forceRecoveryAbortRequested = false
             dailyRunOutcome = .completed
             dailyRunTasks = snapshot.tasks
             if recoverGame { forceRecoveryInFlight = true }
@@ -796,6 +810,7 @@ extension MAAViewModel {
     /// any of the user's tasks may be queued.
     private func recoverGameToHome(runID: UUID, isCurrent: @escaping @MainActor () -> Bool, timeout: TimeInterval = 300, cleanupTimeout: TimeInterval = 5) async throws {
         guard let handle, dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
+        guard !forceRecoveryAbortRequested else { throw CancellationError() }
         let expires = Date().addingTimeInterval(timeout)
         do {
             // Native StartUp disables retries into a new fight, game launch and account switching.
@@ -868,16 +883,19 @@ extension MAAViewModel {
     private func runRecoveryTask(handle: MAAHandle, runID: UUID, type: MAATaskType, params: String,
                                  chain: String, requiresHome: Bool, expires: Date, isCurrent: @escaping @MainActor () -> Bool) async throws {
         try Task.checkCancellation()
+        guard !forceRecoveryAbortRequested else { throw CancellationError() }
         guard isCurrent(), dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
         guard Date() <= expires else { throw ForcedRecoveryFailure.timedOut }
         let taskID = try await handle.appendTask(type: type, params: params)
         try Task.checkCancellation()
+        guard !forceRecoveryAbortRequested else { throw CancellationError() }
         guard isCurrent(), dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
         guard Date() <= expires else { throw ForcedRecoveryFailure.timedOut }
         forceRecovery = ForcedGameRecovery(taskID: taskID, chain: chain, requiresHome: requiresHome)
         try await handle.start()
         while Date() <= expires {
             try Task.checkCancellation()
+            guard !forceRecoveryAbortRequested else { throw CancellationError() }
             guard isCurrent(), dailyRunCoordinator.active?.id == runID, let state = forceRecovery else { throw CancellationError() }
             if state.failed { throw ForcedRecoveryFailure.notReady }
             if chain == "StartUp", let resultSince = state.resultSince, !state.completed,
@@ -925,6 +943,10 @@ extension MAAViewModel {
     }
 
     func appendNewTaskTimer() {
+        guard scheduledDailyTaskTimers.count < SchedulePublication.maxPlanCount else {
+            logError("后台定时最多支持 \(SchedulePublication.maxPlanCount) 条计划，请先删除不需要的计划。")
+            return
+        }
         scheduledDailyTaskTimers.append(DailyTaskTimer(id: UUID(), hour: 9, minute: 0, isEnabled: false))
     }
 }

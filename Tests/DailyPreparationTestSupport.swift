@@ -122,6 +122,7 @@ struct DailyTask {
     var expiringMedicineUsedTimes = 0
     private var forceRecoveryCleanupPending = false
     private var forceRecoveryJournalFailureRunID: UUID? = nil
+    private var forceRecoveryAbortRequested = false
     var handle: Core? = Core()
     var logStore: TestLogStore? = TestLogStore()
     var tasks: [DailyTask] = []

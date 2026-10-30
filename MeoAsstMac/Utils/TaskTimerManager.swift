@@ -90,8 +90,9 @@ import Foundation
     }
 
     func expireBackgroundIntents() throws {
-        try store.expireUndeliveredBackgroundIntents()
-        reloadRecords()
+        // Reload the recent-occurrence view only when the ledger actually
+        // changed; otherwise this stays a wasted full-ledger transaction.
+        if try store.expireUndeliveredBackgroundIntents() { reloadRecords() }
     }
 
     func rejectBackgroundIntent(_ occurrence: ScheduleOccurrence, detail: String) throws {
@@ -116,9 +117,9 @@ import Foundation
         NotificationCenter.default.publisher(for: .MAAPreventSystemSleepingChanged)
             .sink { [weak self] in self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false) }
             .store(in: &cancellables)
-        NotificationCenter.default.publisher(for: Notification.Name("MAACancelPendingScheduledStart"))
+        NotificationCenter.default.publisher(for: .MAACancelPendingScheduledStart)
             .sink { [weak self] _ in self?.handoff?.cancelPending() }.store(in: &cancellables)
-        NotificationCenter.default.publisher(for: Notification.Name("MAADailyRunFinished"))
+        NotificationCenter.default.publisher(for: .MAADailyRunFinished)
             .sink { [weak self] note in
                 guard let end = note.object as? RunContext else { return }
                 self?.recordTerminal(end)

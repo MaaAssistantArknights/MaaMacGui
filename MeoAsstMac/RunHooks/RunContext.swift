@@ -1,5 +1,11 @@
 import Foundation
 
+/// Typed names so renames cannot silently break the observer/post pairs.
+extension Notification.Name {
+    static let MAACancelPendingScheduledStart = Notification.Name("MAACancelPendingScheduledStart")
+    static let MAADailyRunFinished = Notification.Name("MAADailyRunFinished")
+}
+
 /// Shared identity and terminal contract for daily automation entry points.
 enum DailyRunOrigin: String, Codable { case manual, schedule, hotkey }
 enum DailyRunPhase: String, Codable { case preparing, preHook, connecting, running, stopping, postHook, finished }
@@ -26,6 +32,9 @@ struct DailyRunSnapshot {
 final class DailyRunCoordinator {
     private(set) var active: RunContext?
     private(set) var lastTerminal: RunContext?
+    /// True while the on-disk journal no longer accepts writes. The in-memory
+    /// contract still holds, but the terminal record needs an escape hatch.
+    private(set) var journalPersistFailed = false
     private let journalURL: URL?
     var didChange: (() -> Void)?
 
@@ -58,6 +67,7 @@ final class DailyRunCoordinator {
         guard var context = active, context.id == id, context.status != .postHook else { return }
         context.status = phase
         try persist(context)
+        journalPersistFailed = false
         active = context
         didChange?()
     }
@@ -70,10 +80,29 @@ final class DailyRunCoordinator {
         context.outcome = outcome
         context.cleanupSucceeded = cleanupSucceeded
         try persist(context)
+        journalPersistFailed = false
         lastTerminal = context
         active = nil
         didChange?()
-        NotificationCenter.default.post(name: Notification.Name("MAADailyRunFinished"), object: context)
+        NotificationCenter.default.post(name: .MAADailyRunFinished, object: context)
+        return true
+    }
+
+    /// User escape hatch while the journal cannot be written: finish the run in
+    /// memory only so stop/start are not refused until an app restart. The stale
+    /// on-disk record is still marked interrupted by the next launch.
+    @discardableResult
+    func abandon(_ id: UUID, outcome: DailyRunOutcome = .cancelled) -> Bool {
+        guard var context = active, context.id == id else { return false }
+        journalPersistFailed = true
+        context.status = .finished
+        context.finishedAt = .now
+        context.outcome = outcome
+        context.cleanupSucceeded = nil
+        lastTerminal = context
+        active = nil
+        didChange?()
+        NotificationCenter.default.post(name: .MAADailyRunFinished, object: context)
         return true
     }
 
