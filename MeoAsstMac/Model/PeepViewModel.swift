@@ -7,6 +7,16 @@ struct PreviewFrame {
 }
 
 extension Notification.Name {
+    /// Posted on the main thread each time `PeepViewModel.frame` becomes non-nil with a new
+    /// `readAt` — exactly once per frame, when the frame is *published*.
+    ///
+    /// Contract notes for consumers (e.g. the achievements feature):
+    /// - Emission happens inside the SwiftUI update cycle, before the new image is committed
+    ///   to screen; it is a publish event, not a render/display event.
+    /// - It is unaware of window visibility: while automatic refresh runs, minimized or fully
+    ///   occluded windows still emit at the refresh cadence.
+    /// Counters driven by this notification therefore count published frames, not frames a
+    /// user actually saw on screen.
     static let MAAPreviewFrameDisplayed = Notification.Name("MAAPreviewFrameDisplayed")
 }
 
