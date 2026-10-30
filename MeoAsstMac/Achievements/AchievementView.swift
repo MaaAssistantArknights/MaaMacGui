@@ -34,7 +34,7 @@ struct AchievementView: View {
         .padding()
         .confirmationDialog("Achievement.ConfirmReset", isPresented: $confirmsReset) {
             Button("Achievement.Reset", role: .destructive) { store.resetWithBackup() }
-            Button("取消", role: .cancel) {}
+            Button("Achievement.CancelReset", role: .cancel) {}
         }
         .onAppear { store.record(.init(metric: .achievementView, operation: .maximum)) }
     }
