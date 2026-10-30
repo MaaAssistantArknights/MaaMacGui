@@ -19,7 +19,7 @@ struct InventorySnapshot: Equatable, Sendable {
 }
 
 enum InventoryTargetError: LocalizedError {
-    case recognitionRequired, invalidTarget, multipleTargets, unsafeOrder, stalePreparation
+    case recognitionRequired, invalidTarget, multipleTargets, unsafeOrder, stalePreparation, inventoryOverflow
 
     var errorDescription: String? {
         switch self {
@@ -28,6 +28,7 @@ enum InventoryTargetError: LocalizedError {
         case .multipleTargets: String(localized: "Inventory.MultipleTargets")
         case .unsafeOrder: String(localized: "Inventory.UnsafeOrder")
         case .stalePreparation: String(localized: "Inventory.StalePreparation")
+        case .inventoryOverflow: String(localized: "Inventory.Overflow")
         }
     }
 }
@@ -83,7 +84,8 @@ struct InventorySnapshotAdapter {
             let (updated, overflow) = (current.items[item] ?? 0).addingReportingOverflow(delta)
             guard !overflow else {
                 invalidate()
-                throw InventoryTargetError.invalidTarget
+                // 运行期累计溢出与目标配置无关，不复用配置校验的 invalidTarget 文案。
+                throw InventoryTargetError.inventoryOverflow
             }
             current.items[item] = updated
             marks[item] = max(count, previous)

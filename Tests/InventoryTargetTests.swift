@@ -8,9 +8,12 @@ import Foundation
             let result = try value()
             precondition(result, label)
         }
-        func rejects(_ label: String, _ action: () throws -> Void) {
+        func rejects(_ label: String, as expected: InventoryTargetError? = nil, _ action: () throws -> Void) {
             count += 1
-            do { try action(); preconditionFailure(label) } catch {}
+            do { try action(); preconditionFailure(label) }
+            catch let error as InventoryTargetError {
+                if let expected, error != expected { preconditionFailure("\(label): expected \(expected), got \(error)") }
+            } catch { preconditionFailure("\(label): unexpected error \(error)") }
         }
         let scope = InventoryScope(connection: "adb", server: "CN", profile: "Default")
         let other = InventoryScope(connection: "adb2", server: "CN", profile: "Default")
@@ -34,7 +37,7 @@ import Foundation
             check(plan.startInventory == inventory, "frozen base")
         }
         for quantity in [-1, Int.max] {
-            rejects("bad quantity") { _ = try InventoryTargetPlanner.plan(target: .init(itemID: "30012", quantity: quantity), snapshot: adapter.snapshot, knownItems: known) }
+            rejects("bad quantity", as: .invalidTarget) { _ = try InventoryTargetPlanner.plan(target: .init(itemID: "30012", quantity: quantity), snapshot: adapter.snapshot, knownItems: known) }
         }
         rejects("reputation 5001 rejected") { _ = try InventoryTargetPlanner.plan(target: .init(itemID: "5001", quantity: 1), snapshot: adapter.snapshot, knownItems: known) }
         rejects("unknown material") { _ = try InventoryTargetPlanner.plan(target: .init(itemID: "wrong", quantity: 1), snapshot: adapter.snapshot, knownItems: known) }
@@ -69,7 +72,7 @@ import Foundation
         check(adapter.snapshot?.items["30012"] == 16, "new run ignores old task")
         try adapter.capture(items: ["30012": Int.max], complete: true, scope: scope)
         adapter.beginRun(id: UUID(), taskIDs: [1])
-        rejects("overflow invalidates") { _ = try adapter.merge(taskID: 1, cumulative: ["30012": 1], scope: scope) }
+        rejects("overflow invalidates", as: .inventoryOverflow) { _ = try adapter.merge(taskID: 1, cumulative: ["30012": 1], scope: scope) }
         check(adapter.snapshot == nil, "overflow invalid snapshot")
         var config = FightConfiguration()
         check(config.inventoryTarget == nil, "legacy default")

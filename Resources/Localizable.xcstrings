@@ -221,6 +221,28 @@
         }
       }
     },
+    "Inventory.Overflow" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "库存数量累计时发生溢出：这是运行期数据异常，与目标设置无关；本次识别结果已作废，请重新识别库存。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inventory totals overflowed while merging drops. This is a runtime data error unrelated to the target setting; the recognized snapshot was discarded, so recognize inventory again."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "드롭 누적 중 재고 수치가 오버플로했습니다. 목표 설정과 무관한 실행 중 데이터 오류로, 인식된 인벤토리는 폐기되었으니 다시 인식해 주세요."
+          }
+        }
+      }
+    },
     "Inventory.MultipleTargets" : {
       "localizations" : {
         "zh-Hans" : {
