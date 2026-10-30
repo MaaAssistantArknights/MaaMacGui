@@ -108,6 +108,19 @@ main='''@main struct Main {
   let missingCore = missing.handle!
   do { try await missing.startTasks(); preconditionFailure("missing snapshot must reject") } catch { checks += 1 }
   check(await missingCore.untouched, "missing snapshot has no Core side effects")
+  let ordered = try make(5); let orderedCore = ordered.handle!
+  ordered.tasks = [.init(id: UUID(), task: .startup(Startup()), enabled: true), .init(id: UUID(), task: .fight(config), enabled: true)]
+  do { try await ordered.startTasks(); preconditionFailure("target behind another enabled task must reject") } catch InventoryTargetError.unsafeOrder { checks += 1 }
+  check(await orderedCore.untouched, "unsafe queue order never reaches Core")
+  let doubled = try make(5); let doubledCore = doubled.handle!
+  doubled.tasks = [.init(id: UUID(), task: .fight(config), enabled: true), .init(id: UUID(), task: .fight(config), enabled: true)]
+  do { try await doubled.startTasks(); preconditionFailure("multiple targets must reject") } catch InventoryTargetError.multipleTargets { checks += 1 }
+  check(await doubledCore.untouched, "multiple targets never reach Core")
+  var relaunch = Startup(); relaunch.start_game_enabled = true
+  let relaunching = try make(5); let relaunchingCore = relaunching.handle!
+  relaunching.tasks = [.init(id: UUID(), task: .fight(config), enabled: true), .init(id: UUID(), task: .startup(relaunch), enabled: true)]
+  do { try await relaunching.startTasks(); preconditionFailure("enabled relaunch after recognition must reject") } catch InventoryTargetError.unsafeOrder { checks += 1 }
+  check(await relaunchingCore.untouched, "relaunch after recognition never reaches Core")
   var normal = FightConfiguration(); normal.drops = ["30012": 3]
   let ordinary = Probe(); ordinary.tasks = [.init(id: UUID(), task: .fight(normal), enabled: true)]
   try await ordinary.startTasks(); let normalBatches = await ordinary.handle!.started
