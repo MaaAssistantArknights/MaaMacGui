@@ -39,6 +39,7 @@ support+='''
  init(directory: URL) { tasksDirectory = directory }
  func logWarn(_ value: String) { errors.append(value) }
  func logError(verbatim value: String) { errors.append(value) }
+ func logError(_ resource: LocalizedStringResource) { logError(verbatim: .init(localized: resource)) }
 '''+declaration(model,r'^    func applyDailyTaskCallback\(')+'\n}\n'
 mall=(root/'MeoAsstMac/Task Configurations/MallConfiguration.swift').read_text().replace('import JBird','')
 # Only the unrelated Core JSON result builder is replaced; all saved fields,

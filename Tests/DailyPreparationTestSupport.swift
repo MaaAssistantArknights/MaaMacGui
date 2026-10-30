@@ -120,7 +120,7 @@ struct DailyTask {
     }
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
-    private var forceRecoveryCleanupPending = false
+    var forceRecoveryCleanupPending = false
     private var forceRecoveryJournalFailureRunID: UUID? = nil
     private var forceRecoveryAbortRequested = false
     var handle: Core? = Core()

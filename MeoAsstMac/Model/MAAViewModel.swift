@@ -319,12 +319,13 @@ extension MAAViewModel {
         if cancelScheduledStart {
             NotificationCenter.default.post(name: .MAACancelPendingScheduledStart, object: nil)
         }
-        if forceRecoveryInFlight && isStartStopInFlight {
+        if forceRecoveryInFlight && isStartStopInFlight && !forceRecoveryCleanupPending {
             // 强制恢复最长约 5 分钟,且仅在 startDailyTasks 持有启动互斥期间运行;
             // 该窗口内保留停止途径:请求中止恢复,恢复循环会清理并释放 Core,
-            // 随后本次运行按取消结束。互斥释放后 forceRecoveryInFlight 可能因
-            // 清理失败残留为 true(等待空闲观察清理),此时必须走完整停止,
-            // 否则卡死的 Core 将永远无法停止。
+            // 随后本次运行按取消结束。cleanupPending 只在恢复循环抛出终止失败前
+            // 置位,此后再无人观测中止请求,不得走此短路:互斥已释放时必须完整
+            // 停止(陈旧标志不得短路卡死的 Core),互斥仍持有的尾声窗口则由
+            // beginTaskOperation 如实抛出占用提示,而非静默吞掉本次停止。
             forceRecoveryAbortRequested = true
             logInfo("正在中止恢复中的强制开始任务，请稍候。")
             return
@@ -340,16 +341,34 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .busy) }
 
         dailyRunOutcome = .cancelled
+        var abandonedRun = false
         if let id = dailyRunCoordinator.active?.id {
             do { try dailyRunCoordinator.transition(.stopping, for: id) }
             catch {
                 // Journal 无法写入时仍允许用户停止:放弃本次落盘记录,仅推进内存状态。
-                logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                logError("每日运行日志：\(error.localizedDescription)")
                 dailyRunCoordinator.abandon(id)
+                abandonedRun = true
             }
         }
-        try await handle?.stop()
+        // abandon 之后不再有空闲观察者兜底;若仍挂着清理失败的隔离 Core,
+        // 停止尝试后必须就地消化隔离状态,避免标志跨运行残留污染下一次运行
+        // 的消息路由与收尾过滤。
+        let discardQuarantinedCore = abandonedRun && forceRecoveryCleanupPending
+        do { try await handle?.stop() }
+        catch {
+            guard discardQuarantinedCore else { throw error }
+            // 丢弃隔离 Core 时,停止失败由句柄释放(AsstDestroy)兜底。
+        }
         status = .idle
+        if discardQuarantinedCore {
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            forceRecovery = nil
+            forceRecoveryCleanupPending = false
+            forceRecoveryInFlight = false
+        }
         await finishDailyRunIfStopped(allowInFlight: true)
     }
 
@@ -411,7 +430,7 @@ extension MAAViewModel {
             handle = nil
             taskIDMap.removeAll()
             taskStatus.removeAll()
-            logError(verbatim: "Daily preparation cleanup: \(error.localizedDescription)")
+            logError("每日准备清理：\(error.localizedDescription)")
             return false
         }
     }
@@ -450,7 +469,7 @@ extension MAAViewModel {
             status = .idle
         } catch {
             status = .pending
-            logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+            logError("每日运行日志：\(error.localizedDescription)")
         }
         return true
     }
@@ -651,7 +670,7 @@ extension MAAViewModel {
             }
             return true
         } catch {
-            logError(verbatim: "Run profile callback update failed: \(error.localizedDescription)")
+            logError("运行配置回调更新失败：\(error.localizedDescription)")
             return false
         }
     }
@@ -704,7 +723,7 @@ extension MAAViewModel {
                     do { try dailyRunCoordinator.transition(.running, for: runID) }
                     catch {
                         forceRecoveryJournalFailureRunID = runID
-                        logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+                        logError("每日运行日志：\(error.localizedDescription)")
                     }
                     // Even a journal failure must not prevent safe eventual Core release.
                     waitForDailyRunCompletion(runID: runID)

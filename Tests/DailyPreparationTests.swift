@@ -60,6 +60,46 @@ import Foundation
   check(abortCore.stopCount == 0 && abortStop.infos.contains("正在中止恢复中的强制开始任务，请稍候。") && abortStop.dailyRunCoordinator.active != nil, "stop during live recovery requests an abort instead of stopping Core")
   abortValid=false; abortGate.release()
   check(await abortWork.value == .failed && abortCore.stopCount == 1 && abortStop.dailyRunCoordinator.active == nil, "aborted recovery unwinds through cleanup and finishes like a cancellation")
+  // Regression (r3 A-P2-1): in the tail window right after a failed recovery
+  // cleanup (mutex still held, cleanupPending set, recovery loop already gone)
+  // stop() must be refused honestly, never silently swallowed by the abort path.
+  let tailStop=MAAViewModel(); let tailCore=tailStop.handle!
+  let tailRecoveryGate=Gate(); let tailRunningGate=Gate()
+  tailStop.tasks=[.init(task:.fixture)]; tailStop.failRecoveryCleanup = true
+  tailStop.recoveryGate = tailRecoveryGate
+  let tailWork=Task { await tailStop.startDailyTasks(recoverGame:true) }
+  while !tailRecoveryGate.entered { await Task.yield() }
+  // Suspend the catch path's `await handle?.running` query: the recovery loop
+  // has thrown its terminal failure (cleanupPending set) while the start/stop
+  // mutex is still held.
+  tailCore.runningGate = tailRunningGate
+  tailRecoveryGate.release()
+  while !tailRunningGate.entered { await Task.yield() }
+  var tailSwallowed=false
+  do { try await tailStop.stop(); tailSwallowed=true } catch {}
+  check(!tailSwallowed && tailCore.stopCount == 0 && !tailStop.infos.contains("正在中止恢复中的强制开始任务，请稍候。") && tailStop.forceRecoveryCleanupPending, "stop in the cleanup-failure tail window is refused honestly instead of being swallowed")
+  tailRunningGate.release()
+  check(await tailWork.value == .failed, "the refused stop leaves the failed recovery to unwind on its own")
+  tailCore.isRunning = false
+  try? await Task.sleep(for:.milliseconds(350))
+  check(tailStop.handle == nil && !tailStop.forceRecoveryInFlight && tailStop.dailyRunCoordinator.active == nil, "idle observation still releases the quarantined core after the refused stop")
+  // Regression (r3 A-P2-2): journal corruption + failed recovery cleanup + user
+  // stop must digest the quarantine flags instead of leaking them into the next
+  // run's message routing and completion filters.
+  let abandonRoot=FileManager.default.temporaryDirectory.appendingPathComponent("maa-journal-abandon-\(UUID())")
+  defer { try? FileManager.default.removeItem(at:abandonRoot) }
+  let abandonModel=MAAViewModel(journalURL:abandonRoot.appendingPathComponent("run.json"))
+  let abandonCore=abandonModel.handle!; let abandonGate=Gate()
+  abandonModel.tasks=[.init(task:.fixture)]; abandonModel.failRecoveryCleanup = true; abandonModel.recoveryGate = abandonGate
+  let abandonWork=Task { await abandonModel.startDailyTasks(recoverGame:true) }
+  while !abandonGate.entered { await Task.yield() }
+  try! FileManager.default.removeItem(at:abandonRoot)
+  try! Data().write(to:abandonRoot)
+  abandonGate.release()
+  check(await abandonWork.value == .failed && abandonModel.forceRecoveryCleanupPending && abandonModel.forceRecoveryInFlight && abandonCore.isRunning, "compound journal+cleanup failure retains the quarantine flags")
+  try? await abandonModel.stop()
+  check(abandonCore.stopCount == 1 && abandonModel.handle == nil && !abandonModel.forceRecoveryCleanupPending && !abandonModel.forceRecoveryInFlight, "stop digests the quarantine flags after abandoning the run record")
+  check(abandonModel.dailyRunCoordinator.active == nil && abandonModel.dailyRunCoordinator.lastTerminal?.outcome == .cancelled && abandonModel.canStartTasks, "the abandoned quarantine run finishes cancelled and unblocks start")
   let journalRoot=FileManager.default.temporaryDirectory.appendingPathComponent("maa-journal-fault-\(UUID())")
   defer { try? FileManager.default.removeItem(at:journalRoot) }
   let journalModel=MAAViewModel(journalURL:journalRoot.appendingPathComponent("run.json"))
@@ -74,7 +114,7 @@ import Foundation
   journalCore.isRunning = false
   try? await Task.sleep(for:.milliseconds(650))
   check(journalModel.handle == nil && journalModel.dailyRunCoordinator.active != nil && !journalModel.canStartTasks && !journalModel.forceRecoveryInFlight, "journal error releases only idle Core while run stays blocked")
-  check(journalModel.errors.filter { $0.contains("Daily run journal:") }.count == 1, "journal failure logs once without a retry loop")
+  check(journalModel.errors.filter { $0.contains("每日运行日志：") }.count == 1, "journal failure logs once without a retry loop")
   let oldJournalRun=journalModel.dailyRunCoordinator.active!.id
   try! FileManager.default.removeItem(at:journalRoot)
   try! FileManager.default.createDirectory(at:journalRoot, withIntermediateDirectories:true)
