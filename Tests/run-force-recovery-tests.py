@@ -15,7 +15,7 @@ method = declaration(model, r'^    private func recoverGameToHome\b') + '\n' + d
 state = declaration(schedule, r'^struct ForcedGameRecovery\b')
 pre = '''import Foundation
 ''' + state + '''
-private enum ForcedRecoveryFailure: Error { case notReady, timedOut }
+private enum ForcedRecoveryFailure: Error { case notReady, timedOut, resultStalled }
 private struct ForcedRecoveryCleanupFailure: Error {}
 extension Dictionary where Key == String, Value == [String] {
  func jsonString() throws -> String { String(data: try JSONSerialization.data(withJSONObject:self), encoding:.utf8)! }
@@ -38,7 +38,7 @@ struct StartupConfiguration { var client_type: Channel; var start_game_enabled: 
   if type == .Custom { precondition(params.contains("Home") && !params.contains("StartUpBegin")) }
   return appendCount
  }
- func start() async throws { startCount += 1; isRunning = true; onStart?() }
+ func start() async throws { precondition(!isRunning, "must wait for Core idle before retry"); startCount += 1; isRunning = true; onStart?() }
  func stop() async throws {
   stopped += 1; if stopFails { throw NSError(domain:"test",code:1) }
   if let delay = stopDelay { Task { try? await Task.sleep(for:delay); isRunning = false } }
@@ -93,6 +93,90 @@ main = '''
   }
   try await stage.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
   precondition(stage.handle != nil && stageCore.stopped == 0, "stage page must navigate and verify home")
+  // A real captured StartUp remained on a recognized result page after its click.
+  // The next StartUp must wait for the old Core to stop before trying again.
+  let stalled = Probe(); let stallCore = stalled.handle!; stalled.dailyRunCoordinator.active = .init(id:run)
+  stallCore.stopDelay = .milliseconds(120)
+  stallCore.onStart = { [weak stalled, weak stallCore] in
+   guard let stalled, let stallCore, let state = stalled.forceRecovery else { return }
+   stalled.forceRecovery?.chainStart(state.taskID)
+   if stallCore.startCount == 1 {
+    stalled.forceRecovery?.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+    stalled.forceRecovery?.resultSince = Date().addingTimeInterval(-60)
+    return
+   }
+   precondition(state.requiresHome, "after stalled StartUp check home navigation before retrying StartUp")
+   stalled.forceRecovery?.subtask(chain:state.chain,taskID:0,name:"Home",algorithm:"MatchTemplate")
+   stalled.forceRecovery?.chainFinish(state.taskID,success:true); stalled.forceRecovery?.allFinished([state.taskID]); stallCore.isRunning = false
+  }
+  try await stalled.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
+  precondition(stallCore.stopped == 1 && stallCore.startCount == 2 && stalled.handle != nil, "stalled result retries once and verifies home")
+  let fallback = Probe(); let fallbackCore = fallback.handle!; fallback.dailyRunCoordinator.active = .init(id:run)
+  fallbackCore.onStart = { [weak fallback, weak fallbackCore] in
+   guard let fallback, let fallbackCore, let state = fallback.forceRecovery else { return }
+   fallback.forceRecovery?.chainStart(state.taskID)
+   switch fallbackCore.startCount {
+   case 1:
+    fallback.forceRecovery?.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+    fallback.forceRecovery?.resultSince = Date().addingTimeInterval(-60)
+   case 2:
+    precondition(state.requiresHome, "first retry must attempt home navigation")
+    fallback.forceRecovery?.chainFinish(state.taskID,success:false); fallback.forceRecovery?.allFinished([state.taskID])
+   default:
+    if state.requiresHome { fallback.forceRecovery?.subtask(chain:state.chain,taskID:0,name:"Home",algorithm:"MatchTemplate") }
+    fallback.forceRecovery?.chainFinish(state.taskID,success:true); fallback.forceRecovery?.allFinished([state.taskID]); fallbackCore.isRunning = false
+   }
+  }
+  try await fallback.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
+  precondition(fallbackCore.startCount == 4 && fallbackCore.stopped == 2 && fallback.handle != nil, "unrecognized page retries startup then requires verified home")
+  var progressed = ForcedGameRecovery(taskID:42,chain:"StartUp",requiresHome:false)
+  progressed.chainStart(42); progressed.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+  precondition(progressed.resultSince != nil)
+  progressed.subtask(chain:"StartUp",taskID:0,name:"ClickCorner",algorithm:"JustReturn")
+  precondition(progressed.resultSince != nil, "click alone does not prove the result page closed")
+  progressed.subtask(chain:"StartUp",taskID:0,name:"LoadingIcon",algorithm:"MatchTemplate")
+  precondition(progressed.resultSince == nil, "subsequent recognition clears stalled result")
+  let retryStopFails = Probe(); let failedRetryCore = retryStopFails.handle!
+  retryStopFails.dailyRunCoordinator.active = .init(id:run); failedRetryCore.stopFails = true
+  failedRetryCore.onStart = { [weak retryStopFails] in
+   guard let retryStopFails, let state = retryStopFails.forceRecovery else { return }
+   retryStopFails.forceRecovery?.chainStart(state.taskID)
+   retryStopFails.forceRecovery?.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+   retryStopFails.forceRecovery?.resultSince = Date().addingTimeInterval(-60)
+  }
+  do { try await retryStopFails.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2); fatalError("failed retry stop must fail") }
+  catch is ForcedRecoveryCleanupFailure {}
+  precondition(failedRetryCore.startCount == 1 && retryStopFails.forceRecoveryCleanupPending && retryStopFails.handle === failedRetryCore, "failed stop never starts retry")
+  let twice = Probe(); let twiceCore = twice.handle!; twice.dailyRunCoordinator.active = .init(id:run)
+  twiceCore.onStart = { [weak twice] in
+   guard let twice, let state = twice.forceRecovery else { return }
+   twice.forceRecovery?.chainStart(state.taskID)
+   if state.requiresHome {
+    twice.forceRecovery?.chainFinish(state.taskID,success:false); twice.forceRecovery?.allFinished([state.taskID])
+   } else {
+    twice.forceRecovery?.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+    twice.forceRecovery?.resultSince = Date().addingTimeInterval(-60)
+   }
+  }
+  do { try await twice.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2); fatalError("unverified final home must fail") }
+  catch ForcedRecoveryFailure.notReady {}
+  precondition(twiceCore.startCount == 4 && twiceCore.stopped == 4 && twice.handle == nil, "final navigation remains bounded and fails closed")
+  let second = Probe(); let secondCore = second.handle!; second.dailyRunCoordinator.active = .init(id:run)
+  secondCore.onStart = { [weak second, weak secondCore] in
+   guard let second, let secondCore, let state = second.forceRecovery else { return }
+   second.forceRecovery?.chainStart(state.taskID)
+   if !state.requiresHome {
+    second.forceRecovery?.subtask(chain:"StartUp",taskID:0,name:"EndOfAction",algorithm:"MatchTemplate")
+    second.forceRecovery?.resultSince = Date().addingTimeInterval(-60)
+   } else if secondCore.startCount == 2 {
+    second.forceRecovery?.chainFinish(state.taskID,success:false); second.forceRecovery?.allFinished([state.taskID])
+   } else {
+    second.forceRecovery?.subtask(chain:"Custom",taskID:0,name:"Home",algorithm:"MatchTemplate")
+    second.forceRecovery?.chainFinish(state.taskID,success:true); second.forceRecovery?.allFinished([state.taskID]); secondCore.isRunning = false
+   }
+  }
+  try await second.recoverGameToHome(runID:run,isCurrent:{ true },timeout:2)
+  precondition(secondCore.startCount == 4 && secondCore.stopped == 3 && second.handle != nil, "second result stall checks and verifies home")
   let notHome = Probe(); let bad = notHome.handle!; notHome.dailyRunCoordinator.active = .init(id:run)
   bad.onStart = { [weak notHome] in
    guard let state = notHome?.forceRecovery else { return }

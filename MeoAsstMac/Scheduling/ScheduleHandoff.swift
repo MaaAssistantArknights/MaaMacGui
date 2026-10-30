@@ -162,6 +162,7 @@ struct ForcedGameRecovery {
     let requiresHome: Bool
     var started = false
     var lastWasHome = false
+    var resultSince: Date?
     var completed = false
     var allCompleted = false
     var failed = false
@@ -169,6 +170,13 @@ struct ForcedGameRecovery {
     mutating func chainStart(_ id: Int32) { if id == taskID { started = true } }
     mutating func subtask(chain: String, taskID id: Int32, name: String, algorithm: String) {
         guard started, !completed, chain == self.chain, id == 0 || id == taskID else { return }
+        if chain == "StartUp" {
+            if ["EndOfAction", "EndOfActionAnnihilation"].contains(name), algorithm == "MatchTemplate" {
+                resultSince = Date()
+            } else if name != "ClickCorner" {
+                resultSince = nil
+            }
+        }
         // Both resource tasks are MatchTemplate checks for the home menu.
         lastWasHome = ["Home", "StartUp"].contains(name) && algorithm == "MatchTemplate"
     }

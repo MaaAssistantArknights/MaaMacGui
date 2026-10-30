@@ -798,12 +798,45 @@ extension MAAViewModel {
         do {
             // Native StartUp disables retries into a new fight, game launch and account switching.
             let startup = StartupConfiguration(client_type: clientChannel, start_game_enabled: false, account_name: "")
-            try await runRecoveryTask(handle: handle, runID: runID, type: .StartUp,
-                                      params: startup.params.jsonString(), chain: "StartUp", requiresHome: false, expires: expires, isCurrent: isCurrent)
-            // StartUp intentionally stops at ReturnButton after a battle. Use Core's
-            // quick-switch recognition to navigate when available, then require a
-            // matched Home callback; an unknown screen fails closed.
+            let startupParams = try startup.params.jsonString()
+            // The Home match is mandatory even when the navigation chain completes.
             let verify = try ["task_names": ["Home", "Home@QuickSwitch@ToHome@Entry", "Home@QuickSwitch@ToHome@Open"]].jsonString()
+            func stopForRetry() async throws {
+                try await handle.stop()
+                let retryDeadline = min(expires, Date().addingTimeInterval(cleanupTimeout))
+                while await handle.running {
+                    try Task.checkCancellation()
+                    guard Date() < retryDeadline, isCurrent(), dailyRunCoordinator.active?.id == runID else { throw ForcedRecoveryFailure.timedOut }
+                    try await Task.sleep(for: .milliseconds(100))
+                }
+                try Task.checkCancellation()
+                guard Date() < expires, isCurrent(), dailyRunCoordinator.active?.id == runID else { throw CancellationError() }
+                forceRecovery = nil
+            }
+            do {
+                try await runRecoveryTask(handle: handle, runID: runID, type: .StartUp,
+                                          params: startupParams, chain: "StartUp", requiresHome: false, expires: expires, isCurrent: isCurrent)
+            } catch ForcedRecoveryFailure.resultStalled {
+                // Core may have reached the stage screen without reporting further
+                // progress. Stop it first, then attempt verified home navigation.
+                try await stopForRetry()
+                do {
+                    try await runRecoveryTask(handle: handle, runID: runID, type: .Custom,
+                                              params: verify, chain: "Custom", requiresHome: true, expires: expires, isCurrent: isCurrent)
+                    return
+                } catch ForcedRecoveryFailure.notReady {
+                    // Still on a result screen: stop and retry StartUp once.
+                    try await stopForRetry()
+                    do {
+                        try await runRecoveryTask(handle: handle, runID: runID, type: .StartUp,
+                                                  params: startupParams, chain: "StartUp", requiresHome: false, expires: expires, isCurrent: isCurrent)
+                    } catch ForcedRecoveryFailure.resultStalled {
+                        // A second result screen can clear after its click without
+                        // StartUp recognizing the stage. Make one final home check.
+                        try await stopForRetry()
+                    }
+                }
+            }
             try await runRecoveryTask(handle: handle, runID: runID, type: .Custom,
                                       params: verify, chain: "Custom", requiresHome: true, expires: expires, isCurrent: isCurrent)
         } catch {
@@ -845,6 +878,8 @@ extension MAAViewModel {
             try Task.checkCancellation()
             guard isCurrent(), dailyRunCoordinator.active?.id == runID, let state = forceRecovery else { throw CancellationError() }
             if state.failed { throw ForcedRecoveryFailure.notReady }
+            if chain == "StartUp", let resultSince = state.resultSince, !state.completed,
+               Date().timeIntervalSince(resultSince) >= 20 { throw ForcedRecoveryFailure.resultStalled }
             if state.completed && state.allCompleted {
                 guard state.verified else { throw ForcedRecoveryFailure.notReady }
                 if await handle.running == false {
@@ -1095,5 +1130,5 @@ extension MAAViewModel {
     }
 }
 
-private enum ForcedRecoveryFailure: Error { case notReady, timedOut }
+private enum ForcedRecoveryFailure: Error { case notReady, timedOut, resultStalled }
 private struct ForcedRecoveryCleanupFailure: Error {}
