@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RoguelikeSettingsView: View {
     @Binding var config: RoguelikeConfiguration
+    var supportsSeedInput = false
 
     @Environment(\.defaultMinListRowHeight) private var rowHeight
 
@@ -168,6 +169,29 @@ struct RoguelikeSettingsView: View {
             if config.mode == .clpPds {
                 TextField("待刷坍缩范式", text: $config.semicolonString(for: \.expected_collapsal_paradigms))
             }
+        }
+
+        if config.theme == .Sarkaz {
+            Toggle("使用种子开局", isOn: $config.seedEnabled)
+                .disabled(!config.supportsSeedConfiguration || !supportsSeedInput)
+            if config.seedEnabled {
+                TextField("种子", text: $config.seed)
+                    .disabled(!config.supportsSeedConfiguration || !supportsSeedInput)
+                if !config.trimmedSeed.isEmpty, !config.hasValidSeed {
+                    Text(String(localized: "种子格式有误，应为“2b3c4d,rogue_1,120”"))
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+            }
+            Text(supportsSeedInput
+                 ? String(localized: "种子仅适用于萨卡兹投资模式的点刺成锭分队或后勤分队。需当前 Core 支持对应主题的种子功能、游戏提供“启用参数”入口，并使用有效种子；开放情况与账号条件以游戏内提示为准。")
+                 : String(localized: "当前连接不支持种子文本输入；请选择 ADB 控制通路。PlayTools 与 MacSCK 暂不支持。"))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
 
         if config.mode == .squad {

@@ -471,7 +471,7 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            if let coreID = try await handle?.appendTask(task.task, supportsRoguelikeSeedInput: touchMode != .MacPlayTools) {
                 taskIDMap[coreID] = task.id
             }
         }
