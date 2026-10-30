@@ -64,6 +64,12 @@ import Foundation
         check(!adapter.consume(code: 20003, data: raw).isEmpty, "late old completion does not drop current task")
         _ = adapter.consume(code: 10004, data: try data(["taskid": 42, "taskchain": "Fight"]))
         check(adapter.consume(code: 20003, data: raw).isEmpty, "stopped task ignored")
+        adapter.register(taskID: 8, type: "Infrast")
+        _ = adapter.consume(code: 10001, data: try data(["taskid": 8, "taskchain": "Infrast"]))
+        for name in ["SendClues", "Infrast@SendClues", "UnlockClues", "Infrast@UnlockClues"] {
+            let opened: [String: Any] = ["taskid": 8, "taskchain": "Infrast", "subtask": "ProcessTask", "details": ["task": name, "action": "ClickSelf"]]
+            try check(adapter.consume(code: 20002, data: data(opened)).isEmpty, "ambiguous clue action is not a confirmed success")
+        }
         adapter.register(taskID: 7, type: "Roguelike")
         _ = adapter.consume(code: 10001, data: try data(["taskid": 7, "taskchain": "Roguelike"]))
         let failedSettlement = payload("RoguelikeSettlement", ["game_pass": false, "difficulty": 15], id: 7, chain: "Roguelike")

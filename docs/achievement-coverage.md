@@ -1,8 +1,8 @@
 # 本地成就覆盖
 
-WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4dcf` 的 `AchievementTrackerHelper.cs` `_allAchievements`，共 111 项。本 PR 分阶段交付 45 项引擎定义。表中“已实现”指生产适配已接入且有本地逻辑测试；不表示真实游戏或高阈值累计已验收。其余逐项保留具体接入依赖；不声明 Windows 全量对齐。
+WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4dcf` 的 `AchievementTrackerHelper.cs` `_allAchievements`，共 111 项。本 PR 提供 45 项引擎定义，其中 41 项当前接入事件。表中“已实现”指生产适配已接入且有本地逻辑测试；不表示真实游戏或高阈值累计已验收。其余逐项保留具体接入依赖；不声明 Windows 全量对齐。
 
-事件计数：StageDrops `cur_times` 是本批成功关数，缺失按 WPF 算 1；不同时累计 FightTimes。药按 UseMedicine.count；临期单批按 is_expiring=true 的 count 最大值。公招刷新按每次成功回调计 1，忽略累计显示 count。非六星累计/连续进度按 RecruitResult 计，六星将连续进度重置为 1，严格保留该固定 WPF 版本现行规则。线索按完成事件计 1。GamePass 按 ProcessTask 开始事件；难度只接受成功结算的实际 difficulty。存款取 deposit 最大值。每个 native 接收生成新 envelope；相同 envelope 重分发可去重，相同内容的两个真实接收均计。没有 Core event ID 的消息不能保证跨崩溃恰好一次。
+事件计数：StageDrops `cur_times` 是本批成功关数，缺失按 WPF 算 1；不同时累计 FightTimes。药按 UseMedicine.count；临期单批按 is_expiring=true 的 count 最大值。公招刷新按每次成功回调计 1，忽略累计显示 count。非六星累计/连续进度按 RecruitResult 计，六星将连续进度重置为 1，严格保留该固定 WPF 版本现行规则。UnlockClues 后可能进入识别错误分支，SendClues 只表示打开传递页面；交流与赠送进度暂停新增，等待可验证的成功及数量事件。已保存的旧进度不自动清除。GamePass 按 ProcessTask 开始事件；难度只接受成功结算的实际 difficulty。存款取 deposit 最大值。每个 native 接收生成新 envelope；相同 envelope 重分发可去重，相同内容的两个真实接收均计。没有 Core event ID 的消息不能保证跨崩溃恰好一次。
 
 同一安装跨配置共享；不代表游戏账号，不同步，不扫描旧日志。最近 2048 个 envelope ID 与最近运行累计持久保存；解锁 ID 本身永久幂等。旧 schema 1 缺定义保留，未知未来 schema 只读拒绝覆盖；损坏数据先留备份再恢复。隐藏成就解锁前不展示标题或条件。只在原子保存成功后提示。
 
@@ -27,11 +27,11 @@ WPF 定义固定于 MaaAssistantArknights `4d948320d94f54dcc60f558b430aa812bd1c4
 | `SanityExpire` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
 | `OverLimitAgent` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
 | `RecruitGambler` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
-| `ClueCollector` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
-| `CluePhilosopher` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
-| `ClueObsession` | 依赖未交付 | 需逐个线索编号与上次开启数据的持久化契约，当前首批仅接成功交流/赠送 |
-| `ClueSharer` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
-| `CluePhilanthropist` | 已实现 | AchievementEventAdapter / AchievementStore；E1 断言，真实长期累计待验 |
+| `ClueCollector` | 依赖未交付 | UnlockClues 可能误识别，需可确认交流成功的事件 |
+| `CluePhilosopher` | 依赖未交付 | UnlockClues 可能误识别，需可确认交流成功的事件 |
+| `ClueObsession` | 依赖未交付 | 需逐个线索编号与上次开启数据的持久化契约，当前交流/赠送均等待可确认的成功事件 |
+| `ClueSharer` | 依赖未交付 | SendClues 仅打开传递页；需可确认成功赠送与数量的事件，暂停新增计数 |
+| `CluePhilanthropist` | 依赖未交付 | SendClues 仅打开传递页；需可确认成功赠送与数量的事件，暂停新增计数 |
 | `TimeManagementMaster` | 依赖未交付 | 需 Mac 可确认的“时间管理大师”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:622`，当前阶段未接该 GUI/历史事件 |
 | `DoubleSync` | 依赖未交付 | 需 Mac 可确认的“人货两清”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:623`，当前阶段未接该 GUI/历史事件 |
 | `ResumeRecord` | 依赖未交付 | 需 Mac 可确认的“重新建档”事件及对应跨启动状态；固定定义入口 `AchievementTrackerHelper.cs:624`，当前阶段未接该 GUI/历史事件 |

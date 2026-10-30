@@ -97,8 +97,10 @@ struct AchievementEventAdapter {
             if name == "ExitThenAbandon" { return [event(.rogueRetreat)] }
         }
         if code == 20002 {
-            if task.type == "Infrast", name == "UnlockClues" { return [event(.clueUse)] }
-            if task.type == "Infrast", name == "SendClues" { return [event(.clueSend)] }
+            // SendClues opens the transfer screen, even when nothing is sent.
+            // UnlockClues is a click that can be followed by UnlockCluesIsFake.
+            // Neither callback proves success; keep stored progress but do not
+            // manufacture new clue events without an authoritative confirmation.
             if task.type == "Mall", name == "StageDrops-Stars-3" { return [event(.creditFight)] }
 
         }
