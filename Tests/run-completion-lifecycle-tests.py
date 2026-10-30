@@ -19,9 +19,23 @@ def declaration(pattern):
     return source[match.start():end]
 
 members = '\n'.join(declaration(r'^    (?:private )?func ' + name + r'\b') for name in
-                    ['resetStatus', 'finishDailyRunIfStopped'])
+                    ['resetStatus', 'finishDailyRunIfStopped', 'stop', 'markDailyRunFailed'])
+# The attribute line sits above the regex match; restore it so the extracted
+# stop() discards the result without a warning.
+members = members.replace('    private func finishDailyRunIfStopped',
+                          '    @discardableResult\n    private func finishDailyRunIfStopped')
 header = '''import Foundation
 struct DailyTask {}
+enum MAAError: Error { case taskOperationInProgress }
+enum AchievementMetric { case manualStop }
+struct AchievementEvent {
+ enum Operation { case maximum }
+ init(runID: UUID?, metric: AchievementMetric, operation: Operation) {}
+}
+final class AchievementStore {
+ static let shared = AchievementStore(); init() {}
+ func record(_ event: AchievementEvent) {}
+}
 @MainActor final class Gate {
  var entered = false; var continuation: CheckedContinuation<Void, Never>?
  func wait() async { entered = true; await withCheckedContinuation { continuation = $0 } }
@@ -30,6 +44,7 @@ struct DailyTask {}
 @MainActor final class Core {
  var value = true; var gate: Gate?
  var running: Bool { get async { if let g = gate { gate = nil; await g.wait() }; return value } }
+ func stop() async throws {}
 }
 @MainActor final class LogStore {
  var screencapCost: Int?; var lastScreencapWarningLevel = 0
@@ -54,6 +69,9 @@ struct DailyTask {}
  var finishes = 0
  var errors: [String] = []
  func logError(verbatim: String) { errors.append(verbatim) }
+ func logError(_ message: String) { errors.append(message) }
+ func beginTaskOperation(requiresIdle: Bool = true) async throws {}
+ func handleEarlyReturn(backTo: Status) {}
  func stopCompletion() async { await finishDailyRunIfStopped(allowInFlight: true) }
  func observeFinishes() {
   dailyRunCoordinator.didChange = { [weak self] in
@@ -140,7 +158,24 @@ main = '''
   failure.resetStatus() // Duplicate callbacks must not retry a failed journal.
   try await Task.sleep(for: .milliseconds(350))
   precondition(failure.errors.count == 1 && failure.dailyRunCoordinator.active?.id == failureID && failure.status == .pending, "journal failure must stop retries and preserve ownership")
-  print("Completion lifecycle: 10 production-path assertions passed")
+  try FileManager.default.removeItem(at: dir) // Recover the journal path.
+  try await failure.stop()
+  precondition(failure.errors.count == 1 && failure.dailyRunCoordinator.active == nil && failure.dailyRunCoordinator.lastTerminal?.id == failureID && failure.dailyRunCoordinator.lastTerminal?.outcome == .cancelled && failure.status == .idle && failure.canStartTasks, "explicit stop must retry finish after the journal recovers")
+  // A failure recorded before an explicit stop must survive as the run outcome.
+  let errored = Probe()
+  let erroredID = try errored.dailyRunCoordinator.begin(profileID: "F", origin: .manual)!
+  try errored.dailyRunCoordinator.transition(.running, for: erroredID)
+  errored.markDailyRunFailed()
+  errored.handle?.value = false
+  try await errored.stop()
+  precondition(errored.dailyRunCoordinator.active == nil && errored.dailyRunCoordinator.lastTerminal?.outcome == .failed, "stop must not overwrite a failed outcome")
+  let plain = Probe()
+  let plainID = try plain.dailyRunCoordinator.begin(profileID: "G", origin: .manual)!
+  try plain.dailyRunCoordinator.transition(.running, for: plainID)
+  plain.handle?.value = false
+  try await plain.stop()
+  precondition(plain.dailyRunCoordinator.active == nil && plain.dailyRunCoordinator.lastTerminal?.outcome == .cancelled, "non-failed stop still records cancellation")
+  print("Completion lifecycle: 13 production-path assertions passed")
  }
 }
 '''

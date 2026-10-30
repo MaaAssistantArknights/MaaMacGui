@@ -39,6 +39,15 @@ import Foundation
         _ = engine.consume(.init(metric: .medicine, value: Int.max))
         _ = engine.consume(.init(metric: .medicine, value: Int.max))
         check(engine.state.progress["SanitySaver1"]?.value == Int.max, "overflow saturates")
+        let streakDef = AchievementDefinition.all.first { $0.metric == .recruitNoSixStreak }!
+        var streak = AchievementEngine()
+        _ = streak.consume(.init(metric: .recruitNoSixStreak, value: 12, operation: .set), now: now)
+        check(streak.state.progress[streakDef.id]?.value == 12, "streak set applies before unlock")
+        _ = streak.consume(.init(metric: .recruitNoSixStreak, value: 3, operation: .set), now: now)
+        check(streak.state.progress[streakDef.id]?.value == 3, "streak reset applies before unlock")
+        check(streak.consume(.init(metric: .recruitNoSixStreak, value: streakDef.target, operation: .set), now: now) == [streakDef.id], "streak set can unlock")
+        check(streak.consume(.init(metric: .recruitNoSixStreak, value: 1, operation: .set), now: now.addingTimeInterval(10)).isEmpty, "post-unlock streak reset publishes no unlock")
+        check(streak.state.progress[streakDef.id]?.value == streakDef.target && streak.state.progress[streakDef.id]?.unlockedAt == now, "post-unlock streak reset does not regress the display")
         var adapter = AchievementEventAdapter()
         func data(_ json: [String: Any]) throws -> Data { try JSONSerialization.data(withJSONObject: json) }
         func payload(_ what: String, _ details: [String: Any], id: Int = 42, chain: String = "Fight") -> [String: Any] {
