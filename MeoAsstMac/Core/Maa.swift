@@ -132,6 +132,13 @@ actor MAAHandle {
         continuation.resume(returning: info)
     }
 
+    /// 等待捆绑 core 对异步调用回送 AsyncCallInfo。设计取舍：这里刻意不设
+    /// 超时、也不监听任务取消，continuation 只能由 resumeCall 恢复，依赖
+    /// core 对非零 callID 必定回调这一捆绑版本的行为。
+    /// 若某次回调丢失，等待方将永久挂起：调用期间 MAAViewModel 的
+    /// isStartStopInFlight 保持为真，启动/停止入口（含内部自动停止）全部
+    /// 被拒，唯一恢复手段是重启应用。未来若需逃生通道，应为本函数增加
+    /// 可选的超时参数，而不是放宽上层门禁。
     private func waitFor(_ call: @autoclosure () -> AsstAsyncCallId) async throws -> JSON {
         try await withCheckedThrowingContinuation { continuation in
             let callID = call()

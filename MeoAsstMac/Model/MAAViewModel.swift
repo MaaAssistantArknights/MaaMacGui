@@ -36,6 +36,12 @@ import SwiftUI
         status == .idle && !isStartStopInFlight
     }
 
+    /// 占位期间拒绝一切启动/停止请求：stop 与 MaaMessage 的内部自动停止
+    /// （Disconnect/OfflineConfirm）同样被 isStartStopInFlight 门禁拦下，
+    /// 后者仅降级为 warning 日志，等待后续 TaskChainStopped/AllTasksCompleted
+    /// 收敛状态。取舍：MAAHandle.waitFor 无超时，若捆绑 core 对某次异步调用
+    /// 不回调，占位将永久为真，启/停按钮双双禁用，唯一恢复手段是重启应用；
+    /// 与其在 core 状态未知时放行二次提交，不如维持拒绝。
     private func beginTaskOperation(requiresIdle: Bool = true) async throws {
         guard !isStartStopInFlight else {
             logError("当前正在启动或停止任务，请稍后重试。")
