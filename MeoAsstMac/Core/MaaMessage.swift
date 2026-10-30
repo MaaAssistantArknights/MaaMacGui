@@ -992,6 +992,8 @@ extension MAAViewModel {
             if info.taskchain == "Fight", let taskID = info.taskid {
                 let identified = dropInfo.stats.compactMap { item -> (String, Int)? in
                     guard let id = item.itemId else { return nil }
+                    // Core includes this battle's addQuantity in the cumulative
+                    // quantity before emitting StageDrops; adding it again double-counts.
                     return (id, item.quantity)
                 }
                 // Incomplete IDs cannot safely update a current inventory.
@@ -1137,6 +1139,9 @@ extension MAAViewModel {
             logTrace(.creditFullOnlyBuyDiscount(credit: credit))
 
         case "AccountSwitch":
+            // Connection/server/profile can stay unchanged across game accounts.
+            // Also discard pending Depot recognition and ownership of Fight drops.
+            invalidateInventory()
             let accountName: String = (try? info.details["account_name"]) ?? ""
             logTrace(.accountSwitch(to: accountName))
 

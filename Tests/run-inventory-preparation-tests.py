@@ -83,6 +83,12 @@ main='''@main struct Main {
   check(batches.count == 1 && batches[0].count == 1, "new run contains no abandoned prior task")
   if case .fight(let prepared) = batches[0][0] { check(prepared.drops == ["30012": 2] && prepared.inventoryTarget == nil, "frozen difference sent to Core") }
   else { preconditionFailure("Fight expected") }
+  let switching = try make(5); let switchingCore = switching.handle!
+  await switchingCore.setOnAppend { switching.invalidateInventory() }
+  do { try await switching.startTasks(); preconditionFailure("account switch must reject frozen plan even with same scope") } catch { checks += 1 }
+  check(await switchingCore.started.isEmpty, "account switch while appending never starts Core")
+  check(await switchingCore.cleanStoppedQueue, "account switch clears already appended tasks")
+  check(switching.inventory.snapshot == nil && switching.taskIDMap.isEmpty, "account switch releases stale ownership")
   let cancelled = try make(5); let cancelledCore = cancelled.handle!
   await cancelledCore.setOnAppend { withUnsafeCurrentTask { $0?.cancel() } }
   let task = Task { try await cancelled.startTasks() }
