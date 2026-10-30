@@ -6,7 +6,7 @@ struct AnnouncementSource: Equatable, Sendable {
     let locale: String
     let url: URL
 
-    // Endpoints mirror the upstream MaaWpfGui announcement sources (MaaUrls.MaaApi + api/announcements/wpf[_en].md);
+    // Endpoints mirror the upstream MaaWpfGui announcement sources (MaaUrls.MaaApi + announcements/wpf[_en].md);
     // keep them in sync if upstream moves its API domain or adds language variants.
     static let chinese = Self(
         id: "official-wpf-v1", locale: "zh-Hans",
