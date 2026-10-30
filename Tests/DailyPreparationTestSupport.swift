@@ -109,6 +109,8 @@ struct DailyTask {
     let dailyRunCoordinator: DailyRunCoordinator
     init(journalURL: URL? = nil) { dailyRunCoordinator = DailyRunCoordinator(journalURL: journalURL) }
     private var dailyRunOutcome = DailyRunOutcome.completed
+    var dailyStartInFlight = false
+    var startupCancellationRequested = false
     private(set) var dailyRunTasks: [DailyTask]?
     var dailyTaskProfile = "Fixture"
     func logError(verbatim value: String) { errors.append(value) }

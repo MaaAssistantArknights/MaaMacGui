@@ -30,6 +30,10 @@ import SwiftUI
 
     // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
     @Published private(set) var isStartStopInFlight = false
+    // 标记进行中的是“启动”而非“停止”，让 stop() 在启动占用期（连接、强制恢复
+    // 最长约 5 分钟）也能请求取消，而不是只能报错。
+    private var dailyStartInFlight = false
+    private var startupCancellationRequested = false
     var forceRecovery: ForcedGameRecovery?
     var forceRecoveryInFlight = false
     private var forceRecoveryCleanupPending = false
@@ -81,6 +85,12 @@ import SwiftUI
             try Task.checkCancellation()
         }
         accepted = true
+    }
+
+    /// 启动路径的取消检查点：既响应任务树取消，也响应启动占用期 stop() 的取消请求。
+    private func checkStartupCancellation() throws {
+        try Task.checkCancellation()
+        if startupCancellationRequested { throw CancellationError() }
     }
 
     // MARK: - Core Callback
@@ -320,13 +330,26 @@ extension MAAViewModel {
             logError("后置清理正在执行，请等待完成。")
             throw MAAError.taskOperationInProgress
         }
+        if isStartStopInFlight {
+            guard dailyStartInFlight else {
+                logError("当前正在启动或停止任务，请稍后重试。")
+                throw MAAError.taskOperationInProgress
+            }
+            // 启动占用期也允许停止：请求取消进行中的启动（含强制恢复），由启动
+            // 路径既有的取消检查点收尾，本次运行按“已取消”落账后释放占用。
+            // 定时启动的任务树同时会被上方通知取消，双通道互为兜底。
+            startupCancellationRequested = true
+            logInfo("已请求取消正在进行的任务启动，请稍候。")
+            return
+        }
         try await beginTaskOperation(requiresIdle: false)
         defer { isStartStopInFlight = false }
 
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
-        dailyRunOutcome = .cancelled
+        // 保留运行期间已判定的失败结果，避免把 Failed 运行最终记成已取消。
+        if dailyRunOutcome == .completed { dailyRunOutcome = .cancelled }
         if let id = dailyRunCoordinator.active?.id {
             try dailyRunCoordinator.transition(.stopping, for: id)
         }
@@ -661,6 +684,11 @@ extension MAAViewModel {
             return .skipped
         }
         defer { isStartStopInFlight = false }
+        // 进入启动占用期：此后到函数返回前，stop() 只能请求取消而不是报错。
+        // 此处尚无挂起点，清除历史取消请求不会与 stop() 竞争。
+        dailyStartInFlight = true
+        startupCancellationRequested = false
+        defer { dailyStartInFlight = false }
 
         do {
             logStore?.setDailyTasksDetailMode(.log)
@@ -744,15 +772,17 @@ extension MAAViewModel {
 
         dailyRunTasks = runTasks
         try await ensureHandle()
-        try Task.checkCancellation()
+        try checkStartupCancellation()
         if recoverGame {
-            try await recoverGameToHome(runID: runID, isCurrent: recoveryCurrent ?? { true })
+            try await recoverGameToHome(runID: runID, isCurrent: recoveryCurrent ?? { [weak self] in
+                self?.startupCancellationRequested != true
+            })
             forceRecoveryInFlight = false
         }
-        try Task.checkCancellation()
+        try checkStartupCancellation()
 
         for task in runTasks {
-            try Task.checkCancellation()
+            try checkStartupCancellation()
             if recoverGame, recoveryCurrent?() == false { throw CancellationError() }
             guard task.enabled else { continue }
 
@@ -761,7 +791,7 @@ extension MAAViewModel {
             }
         }
 
-        try Task.checkCancellation()
+        try checkStartupCancellation()
         if recoverGame, recoveryCurrent?() == false { throw CancellationError() }
         try dailyRunCoordinator.transition(.running, for: runID)
         try await startCoreTasks(recordDailyTaskStart: true)

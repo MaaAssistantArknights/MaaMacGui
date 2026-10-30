@@ -7131,6 +7131,138 @@
           }
         }
       }
+    },
+    "当前正在启动或停止任务，请稍后重试。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前正在启动或停止任务，请稍后重试。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A start or stop operation is already in progress. Try again later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 시작 또는 중지가 진행 중입니다. 잠시 후 다시 시도해 주세요."
+          }
+        }
+      }
+    },
+    "任务正在运行，请先停止当前任务。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "任务正在运行，请先停止当前任务。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A task is already running. Stop it first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업이 실행 중입니다. 먼저 현재 작업을 중지해 주세요."
+          }
+        }
+      }
+    },
+    "已请求取消正在进行的任务启动，请稍候。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已请求取消正在进行的任务启动，请稍候。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancellation of the in-progress startup has been requested. Please wait."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진행 중인 작업 시작 취소를 요청했습니다. 잠시만 기다려 주세요."
+          }
+        }
+      }
+    },
+    "重置定时记录" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "重置定时记录"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset Schedule Records"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "예약 기록 초기화"
+          }
+        }
+      }
+    },
+    "删除并重建" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "删除并重建"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Delete and Rebuild"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "삭제 후 다시 만들기"
+          }
+        }
+      }
+    },
+    "将删除无法读取的定时记录文件并重建空记录；刚触发过且仍在触发窗口内的定时可能再执行一次。" : {
+      "localizations" : {
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将删除无法读取的定时记录文件并重建空记录；刚触发过且仍在触发窗口内的定时可能再执行一次。"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This deletes the unreadable schedule record file and rebuilds an empty one. A schedule that just triggered and is still inside its trigger window may run once more."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "읽을 수 없는 예약 기록 파일을 삭제하고 빈 기록을 다시 만듭니다. 방금 실행되어 아직 실행 창 안에 있는 예약은 한 번 더 실행될 수 있습니다."
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

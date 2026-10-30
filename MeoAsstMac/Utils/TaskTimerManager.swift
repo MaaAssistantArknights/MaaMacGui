@@ -110,7 +110,16 @@ import Foundation
         let now = Date()
         let calendar = Calendar.autoupdatingCurrent
         let next = plans.filter(\.isEnabled).compactMap { ScheduleCalendar.nextDate(for: $0, after: now, calendar: calendar) }.min()
-        let delay = min(15, max(0.1, next?.timeIntervalSince(now) ?? 15))
+        // 近距事件保留 ≤15s 短脉冲；远距事件直接定到触发前 1 秒，无计划时低频
+        // 待命，避免空转时每 15 秒做一次 flock + 整份 JSON 读取。时区/时钟/唤醒
+        // 变更仍由通知兜底刷新，提前 1 秒到达后再由短脉冲校正到触发时刻。
+        let delay: TimeInterval
+        if let next {
+            let interval = next.timeIntervalSince(now)
+            delay = interval > 60 ? interval - 1 : max(0.1, min(15, interval))
+        } else {
+            delay = 900
+        }
         let timer = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
             Task { @MainActor in self?.checkDueSchedules() }
         }
@@ -177,7 +186,12 @@ import Foundation
     }
 
     private func recordTerminal(_ end: RunContext) {
-        guard let occurrence = recentOccurrences.first(where: { $0.runID == end.id && $0.result == .started }) else { return }
+        // 直接在台账中按 runID 反查：recentOccurrences 只是 UI 截断窗口（最近
+        // 20 条），多计划并发更新可能把 started 记录挤出窗口导致终态永不落账。
+        let occurrence: ScheduleOccurrence?
+        do { occurrence = try store.records().first(where: { $0.runID == end.id && $0.result == .started }) }
+        catch { reportFailure(error); return }
+        guard let occurrence else { return }
         let result: ScheduleOccurrence.Result
         if end.cleanupSucceeded != true {
             result = .failed
@@ -198,8 +212,19 @@ import Foundation
     }
 
     private func reportFailure(_ error: Error) {
+        // 附上台账路径：损坏时用户可据此定位文件，或用下方的重置入口恢复。
         failure = String(localized: "定时记录无法读取或保存，已停止本次触发。")
+            + "\n" + store.directory.appendingPathComponent("occurrences.json").path
         print("Schedule ledger: \(error)")
+    }
+
+    /// 台账损坏后的显式恢复入口（用户已在界面确认）：删除并重建空台账。
+    func resetScheduleLedger() {
+        do {
+            try store.resetLedger()
+            try store.recoverInterrupted()
+            reloadRecords()
+        } catch { reportFailure(error) }
     }
 
     private func preventSystemFromSleepingIfNeeded(_ needed: Bool) {

@@ -3,6 +3,7 @@ import SwiftUI
 struct TaskTimerView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
     @State private var showingAlertForPreventingSleep = false
+    @State private var showingLedgerResetConfirmation = false
     @ObservedObject private var timerManager = TaskTimerManager.shared
 
     var body: some View {
@@ -20,7 +21,22 @@ struct TaskTimerView: View {
             .foregroundStyle(.secondary)
             .padding(.horizontal)
         if let failure = timerManager.failure {
-            Text(failure).foregroundStyle(.red).padding(.horizontal)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(failure).foregroundStyle(.red)
+                Button("重置定时记录") { showingLedgerResetConfirmation = true }
+                    .fixedSize()
+            }
+            .padding(.horizontal)
+            .alert("重置定时记录",
+                   isPresented: $showingLedgerResetConfirmation,
+                   actions: {
+                       Button("删除并重建", role: .destructive) {
+                           timerManager.resetScheduleLedger()
+                       }
+                       Button("取消", role: .cancel) {}
+                   }, message: {
+                       Text("将删除无法读取的定时记录文件并重建空记录；刚触发过且仍在触发窗口内的定时可能再执行一次。")
+                   })
         }
         List {
             ForEach($viewModel.scheduledDailyTaskTimers.indices, id: \.self) { index in
@@ -50,16 +66,16 @@ struct TaskTimerView: View {
         }
         Button("取消等待中的定时启动") { timerManager.cancelPendingStart() }
             .padding(.horizontal)
-        .alert("允许阻止系统睡眠",
-               isPresented: $showingAlertForPreventingSleep,
-               actions: {
-                   Button("允许") {
-                       viewModel.preventSystemSleeping = true
-                   }
-                   Button("取消", role: .cancel) {}
-               }, message: {
-                   Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
-               })
+            .alert("允许阻止系统睡眠",
+                   isPresented: $showingAlertForPreventingSleep,
+                   actions: {
+                       Button("允许") {
+                           viewModel.preventSystemSleeping = true
+                       }
+                       Button("取消", role: .cancel) {}
+                   }, message: {
+                       Text("日常任务定时执行会在系统休眠之后失效, 打开此功能可以阻止系统自动睡眠")
+                   })
     }
 
     private func showAlertIfNeeded() {

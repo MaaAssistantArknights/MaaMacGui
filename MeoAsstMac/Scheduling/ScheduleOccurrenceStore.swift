@@ -71,6 +71,24 @@ final class ScheduleOccurrenceStore: @unchecked Sendable {
         }
     }
 
+    /// Explicit user-confirmed recovery from an unreadable ledger: the file is
+    /// removed under the same lock and the next transaction rebuilds an empty
+    /// ledger. Claims are forgotten, so an occurrence still inside its grace
+    /// window may trigger once more after the reset.
+    func resetLedger() throws {
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let lockURL = directory.appendingPathComponent("occurrences.lock")
+        let descriptor = open(lockURL.path, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR)
+        guard descriptor >= 0 else { throw StoreError.lockFailed }
+        defer { close(descriptor) }
+        guard flock(descriptor, LOCK_EX) == 0 else { throw StoreError.lockFailed }
+        defer { flock(descriptor, LOCK_UN) }
+        let file = directory.appendingPathComponent("occurrences.json")
+        if FileManager.default.fileExists(atPath: file.path) {
+            try FileManager.default.removeItem(at: file)
+        }
+    }
+
     private func transaction<T>(_ operation: (inout Ledger) throws -> T) throws -> T {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         let lockURL = directory.appendingPathComponent("occurrences.lock")

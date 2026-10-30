@@ -62,6 +62,8 @@ import Foundation
         try Data("broken".utf8).write(to: dir.appendingPathComponent("occurrences.json"))
         do { _ = try store.claim(edited); fatalError("corrupt ledger allowed a start") }
         catch ScheduleOccurrenceStore.StoreError.corruptLedger { assertions += 1 }
+        try store.resetLedger()
+        check(try store.claim(edited), "explicit reset recovers a corrupt ledger")
 
         var recovery = ForcedGameRecovery(taskID: 42, chain: "Custom", requiresHome: true)
         recovery.subtask(chain: "Custom", taskID: 0, name: "Home", algorithm: "MatchTemplate")

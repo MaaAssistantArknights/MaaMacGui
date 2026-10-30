@@ -69,6 +69,18 @@ import Foundation
   let playcover=MAAViewModel(); playcover.touchMode = .MacPlayTools
   playcover.tasks=[.init(task:.startup(.init(start_game_enabled:true)))]
   check(await playcover.startDailyTasks(recoverGame:true) == .failed && playcover.startGameCount == 0 && playcover.handle?.appendCount == 0, "forced PlayCover auto-launch must fail before any device action")
+  let cancelling=MAAViewModel(); let connectGate=Gate(); cancelling.connectionGate=connectGate
+  cancelling.tasks=[.init(task:.fixture)]
+  let occupied=Task { await cancelling.startDailyTasks() }
+  for _ in 0..<10000 { if connectGate.entered { break }; await Task.yield() }
+  check(connectGate.entered && cancelling.operationInFlightForTest, "slow startup keeps the stop entry occupied")
+  var stopError:Error? = nil
+  do { try await cancelling.stop() } catch { stopError=error }
+  check(stopError == nil && cancelling.startupCancellationRequested, "stop during startup requests cancellation instead of throwing")
+  connectGate.release()
+  check(await occupied.value == .failed && cancelling.dailyRunCoordinator.lastTerminal?.outcome == .cancelled && cancelling.dailyRunCoordinator.active == nil, "cancelled startup unwinds to a cancelled terminal and releases ownership")
+  cancelling.connectionGate = nil
+  check(await cancelling.startDailyTasks() == .started, "a stop request must not poison the next startup")
   let scoped=MAAViewModel(); let scopedSnapshot=DailyRunSnapshot(profileID:scoped.dailyTaskProfile,tasks:[.init(task:.fixture)])
   let eligible=scoped.forceRecoveryEligibility(snapshot:scopedSnapshot)
   check(eligible(), "unchanged occurrence scope allows recovery")

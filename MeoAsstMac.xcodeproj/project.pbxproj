@@ -270,11 +270,11 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
-		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/RunContext.swift; sourceTree = SOURCE_ROOT; };
-		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/DailyTaskSchedule.swift; sourceTree = SOURCE_ROOT; };
-		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleOccurrenceStore.swift; sourceTree = SOURCE_ROOT; };
-		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/Scheduling/ScheduleHandoff.swift; sourceTree = SOURCE_ROOT; };
-		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeoAsstMac/RunHooks/DailyRunProfilePatch.swift; sourceTree = SOURCE_ROOT; };
+		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunContext.swift; sourceTree = "<group>"; };
+		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTaskSchedule.swift; sourceTree = "<group>"; };
+		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOccurrenceStore.swift; sourceTree = "<group>"; };
+		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleHandoff.swift; sourceTree = "<group>"; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRunProfilePatch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -302,11 +302,6 @@
 		83245A0128F467C300ED6D4C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
-				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
-				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
-				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
-				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
 				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
@@ -315,6 +310,25 @@
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B7F0A1C2D3E45F60718293A4 /* Scheduling */ = {
+			isa = PBXGroup;
+			children = (
+				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
+				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
+				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
+			);
+			path = Scheduling;
+			sourceTree = "<group>";
+		};
+		C9E2B3D4F5A607182934B5C6 /* RunHooks */ = {
+			isa = PBXGroup;
+			children = (
+				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
+			);
+			path = RunHooks;
 			sourceTree = "<group>";
 		};
 		83264A2729EBEB9B0074E33A /* Task Configurations */ = {
@@ -451,6 +465,8 @@
 				83264A3629EBF0700074E33A /* Configuration Views */,
 				83264A2729EBEB9B0074E33A /* Task Configurations */,
 				92CDF6202A065E20005669EC /* Utils */,
+				B7F0A1C2D3E45F60718293A4 /* Scheduling */,
+				C9E2B3D4F5A607182934B5C6 /* RunHooks */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
