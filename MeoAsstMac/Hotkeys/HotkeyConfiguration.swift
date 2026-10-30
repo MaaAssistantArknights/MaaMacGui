@@ -15,7 +15,8 @@ struct HotkeyChord: Codable, Equatable, Hashable {
     /// Chords whose exclusive registration would swallow an OS-wide shortcut:
     /// quit/close/hide/minimize and the universal edit commands under bare ⌘
     /// (⌘Q/⌘W/⌘H/⌘M, ⌘A/⌘S/⌘Z/⌘X/⌘C/⌘V), Spaces/Mission Control/App Exposé
-    /// under bare ⌃ arrows, lock screen (⌃⌘Q), Hide Others and Dock
+    /// under bare ⌃ arrows, lock screen (⌃⌘Q), Enter Full Screen (⌃⌘F),
+    /// Hide Others and Dock
     /// hide/show (⌘⌥H/⌘⌥D), the universal settings chord (⌘,), the
     /// input-source and emoji panels (Space under ⌘/⌃), and the screenshot
     /// range (⌘⇧3…6). Decorated variants are not OS defaults and stay free.
@@ -29,7 +30,7 @@ struct HotkeyChord: Codable, Equatable, Hashable {
         if keyCode == 49 { return command || control }
         if (20...23).contains(keyCode) { return command && shift && !control && !option }
         if (123...126).contains(keyCode) { return control && !command && !option && !shift }
-        if [0, 12].contains(keyCode) && command && control && !option && !shift { return true }
+        if [0, 3, 12].contains(keyCode) && command && control && !option && !shift { return true }
         if [2, 4].contains(keyCode) && command && option && !control && !shift { return true }
         return command && !control && !option && !shift
             && [0, 1, 4, 6, 7, 8, 9, 12, 13, 16, 41, 43, 46].contains(keyCode)

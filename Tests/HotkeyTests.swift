@@ -99,6 +99,8 @@ import Carbon
         check(!HotkeyChord(keyCode: 124, modifiers: UInt32(controlKey | shiftKey)).isSystemReserved, "decorated control arrow allowed")
         check(HotkeyChord(keyCode: 12, modifiers: UInt32(cmdKey | controlKey)).isSystemReserved, "lock screen chord reserved")
         check(HotkeyChord(keyCode: 0, modifiers: UInt32(cmdKey | controlKey)).isSystemReserved, "AZERTY lock screen chord reserved")
+        check(HotkeyChord(keyCode: 3, modifiers: UInt32(cmdKey | controlKey)).isSystemReserved, "full screen chord reserved")
+        check(!HotkeyChord(keyCode: 3, modifiers: UInt32(cmdKey | controlKey | optionKey)).isSystemReserved, "decorated full screen chord allowed")
         check(HotkeyChord(keyCode: 4, modifiers: UInt32(cmdKey | optionKey)).isSystemReserved, "hide others chord reserved")
         check(HotkeyChord(keyCode: 2, modifiers: UInt32(cmdKey | optionKey)).isSystemReserved, "dock hide/show chord reserved")
         check(HotkeyChord(keyCode: 43, modifiers: UInt32(cmdKey)).isSystemReserved, "settings chord reserved")
