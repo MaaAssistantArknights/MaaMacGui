@@ -179,7 +179,11 @@ import Foundation
     private func recordTerminal(_ end: RunContext) {
         guard let occurrence = recentOccurrences.first(where: { $0.runID == end.id && $0.result == .started }) else { return }
         let result: ScheduleOccurrence.Result
-        if end.cleanupSucceeded != true {
+        // cleanupSucceeded == nil means the outcome is unknown (journal degraded
+        // abandon path or boot-interrupted recovery), not a failed cleanup; only
+        // a definitive false mislabels the run so the user-visible record keeps
+        // the honest outcome instead of turning a user cancel into "cleanupFailed".
+        if end.cleanupSucceeded == false {
             result = .failed
         } else {
             switch end.outcome {
@@ -189,7 +193,7 @@ import Foundation
             default: result = .interrupted
             }
         }
-        record(occurrence, result: result, detail: end.cleanupSucceeded == true ? "" : "cleanupFailed", runID: end.id)
+        record(occurrence, result: result, detail: end.cleanupSucceeded == false ? "cleanupFailed" : "", runID: end.id)
     }
 
     private func reloadRecords() {
