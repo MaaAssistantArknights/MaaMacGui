@@ -3163,6 +3163,22 @@
         }
       }
     },
+    "任务正在运行，请先停止当前任务。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A task is already running. Please stop it first."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업이 실행 중입니다. 먼저 현재 작업을 중지하세요."
+          }
+        }
+      }
+    },
     "企鹅物流" : {
       "localizations" : {
         "ko" : {
@@ -4399,6 +4415,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "현재/최근"
+          }
+        }
+      }
+    },
+    "当前正在启动或停止任务，请稍后重试。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A task is currently starting or stopping. Please try again later."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업을 시작하거나 중지하는 중입니다. 잠시 후 다시 시도하세요."
           }
         }
       }

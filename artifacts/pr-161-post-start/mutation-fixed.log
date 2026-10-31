@@ -1,0 +1,2 @@
+FAIL: stop rejection appends its own busy log
+305 assertions; 1 failures

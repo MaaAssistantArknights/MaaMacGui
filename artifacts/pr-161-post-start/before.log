@@ -1,0 +1,5 @@
+FAIL: delayed prior callback does not suppress new busy state
+FAIL: delayed prior callback does not suppress new metadata
+FAIL: delayed prior callback does not suppress new busy state
+FAIL: delayed prior callback does not suppress new metadata
+297 assertions; 4 failures

@@ -1,0 +1,16 @@
+{
+  "MeoAsstMac/Model/MAAError.swift": "e6f48cffd7c1b0998032ed7765d22f2a665f277da0c2ac0e73056c1ed1c59470",
+  "MeoAsstMac/Model/MAAViewModel.swift": "3c0a109d433da20af473a3b03c995f8277ff1bfeae33523e4f868839e4e51bc9",
+  "MeoAsstMac/Model/NewViewModel.swift": "a8cc4f758bce777e8e488466c861b3c66069e0794d1dfce121f54cd32017392c",
+  "MeoAsstMac/Navigation/CopilotContent.swift": "fa184ef737cc4b5ebfd8dc745b4d7de160259efa35d5cec105bbafd8768a1150",
+  "MeoAsstMac/Navigation/TasksContent.swift": "1dab66d23982d2a96e44404d9855af8543db203cf63ee6f48fdb67f7b9a30475",
+  "MeoAsstMac/Navigation/UtilityContent.swift": "0ba152994b2016eef830b1d5c823f7913f2e4956126449a44890ab82f9e667d6",
+  "MeoAsstMac/Views/GachaView.swift": "342536ac2219d0bd575428caa979920a2c754621cf9e4c227a30dcec1d13bb75",
+  "MeoAsstMac/Views/MiniGameView.swift": "cfbafa2ab4fd9b4901283e39ec0634aa2ac99a75307417f6f0f390f65c2fa7f9",
+  "MeoAsstMac/Views/TaskButtons.swift": "df945c109c5ecea6bf36de527d533dbacad78db94aabb2abd2c9882aad8b453f",
+  "Tests/TaskOperationTestSupport.swift": "24f05b73b68cc76cc536f556aa67c97e8b3319966429022a7846db4d023953e3",
+  "Tests/TaskOperationTests.swift": "1868ee27a343b1b4d5f49580e0c144446d5a6cfdbeb7347dcff0361d617cf403",
+  "Tests/run-task-operation-tests.py": "d06a359b6690cb014bd4732714ee615474513f206bc0cd1575fe06c099cdfda5",
+  "MeoAsstMac/Utils/TaskTimerManager.swift": "2c5ae2cd94e02177b6078edccecf050eba8fbc21882994d4b48946b907bba1ef",
+  "artifacts/pr-161-stop-log/mutation-check.py": "d649a728f1381d9e274692218f36746cf52259ad4b6157c33247a1721c793bc9"
+}

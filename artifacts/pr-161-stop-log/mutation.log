@@ -1,0 +1,8 @@
+old-oracle: exit=0
+242 assertions; 0 failures
+
+fixed-oracle: exit=1
+FAIL: stop rejection appends its own busy log
+242 assertions; 1 failures
+
+PASS: old oracle masks the missing stop log; fixed oracle detects it.
