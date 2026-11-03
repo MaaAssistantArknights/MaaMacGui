@@ -1,6 +1,204 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "沿用当前 Core 行为" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use current Core behavior"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 Core 동작 유지"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沿用当前 Core 行为"
+          }
+        }
+      }
+    },
+    "第一结局" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending 1"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "첫 번째 결말"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第一结局"
+          }
+        }
+      }
+    },
+    "第二结局" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending 2"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "두 번째 결말"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第二结局"
+          }
+        }
+      }
+    },
+    "第三结局" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ending 3"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세 번째 결말"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第三结局"
+          }
+        }
+      }
+    },
+    "目标结局" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target ending"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 결말"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目标结局"
+          }
+        }
+      }
+    },
+    "疾速飞行" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast flight"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고속 비행"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疾速飞行"
+          }
+        }
+      }
+    },
+    "刷等级，选择结局或疾速飞行" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gain experience: select an ending or fast flight"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "경험치 획득: 결말 또는 고속 비행 선택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "刷等级，选择结局或疾速飞行"
+          }
+        }
+      }
+    },
+    "疾速飞行需要自有精二机械师，并已在“训练 → 精通”中解锁“招募精通Ⅱ → 效果提升Ⅱ”，开局获得可全图任意飞行 3 次的“结构性原理”零件。启用时使用特勤分队、稳扎稳打、不借助战。关闭后恢复原开局配置。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fast flight requires your own Elite 2 Mechanist with “招募精通Ⅱ → 效果提升Ⅱ” already unlocked under “训练 → 精通”. This grants the starting “结构性原理” part for 3 moves to any map node. When enabled, this uses Special Operations Squad, Slow and Steady, and no support unit. Turning it off restores your opening settings."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "고속 비행에는 자신의 정예 2 메카니스트가 필요하며, “训练 → 精通”에서 “招募精通Ⅱ → 效果提升Ⅱ”가 이미 해금되어 있어야 합니다. 시작 시 “结构性原理” 부품을 획득하여 지도 전체의 임의 노드로 3회 이동할 수 있습니다. 활성화하면 특근 분대, 안정적인 전진, 지원 없는 편성을 사용합니다. 끄면 기존 시작 설정을 사용합니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "疾速飞行需要自有精二机械师，并已在“训练 → 精通”中解锁“招募精通Ⅱ → 效果提升Ⅱ”，开局获得可全图任意飞行 3 次的“结构性原理”零件。启用时使用特勤分队、稳扎稳打、不借助战。关闭后恢复原开局配置。"
+          }
+        }
+      }
+    },
+    "已选择目标结局：将按该结局推进，上方的难度与开局设置照常生效。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Target ending selected: runs will aim for that ending, while the difficulty and opening settings above still apply as usual."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 결말 선택됨: 해당 결말을 향해 진행하며, 위에서 설정한 난이도와 시작 분대·직군·오퍼레이터가 그대로 적용됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已选择目标结局：将按该结局推进，上方的难度与开局设置照常生效。"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },
@@ -2494,7 +2692,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "肉鸽结算：%1$(pass)@ (难度%9$(difficulty)lld)\n探索：%2$(floor)lld层%3$(step)lld步\n战斗：%4$(combat)lld / %5$(emergency)lld紧急 / %6$(boss)lld BOSS\n招募：%7$(recruit)lld 收藏品：%8$(collection)lld\n得分：%10$(score)lld 经验：%11$(exp)@ 点数：%12$(skill)@"
+            "value" : "肉鸽结算：%1$(pass)@ (难度%9$(difficulty)lld)\n探索：%2$(floor)@层%3$(step)lld步\n战斗：%4$(combat)lld / %5$(emergency)lld紧急 / %6$(boss)lld BOSS\n招募：%7$(recruit)lld 收藏品：%8$(collection)lld\n得分：%10$(score)lld 经验：%11$(exp)@ 点数：%12$(skill)@"
           }
         }
       }
@@ -3768,9 +3966,6 @@
       }
     },
     "刷等级，尽可能稳定地打更多层数" : {
-
-    },
-    "刷等级，快速飞三层" : {
 
     },
     "刷襁褓动物" : {
