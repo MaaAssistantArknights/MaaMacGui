@@ -3464,12 +3464,44 @@
         }
       }
     },
+    "关闭主窗口后 MAA 将隐藏到菜单栏并继续运行，不在程序坞中显示。可通过菜单栏图标重新打开或退出" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "After the main window is closed, MAA keeps running in the menu bar and is hidden from the Dock. Use the menu bar icon to reopen or quit it"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "메인 창을 닫으면 MAA가 메뉴 막대에서 계속 실행되며 Dock에는 표시되지 않습니다. 메뉴 막대 아이콘으로 다시 열거나 종료할 수 있습니다"
+          }
+        }
+      }
+    },
     "关闭游戏" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "게임 종료"
+          }
+        }
+      }
+    },
+    "关闭窗口时常驻菜单栏" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep in menu bar when window is closed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "창을 닫을 때 메뉴 막대에 상주"
           }
         }
       }
@@ -4835,6 +4867,22 @@
         }
       }
     },
+    "显示 MAA" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Show MAA"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 보기"
+          }
+        }
+      }
+    },
     "更换主题" : {
       "localizations" : {
         "en" : {
@@ -6170,6 +6218,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "연결 설정"
+          }
+        }
+      }
+    },
+    "退出 MAA" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quit MAA"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "MAA 종료"
           }
         }
       }

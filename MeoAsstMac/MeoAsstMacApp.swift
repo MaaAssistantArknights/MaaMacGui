@@ -13,6 +13,7 @@ struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @StateObject private var appViewModel: MAAViewModel
     @State private var newViewModel: NewViewModel
+    @AppStorage(MenuBarKeeper.enabledKey) private var keepInMenuBar = false
 
     private let updaterController: SPUStandardUpdaterController
     private let updaterDelegate = MaaUpdaterDelegate()
@@ -40,6 +41,10 @@ struct MeoAsstMacApp: App {
                 .environment(newViewModel)
                 .onAppear {
                     TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
+                }
+                .background(WindowAccessor { MenuBarKeeper.shared.attach(mainWindow: $0) })
+                .onChange(of: keepInMenuBar, initial: true) {
+                    MenuBarKeeper.shared.update()
                 }
         }
         .commands {
@@ -114,6 +119,12 @@ private class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
-        true
+        !MenuBarKeeper.isEnabled
+    }
+
+    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+        guard MenuBarKeeper.shared.isMainWindowHidden else { return true }
+        MenuBarKeeper.shared.showMainWindow()
+        return false
     }
 }
