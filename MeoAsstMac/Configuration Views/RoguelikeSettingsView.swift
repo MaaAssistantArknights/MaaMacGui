@@ -13,19 +13,17 @@ struct RoguelikeSettingsView: View {
     @Environment(\.defaultMinListRowHeight) private var rowHeight
 
     var body: some View {
-        ScrollView {
-            Form {
-                generalSettings()
-                Divider()
-                goldSettings()
-                Divider()
-                squadSettings()
-                Divider()
-                strategySettings()
-            }
-            .animation(.default, value: config)
-            .padding()
+        Form {
+            generalSettings()
+            Divider()
+            goldSettings()
+            Divider()
+            squadSettings()
+            Divider()
+            strategySettings()
         }
+        .animation(.default, value: config)
+        .padding()
     }
 
     @ViewBuilder private func generalSettings() -> some View {
@@ -80,6 +78,22 @@ struct RoguelikeSettingsView: View {
             }
         }
 
+        if let tip = config.tip {
+            LabeledContent {
+                ScrollView {
+                    Text(tip)
+                        .font(.callout)
+                        .foregroundStyle(.secondary)
+                        .textSelection(.enabled)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .frame(minHeight: 2 * rowHeight)
+                .alignmentGuide(.firstTextBaseline) { d in d[.top] }
+            } label: {
+                Text("推荐配置")
+                    .alignmentGuide(.firstTextBaseline) { d in d[.top] }
+            }
+        }
     }
 
     @ViewBuilder private func startCollectibles() -> some View {

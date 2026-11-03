@@ -4612,6 +4612,22 @@
         }
       }
     },
+    "推荐配置" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recommended configuration"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "추천 구성"
+          }
+        }
+      }
+    },
     "支援道具：" : {
       "localizations" : {
         "ko" : {
