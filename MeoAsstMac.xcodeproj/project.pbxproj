@@ -100,6 +100,7 @@
 		83BC250D302F02B000080642 /* PixelPaintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250C302F02B000080642 /* PixelPaintView.swift */; };
 		83BFABC82AF1D5BA001A79F4 /* AwardSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */; };
 		83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83CFD47029EAACD7000428A1 /* MAATask.swift */; };
+		B167F0010000000000000001 /* DailyTaskProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B167F0010000000000000002 /* DailyTaskProfileStore.swift */; };
 		83D061F62CF81519008F0140 /* FileLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D061F52CF81519008F0140 /* FileLogger.swift */; };
 		83D3283128F2E7A600018D10 /* RecruitSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */; };
 		83D3283328F2F1BE00018D10 /* MallSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83D3283228F2F1BE00018D10 /* MallSettingsView.swift */; };
@@ -245,6 +246,7 @@
 		83BC250C302F02B000080642 /* PixelPaintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPaintView.swift; sourceTree = "<group>"; };
 		83BFABC72AF1D5BA001A79F4 /* AwardSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AwardSettingsView.swift; sourceTree = "<group>"; };
 		83CFD47029EAACD7000428A1 /* MAATask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MAATask.swift; sourceTree = "<group>"; };
+		B167F0010000000000000002 /* DailyTaskProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTaskProfileStore.swift; sourceTree = "<group>"; };
 		83D061F52CF81519008F0140 /* FileLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileLogger.swift; sourceTree = "<group>"; };
 		83D3283028F2E7A600018D10 /* RecruitSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecruitSettingsView.swift; sourceTree = "<group>"; };
 		83D3283228F2F1BE00018D10 /* MallSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MallSettingsView.swift; sourceTree = "<group>"; };
@@ -480,6 +482,7 @@
 				8366DE0229F2F34100F715E8 /* MAAOperBox.swift */,
 				832985B329EF1219009F7ED5 /* MAARecruit.swift */,
 				83CFD47029EAACD7000428A1 /* MAATask.swift */,
+				B167F0010000000000000002 /* DailyTaskProfileStore.swift */,
 				83264A3D29EC22DE0074E33A /* MAAViewModel.swift */,
 				831100C33026440D00554899 /* NewViewModel.swift */,
 				836E997630534A200082748D /* StageActivity.swift */,
@@ -650,6 +653,7 @@
 				832985B029EEF483009F7ED5 /* ReclamationConfiguration.swift in Sources */,
 				833786CF28F188D800D39D6F /* MeoAsstMacApp.swift in Sources */,
 				83CFD47129EAACD7000428A1 /* MAATask.swift in Sources */,
+				B167F0010000000000000001 /* DailyTaskProfileStore.swift in Sources */,
 				8347B5AF2CDF925400AEB627 /* URLSession+downloadProgress.swift in Sources */,
 				83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */,
 				8383EA2D28F2AF23007DAB9D /* MaaMessage.swift in Sources */,

@@ -3123,6 +3123,28 @@
     "亮度" : {
 
     },
+    "仅常规模式生效，其他模式保留所选偏好。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active only in regular mode. Other modes retain your preferences."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "일반 모드에서만 적용됩니다. 다른 모드에서는 선택한 설정이 유지됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅常规模式生效，其他模式保留所选偏好。"
+          }
+        }
+      }
+    },
     "今日关卡小提示" : {
       "localizations" : {
         "en" : {
@@ -3232,6 +3254,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "응접실 단서 교류 크레딧 수령"
+          }
+        }
+      }
+    },
+    "但书" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Proviso"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "프로바이조"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "但书"
           }
         }
       }
@@ -3519,6 +3563,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "최대 탐험 횟수"
+          }
+        }
+      }
+    },
+    "最多选择3名恢复目标" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select up to 3 recovery targets"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "회복 대상을 최대 3명 선택하세요"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最多选择3名恢复目标"
           }
         }
       }
@@ -3921,6 +3987,28 @@
         }
       }
     },
+    "可露希尔" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Closure"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클로저"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "可露希尔"
+          }
+        }
+      }
+    },
     "吃临期理智药" : {
 
     },
@@ -4211,6 +4299,28 @@
     },
     "工具介绍" : {
 
+    },
+    "巫恋" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Shamare"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "샤마르"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "巫恋"
+          }
+        }
+      }
     },
     "已启用" : {
       "localizations" : {
@@ -5030,6 +5140,28 @@
         }
       }
     },
+    "歌蕾蒂娅" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gladiia"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글래디아"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歌蕾蒂娅"
+          }
+        }
+      }
+    },
     "正在下载…" : {
       "localizations" : {
         "ko" : {
@@ -5168,6 +5300,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작업 추가"
+          }
+        }
+      }
+    },
+    "清流" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Purestream"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "퓨어스트림"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "清流"
           }
         }
       }
@@ -5786,6 +5940,28 @@
     "色彩匹配" : {
 
     },
+    "菲亚梅塔心情恢复" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fiammetta Morale Recovery"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "피아메타 컨디션 회복"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "菲亚梅塔心情恢复"
+          }
+        }
+      }
+    },
     "萨卡兹" : {
       "localizations" : {
         "ko" : {
@@ -5997,6 +6173,28 @@
     },
     "请选择工具项目" : {
 
+    },
+    "请选择恢复目标后再启用，空名单不会使用默认目标。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select recovery targets before enabling. An empty list will not use default targets."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "활성화하기 전에 회복 대상을 선택하세요. 빈 목록은 기본 대상을 사용하지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请选择恢复目标后再启用，空名单不会使用默认目标。"
+          }
+        }
+      }
     },
     "请选择识别项目" : {
       "extractionState" : "stale",
@@ -6427,6 +6625,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "기본 교대"
+          }
+        }
+      }
+    },
+    "龙舌兰" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tequila"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테킬라"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "龙舌兰"
           }
         }
       }

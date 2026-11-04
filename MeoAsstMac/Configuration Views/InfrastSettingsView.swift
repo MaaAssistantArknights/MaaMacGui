@@ -86,6 +86,55 @@ struct InfrastSettingsView: View {
         Toggle("源石碎片自动补货", isOn: $config.replenish)
         Toggle("会客室信息板收取信用", isOn: $config.reception_message_board)
         Toggle("训练完成后继续尝试专精当前技能", isOn: $config.continue_training)
+        Divider()
+        fiammettaPreferences
+    }
+
+    @ViewBuilder private var fiammettaPreferences: some View {
+        Toggle("菲亚梅塔心情恢复", isOn: fiammettaEnabled)
+            .disabled(config.mode != .default || config.fiammetta_targets.isEmpty)
+        Text("仅常规模式生效，其他模式保留所选偏好。")
+            .font(.caption).foregroundStyle(.secondary)
+        Text("最多选择3名恢复目标")
+            .font(.caption)
+        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], alignment: .leading) {
+            ForEach(InfrastConfiguration.FiammettaTarget.allCases) { target in
+                Toggle(target.title, isOn: fiammettaTarget(target))
+                    .disabled(
+                        config.mode != .default
+                            || (!config.fiammetta_targets.contains(target.rawValue)
+                                && config.fiammetta_targets.count >= 3)
+                    )
+            }
+        }
+        if config.fiammetta_targets.isEmpty {
+            Text("请选择恢复目标后再启用，空名单不会使用默认目标。")
+                .font(.caption).foregroundStyle(.secondary)
+        }
+    }
+
+    private var fiammettaEnabled: Binding<Bool> {
+        Binding {
+            config.fiammetta_recovery_enabled
+        } set: { enabled in
+            config.fiammetta_recovery_enabled = enabled && !config.fiammetta_targets.isEmpty
+        }
+    }
+
+    private func fiammettaTarget(_ target: InfrastConfiguration.FiammettaTarget) -> Binding<Bool> {
+        Binding {
+            config.fiammetta_targets.contains(target.rawValue)
+        } set: { selected in
+            var updated = config
+            if selected {
+                updated.fiammetta_targets = InfrastConfiguration.normalizedFiammettaTargets(
+                    updated.fiammetta_targets + [target.rawValue])
+            } else {
+                updated.fiammetta_targets.removeAll { $0 == target.rawValue }
+                if updated.fiammetta_targets.isEmpty { updated.fiammetta_recovery_enabled = false }
+            }
+            config = updated
+        }
     }
 
     @ViewBuilder private var customPlanView: some View {

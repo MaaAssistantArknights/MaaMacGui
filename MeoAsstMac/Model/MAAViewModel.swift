@@ -136,8 +136,7 @@ import SwiftUI
 
     init() {
         do {
-            let data = try Data(contentsOf: tasksURL)
-            tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
+            tasks = try DailyTaskProfileStore(profileURL: tasksURL).load()
         } catch {
             var isDirectory: ObjCBool = false
             let exists = FileManager.default.fileExists(atPath: tasksDirectory.path, isDirectory: &isDirectory)
