@@ -276,6 +276,17 @@ extension MAAResourceVersion {
 
 struct MAAStageActivity: Decodable, Hashable {
     let miniGame: [MiniGame]
+    let sideStoryStage: [String: SideStoryStage]?
+
+    private enum CodingKeys: String, CodingKey { case miniGame, sideStoryStage }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        miniGame = try container.decode([MiniGame].self, forKey: .miniGame)
+        // Invalid activity data disables the optional medicine extension without
+        // breaking existing OTA mini-game decoding.
+        sideStoryStage = try? container.decode([String: SideStoryStage].self, forKey: .sideStoryStage)
+    }
 
     struct MiniGame: Decodable, Hashable {
         let Display: String?

@@ -45,6 +45,8 @@ import SwiftUI
 
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
+    // Preserve the exact parameters submitted to Core for delayed medicine callbacks.
+    var fightTaskParams: [Int32: FightConfiguration.Params] = [:]
     @Published var newTaskAdded = false
 
     enum TaskStatus: Equatable {
@@ -81,7 +83,7 @@ import SwiftUI
     @Published private var stageActivities = [String: MAAStageActivity]()
 
     var stageActivity: MAAStageActivity? {
-        stageActivities[clientChannel.rawValue]
+        stageActivities[clientChannel.stageActivityKey]
     }
 
     // MARK: - Recognition
@@ -204,6 +206,7 @@ extension MAAViewModel {
 
         logStore?.clearLogs()
         taskIDMap.removeAll()
+        fightTaskParams.removeAll()
         taskStatus.removeAll()
 
         guard requireConnect else { return }
@@ -471,7 +474,22 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            let coreID: Int32?
+            if case .fight(let config) = task.task {
+                let now = Date.now
+                let context = StageActivityContext(channel: clientChannel, activities: stageActivity)
+                if context.medicineWindow(at: now, enabled: config.useActivityMedicine) == .unavailable {
+                    logInfo("活动数据不可用，沿用原临期药设置")
+                }
+                let params = config.params(at: now, stageActivity: context)
+                coreID = try await handle?.appendTask(type: .Fight, params: params.jsonString())
+                if let coreID {
+                    fightTaskParams[coreID] = params
+                }
+            } else {
+                coreID = try await handle?.appendTask(task.task)
+            }
+            if let coreID {
                 taskIDMap[coreID] = task.id
             }
         }

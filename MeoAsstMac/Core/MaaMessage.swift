@@ -1426,10 +1426,10 @@ extension MAAViewModel {
                 return
             }
             let expiry: String
-            if case .fight(let config) = dailyTask(coreID: info.taskid),
-                config.medicine_expire_days > 0
+            if let coreID = info.taskid,
+                let params = fightTaskParams[coreID], params.medicine_expire_days > 0
             {
-                expiry = L(config.localizedExpiry)
+                expiry = L(params.localizedExpiry)
             } else {
                 expiry = L("即将")
             }
