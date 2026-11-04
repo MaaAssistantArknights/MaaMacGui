@@ -93,6 +93,14 @@ import SwiftUI
 
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
+    @AppStorage("MAAConnectionMode") var connectionMode = MaaConnectionMode.automatic {
+        didSet {
+            if connectionMode == .androwsMac {
+                touchMode = .adb
+            }
+        }
+    }
+
     @AppStorage("MAAUseGzip") var useGzip = false
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
@@ -182,6 +190,13 @@ extension MAAViewModel {
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
+        if requireConnect, connectionMode == .androwsMac,
+            !(await MAAProvider.shared.hasConnectionProfile("AndrowsMac"))
+        {
+            logError("当前核心资源不包含应用宝 Mac 连接配置，请更新核心及资源后重试。")
+            throw MAAError.androwsMacResourceMissing
+        }
+
         if handle == nil {
             let handle = try await MAAHandle(options: instanceOptions)
             self.handle = handle
@@ -209,7 +224,7 @@ extension MAAViewModel {
         guard requireConnect else { return }
 
         logTrace("ConnectingToEmulator")
-        if touchMode == .MacPlayTools {
+        if effectiveTouchMode == .MacPlayTools {
             logTrace("如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本")
             if toolsMode == .MacSCK && !CGPreflightScreenCaptureAccess() {
                 logError("未开启屏幕录制权限，请前往“系统设置” > “隐私与安全性” > “录屏与系统录音”允许MAA访问")
@@ -219,17 +234,8 @@ extension MAAViewModel {
             }
         }
 
-        let connectionProfile: String
-        switch (touchMode, toolsMode, useGzip) {
-        case (.MacPlayTools, .MacSCK, _):
-            connectionProfile = "MacSCK"
-        case (.MacPlayTools, .BGR, _):
-            connectionProfile = "MacBGR"
-        case (_, _, true):
-            connectionProfile = "Compatible"
-        default:
-            connectionProfile = "CompatMac"
-        }
+        let connectionProfile = connectionMode.profile(
+            touchMode: effectiveTouchMode, toolsMode: toolsMode, useGzip: useGzip)
 
         try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
@@ -294,7 +300,7 @@ extension MAAViewModel {
     private func loadResource(url: URL) async throws {
         try await MAAProvider.shared.loadResource(path: url.path)
 
-        if touchMode == .MacPlayTools {
+        if effectiveTouchMode == .MacPlayTools {
             let platformResource = url.appendingPathComponent("resource")
                 .appendingPathComponent("platform_diff")
                 .appendingPathComponent("iOS")
@@ -411,11 +417,20 @@ extension MAAViewModel {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     }
 
+    var effectiveTouchMode: MaaTouchMode {
+        connectionMode == .androwsMac ? .adb : touchMode
+    }
+
     private var instanceOptions: MAAInstanceOptions {
-        [
-            .TouchMode: touchMode.rawValue,
-            .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
+        var options: MAAInstanceOptions = [
+            .TouchMode: effectiveTouchMode.rawValue,
+            .AdbLiteEnabled: (connectionMode != .androwsMac && touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
         ]
+        if connectionMode == .androwsMac {
+            // AndrowsMac resolves the selected client's display during connect.
+            options[.ClientType] = clientChannel.rawValue
+        }
+        return options
     }
 
     private var adbPath: String {
@@ -449,7 +464,7 @@ extension MAAViewModel {
             config.client_type = clientChannel
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
-            if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
+            if effectiveTouchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
                     throw MAAError.gameStartFailed
                 }

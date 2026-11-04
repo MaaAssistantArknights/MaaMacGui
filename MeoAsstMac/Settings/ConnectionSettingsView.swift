@@ -12,13 +12,19 @@ struct ConnectionSettingsView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
+            Picker("连接配置", selection: $viewModel.connectionMode) {
+                Text("通用 / PlayCover").tag(MaaConnectionMode.automatic)
+                Text("腾讯应用宝 Mac").tag(MaaConnectionMode.androwsMac)
+            }
+
             Picker("触控模式", selection: $viewModel.touchMode.animation()) {
                 ForEach(MaaTouchMode.allCases, id: \.self) { mode in
                     Text(mode.rawValue)
                 }
             }
+            .disabled(viewModel.connectionMode == .androwsMac)
 
-            if viewModel.touchMode == .MacPlayTools {
+            if viewModel.effectiveTouchMode == .MacPlayTools {
                 Text("PlayTools 的使用请参考[文档](https://maa.plus/docs/zh-cn/manual/device/macos.html)。")
                     .font(.caption).foregroundStyle(.secondary)
             }
@@ -30,7 +36,7 @@ struct ConnectionSettingsView: View {
 
             Divider()
 
-            if viewModel.touchMode == .MacPlayTools {
+            if viewModel.effectiveTouchMode == .MacPlayTools {
                 Picker("截图模式", selection: $viewModel.toolsMode.animation()) {
                     ForEach(MaaToolsMode.allCases, id: \.self) { mode in
                         Text(mode.description)
@@ -52,6 +58,9 @@ struct ConnectionSettingsView: View {
                         }
                     }
                 }
+            } else if viewModel.connectionMode == .androwsMac {
+                Text("请先启动游戏，并在游戏设置中选择客户端。游戏重启后请重新连接。此模式使用 ADB 触控，关闭 adb-lite，允许 Gzip 截图。")
+                    .font(.caption).foregroundStyle(.secondary)
             } else {
                 Toggle(isOn: $viewModel.useGzip) {
                     VStack(alignment: .leading, spacing: 2) {
@@ -109,3 +118,25 @@ extension MaaToolsMode: CustomStringConvertible {
 
 private let systemScreenCapturePreferenceURL = URL(
     string: "x-apple.systempreferences:com.apple.PreferencePanes.Security?Privacy_ScreenCapture")
+
+/// Keep existing connection selection as the default for saved installations.
+enum MaaConnectionMode: String, CaseIterable {
+    case automatic
+    case androwsMac
+
+    func profile(touchMode: MaaTouchMode, toolsMode: MaaToolsMode, useGzip: Bool) -> String {
+        if self == .androwsMac {
+            return "AndrowsMac"
+        }
+        switch (touchMode, toolsMode, useGzip) {
+        case (.MacPlayTools, .MacSCK, _):
+            return "MacSCK"
+        case (.MacPlayTools, .BGR, _):
+            return "MacBGR"
+        case (_, _, true):
+            return "Compatible"
+        default:
+            return "CompatMac"
+        }
+    }
+}

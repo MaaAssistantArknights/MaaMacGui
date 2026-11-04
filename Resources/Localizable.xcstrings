@@ -1,6 +1,56 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "当前核心资源不包含应用宝 Mac 连接配置，请更新核心及资源后重试。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The loaded core resources do not include the Tencent App Store for Mac profile. Update the core and resources, then try again."
+          }
+        }
+      }
+    },
+    "连接配置" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection profile"
+          }
+        }
+      }
+    },
+    "通用 / PlayCover" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "General / PlayCover"
+          }
+        }
+      }
+    },
+    "腾讯应用宝 Mac" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tencent App Store for Mac"
+          }
+        }
+      }
+    },
+    "请先启动游戏，并在游戏设置中选择客户端。游戏重启后请重新连接。此模式使用 ADB 触控，关闭 adb-lite，允许 Gzip 截图。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start the game first and select its client channel in Game Settings. Reconnect after restarting the game. This mode uses ADB touch, disables adb-lite, and allows Gzip screenshots."
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

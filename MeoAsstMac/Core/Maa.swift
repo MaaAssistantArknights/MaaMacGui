@@ -17,10 +17,23 @@ actor MAAProvider {
     static let shared = MAAProvider()
     private init() {}
 
+    private var connectionProfiles = Set<String>()
+
     func loadResource(path: String) throws {
         guard AsstLoadResource(path).isTrue else {
             throw MaaCoreError.loadResourceFailed
         }
+        let configURL = URL(fileURLWithPath: path).appendingPathComponent("resource/config.json")
+        if let data = try? Data(contentsOf: configURL),
+            let config = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+            let connections = config["connection"] as? [[String: Any]]
+        {
+            connectionProfiles.formUnion(connections.compactMap { $0["configName"] as? String })
+        }
+    }
+
+    func hasConnectionProfile(_ name: String) -> Bool {
+        connectionProfiles.contains(name)
     }
 
     func setUserDirectory(path: String) throws {
@@ -236,6 +249,7 @@ enum MAAInstanceOptionKey: Int32 {
     case DeploymentWithPause = 3
     case AdbLiteEnabled = 4
     case KillAdbOnExit = 5
+    case ClientType = 6
 }
 
 typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]
