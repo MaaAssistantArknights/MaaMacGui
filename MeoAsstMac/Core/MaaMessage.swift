@@ -1501,9 +1501,69 @@ extension MAAViewModel {
             }
             logInfo(.stageQueue(stage: stageCode, stars: stars))
 
-        case let what where what.starts(with: "MaterialSynthesis"):
-            // There is no plan to re-run Material Synthesis currently.
-            break
+        case "MaterialSynthesisStart":
+            logInfo(.miniGameMaterialSynthesisStartLog)
+
+        case "MaterialSynthesisMaterial":
+            let material: String = (try? info.details["material"]) ?? ""
+            let count: Int = (try? info.details["count"]) ?? 0
+            let depth: Int = (try? info.details["depth"]) ?? 0
+            logTrace(.miniGameMaterialSynthesisMaterialLog(material: material, count: count, depth: depth + 1))
+
+        case "MaterialSynthesisIngredient":
+            let material: String = (try? info.details["material"]) ?? ""
+            let index: Int = (try? info.details["ingredient"]) ?? 0
+            logTrace(.miniGameMaterialSynthesisIngredientLog(material: material, index: index))
+
+        case "MaterialSynthesisIngredientUnavailable":
+            let material: String = (try? info.details["material"]) ?? ""
+            let index: Int = (try? info.details["ingredient"]) ?? 0
+            logWarn(.miniGameMaterialSynthesisIngredientUnavailableLog(material: material, index: index))
+
+        case "MaterialSynthesisOperator":
+            let material: String = (try? info.details["material"]) ?? ""
+            logTrace(.miniGameMaterialSynthesisOperatorLog(material: material))
+
+        case "MaterialSynthesisCraft":
+            let material: String = (try? info.details["material"]) ?? ""
+            let count: Int = (try? info.details["count"]) ?? 0
+            logTrace(.miniGameMaterialSynthesisCraftLog(material: material, count: count))
+
+        case "MaterialSynthesisReturn":
+            let material: String = (try? info.details["material"]) ?? ""
+            logTrace(.miniGameMaterialSynthesisReturnLog(material: material))
+
+        case "MaterialSynthesisCompleted":
+            logInfo(.miniGameMaterialSynthesisDoneLog)
+
+        case "MaterialSynthesisFailed":
+            let reason: String = (try? info.details["result"]) ?? ""
+            switch reason {
+            case "insufficient_resources":
+                logWarn(.miniGameMaterialSynthesisFailedLog(reason: String(localized: "原料不足或已达到处理上限")))
+            case "operator_unavailable":
+                logWarn(.miniGameMaterialSynthesisFailedLog(reason: String(localized: "没有可用的满心情加工站干员")))
+            case "unsupported":
+                logWarn(.miniGameMaterialSynthesisFailedLog(reason: String(localized: "无法识别当前材料或配方数据")))
+            case "navigation_failed":
+                logWarn(.miniGameMaterialSynthesisFailedLog(reason: String(localized: "页面识别或操作失败")))
+            default:
+                logWarn(.miniGameMaterialSynthesisFailedLog(reason: String(localized: "未知错误")))
+            }
+
+        case "AutoRaisePotentialTotal":
+            let total: Int = (try? info.details["total"]) ?? 0
+            logInfo(.miniGameAutoRaisePotentialTotalLog(total: total))
+
+        case "AutoRaisePotentialProgress":
+            let current: Int = (try? info.details["current"]) ?? 0
+            let total: Int = (try? info.details["total"]) ?? 0
+            let hasPotential: Bool = (try? info.details["has_potential"]) ?? false
+            if hasPotential {
+                logInfo(.miniGameAutoRaisePotentialFoundLog(current: current, total: total))
+            } else {
+                logTrace(.miniGameAutoRaisePotentialNoPotentialLog(current: current, total: total))
+            }
 
         case "PixelPaintProgress":
             // TODO: (LogStyle) Apply the current palette color to progress logs.

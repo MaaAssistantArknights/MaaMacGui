@@ -1731,12 +1731,288 @@
         }
       }
     },
+    "MiniGame@AutoRaisePotential@FoundLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator %1$(current)lld/%2$(total)lld: potential raise available"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오퍼레이터 %1$(current)lld/%2$(total)lld: 강화 가능한 잠재능력 있음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$(current)lld/%2$(total)lld 位干员：有待提升的潜能"
+          }
+        }
+      }
+    },
+    "MiniGame@AutoRaisePotential@NoPotentialLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Operator %1$(current)lld/%2$(total)lld: no potential raise available"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오퍼레이터 %1$(current)lld/%2$(total)lld: 강화 가능한 잠재능력 없음"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$(current)lld/%2$(total)lld 位干员：无可提升的潜能"
+          }
+        }
+      }
+    },
+    "MiniGame@AutoRaisePotential@TotalLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically Raise Potential: %1$(total)lld operators to process"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠재능력 자동 강화: 처리할 오퍼레이터 %1$(total)lld명"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自动提升潜能：识别到 %1$(total)lld 位待处理干员"
+          }
+        }
+      }
+    },
     "MiniGame@InteractiveExhibition@UncollectedNotificationContent" : {
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "MAA已停止自动探索，请返回游戏完成战斗。"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@CraftLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synthesizing %1$(material)@ × %2$(count)lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ × %2$(count)lld 합성 중"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在合成 %1$(material)@ × %2$(count)lld"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@DoneLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Material synthesis complete"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재료 합성 완료"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "材料合成完成"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@FailedLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Material synthesis stopped: %1$(reason)@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재료 합성 중지: %1$(reason)@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "材料合成停止：%1$(reason)@"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@IngredientLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Synthesizing missing ingredient %2$(index)lld for %1$(material)@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@의 %2$(index)lld번째 하위 재료 보충"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ 的第 %2$(index)lld 种下级材料不足，正在补充"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@IngredientUnavailableLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingredient %2$(index)lld for %1$(material)@ cannot be synthesized"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@의 %2$(index)lld번째 하위 재료 합성 불가"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ 的第 %2$(index)lld 种下级材料无法合成"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@MaterialLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Current material: %1$(material)@, %2$(count)lld remaining (depth %3$(depth)lld)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 재료: %1$(material)@, %2$(count)lld개 더 필요 (%3$(depth)lld단계)"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前材料：%1$(material)@，还需合成 %2$(count)lld 个（第 %3$(depth)lld 层）"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@OperatorLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selecting a Workshop operator for %1$(material)@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ 합성용 가공소 오퍼레이터 선택"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在为 %1$(material)@ 选择加工站干员"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@ReturnLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ fulfilled; returning to the parent formula"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ 필요량 충족, 상위 제작법으로 복귀"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$(material)@ 已满足，返回上级配方"
+          }
+        }
+      }
+    },
+    "MiniGame@MaterialSynthesis@StartLog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starting automatic material synthesis"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재료 자동 합성 시작"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开始自动合成材料"
           }
         }
       }
@@ -3081,6 +3357,22 @@
         }
       }
     },
+    "中间信物不足时使用普通信物" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use regular Tokens when mid-tier Tokens are insufficient"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "중간 신물이 부족할 때 일반 신물 사용"
+          }
+        }
+      }
+    },
     "主题" : {
       "localizations" : {
         "ko" : {
@@ -3855,6 +4147,22 @@
     "原始分辨率：" : {
 
     },
+    "原料不足或已达到处理上限" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "insufficient ingredients or processing limit reached"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재료 부족 또는 처리 한도 도달"
+          }
+        }
+      }
+    },
     "双三次" : {
 
     },
@@ -4261,8 +4569,21 @@
         }
       }
     },
-    "常驻活动" : {
-
+    "常驻功能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permanent Features"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "상시 기능"
+          }
+        }
+      }
     },
     "干员列表" : {
       "localizations" : {
@@ -4725,6 +5046,22 @@
     "无法添加视频作业：%@" : {
 
     },
+    "无法识别当前材料或配方数据" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unable to recognize the current material or formula data"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 재료 또는 제작법 데이터 인식 불가"
+          }
+        }
+      }
+    },
     "无法识别配置" : {
       "localizations" : {
         "ko" : {
@@ -4954,6 +5291,22 @@
         }
       }
     },
+    "未知错误" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "unknown error"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알 수 없는 오류"
+          }
+        }
+      }
+    },
     "术/狙芯片" : {
 
     },
@@ -5099,6 +5452,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "사막 이야기"
+          }
+        }
+      }
+    },
+    "没有可用的满心情加工站干员" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "no Workshop operator with sufficient morale is available"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "컨디션이 충분한 가공소 오퍼레이터 없음"
           }
         }
       }
@@ -5550,6 +5919,22 @@
     "缩放算法" : {
 
     },
+    "缺口材料合成" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missing Material Synthesis"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "부족 재료 합성"
+          }
+        }
+      }
+    },
     "自动下载更新" : {
       "localizations" : {
         "ko" : {
@@ -5642,6 +6027,22 @@
     },
     "自动抄悖论模拟作业" : {
 
+    },
+    "自动提升潜能" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Automatically Raise Potential"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "잠재능력 자동 강화"
+          }
+        }
+      }
     },
     "自动检查更新" : {
       "localizations" : {
@@ -5913,8 +6314,40 @@
         }
       }
     },
+    "请先手动从培养页面(如精英化、专精、模组升级)缺少的材料弹窗跳转到加工站合成页，再开始任务。\n会递归合成可加工的下级材料，材料不足时停止。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navigate to the Workshop synthesis page via the missing-material popup on a training page (e.g. elite promotion, mastery, or module upgrade) before starting.\nMAA recursively synthesizes available lower-tier materials and stops when ingredients are insufficient."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "육성 화면(정예화, 스킬 특훈, 모듈 업그레이드 등)의 부족 재료 팝업에서 가공소 합성 화면으로 직접 이동한 뒤 시작하세요.\n합성 가능한 하위 재료를 재귀적으로 합성하며, 재료가 부족하면 중지합니다."
+          }
+        }
+      }
+    },
     "请先手动进入游戏内 24×24 像素画编辑页，再开始。" : {
 
+    },
+    "请先进入干员列表界面，再开始任务。自动提升所有带提示标记干员的潜能。\n完成后停留在最后一名干员档案；没有可提升目标时停留在干员列表。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open the Operator list before starting. MAA raises the Potential of every Operator marked as available.\nThe task stops on the last Operator profile, or on the Operator list when there is no available target."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오퍼레이터 목록 화면에 들어간 뒤 시작하세요. 강화 가능 표시가 있는 모든 오퍼레이터의 잠재능력을 자동으로 강화합니다.\n완료 후 마지막 오퍼레이터 상세 화면에 머물며, 대상이 없으면 오퍼레이터 목록에 머뭅니다."
+          }
+        }
+      }
     },
     "请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。" : {
 
@@ -6309,6 +6742,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "한국 서버 (YoStarKR)"
+          }
+        }
+      }
+    },
+    "页面识别或操作失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "page recognition or operation failed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "화면 인식 또는 조작 실패"
           }
         }
       }
