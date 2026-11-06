@@ -88,6 +88,12 @@ import SwiftUI
 
     @Published var recruitConfig = RecruitConfiguration.recognition
     @Published var recruit: MAARecruit?
+    private var recruitTagNames = [String: String]()
+    /// Effective base resource directory of recruit tags, bundled until user resources take over.
+    @Published private(set) var recruitResourceDirectory = Bundle.main.resourceURL?.appendingPathComponent(
+        "resource")
+    /// Modification date of the effective tag table, changing on in-place resource updates.
+    @Published private(set) var recruitResourceRevision: Date?
 
     // MARK: - Connection Settings
 
@@ -276,23 +282,40 @@ extension MAAViewModel {
     ///
     /// Should be called by `loadResource(channel:)`.
     private func loadResource(url: URL, channel: MAAClientChannel) async throws {
-        try await loadResource(url: url)
+        // Keep the UI tag catalog in sync with the resources actually loaded by Core.
+        if let baseDirectory = try await loadResource(url: url) {
+            publishRecruitResource(baseDirectory)
+        }
 
         if channel.isGlobal {
             let extraResource = url.appendingPathComponent("resource")
                 .appendingPathComponent("global")
                 .appendingPathComponent(channel.rawValue)
-            if FileManager.default.fileExists(atPath: extraResource.path) {
-                try await loadResource(url: extraResource)
+            if FileManager.default.fileExists(atPath: extraResource.path),
+                let globalDirectory = try await loadResource(url: extraResource)
+            {
+                // Core replaces the base recruit table with the channel-specific one.
+                publishRecruitResource(globalDirectory)
             }
         }
+    }
+
+    /// Publishes the effective tag directory with a token that changes on in-place updates.
+    private func publishRecruitResource(_ directory: URL) {
+        recruitResourceDirectory = directory
+        let tableFile = RecruitTagCatalog.effectiveTableFile(resourceDirectory: directory)
+        let attributes = tableFile.flatMap { try? FileManager.default.attributesOfItem(atPath: $0.path) }
+        recruitResourceRevision = attributes?[.modificationDate] as? Date
     }
 
     /// Core process to load resources at url.
     ///
     /// Should be called by `loadResource(url:channel:)`.
-    private func loadResource(url: URL) async throws {
+    ///
+    /// - Returns: The resource directory of the last readable recruit tag table loaded for Core.
+    private func loadResource(url: URL) async throws -> URL? {
         try await MAAProvider.shared.loadResource(path: url.path)
+        var recruitDirectory = updateRecruitTags(resourceDirectory: url.appendingPathComponent("resource"))
 
         if touchMode == .MacPlayTools {
             let platformResource = url.appendingPathComponent("resource")
@@ -300,8 +323,22 @@ extension MAAViewModel {
                 .appendingPathComponent("iOS")
             if FileManager.default.fileExists(atPath: platformResource.path) {
                 try await MAAProvider.shared.loadResource(path: platformResource.path)
+                if let directory = updateRecruitTags(
+                    resourceDirectory: platformResource.appendingPathComponent("resource"))
+                {
+                    recruitDirectory = directory
+                }
             }
         }
+
+        return recruitDirectory
+    }
+
+    /// Publishes the tag names Core matches against, reporting their resource directory when readable.
+    private func updateRecruitTags(resourceDirectory: URL) -> URL? {
+        guard let catalog = RecruitTagCatalog.read(resourceDirectory: resourceDirectory) else { return nil }
+        recruitTagNames = catalog.labels
+        return resourceDirectory
     }
 
     /// Fetches OTA resources for the specified channel.
@@ -471,7 +508,7 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            if let coreID = try await handle?.appendTask(task.task, recruitTagNames: recruitTagNames) {
                 taskIDMap[coreID] = task.id
             }
         }
@@ -537,7 +574,7 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        guard let params = try? recruitConfig.params.jsonString() else {
+        guard let params = try? recruitConfig.params(tagNames: recruitTagNames).jsonString() else {
             return
         }
 

@@ -31,14 +31,14 @@ extension MAATaskConfiguration {
 // MARK: JSON TaskParams
 
 extension MAAHandle {
-    func appendTask(_ task: MAATask) throws -> Int32 {
+    func appendTask(_ task: MAATask, recruitTagNames: [String: String] = [:]) throws -> Int32 {
         switch task {
         case .startup(let config):
             return try appendTask(config: config)
         case .closedown(let config):
             return try appendTask(config: config)
         case .recruit(let config):
-            return try appendTask(config: config)
+            return try appendTask(type: config.type, params: config.params(tagNames: recruitTagNames).jsonString())
         case .infrast(let config):
             return try appendTask(config: config)
         case .fight(let config):

@@ -122,6 +122,28 @@
         }
       }
     },
+    "3星首选标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferred 3-star Tags"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3성 우선 태그"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3星首选标签"
+          }
+        }
+      }
+    },
     "3星设置7:40而非9:00" : {
       "localizations" : {
         "ko" : {
@@ -2992,6 +3014,50 @@
         }
       }
     },
+    "上移标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Tag Up"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 위로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上移标签"
+          }
+        }
+      }
+    },
+    "下移标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move Tag Down"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 아래로 이동"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下移标签"
+          }
+        }
+      }
+    },
     "下载作业" : {
       "localizations" : {
         "ko" : {
@@ -3122,6 +3188,28 @@
     },
     "亮度" : {
 
+    },
+    "仅影响3星标签选择，不改变高星确认规则。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Only affects 3-star tag selection. High-rarity confirmation rules are unchanged."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3성 태그 선택에만 적용되며 고등급 확정 규칙은 변경하지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅影响3星标签选择，不改变高星确认规则。"
+          }
+        }
+      }
     },
     "今日关卡小提示" : {
       "localizations" : {
@@ -3258,6 +3346,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "암호판 사용"
+          }
+        }
+      }
+    },
+    "保留标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preserve Tags"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보존할 태그"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保留标签"
           }
         }
       }
@@ -3953,6 +4063,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "주간 임무"
+          }
+        }
+      }
+    },
+    "命中任一保留标签时跳过该槽位，不自动招募。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skip a slot containing any preserved tag without recruiting."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보존할 태그가 하나라도 있으면 해당 슬롯의 자동 모집을 건너뜁니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "命中任一保留标签时跳过该槽位，不自动招募。"
           }
         }
       }
@@ -4735,6 +4867,28 @@
         }
       }
     },
+    "无法读取公招标签资源，已保存的标签仍会保留。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recruitment tag resources are unavailable. Saved tags are retained."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "공개모집 태그 리소스를 읽을 수 없습니다. 저장된 태그는 유지됩니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法读取公招标签资源，已保存的标签仍会保留。"
+          }
+        }
+      }
+    },
     "无需更新" : {
       "localizations" : {
         "ko" : {
@@ -5172,6 +5326,28 @@
         }
       }
     },
+    "添加标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Tag"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 추가"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加标签"
+          }
+        }
+      }
+    },
     "清除" : {
 
     },
@@ -5419,6 +5595,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "작업 제거"
+          }
+        }
+      }
+    },
+    "移除标签" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Tag"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "태그 제거"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "移除标签"
           }
         }
       }
