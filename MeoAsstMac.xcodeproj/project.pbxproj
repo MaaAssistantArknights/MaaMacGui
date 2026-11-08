@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		225274591F2173E6A21B54F0 /* SwitchThemeConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */; };
 		3EB4092748599A93340E9EA0 /* DailyStageTipView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73E79DFED4846D03780097D7 /* DailyStageTipView.swift */; };
+		830272A730A0F8D700027D4B /* Dawn.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; };
+		830272A830A0F8D700027D4B /* Dawn.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 830272A530A0F8D000027D4B /* Dawn.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		830565483042DD6C0077CD3D /* JBird in Frameworks */ = {isa = PBXBuildFile; productRef = 830565473042DD6C0077CD3D /* JBird */; };
 		8307A5CF3030157700A82FF7 /* PixelPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8307A5CE3030157600A82FF7 /* PixelPainter.swift */; };
 		830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = 830C3D1B29BC7D8600B13A9F /* Sparkle */; };
@@ -133,6 +135,7 @@
 				83E9D13A294B74460091D1FF /* ONNXRuntime.xcframework in Embed Frameworks */,
 				83E9D138294B74440091D1FF /* OpenCV.xcframework in Embed Frameworks */,
 				834374AD2EB61C3E002CC2D3 /* MaaUtils.xcframework in Embed Frameworks */,
+				830272A830A0F8D700027D4B /* Dawn.xcframework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -154,6 +157,7 @@
 		2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeConfiguration.swift; sourceTree = "<group>"; };
 		714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeSettingsView.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
+		830272A530A0F8D000027D4B /* Dawn.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Dawn.xcframework; path = /Users/hguandl/Developer/MaaAssistantArknights/build/Dawn.xcframework; sourceTree = "<absolute>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -274,6 +278,7 @@
 				834374AC2EB61ACA002CC2D3 /* MaaUtils.xcframework in Frameworks */,
 				830C3D1C29BC7D8600B13A9F /* Sparkle in Frameworks */,
 				833F7B2A29A34C440001DB2D /* fastdeploy_ppocr.xcframework in Frameworks */,
+				830272A730A0F8D700027D4B /* Dawn.xcframework in Frameworks */,
 				831D2489293C9CE3005AC1CE /* MaaCore.xcframework in Frameworks */,
 				83E9D139294B74460091D1FF /* ONNXRuntime.xcframework in Frameworks */,
 				83E9D137294B74440091D1FF /* OpenCV.xcframework in Frameworks */,
@@ -290,6 +295,7 @@
 				834374AB2EB61ACA002CC2D3 /* MaaUtils.xcframework */,
 				831D2488293C9CE3005AC1CE /* MaaCore.xcframework */,
 				833F7B2929A34C430001DB2D /* fastdeploy_ppocr.xcframework */,
+				830272A530A0F8D000027D4B /* Dawn.xcframework */,
 				83E9D135294B74270091D1FF /* ONNXRuntime.xcframework */,
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 			);
