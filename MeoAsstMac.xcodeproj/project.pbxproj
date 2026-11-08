@@ -157,7 +157,7 @@
 		2EB6BA32DAB8DA18E4B8B297 /* SwitchThemeConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeConfiguration.swift; sourceTree = "<group>"; };
 		714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitchThemeSettingsView.swift; sourceTree = "<group>"; };
 		73E79DFED4846D03780097D7 /* DailyStageTipView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyStageTipView.swift; sourceTree = "<group>"; };
-		830272A530A0F8D000027D4B /* Dawn.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Dawn.xcframework; path = /Users/hguandl/Developer/MaaAssistantArknights/build/Dawn.xcframework; sourceTree = "<absolute>"; };
+		830272A530A0F8D000027D4B /* Dawn.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Dawn.xcframework; path = ../../build/Dawn.xcframework; sourceTree = "<group>"; };
 		8307A5CE3030157600A82FF7 /* PixelPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelPainter.swift; sourceTree = "<group>"; };
 		830C3D1D29BC7DE200B13A9F /* CheckForUpdatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckForUpdatesView.swift; sourceTree = "<group>"; };
 		830C3D1F29BC86EE00B13A9F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
