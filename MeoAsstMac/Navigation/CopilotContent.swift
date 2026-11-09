@@ -25,6 +25,43 @@ struct CopilotContent: View {
         var name: String {
             url.deletingPathExtension().lastPathComponent
         }
+
+        func resolvedTitle() async -> String {
+            if url.isDirectory {
+                if let set = CopilotSetData(atDirectory: url) {
+                    let title = set.name.trimmingCharacters(in: .whitespacesAndNewlines)
+                    if !title.isEmpty, !MAACopilot.isDecimalID(title) {
+                        return title
+                    }
+                }
+                return name
+            }
+
+            guard let copilot = MAACopilot(url: url) else {
+                return name
+            }
+            let level = await MAAProvider.shared.mapLevel(matching: copilot.stage_name)
+            return MAACopilot.displayTitle(
+                code: level?.code,
+                name: level?.name,
+                stageName: copilot.stage_name,
+                documentTitle: copilot.doc?.title,
+                filename: name)
+        }
+    }
+
+    private struct CopilotFileLabel: View {
+        let item: Item
+        @State private var title = ""
+
+        var body: some View {
+            Text(title.isEmpty ? item.name : title)
+                .lineLimit(1)
+                .help(item.name)
+                .task(id: item.url) {
+                    title = await item.resolvedTitle()
+                }
+        }
     }
 
     @State private var bundledRoot = Item(url: .bundledCopilotDirectory)
@@ -38,11 +75,11 @@ struct CopilotContent: View {
             switch context.category {
             case .bundled:
                 FileTreeRoot(item: $bundledRoot, tracker: tracker) {
-                    Text($0.name)
+                    CopilotFileLabel(item: $0)
                 }
             case .external:
                 FileTreeRoot(item: $externalRoot, tracker: tracker) {
-                    Text($0.name)
+                    CopilotFileLabel(item: $0)
                 }
             case .list:
                 CopilotListContent(context: context)
@@ -343,7 +380,7 @@ extension URL {
 extension CopilotContext {
     var isReady: Bool {
         if category == .list {
-            return copilotSet != nil && !copilotList.isEmpty
+            return copilotSet != nil && copilotList.contains(where: \.isOn)
         }
         if case .copilot = content {
             return true
@@ -394,8 +431,18 @@ extension CopilotContent.Item {
 // MARK: - Convenience Methods
 
 extension FileManager {
-    func copyCopilotToExternalDirectory(at url: URL) throws -> URL {
-        let dest = try externalCopilotURL(for: url)
+    func copyCopilotToExternalDirectory(at url: URL, excluding destinations: Set<URL> = []) throws -> URL {
+        var dest = try externalCopilotURL(for: url)
+        if destinations.contains(dest) {
+            let stem = dest.deletingPathExtension().lastPathComponent
+            let pathExtension = dest.pathExtension
+            var suffix = 2
+            repeat {
+                let name = "\(stem) \(suffix)" + (pathExtension.isEmpty ? "" : ".\(pathExtension)")
+                dest = URL.externalCopilotDirectory.appending(path: name)
+                suffix += 1
+            } while destinations.contains(dest) || fileExists(atPath: dest.path)
+        }
         try FileManager.default.copyItemOverwriting(at: url, to: dest)
         return dest
     }

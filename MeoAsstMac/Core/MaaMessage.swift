@@ -1165,7 +1165,14 @@ extension MAAViewModel {
             guard let file = CopilotFileDetails(json: info.details, context: info.what) else {
                 return
             }
-            logTrace("解析 \(file.file_name)[\(file.stage_name)] 成功")
+            let filename = URL(filePath: file.file_name).deletingPathExtension().lastPathComponent
+            let shown = MAACopilot.displayTitle(
+                code: nil,
+                name: nil,
+                stageName: file.stage_name,
+                documentTitle: nil,
+                filename: filename)
+            logTrace("解析 \(shown) 成功")
 
         case "SSSStage":
             guard let stage: String = try? info.details["stage"] else {
