@@ -29,6 +29,7 @@ struct MeoAsstMacApp: App {
         #endif
         updaterController = .init(startingUpdater: isRelease, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
         appDelegate.beforeTermination = {
+            await viewModel.prepareForTermination()
             await newModel.waitLogStoreToFinish()
         }
     }
