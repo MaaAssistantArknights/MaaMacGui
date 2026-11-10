@@ -121,6 +121,11 @@
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
+		2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7743B34F2704668B4E0A0E9 /* RunContext.swift */; };
+		B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */; };
+		A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */; };
+		A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */; };
+		F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -265,6 +270,11 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		B7743B34F2704668B4E0A0E9 /* RunContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunContext.swift; sourceTree = "<group>"; };
+		D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyTaskSchedule.swift; sourceTree = "<group>"; };
+		3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOccurrenceStore.swift; sourceTree = "<group>"; };
+		25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleHandoff.swift; sourceTree = "<group>"; };
+		3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyRunProfilePatch.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -300,6 +310,25 @@
 				83E9D133294B74230091D1FF /* OpenCV.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B7F0A1C2D3E45F60718293A4 /* Scheduling */ = {
+			isa = PBXGroup;
+			children = (
+				D641B69C8AC271EF6423988F /* DailyTaskSchedule.swift */,
+				25D2ADEE3998F973FD6B840E /* ScheduleHandoff.swift */,
+				3FA501CBD4E607E4C373A739 /* ScheduleOccurrenceStore.swift */,
+			);
+			path = Scheduling;
+			sourceTree = "<group>";
+		};
+		C9E2B3D4F5A607182934B5C6 /* RunHooks */ = {
+			isa = PBXGroup;
+			children = (
+				B7743B34F2704668B4E0A0E9 /* RunContext.swift */,
+				3DD9F10173EA49D5B595D506 /* DailyRunProfilePatch.swift */,
+			);
+			path = RunHooks;
 			sourceTree = "<group>";
 		};
 		83264A2729EBEB9B0074E33A /* Task Configurations */ = {
@@ -436,6 +465,8 @@
 				83264A3629EBF0700074E33A /* Configuration Views */,
 				83264A2729EBEB9B0074E33A /* Task Configurations */,
 				92CDF6202A065E20005669EC /* Utils */,
+				B7F0A1C2D3E45F60718293A4 /* Scheduling */,
+				C9E2B3D4F5A607182934B5C6 /* RunHooks */,
 				83FF5A98297855E5000AE831 /* Settings */,
 				8337870728F1DA7B00D39D6F /* Resources */,
 				833786D228F188D900D39D6F /* Assets.xcassets */,
@@ -632,6 +663,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2CFD9CE6D9AB44579939835B /* RunContext.swift in Sources */,
+				F6E08C4FEE9346A7A5D4B12D /* DailyRunProfilePatch.swift in Sources */,
+				A7D2382319A454DE5D52AB22 /* ScheduleHandoff.swift in Sources */,
+				A5CC1A5A94B6EFE3BA010488 /* ScheduleOccurrenceStore.swift in Sources */,
+				B90B2C1FA5DC1ACDC583A2C4 /* DailyTaskSchedule.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,

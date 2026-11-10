@@ -2,145 +2,234 @@ import AppKit
 import Combine
 import Foundation
 
-@MainActor final class TaskTimerManager {
+@MainActor final class TaskTimerManager: ObservableObject {
     static let shared = TaskTimerManager()
 
-    struct RunningTimer {
-        let config: MAAViewModel.DailyTaskTimer
-        let timer: Timer
-    }
-
-    private var viewModel: MAAViewModel?
-    private var runningTimers: [String: RunningTimer] = [:]
-
+    @Published private(set) var recentOccurrences: [ScheduleOccurrence] = []
+    @Published private(set) var failure: String?
+    private weak var viewModel: MAAViewModel?
+    private var plans: [DailyTaskSchedule] = []
+    private var pulse: Timer?
+    private var cancellables = Set<AnyCancellable>()
+    private var lastDay: Date?
     private var sleepDisabled = false
     var sleepAssertionID: IOPMAssertionID = 0
+    private var store = ScheduleOccurrenceStore(directory: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("Schedule"))
 
-    private var cancellables = Set<AnyCancellable>()
+    private struct ScheduleSnapshot {
+        let daily: DailyRunSnapshot
+        let recoveryEligible: @MainActor () -> Bool
+    }
+
+    private var handoff: ScheduleHandoff<ScheduleSnapshot>?
+
+    private func makeHandoff() -> ScheduleHandoff<ScheduleSnapshot> {
+        ScheduleHandoff<ScheduleSnapshot>(
+        timeout: .seconds(30),
+        occupancy: { [weak self] in
+            guard let model = self?.viewModel else { return .tool }
+            if let run = model.dailyRunCoordinator.active { return .daily(run.id) }
+            return model.canStartTasks ? .idle : .tool
+        },
+        terminal: { [weak self] in
+            guard let end = self?.viewModel?.dailyRunCoordinator.lastTerminal else { return nil }
+            return .init(id: end.id, cleanupSucceeded: end.cleanupSucceeded == true)
+        },
+        canStop: { [weak self] expectedID in
+            guard let model = self?.viewModel, let run = model.dailyRunCoordinator.active,
+                  run.id == expectedID else { return false }
+            return !model.isStartStopInFlight && run.status != .postHook && run.status != .stopping
+        },
+        canForce: { $0.recoveryEligible() },
+        canCancelPending: { [weak self] in
+            // 启动越过最终取消检查点（即将 startCoreTasks）后，取消已无法
+            // 生效：保留 pending，由实际启动/终态结果如实落账。
+            self?.viewModel?.startupCancellationLocked != true
+        },
+        stop: { [weak self] expectedID in
+            guard let model = self?.viewModel else { throw CancellationError() }
+            guard model.dailyRunCoordinator.active?.id == expectedID else { throw CancellationError() }
+            try await model.stop(cancelScheduledStart: false)
+        },
+        start: { [weak self] snapshot, needsRecovery, isCurrent in
+            guard let model = self?.viewModel else { return .failed }
+            let result = await model.startDailyTasks(origin: .schedule, snapshot: snapshot.daily, recoverGame: needsRecovery, recoveryCurrent: isCurrent)
+            switch result {
+            case .started:
+                let id = model.dailyRunCoordinator.active?.id ?? model.dailyRunCoordinator.lastTerminal?.id
+                return .started(id)
+            case .skipped: return .skipped
+            case .failed: return .failed
+            }
+        },
+        isCurrent: { [weak self] occurrence in
+            self?.plans.contains(where: { $0.id == occurrence.planID && $0.isEnabled && $0.revision == occurrence.revision }) == true
+        },
+        report: { [weak self] occurrence, result, detail, runID in
+            self?.record(occurrence, result: result, detail: detail, runID: runID)
+        })
+    }
 
     private init() {}
 
     func connectToModel(viewModel: MAAViewModel) {
+        guard self.viewModel !== viewModel else { return }
+        pulse?.invalidate()
+        cancellables.removeAll()
         self.viewModel = viewModel
-
-        viewModel.$scheduledDailyTaskTimers
-            .sink { [weak self] in
-                self?.updateRunningTimers(timerConfigs: $0)
-            }
+        handoff = makeHandoff()
+        do { try store.recoverInterrupted(); reloadRecords() }
+        catch { reportFailure(error) }
+        viewModel.$scheduledDailyTaskTimers.sink { [weak self] value in
+            guard let self else { return }
+            plans = value
+            handoff?.invalidateIfNeeded()
+            scheduleNextCheck()
+        }.store(in: &cancellables)
+        NotificationCenter.default.publisher(for: .MAAPreventSystemSleepingChanged)
+            .sink { [weak self] in self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false) }
             .store(in: &cancellables)
-
-        NotificationCenter.default
-            .publisher(for: .MAAPreventSystemSleepingChanged)
-            .sink { [weak self] in
-                self?.preventSystemFromSleepingIfNeeded($0.object as? Bool ?? false)
-            }
-            .store(in: &cancellables)
-
-        NSWorkspace.shared.notificationCenter
-            .publisher(for: NSWorkspace.screensDidWakeNotification)
-            .sink { [weak self] _ in
-                print("System wakes up, try to refresh timer")
+        NotificationCenter.default.publisher(for: Notification.Name("MAACancelPendingScheduledStart"))
+            .sink { [weak self] _ in self?.handoff?.cancelPending() }.store(in: &cancellables)
+        NotificationCenter.default.publisher(for: Notification.Name("MAADailyRunFinished"))
+            .sink { [weak self] note in
+                guard let end = note.object as? RunContext else { return }
+                self?.recordTerminal(end)
+            }.store(in: &cancellables)
+        for name in [Notification.Name.NSSystemTimeZoneDidChange, .NSCalendarDayChanged, .NSSystemClockDidChange] {
+            NotificationCenter.default.publisher(for: name).sink { [weak self] _ in
                 self?.refreshRunningTimersIfNecessary()
-            }
-            .store(in: &cancellables)
-        // Call it manually for the first time
+            }.store(in: &cancellables)
+        }
+        NSWorkspace.shared.notificationCenter.publisher(for: NSWorkspace.didWakeNotification)
+            .sink { [weak self] _ in self?.refreshRunningTimersIfNecessary() }.store(in: &cancellables)
         preventSystemFromSleepingIfNeeded(viewModel.preventSystemSleeping)
-
-        print("TaskTimerManager connected")
+        checkDueSchedules()
     }
 
-    func refreshRunningTimersIfNecessary() {
-        guard let viewModel else {
-            print("Skip refreshing daily task timer, due to missing viewModel.")
-            return
-        }
-        let isDailyTaskRunning = viewModel.status != .idle
-        guard !isDailyTaskRunning else {
-            print("Skip refreshing daily task timer, due to running daily task.")
-            return
-        }
+    func refreshRunningTimersIfNecessary() { checkDueSchedules() }
+    func cancelPendingStart() { handoff?.cancelPending() }
 
-        print("Refresing Daily Tasks Timers")
-        for (key, runningTimer) in runningTimers {
-            runningTimer.stop()
-            runningTimers[key] = setupNewTimer(for: runningTimer.config)
+    private func scheduleNextCheck() {
+        pulse?.invalidate()
+        let now = Date()
+        let calendar = Calendar.autoupdatingCurrent
+        let next = plans.filter(\.isEnabled).compactMap { ScheduleCalendar.nextDate(for: $0, after: now, calendar: calendar) }.min()
+        // 近距事件保留 ≤15s 短脉冲；远距事件直接定到触发前 1 秒，无计划时低频
+        // 待命，避免空转时每 15 秒做一次 flock + 整份 JSON 读取。时区/时钟/唤醒
+        // 变更仍由通知兜底刷新，提前 1 秒到达后再由短脉冲校正到触发时刻。
+        let delay: TimeInterval
+        if let next {
+            let interval = next.timeIntervalSince(now)
+            delay = interval > 60 ? interval - 1 : max(0.1, min(15, interval))
+        } else {
+            delay = 900
         }
+        let timer = Timer(timeInterval: delay, repeats: false) { [weak self] _ in
+            Task { @MainActor in self?.checkDueSchedules() }
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        pulse = timer
     }
 
-    private func updateRunningTimers(timerConfigs: [MAAViewModel.DailyTaskTimer]) {
-        // Initially set all existing timers to be outdated, and update it later
-        var outdatedTimerIDs: [String: Bool] = [:]
-        runningTimers.keys.forEach { outdatedTimerIDs[$0] = true }
-
-        for config in timerConfigs {
-            if config.isEnabled {
-                if runningTimers[config.uniqueKey] != nil {
-                    outdatedTimerIDs[config.uniqueKey] = false
+    private func checkDueSchedules() {
+        defer { scheduleNextCheck() }
+        guard let viewModel else { return }
+        let now = Date()
+        let calendar = Calendar.autoupdatingCurrent
+        let today = calendar.startOfDay(for: now)
+        var days = [today]
+        if let lastDay, lastDay < today,
+           let yesterday = calendar.date(byAdding: .day, value: -1, to: today) { days.insert(yesterday, at: 0) }
+        lastDay = today
+        var due: [(DailyTaskSchedule, ScheduleOccurrence)] = []
+        for day in days {
+            for plan in plans.filter({ $0.isEnabled && $0.isValid }) {
+                guard let occurrence = ScheduleCalendar.occurrence(for: plan, on: day, calendar: calendar) else { continue }
+                let missingTimeDue = occurrence.result == .missed && (day < today || {
+                    let current = calendar.dateComponents([.hour, .minute], from: now)
+                    return (current.hour ?? 0) * 60 + (current.minute ?? 0) >= plan.hour * 60 + plan.minute
+                }())
+                guard occurrence.scheduledAt <= now || missingTimeDue else { continue }
+                if occurrence.result == .missed || now >= occurrence.expiresAt {
+                    do {
+                        if try store.claim(occurrence) {
+                            record(occurrence, result: .missed, detail: occurrence.result == .missed ? "nonexistentLocalTime" : "triggerExpired")
+                        }
+                    } catch { reportFailure(error); return }
                 } else {
-                    print("Found new timer, start to setup it with id: \(config.id.uuidString) hour: \(config.hour) min: \(config.minute)")
-                    let newTimer = setupNewTimer(for: config)
-                    runningTimers[newTimer.key] = newTimer
+                    due.append((plan, occurrence))
                 }
             }
         }
-
-        // Cleanup outdated timer
-        for (key, outdated) in outdatedTimerIDs {
-            if outdated {
-                print("Found outdated timer, clening up key: \(key)")
-                runningTimers.removeValue(forKey: key)?.stop()
-            }
+        due.sort { left, right in
+            left.1.scheduledAt == right.1.scheduledAt ? left.0.id.uuidString < right.0.id.uuidString : left.1.scheduledAt < right.1.scheduledAt
         }
+        let daily = DailyRunSnapshot(profileID: viewModel.dailyTaskProfile, tasks: viewModel.tasks)
+        let snapshot = ScheduleSnapshot(daily: daily, recoveryEligible: viewModel.forceRecoveryEligibility(snapshot: daily))
+        // Choose the stable winner before claiming. A second process that
+        // sees the winner already claimed must not promote the next plan.
+        for (index, item) in due.enumerated() {
+            do {
+                guard try store.claim(item.1) else { continue }
+                if index == 0 { handoff?.submit(item.1, force: item.0.forceStart, snapshot: snapshot) }
+                else { record(item.1, result: .skipped, detail: "simultaneousSchedule") }
+            } catch { reportFailure(error); return }
+        }
+        reloadRecords()
+        if let end = viewModel.dailyRunCoordinator.lastTerminal { recordTerminal(end) }
     }
 
-    private func setupNewTimer(for timerConfig: MAAViewModel.DailyTaskTimer) -> RunningTimer {
-        let nextScheduledDate = createScheduledDate(hour: timerConfig.hour, minute: timerConfig.minute)
-        let oneDayInterval = TimeInterval(24 * 3600)
-        let timer = Timer(fire: nextScheduledDate, interval: oneDayInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                self?.startDailyTaskIfNeeded(config: timerConfig)
-            }
-        }
-        DispatchQueue.main.async {
-            RunLoop.current.add(timer, forMode: .common)
-        }
-
-        print("Timer \(timerConfig.uniqueKey) is scheduled at \(nextScheduledDate.description(with: .current))")
-        return RunningTimer(config: timerConfig, timer: timer)
+    private func record(_ occurrence: ScheduleOccurrence, result: ScheduleOccurrence.Result,
+                        detail: String, runID: UUID? = nil) {
+        do {
+            try store.update(occurrence.id, result: result, detail: detail, runID: runID)
+            reloadRecords()
+            print("Schedule \(occurrence.id) \(result.rawValue) \(detail) runID=\(runID?.uuidString ?? "none")")
+            if result == .started, let end = viewModel?.dailyRunCoordinator.lastTerminal, end.id == runID { recordTerminal(end) }
+        } catch { reportFailure(error) }
     }
 
-    private func createScheduledDate(hour: Int, minute: Int) -> Date {
-        // Get the current date and time
-        let now = Date()
-        let calendar = Calendar(identifier: .gregorian)
-        let scheduledDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: now)!
-
-        // Check if the given time is earlier than the current time today
-        if scheduledDate < now {
-            // If so, create a date for tomorrow with the given hour and minute
-            let tomorrow = calendar.date(byAdding: .day, value: 1, to: scheduledDate)!
-            return tomorrow
+    private func recordTerminal(_ end: RunContext) {
+        // 直接在台账中按 runID 反查：recentOccurrences 只是 UI 截断窗口（最近
+        // 20 条），多计划并发更新可能把 started 记录挤出窗口导致终态永不落账。
+        let occurrence: ScheduleOccurrence?
+        do { occurrence = try store.records().first(where: { $0.runID == end.id && $0.result == .started }) }
+        catch { reportFailure(error); return }
+        guard let occurrence else { return }
+        let result: ScheduleOccurrence.Result
+        if end.cleanupSucceeded != true {
+            result = .failed
         } else {
-            // Otherwise, return a date for today with the given hour and minute
-            return scheduledDate
+            switch end.outcome {
+            case .completed: result = .completed
+            case .cancelled: result = .cancelled
+            case .failed: result = .failed
+            default: result = .interrupted
+            }
         }
+        record(occurrence, result: result, detail: end.cleanupSucceeded == true ? "" : "cleanupFailed", runID: end.id)
     }
 
-    private func startDailyTaskIfNeeded(config: MAAViewModel.DailyTaskTimer) {
-        guard let viewModel else {
-            print("Skip scheduled daily task timer, due to missing viewModel. Timer id: \(config.id)")
-            return
-        }
-        let isDailyTaskRunning = viewModel.status != .idle
-        guard !isDailyTaskRunning else {
-            print("Skip scheduled daily task timer, due to running daily task. Timer id: \(config.id)")
-            return
-        }
+    private func reloadRecords() {
+        do { recentOccurrences = Array(try store.records().prefix(20)); failure = nil }
+        catch { reportFailure(error) }
+    }
 
-        Task {
-            await viewModel.tryStartTasks()
-            print("Started daily task by shcedmed timer (\(config.uniqueKey)")
-        }
+    private func reportFailure(_ error: Error) {
+        // 附上台账路径：损坏时用户可据此定位文件，或用下方的重置入口恢复。
+        failure = String(localized: "定时记录无法读取或保存，已停止本次触发。")
+            + "\n" + store.directory.appendingPathComponent("occurrences.json").path
+        print("Schedule ledger: \(error)")
+    }
+
+    /// 台账损坏后的显式恢复入口（用户已在界面确认）：删除并重建空台账。
+    func resetScheduleLedger() {
+        do {
+            try store.resetLedger()
+            try store.recoverInterrupted()
+            reloadRecords()
+        } catch { reportFailure(error) }
     }
 
     private func preventSystemFromSleepingIfNeeded(_ needed: Bool) {
@@ -154,19 +243,4 @@ import Foundation
             print("Enabled screen sleep")
         }
     }
-}
-
-extension TaskTimerManager.RunningTimer {
-    var key: String {
-        config.uniqueKey
-    }
-
-    func stop() {
-        timer.invalidate()
-    }
-}
-
-// Use uniqueKey to detect if the config changes
-private extension MAAViewModel.DailyTaskTimer {
-    var uniqueKey: String { "\(id)-\(hour)-\(minute)" }
 }
