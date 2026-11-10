@@ -28,6 +28,49 @@ import SwiftUI
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
 
+    // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
+    @Published private(set) var isStartStopInFlight = false
+    private var taskCompletionGeneration = UInt64(0)
+
+    var canStartTasks: Bool {
+        status == .idle && !isStartStopInFlight
+    }
+
+    /// 占位期间拒绝一切启动/停止请求：stop 与 MaaMessage 的内部自动停止
+    /// （Disconnect/OfflineConfirm）同样被 isStartStopInFlight 门禁拦下，
+    /// 后者仅降级为 warning 日志，等待后续 TaskChainStopped/AllTasksCompleted
+    /// 收敛状态。取舍：MAAHandle.waitFor 无超时，若捆绑 core 对某次异步调用
+    /// 不回调，占位将永久为真，启/停按钮双双禁用，唯一恢复手段是重启应用；
+    /// 与其在 core 状态未知时放行二次提交，不如维持拒绝。
+    private func beginTaskOperation(requiresIdle: Bool = true) async throws {
+        guard !isStartStopInFlight else {
+            logError("当前正在启动或停止任务，请稍后重试。")
+            throw MAAError.taskOperationInProgress
+        }
+        guard !requiresIdle || status == .idle else {
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
+        }
+        // Reserve before querying the core actor: the await must not admit
+        // another start or stop even if a callback has exposed idle.
+        isStartStopInFlight = true
+        var accepted = false
+        defer {
+            if !accepted { isStartStopInFlight = false }
+        }
+
+        if requiresIdle {
+            let coreIsRunning = await handle?.running == true
+            guard !coreIsRunning, status == .idle else {
+                if coreIsRunning { status = .busy }
+                logError("任务正在运行，请先停止当前任务。")
+                throw MAAError.taskAlreadyRunning
+            }
+            try Task.checkCancellation()
+        }
+        accepted = true
+    }
+
     // MARK: - Core Callback
 
     private var messageTask: Task<Void, Never>?
@@ -35,7 +78,9 @@ import SwiftUI
 
     // MARK: - Daily Tasks
 
-    @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default"
+    @AppStorage("DailyTaskProfile") var dailyTaskProfile = "Default" {
+        didSet { if dailyTaskProfile != oldValue { invalidateInventory() } }
+    }
 
     enum DailyTasksDetailMode: Hashable {
         case taskConfig
@@ -46,6 +91,24 @@ import SwiftUI
     @Published var tasks = [DailyTask]()
     @Published var taskIDMap: [Int32: UUID] = [:]
     @Published var newTaskAdded = false
+    @Published var inventory = InventorySnapshotAdapter()
+    var inventoryDepotTaskID: Int32?
+    var pendingInventoryDepot: MAADepot?
+    var inventoryDepotScope: InventoryScope?
+
+    var inventoryScope: InventoryScope {
+        InventoryScope(connection: "\(connectionAddress)|\(touchMode.rawValue)|\(toolsMode.rawValue)|\(useGzip)|\(useAdbLite)",
+                       server: clientChannel.rawValue, profile: dailyTaskProfile)
+    }
+
+    var currentInventorySnapshot: InventorySnapshot? { inventory.usableSnapshot(scope: inventoryScope) }
+
+    func invalidateInventory() {
+        inventory.invalidate()
+        inventoryDepotTaskID = nil
+        inventoryDepotScope = nil
+        pendingInventoryDepot = nil
+    }
 
     enum TaskStatus: Equatable {
         case cancel
@@ -91,17 +154,26 @@ import SwiftUI
 
     // MARK: - Connection Settings
 
-    @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
+    @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555" {
+        didSet { if connectionAddress != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAUseGzip") var useGzip = false
+    @AppStorage("MAAUseGzip") var useGzip = false {
+        didSet { if useGzip != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAUseAdbLite") var useAdbLite = true
+    @AppStorage("MAAUseAdbLite") var useAdbLite = true {
+        didSet { if useAdbLite != oldValue { invalidateInventory() } }
+    }
 
-    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR
+    @AppStorage("MAAToolsMode") var toolsMode = MaaToolsMode.BGR {
+        didSet { if toolsMode != oldValue { invalidateInventory() } }
+    }
 
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
             guard touchMode != oldValue else { return }
+            invalidateInventory()
             if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
                 Task { try await loadResource(channel: clientChannel) }
             }
@@ -112,6 +184,7 @@ import SwiftUI
 
     @AppStorage("MAAClientChannel") var clientChannel = MAAClientChannel.Official {
         didSet {
+            if clientChannel != oldValue { invalidateInventory() }
             updateChannel(channel: clientChannel)
         }
     }
@@ -204,7 +277,9 @@ extension MAAViewModel {
         }
 
         guard await handle?.running == false else {
-            throw MAAError.handleNotRunning
+            status = .busy
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
         }
 
         logStore?.clearLogs()
@@ -212,6 +287,7 @@ extension MAAViewModel {
         taskStatus.removeAll()
 
         guard requireConnect else { return }
+        invalidateInventory()
 
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
@@ -240,7 +316,29 @@ extension MAAViewModel {
         logTrace("Running")
     }
 
+    private func startCoreTasks(recordDailyTaskStart: Bool = false) async throws {
+        try await handle?.start()
+        // Reconcile the actual core after start. A reset may belong to a prior
+        // run; retry if a callback makes the awaited running snapshot stale.
+        var observedGeneration: UInt64
+        var coreIsRunning: Bool
+        repeat {
+            observedGeneration = taskCompletionGeneration
+            coreIsRunning = await handle?.running == true
+        } while observedGeneration != taskCompletionGeneration
+
+        guard coreIsRunning else {
+            resetStatus()
+            return
+        }
+        if recordDailyTaskStart { logStore?.taskStartTime = .now }
+        status = .busy
+    }
+
     func stop() async throws {
+        try await beginTaskOperation(requiresIdle: false)
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
@@ -249,6 +347,7 @@ extension MAAViewModel {
     }
 
     func resetStatus() {
+        taskCompletionGeneration &+= 1
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -431,13 +530,40 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
-    func tryStartTasks() async {
+    enum TaskStartResult: Equatable {
+        case started
+        case skipped
+        case failed
+    }
+
+    @discardableResult
+    func tryStartTasks() async -> Bool {
+        await startDailyTasks() == .started
+    }
+
+    func startDailyTasks() async -> TaskStartResult {
+        guard canStartTasks else {
+            return .skipped
+        }
+
+        do {
+            try await beginTaskOperation()
+        } catch {
+            return .skipped
+        }
+        defer { isStartStopInFlight = false }
+
         do {
             logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
+            return .started
         } catch {
+            if let inventoryError = error as? InventoryTargetError {
+                logError(verbatim: inventoryError.localizedDescription)
+            }
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
+            return .failed
         }
     }
 
@@ -445,14 +571,49 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
+        var runTasks = tasks
+        let scope = inventoryScope
+        let targets = runTasks.indices.filter { index in
+            guard runTasks[index].enabled, case .fight(let config) = runTasks[index].task else { return false }
+            return config.inventoryTarget != nil
+        }
+        try InventoryTargetPlanner.validateQueue(targetIndices: targets, firstEnabledIndex: runTasks.firstIndex(where: \.enabled))
+        var frozenPlan: InventoryTargetPlan?
+        var reachedTaskID: UUID?
+        var frozenItemID: String?
+        if let targetIndex = targets.first, case .fight(let config) = runTasks[targetIndex].task,
+           let target = config.inventoryTarget {
+            guard await handle?.connected == true else {
+                invalidateInventory()
+                throw InventoryTargetError.recognitionRequired
+            }
+            // Starting/relaunching the client after recognition invalidates its account scope.
+            guard !runTasks.contains(where: { task in
+                if task.enabled, case .startup(let startup) = task.task { return startup.start_game_enabled }
+                return false
+            }) else { throw InventoryTargetError.unsafeOrder }
+            try FightConfiguration.initDropItems("zh-cn")
+            let plan = try InventoryTargetPlanner.plan(target: target, snapshot: currentInventorySnapshot,
+                                                       knownItems: Set(FightConfiguration.inventoryDropItems.map(\.id)))
+            frozenPlan = plan
+            frozenItemID = target.itemID
+            if plan.requiredDrops == 0 {
+                runTasks[targetIndex].enabled = false
+                reachedTaskID = runTasks[targetIndex].id
+            } else {
+                runTasks[targetIndex] = DailyTask(id: runTasks[targetIndex].id,
+                    task: .fight(config.preparingInventoryTarget(plan)), enabled: true)
+            }
+        }
+
         var firstStart = true
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
@@ -462,29 +623,74 @@ extension MAAViewModel {
             }
         }
 
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .closedown(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
-        try await ensureHandle()
+        try Task.checkCancellation()
+        try await ensureHandle(requireConnect: frozenPlan == nil)
+        try Task.checkCancellation()
+        if let plan = frozenPlan {
+            guard inventoryScope == scope, let frozenItemID,
+                  await handle?.connected == true else { throw InventoryTargetError.stalePreparation }
+            try InventoryTargetPlanner.validateFrozen(plan, itemID: frozenItemID, snapshot: currentInventorySnapshot)
+        }
+        if let reachedTaskID {
+            taskStatus[reachedTaskID] = .success
+            logInfo("Inventory.AlreadyReached")
+        }
+        let inventoryRunID = UUID()
+        var inventoryFightIDs = Set<Int32>()
+        var appendedAnyTask = false
+        do {
+            for task in runTasks {
+                try Task.checkCancellation()
+                guard task.enabled else { continue }
 
-        for task in tasks {
-            guard task.enabled else { continue }
-
-            if let coreID = try await handle?.appendTask(task.task) {
-                taskIDMap[coreID] = task.id
+                if let coreID = try await handle?.appendTask(task.task) {
+                    appendedAnyTask = true
+                    taskIDMap[coreID] = task.id
+                    if case .fight = task.task { inventoryFightIDs.insert(coreID) }
+                }
             }
+            // Appending crosses actors. Re-check only after the last suspension,
+            // before submitting this frozen set to Core.
+            if let plan = frozenPlan {
+                let connected = await handle?.connected == true
+                guard inventoryScope == scope, connected, let frozenItemID else {
+                    throw InventoryTargetError.stalePreparation
+                }
+                try InventoryTargetPlanner.validateFrozen(plan, itemID: frozenItemID, snapshot: currentInventorySnapshot)
+            }
+            try Task.checkCancellation()
+            inventory.beginRun(id: inventoryRunID, taskIDs: inventoryFightIDs)
+            if let plan = frozenPlan {
+                logTrace(verbatim: "Inventory generation=\(plan.generation) run=\(inventoryRunID) base=\(plan.startInventory) drops=\(plan.requiredDrops)")
+            }
+            try await startCoreTasks(recordDailyTaskStart: true)
+        } catch {
+            if await handle?.running == true {
+                status = .busy
+            } else if appendedAnyTask {
+                // Assistant::stop clears m_tasks_list, including tasks appended
+                // while idle. A rejected preparation must never leak into a later run.
+                do { try await handle?.stop() }
+                catch {
+                    messageTask?.cancel()
+                    messageTask = nil
+                    handle = nil
+                }
+                taskIDMap.removeAll()
+                taskStatus.removeAll()
+                invalidateInventory()
+            }
+            throw error
         }
-
-        try await handle?.start()
-        logStore?.taskStartTime = .now
-
-        status = .busy
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -524,14 +730,15 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func startCopilot(type: MAATaskType, params: String) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: type, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 }
 
@@ -539,6 +746,9 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -548,23 +758,26 @@ extension MAAViewModel {
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .Recruit, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func recognizeDepot() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Depot, params: "")
-        try await handle?.start()
-
-        status = .busy
+        inventoryDepotScope = inventoryScope
+        inventoryDepotTaskID = try await handle?.appendTask(type: .Depot, params: "")
+        try await startCoreTasks()
     }
 
     func recognizeVideo(video url: URL) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -575,23 +788,25 @@ extension MAAViewModel {
 
         try await ensureHandle(requireConnect: false)
         try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func recognizeOperBox() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
         try await _ = handle?.appendTask(type: .OperBox, params: "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func gachaPoll(once: Bool) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -603,12 +818,13 @@ extension MAAViewModel {
         let string = String(data: data, encoding: .utf8)
 
         try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 
     func miniGame(name: String, params: Any? = nil) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -619,9 +835,7 @@ extension MAAViewModel {
         let string = String(data: data, encoding: .utf8)
 
         try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await startCoreTasks()
     }
 }
 

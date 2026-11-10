@@ -23,5 +23,6 @@ extension MAADepot: JSONInitializable {
             let data = try JSON(jsonString: string)
             items = try .init(json: data)
         }
+        guard items.values.allSatisfy({ $0 >= 0 }) else { throw InventoryTargetError.recognitionRequired }
     }
 }
