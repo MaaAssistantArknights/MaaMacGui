@@ -12,6 +12,12 @@ struct MiniGameView: View {
     @SceneStorage("selectedMiniGame") private var selection = MiniGameOption.sideStoryStore.taskName
     @State private var selectedGame = MiniGameOption.sideStoryStore.tag
     @State private var taskParams: Any?
+    @AppStorage("SecretFrontEnding") private var secretFrontEnding = SecretFrontConfiguration.Ending.A
+    @AppStorage("SecretFrontEvent") private var secretFrontEvent = SecretFrontConfiguration.Event.unspecified
+    @State private var startError: String?
+
+    private var isSecretFront: Bool { selectedGame.taskName == MiniGameOption.secretFront.taskName }
+
 
     var body: some View {
         VStack(spacing: 20) {
@@ -38,10 +44,29 @@ struct MiniGameView: View {
                 }
             }
 
+            if isSecretFront {
+                Picker("目标结局", selection: $secretFrontEnding) {
+                    ForEach(SecretFrontConfiguration.Ending.allCases, id: \.self) { ending in
+                        Text("结局 \(ending.rawValue)").tag(ending)
+                    }
+                }
+                .disabled(viewModel.status != .idle)
+                Picker("指定事件", selection: $secretFrontEvent) {
+                    ForEach(SecretFrontConfiguration.Event.allCases, id: \.self) { event in
+                        Text(event.displayName).tag(event)
+                    }
+                }
+                .disabled(viewModel.status != .idle)
+                if let reason = viewModel.secretFrontUnavailableReason {
+                    Text(reason)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             Button("开始游戏") {
                 startMiniGame()
             }
-            .disabled(viewModel.status != .idle)
+            .disabled(viewModel.status != .idle || (isSecretFront && viewModel.secretFrontUnavailableReason != nil))
             .buttonStyle(.borderedProminent)
 
             Divider()
@@ -49,6 +74,19 @@ struct MiniGameView: View {
             switch selectedGame.taskName {
             case "MiniGame@PixelPaint@Begin":
                 PixelPaintView(params: $taskParams)
+            case MiniGameOption.secretFront.taskName:
+                VStack(alignment: .leading, spacing: 12) {
+                    Text(selectedGame.instructions)
+                    Text("运行日志").font(.headline)
+                    ScrollView {
+                        LazyVStack(alignment: .leading, spacing: 6) {
+                            ForEach(Array(viewModel.secretFrontRun.messages.enumerated()), id: \.offset) { _, message in
+                                Text(message).textSelection(.enabled)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                }
             default:
                 ScrollView {
                     LazyVStack {
@@ -58,6 +96,11 @@ struct MiniGameView: View {
             }
         }
         .padding()
+        .alert("小游戏启动失败", isPresented: Binding(
+            get: { startError != nil }, set: { if !$0 { startError = nil } }
+        )) {
+            Button("好", role: .cancel) { startError = nil }
+        } message: { Text(startError ?? "") }
         .animation(.default, value: otaMiniGames)
         .animation(.default, value: selectedGame)
         .onChange(of: otaMiniGames, initial: true) {
@@ -76,6 +119,7 @@ struct MiniGameView: View {
         }
         .onChange(of: selectedGame) {
             selection = $1.taskName
+            taskParams = nil
         }
     }
 
@@ -85,7 +129,17 @@ struct MiniGameView: View {
 
     private func startMiniGame() {
         Task {
-            try await viewModel.miniGame(name: selectedGame.taskName, params: taskParams)
+            do {
+                if isSecretFront {
+                    guard viewModel.secretFrontUnavailableReason == nil else { return }
+                    let configuration = SecretFrontConfiguration(ending: secretFrontEnding, event: secretFrontEvent)
+                    try await viewModel.miniGame(name: configuration.taskName, secretFront: configuration)
+                } else {
+                    try await viewModel.miniGame(name: selectedGame.taskName, params: taskParams)
+                }
+            } catch {
+                startError = error.localizedDescription
+            }
         }
     }
 }
@@ -95,9 +149,12 @@ enum MiniGameOption: String, CaseIterable {
     case greenTicketStore
     case yellowTickerStore
     case reclamationStore
+    case secretFront
 
     var taskName: String {
         switch self {
+        case .secretFront:
+            return "MiniGame@SecretFront@Begin"
         case .greenTicketStore:
             return "GreenTicket@Store@Begin"
         case .yellowTickerStore:
@@ -111,6 +168,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var displayName: String {
         switch self {
+        case .secretFront:
+            return String(localized: "隐秘战线")
         case .greenTicketStore:
             return String(localized: "绿票商店")
         case .yellowTickerStore:
@@ -124,6 +183,8 @@ enum MiniGameOption: String, CaseIterable {
 
     var instructions: String {
         switch self {
+        case .secretFront:
+            String(localized: "请先进入隐秘战线的分队选择页面。指定事件出现时优先选择，成功率不足时可能先积累属性。识别失败时可用工具栏停止；从路线、危机或终点页面恢复需要相应 Core 资源支持。")
         case .greenTicketStore:
             String(
                 localized:
