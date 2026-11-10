@@ -645,7 +645,12 @@ extension MAAViewModel {
                 logInfo(.infrastDormDoubleConfirmed)
 
             case "ExitThenAbandon":
-                // TODO: (Achievement) Record Roguelike retreats.
+                // Exiting the map can also preserve the current exploration.
+                logInfo(.explorationExiting)
+
+            case "Abandon":
+                // A retained exit skips this task (reported as ExceededLimit),
+                // so reaching here means the exploration is truly abandoned.
                 logWarn(.explorationAbandoned)
 
             case "StartAction":
@@ -1336,6 +1341,18 @@ extension MAAViewModel {
             let milestoneId: String = (try? info.details["milestone_id"]) ?? ""
             if status != "inactive" {
                 logInfo(.blackFlowMilestoneChanged(id: milestoneId, status: status))
+            }
+
+        case "BlackFlowStartRun":
+            let status: String = (try? info.details["status"]) ?? ""
+            switch status {
+            case "reward_recognition_failed", "reward_page_missing", "reward_unrecognized":
+                logWarn(verbatim: String(localized: "BlackFlowStartRunRecognitionFailed", defaultValue: "开局奖励识别失败或页面不可用，已停止；请检查游戏画面。"))
+            case "preparing", "target_run", "reward_picked", "reward_missed", "completed":
+                // Progress reports are not failures.
+                break
+            default:
+                logWarn(verbatim: String(localized: "BlackFlowStartRunUnknownStatus", defaultValue: "黑流开局出现未识别状态：\(status)，请检查任务结果。"))
             }
 
         case "BlackFlowStrategyStarted":

@@ -121,6 +121,7 @@
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
+		B50000000000000000000001 /* BlackflowStartSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50000000000000000000002 /* BlackflowStartSupport.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -265,6 +266,7 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		B50000000000000000000002 /* BlackflowStartSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackflowStartSupport.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -539,6 +541,7 @@
 				8307A5CE3030157600A82FF7 /* PixelPainter.swift */,
 				83191C8E3040AF0D00576DC0 /* TCPConnection.swift */,
 				83AAF81730416ACF003752BD /* ByteReader.swift */,
+				B50000000000000000000002 /* BlackflowStartSupport.swift */,
 				83B8E0D83053131B00AB0B56 /* HGCalendar.swift */,
 			);
 			path = Utils;
@@ -719,6 +722,7 @@
 				835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
 				83AAF81830416ACF003752BD /* ByteReader.swift in Sources */,
+				B50000000000000000000001 /* BlackflowStartSupport.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
 				8341195029EC249E00044F45 /* RoguelikeConfiguration.swift in Sources */,

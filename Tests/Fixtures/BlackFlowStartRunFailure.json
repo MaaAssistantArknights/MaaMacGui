@@ -1,0 +1,8 @@
+{
+  "what": "BlackFlowStartRun",
+  "subtask": "BlackFlowLifecycleTask",
+  "taskchain": "Roguelike",
+  "details": {
+    "status": "reward_recognition_failed"
+  }
+}
