@@ -3,8 +3,12 @@ import SwiftUI
 struct SystemSettingsView: View {
     @EnvironmentObject private var viewModel: MAAViewModel
 
+    @State private var showHotkeys = false
+
     var body: some View {
         VStack(alignment: .leading) {
+            Button("全局热键…") { showHotkeys = true }
+
             Toggle(isOn: $viewModel.preventSystemSleeping) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("阻止系统睡眠")
@@ -21,6 +25,9 @@ struct SystemSettingsView: View {
             }
         }
         .padding()
+        .sheet(isPresented: $showHotkeys) {
+            HotkeySettingsView(service: viewModel.globalHotkeys)
+        }
     }
 }
 
