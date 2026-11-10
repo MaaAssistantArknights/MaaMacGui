@@ -18,6 +18,8 @@ import SwiftUI
         case pending
     }
 
+    var achievementEvents = AchievementEventAdapter()
+
     var medicineUsedTimes = 0
     var expiringMedicineUsedTimes = 0
 
@@ -27,6 +29,50 @@ import SwiftUI
     private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
     private var cancellables = Set<AnyCancellable>()
+
+    // 核心回调可能在异步操作返回前重置 status，独立标记防止入口重叠。
+    @Published private(set) var isStartStopInFlight = false
+    private var taskCompletionGeneration = UInt64(0)
+    private var dailyCompletionTask: Task<Void, Never>?
+    private var dailyFinishAttemptedRunID: UUID?
+
+    let dailyRunCoordinator = DailyRunCoordinator(journalURL: FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!.appendingPathComponent("DailyRunJournal.json"))
+    private var dailyRunOutcome = DailyRunOutcome.completed
+    private(set) var dailyRunTasks: [DailyTask]?
+    private(set) var isApplyingDailyCallbackPatch = false
+
+    var canStartTasks: Bool {
+        status == .idle && !isStartStopInFlight && dailyRunCoordinator.active == nil
+    }
+
+    private func beginTaskOperation(requiresIdle: Bool = true) async throws {
+        guard !isStartStopInFlight else {
+            logError("当前正在启动或停止任务，请稍后重试。")
+            throw MAAError.taskOperationInProgress
+        }
+        guard !requiresIdle || (status == .idle && dailyRunCoordinator.active == nil) else {
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
+        }
+        // Reserve before querying the core actor: the await must not admit
+        // another start or stop even if a callback has exposed idle.
+        isStartStopInFlight = true
+        var accepted = false
+        defer {
+            if !accepted { isStartStopInFlight = false }
+        }
+
+        if requiresIdle {
+            let coreIsRunning = await handle?.running == true
+            guard !coreIsRunning, status == .idle else {
+                if coreIsRunning { status = .busy }
+                logError("任务正在运行，请先停止当前任务。")
+                throw MAAError.taskAlreadyRunning
+            }
+            try Task.checkCancellation()
+        }
+        accepted = true
+    }
 
     // MARK: - Core Callback
 
@@ -163,7 +209,9 @@ import SwiftUI
         $tasks.sink(receiveValue: writeBack).store(in: &cancellables)
         $status.sink(receiveValue: switchAwakeGuard).store(in: &cancellables)
 
+        dailyRunCoordinator.didChange = { [weak self] in self?.objectWillChange.send() }
         initScheduledDailyTaskTimer()
+        AchievementStore.shared.recordLaunch()
     }
 
     deinit {
@@ -204,7 +252,9 @@ extension MAAViewModel {
         }
 
         guard await handle?.running == false else {
-            throw MAAError.handleNotRunning
+            status = .busy
+            logError("任务正在运行，请先停止当前任务。")
+            throw MAAError.taskAlreadyRunning
         }
 
         logStore?.clearLogs()
@@ -212,6 +262,7 @@ extension MAAViewModel {
         taskStatus.removeAll()
 
         guard requireConnect else { return }
+        achievementEvents.resetSession()
 
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
@@ -240,15 +291,59 @@ extension MAAViewModel {
         logTrace("Running")
     }
 
-    func stop() async throws {
+    private func startCoreTasks(recordDailyTaskStart: Bool = false) async throws {
+        try await handle?.start()
+        // Reconcile the actual core after start. A reset may belong to a prior
+        // run; retry if a callback makes the awaited running snapshot stale.
+        var observedGeneration: UInt64
+        var coreIsRunning: Bool
+        repeat {
+            observedGeneration = taskCompletionGeneration
+            coreIsRunning = await handle?.running == true
+        } while observedGeneration != taskCompletionGeneration
+
+        guard coreIsRunning else {
+            resetStatus()
+            return
+        }
+        if recordDailyTaskStart { logStore?.taskStartTime = .now }
+        status = .busy
+    }
+
+    func stop(cancelScheduledStart: Bool = true, userRequested: Bool = true) async throws {
+        if cancelScheduledStart {
+            NotificationCenter.default.post(name: Notification.Name("MAACancelPendingScheduledStart"), object: nil)
+        }
+        guard dailyRunCoordinator.active?.status != .postHook else {
+            logError("后置清理正在执行，请等待完成。")
+            throw MAAError.taskOperationInProgress
+        }
+        try await beginTaskOperation(requiresIdle: false)
+        defer { isStartStopInFlight = false }
+        let achievementWasRunning = await handle?.running == true
+
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
+        // A chain error recorded before this stop must survive as the run outcome.
+        if dailyRunOutcome != .failed { dailyRunOutcome = .cancelled }
+        if let id = dailyRunCoordinator.active?.id {
+            try dailyRunCoordinator.transition(.stopping, for: id)
+        }
         try await handle?.stop()
+        if userRequested, cancelScheduledStart, achievementWasRunning {
+            AchievementStore.shared.record(.init(runID: dailyRunCoordinator.active?.id, metric: .manualStop, operation: .maximum))
+        }
         status = .idle
+        await finishDailyRunIfStopped(allowInFlight: true)
     }
 
     func resetStatus() {
+        taskCompletionGeneration &+= 1
+        if let runID = dailyRunCoordinator.active?.id, dailyFinishAttemptedRunID == runID {
+            status = .pending
+            return
+        }
         status = .idle
         medicineUsedTimes = 0
         expiringMedicineUsedTimes = 0
@@ -261,6 +356,71 @@ extension MAAViewModel {
         logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
+        // Core emits AllTasksCompleted before its worker clears the running flag.
+        // Keep checking for this run until the native shutdown and any start/stop
+        // operation have finished; never let an old waiter finish a later run.
+        dailyCompletionTask?.cancel()
+        guard let runID = dailyRunCoordinator.active?.id else { return }
+        dailyCompletionTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self, self.dailyRunCoordinator.active?.id == runID else { return }
+                if await self.finishDailyRunIfStopped() { return }
+                guard self.dailyRunCoordinator.active?.id == runID,
+                      self.dailyRunCoordinator.active?.status != .postHook else { return }
+                do { try await Task.sleep(for: .milliseconds(250)) } catch { return }
+            }
+        }
+    }
+
+    func markDailyRunFailed() {
+        if dailyRunCoordinator.active != nil { dailyRunOutcome = .failed }
+    }
+
+    private func discardPreparedDailyTasks(for runID: UUID) async -> Bool {
+        guard dailyRunCoordinator.active?.id == runID else { return false }
+        do {
+            try await handle?.stop()
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            guard await handle?.running != true else { throw MAAError.taskAlreadyRunning }
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            return true
+        } catch {
+            guard dailyRunCoordinator.active?.id == runID else { return false }
+            messageTask?.cancel()
+            messageTask = nil
+            handle = nil
+            taskIDMap.removeAll()
+            taskStatus.removeAll()
+            logError(verbatim: "Daily preparation cleanup: \(error.localizedDescription)")
+            return false
+        }
+    }
+
+    @discardableResult
+    private func finishDailyRunIfStopped(allowInFlight: Bool = false) async -> Bool {
+        guard allowInFlight || !isStartStopInFlight else { return false }
+        guard let context = dailyRunCoordinator.active,
+              [.running, .stopping].contains(context.status) else { return false }
+        guard await handle?.running != true,
+              (allowInFlight || !Task.isCancelled),
+              (allowInFlight || !isStartStopInFlight),
+              dailyRunCoordinator.active?.id == context.id,
+              let currentStatus = dailyRunCoordinator.active?.status,
+              [.running, .stopping].contains(currentStatus) else { return false }
+        // Failed journal writes keep ownership and must not spin on duplicate callbacks.
+        // An explicit stop retries so a recovered journal can still release the run.
+        guard allowInFlight || dailyFinishAttemptedRunID != context.id else { return true }
+        dailyFinishAttemptedRunID = context.id
+        do {
+            try dailyRunCoordinator.finish(context.id, outcome: dailyRunOutcome, cleanupSucceeded: true)
+            dailyRunTasks = nil
+            status = .idle
+        } catch {
+            status = .pending
+            logError(verbatim: "Daily run journal: \(error.localizedDescription)")
+        }
+        return true
     }
 
     func screenshot() async throws -> NSImage {
@@ -431,28 +591,107 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
-    func tryStartTasks() async {
+    @discardableResult
+    func applyDailyTaskCallback(_ update: DailyTaskCallbackUpdate, coreID: Int32?) -> Bool {
+        guard let coreID, let context = dailyRunCoordinator.active,
+              [.running, .stopping].contains(context.status),
+              let id = taskIDMap[coreID],
+              let index = dailyRunTasks?.firstIndex(where: { $0.id == id }),
+              let original = dailyRunTasks?[index].task else { return false }
         do {
-            logStore?.setDailyTasksDetailMode(.log)
-            try await startTasks()
+            let isCurrentProfile = context.profileID == dailyTaskProfile
+            guard let updated = try DailyRunProfilePatchStore.apply(
+                update, taskID: id, expected: original, profileID: context.profileID,
+                currentTasks: isCurrentProfile ? tasks : nil, directory: tasksDirectory) else {
+                logWarn("运行中的配置已被编辑，保留用户修改，未自动更新任务记录。")
+                return false
+            }
+            // Only the callback field changes the frozen run view. Other edits
+            // in the latest saved profile must not rewrite the running snapshot.
+            if let snapshotUpdate = update.applying(to: original, expecting: original),
+               let old = dailyRunTasks?[index] {
+                dailyRunTasks?[index] = DailyTask(id: old.id, task: snapshotUpdate, enabled: old.enabled)
+            }
+            if isCurrentProfile {
+                isApplyingDailyCallbackPatch = true
+                tasks = updated
+                isApplyingDailyCallbackPatch = false
+            }
+            return true
         } catch {
-            logError("StartTasksFailed: \(String(describing: error))")
-            logInfo("CheckSettings")
+            logError(verbatim: "Run profile callback update failed: \(error.localizedDescription)")
+            return false
         }
     }
 
-    private func startTasks() async throws {
+    enum TaskStartResult: Equatable {
+        case started
+        case skipped
+        case failed
+    }
+
+    @discardableResult
+    func tryStartTasks() async -> Bool {
+        await startDailyTasks() == .started
+    }
+
+    func startDailyTasks(origin: DailyRunOrigin = .manual, snapshot: DailyRunSnapshot? = nil) async -> TaskStartResult {
+        guard canStartTasks else {
+            return .skipped
+        }
+
+        do {
+            try await beginTaskOperation()
+        } catch {
+            return .skipped
+        }
+        defer { isStartStopInFlight = false }
+
+        do {
+            logStore?.setDailyTasksDetailMode(.log)
+            let snapshot = snapshot ?? DailyRunSnapshot(profileID: dailyTaskProfile, tasks: tasks)
+            guard let runID = try dailyRunCoordinator.begin(profileID: snapshot.profileID, origin: origin) else { return .skipped }
+            dailyRunOutcome = .completed
+            do {
+                try dailyRunCoordinator.transition(.connecting, for: runID)
+                try await startTasks(snapshot: snapshot, runID: runID)
+                if origin == .schedule {
+                    AchievementStore.shared.record(.init(runID: runID, metric: .scheduledStart))
+                }
+                await finishDailyRunIfStopped(allowInFlight: true)
+                return .started
+            } catch {
+                if await handle?.running == true {
+                    dailyRunOutcome = .failed
+                    try dailyRunCoordinator.transition(.running, for: runID)
+                    status = .busy
+                } else {
+                    let cleaned = await discardPreparedDailyTasks(for: runID)
+                    try dailyRunCoordinator.finish(runID, outcome: error is CancellationError ? .cancelled : .failed, cleanupSucceeded: cleaned)
+                    dailyRunTasks = nil
+                }
+                throw error
+            }
+        } catch {
+            logError("StartTasksFailed: \(String(describing: error))")
+            logInfo("CheckSettings")
+            return .failed
+        }
+    }
+
+    private func startTasks(snapshot: DailyRunSnapshot, runID: UUID) async throws {
+        var runTasks = snapshot.tasks
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         var firstStart = true
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
                 guard await startGame(client: config.client_type) else {
@@ -462,29 +701,29 @@ extension MAAViewModel {
             }
         }
 
-        for (index, task) in tasks.enumerated() {
+        for (index, task) in runTasks.enumerated() {
             guard case .closedown(var config) = task.task else {
                 continue
             }
 
             config.client_type = clientChannel
-            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
+            runTasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        dailyRunTasks = runTasks
         try await ensureHandle()
 
-        for task in tasks {
+        for task in runTasks {
             guard task.enabled else { continue }
 
             if let coreID = try await handle?.appendTask(task.task) {
                 taskIDMap[coreID] = task.id
+                achievementEvents.register(taskID: coreID, runID: runID)
             }
         }
 
-        try await handle?.start()
-        logStore?.taskStartTime = .now
-
-        status = .busy
+        try dailyRunCoordinator.transition(.running, for: runID)
+        try await startCoreTasks(recordDailyTaskStart: true)
     }
 
     private func initScheduledDailyTaskTimer() {
@@ -520,18 +759,27 @@ extension MAAViewModel {
     }
 }
 
+extension MAAViewModel {
+    private func appendTrackedTask(type: MAATaskType, params: String) async throws {
+        if let id = try await handle?.appendTask(type: type, params: params) {
+            achievementEvents.register(taskID: id, type: type.rawValue)
+        }
+    }
+}
+
 // MARK: Copilot
 
 extension MAAViewModel {
     func startCopilot(type: MAATaskType, params: String) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: type, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: type, params: params)
+        try await startCoreTasks()
     }
 }
 
@@ -539,6 +787,9 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func recognizeRecruit() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -547,24 +798,26 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Recruit, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .Recruit, params: params)
+        try await startCoreTasks()
     }
 
     func recognizeDepot() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Depot, params: "")
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .Depot, params: "")
+        try await startCoreTasks()
     }
 
     func recognizeVideo(video url: URL) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -574,24 +827,26 @@ extension MAAViewModel {
         }
 
         try await ensureHandle(requireConnect: false)
-        try await _ = handle?.appendTask(type: .VideoRecognition, params: params)
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .VideoRecognition, params: params)
+        try await startCoreTasks()
     }
 
     func recognizeOperBox() async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .OperBox, params: "")
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .OperBox, params: "")
+        try await startCoreTasks()
     }
 
     func gachaPoll(once: Bool) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -602,13 +857,14 @@ extension MAAViewModel {
         let data = try JSONSerialization.data(withJSONObject: params)
         let string = String(data: data, encoding: .utf8)
 
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .Custom, params: string ?? "")
+        try await startCoreTasks()
     }
 
     func miniGame(name: String, params: Any? = nil) async throws {
+        try await beginTaskOperation()
+        defer { isStartStopInFlight = false }
+
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -618,10 +874,8 @@ extension MAAViewModel {
         let data = try JSONSerialization.data(withJSONObject: params)
         let string = String(data: data, encoding: .utf8)
 
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
-        try await handle?.start()
-
-        status = .busy
+        try await appendTrackedTask(type: .Custom, params: string ?? "")
+        try await startCoreTasks()
     }
 }
 

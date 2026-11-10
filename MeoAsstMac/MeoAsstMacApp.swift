@@ -36,6 +36,7 @@ struct MeoAsstMacApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .overlay(alignment: .topTrailing) { AchievementUnlockHint() }
                 .environmentObject(appViewModel)
                 .environment(newViewModel)
                 .onAppear {
