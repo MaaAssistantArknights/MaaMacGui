@@ -81,7 +81,7 @@ import SwiftUI
     @Published private var stageActivities = [String: MAAStageActivity]()
 
     var stageActivity: MAAStageActivity? {
-        stageActivities[clientChannel.rawValue]
+        stageActivities[clientChannel.stageActivityKey]
     }
 
     // MARK: - Recognition
@@ -328,7 +328,7 @@ extension MAAViewModel {
         }
         let data = try otaFetcher.data(name: "gui/StageActivityV2.json")
         let decoder = JSONDecoder()
-        stageActivities = try decoder.decode([String: MAAStageActivity].self, from: data)
+        stageActivities = (try? decoder.decode([String: MAAStageActivity].self, from: data)) ?? [:]
     }
 
     /// Load resources from bundled, user, and remote resources.

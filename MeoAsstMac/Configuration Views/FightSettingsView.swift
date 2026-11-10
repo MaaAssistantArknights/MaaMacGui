@@ -217,5 +217,6 @@ struct FightSettingsView: View {
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         FightSettingsView(config: .constant(.init()))
+            .environmentObject(MAAViewModel())
     }
 }
