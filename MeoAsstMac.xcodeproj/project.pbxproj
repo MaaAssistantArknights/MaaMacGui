@@ -121,6 +121,9 @@
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
+		C11000000000000000000000 /* PreviewImageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000000 /* PreviewImageBuffer.swift */; };
+		C11000000000000000000001 /* PeepViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000001 /* PeepViewModel.swift */; };
+		C11000000000000000000002 /* PeepView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C10000000000000000000002 /* PeepView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -265,6 +268,9 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		C10000000000000000000000 /* PreviewImageBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewImageBuffer.swift; sourceTree = "<group>"; };
+		C10000000000000000000001 /* PeepViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeepViewModel.swift; sourceTree = "<group>"; };
+		C10000000000000000000002 /* PeepView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeepView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -351,6 +357,7 @@
 		8329858E29EDAC7B009F7ED5 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				C10000000000000000000002 /* PeepView.swift */,
 				83264A3A29EC0F2E0074E33A /* LogView.swift */,
 				83264ACA29EC0F2E0074E33A /* EditableTextList.swift */,
 				9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */,
@@ -376,6 +383,7 @@
 		8329858F29EDAC91009F7ED5 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				C10000000000000000000000 /* PreviewImageBuffer.swift */,
 				8337870128F1D95F00D39D6F /* Maa.swift */,
 				8383EA2C28F2AF23007DAB9D /* MaaMessage.swift */,
 				8391C9F92B2746FA0047DB20 /* MaaToolClient.swift */,
@@ -478,6 +486,7 @@
 		8341195129EC258D00044F45 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C10000000000000000000001 /* PeepViewModel.swift */,
 				8341195629EC58CF00044F45 /* MAACopilot.swift */,
 				832985B529EF1890009F7ED5 /* MAADepot.swift */,
 				838FF82829FDE1FA000566A0 /* MAAError.swift */,
@@ -632,6 +641,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C11000000000000000000002 /* PeepView.swift in Sources */,
+				C11000000000000000000001 /* PeepViewModel.swift in Sources */,
+				C11000000000000000000000 /* PreviewImageBuffer.swift in Sources */,
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,

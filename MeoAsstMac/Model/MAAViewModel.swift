@@ -271,6 +271,16 @@ extension MAAViewModel {
         return NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height))
     }
 
+    func previewFrame(maxPixelSize: Int? = nil) async throws -> PreviewFrame {
+        guard let handle else { throw PreviewError.disconnected }
+        // Do not call ensureHandle: it clears logs, IDs and task states even for an existing handle.
+        let (image, requested) = try await handle.previewImage(
+            requestFresh: status == .idle, maxPixelSize: maxPixelSize)
+        return PreviewFrame(
+            image: NSImage(cgImage: image, size: NSSize(width: image.width, height: image.height)),
+            readAt: Date(), requestedCapture: requested)
+    }
+
     /// Reloads the resources from the documents directory after update.
     func reloadResources(channel: MAAClientChannel) async throws {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!

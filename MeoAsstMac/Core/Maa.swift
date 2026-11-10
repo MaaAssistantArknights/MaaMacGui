@@ -7,6 +7,7 @@
 
 import CoreGraphics
 import Foundation
+import ImageIO
 import JBirdCore
 import MaaCore
 import OSLog
@@ -68,6 +69,10 @@ actor MAAHandle {
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation
     private var pendingCalls = [AsstAsyncCallId: CheckedContinuation<JSON, Error>]()
+    private var previewCallID: AsstAsyncCallId?
+    private var previewToken: UUID?
+    private var previewWaiter: CheckedContinuation<Void, Error>?
+    private var previewTimeout: Task<Void, Never>?
 
     init(options: MAAInstanceOptions = [:]) async throws {
         (messages, continuation) = AsyncStream<MaaMessage>.makeStream()
@@ -94,6 +99,8 @@ actor MAAHandle {
     }
 
     deinit {
+        previewTimeout?.cancel()
+        previewWaiter?.resume(throwing: CancellationError())
         AsstDestroy(handle)
         pendingCalls.forEach { $1.resume(throwing: CancellationError()) }
         continuation.finish()
@@ -125,6 +132,21 @@ actor MAAHandle {
     }
 
     private func resumeCall(for id: AsstAsyncCallId, info: JSON) {
+        if previewCallID == id {
+            previewCallID = nil
+            previewToken = nil
+            previewTimeout?.cancel()
+            previewTimeout = nil
+            let waiter = previewWaiter
+            previewWaiter = nil
+            let succeeded: Bool = (try? info["details"]["ret"]) ?? false
+            if succeeded {
+                waiter?.resume()
+            } else {
+                waiter?.resume(throwing: MaaCoreError.getImageFailed)
+            }
+            return
+        }
         guard let continuation = pendingCalls.removeValue(forKey: id) else {
             logger.error("No pending call with ID: \(id)")
             return
@@ -175,15 +197,20 @@ actor MAAHandle {
         }
     }
 
-    func getImage() throws -> CGImage {
-        let size = 1280 * 720 * 3
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
+    func getImage(maxPixelSize: Int? = nil) throws -> CGImage {
+        try decodeImage(maxPixelSize: maxPixelSize)
+    }
 
-        if AsstGetImage(handle, buffer, AsstSize(size)) == AsstGetNullSize() {
-            throw MaaCoreError.getImageFailed
+    /// Nonisolated so previews can decode off this actor: the AsstGetImage copy plus ImageIO
+    /// decode cost roughly 10-80 ms per frame, and running them in an actor method would stall
+    /// the actor's cooperative thread once per second (alongside start/stop/appendTask and
+    /// pending call completions). `handle` is only assigned in `init`, so reading it here and
+    /// from the detached task below is safe; core serializes image access internally.
+    nonisolated private func decodeImage(maxPixelSize: Int?) throws -> CGImage {
+        let data = try PreviewImageBuffer.read(nullSize: AsstGetNullSize()) { buffer in
+            AsstGetImage(handle, buffer.baseAddress, AsstSize(buffer.count))
         }
-
-        let data = Data(bytesNoCopy: buffer, count: size, deallocator: .free)
+        if let image = Self.downsampled(data, maxPixelSize: maxPixelSize) { return image }
         guard let provider = CGDataProvider(data: data as CFData),
             let image = CGImage(
                 pngDataProviderSource: provider, decode: nil,
@@ -191,8 +218,76 @@ actor MAAHandle {
         else {
             throw MaaCoreError.getImageFailed
         }
-
         return image
+    }
+
+    /// A preview-sized destination never needs full-resolution pixels; ImageIO downsamples while
+    /// decoding instead of materializing a whole bitmap for the GPU to shrink. Returns nil when
+    /// the caller wants full resolution or the source cannot be read.
+    private static func downsampled(_ data: Data, maxPixelSize: Int?) -> CGImage? {
+        guard let maxPixelSize, maxPixelSize > 0,
+            let source = CGImageSourceCreateWithData(data as CFData, nil)
+        else { return nil }
+        return CGImageSourceCreateThumbnailAtIndex(source, 0, [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPixelSize,
+        ] as CFDictionary)
+    }
+
+    /// A preview never creates a task, reconnects, or resets the queue. Check native running on this actor.
+    func previewImage(requestFresh: Bool, maxPixelSize: Int? = nil) async throws -> (CGImage, Bool) {
+        try Task.checkCancellation()
+        guard connected else { throw PreviewError.disconnected }
+        guard previewCallID == nil else { throw PreviewError.captureInProgress }
+        let requested = requestFresh && !running
+        if requested {
+            let token = UUID()
+            try await withTaskCancellationHandler {
+                try await withCheckedThrowingContinuation { (waiter: CheckedContinuation<Void, Error>) in
+                    guard !Task.isCancelled else {
+                        waiter.resume(throwing: CancellationError())
+                        return
+                    }
+                    let callID = AsstAsyncScreencap(handle, 0)
+                    guard callID != 0 else {
+                        waiter.resume(throwing: MaaCoreError.getImageFailed)
+                        return
+                    }
+                    previewCallID = callID
+                    previewToken = token
+                    previewWaiter = waiter
+                    previewTimeout = Task { [weak self] in
+                        do { try await Task.sleep(for: .seconds(10)) } catch { return }
+                        await self?.cancelPreviewWaiter(token: token, error: PreviewError.timedOut)
+                    }
+                }
+            } onCancel: {
+                Task { await self.cancelPreviewWaiter(token: token, error: CancellationError()) }
+            }
+        }
+        try Task.checkCancellation()
+        guard connected else { throw PreviewError.disconnected }
+        // Decode detached instead of on the actor: see decodeImage. The detached task strongly
+        // captures `self`, so the handle outlives the read; awaiting its value keeps the
+        // caller's cancellation semantics (checked again by the caller after the return).
+        let image = try await Task.detached { try self.decodeImage(maxPixelSize: maxPixelSize) }.value
+        return (image, requested)
+    }
+
+    private func cancelPreviewWaiter(token: UUID, error: Error) {
+        guard previewToken == token else { return }
+        // Cancellation keeps the native reservation until its callback or deadline. A missing
+        // callback must not block all future previews; call IDs keep late replies out of a retry.
+        if case PreviewError.timedOut = error {
+            previewCallID = nil
+            previewToken = nil
+            previewTimeout?.cancel()
+            previewTimeout = nil
+        }
+        let waiter = previewWaiter
+        previewWaiter = nil
+        waiter?.resume(throwing: error)
     }
 
     var connected: Bool {
