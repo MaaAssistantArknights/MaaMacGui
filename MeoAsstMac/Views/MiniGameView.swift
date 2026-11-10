@@ -41,7 +41,7 @@ struct MiniGameView: View {
             Button("开始游戏") {
                 startMiniGame()
             }
-            .disabled(viewModel.status != .idle)
+            .disabled(!viewModel.canStartTasks)
             .buttonStyle(.borderedProminent)
 
             Divider()

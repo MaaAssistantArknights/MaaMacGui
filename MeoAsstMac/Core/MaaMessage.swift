@@ -51,6 +51,7 @@ extension Decodable {
 
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
+        if processForcedRecoveryMessage(message) { return }
         switch message.code {
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
@@ -251,6 +252,44 @@ extension MAAViewModel {
     }
 }
 
+// Core's nested Custom process tasks can emit taskid 0. Only accept
+// those events between the exclusive recovery task's start and terminal marker.
+extension MAAViewModel {
+    private func processForcedRecoveryMessage(_ message: MaaMessage) -> Bool {
+        guard forceRecoveryInFlight else { return false }
+        // No other task owns Core during this stage; delayed callbacks from the
+        // stopped run must not reset or complete the newly reserved daily run.
+        let isTaskMessage = message.code == .AllTasksCompleted ||
+            (.TaskChainError ... .TaskChainStopped).contains(message.code) ||
+            (.SubTaskError ... .SubTaskStopped).contains(message.code)
+        guard isTaskMessage else { return false }
+        guard var recovery = forceRecovery else { return true }
+        let chain: String = (try? message.details["taskchain", as: String.self]) ?? ""
+        let id: Int32 = (try? message.details["taskid", as: Int32.self]) ?? -1
+        if message.code == .AllTasksCompleted {
+            guard let ids: [Int32] = try? message.details["finished_tasks", as: [Int32].self], ids.contains(recovery.taskID) else { return true }
+            recovery.allFinished(ids)
+        } else if chain == recovery.chain, id == recovery.taskID, message.code == .TaskChainStart {
+            recovery.chainStart(recovery.taskID)
+        } else if chain == recovery.chain, id == recovery.taskID,
+                  [.TaskChainCompleted, .TaskChainError, .TaskChainStopped].contains(message.code) {
+            recovery.chainFinish(recovery.taskID, success: message.code == .TaskChainCompleted)
+        } else if chain == recovery.chain, recovery.started, (id == 0 || id == recovery.taskID),
+                  (.SubTaskError ... .SubTaskStopped).contains(message.code) {
+            if message.code == .SubTaskStart {
+                let subtask: String = (try? message.details["subtask", as: String.self]) ?? ""
+                if subtask == "ProcessTask", let payload = try? message.details.value(forSubscript: "details") {
+                    let task: String = (try? payload["task", as: String.self]) ?? ""
+                    let algorithm: String = (try? payload["algorithm", as: String.self]) ?? ""
+                    recovery.subtask(chain: chain, taskID: id, name: task, algorithm: algorithm)
+                }
+            }
+        } else { return true }
+        forceRecovery = recovery
+        return true
+    }
+}
+
 // MARK: - Process TaskChain
 
 extension NewViewModel.SanityReport {
@@ -315,6 +354,7 @@ extension MAAViewModel {
             return
         }
 
+        if message.code == .TaskChainError { markDailyRunFailed() }
         if message.code == .TaskChainStopped {
             resetStatus()
             logTrace(.stopped)
@@ -382,34 +422,33 @@ extension MAAViewModel {
         case .TaskChainCompleted:
             // TODO: (Achievement) Mirror WPF task-completion achievement progress.
             if info.taskchain == "Infrast" {
-                if let id = taskID(coreID: info.taskid),
-                    let task = tasks[id],
+                if let task = dailyTask(coreID: info.taskid),
                     case .infrast(let config) = task,
                     config.mode == .custom,
                     let plan = try? MAAInfrast(path: config.filename),
                     plan.plans.indices.contains(config.plan_index)
                 {
-                    let currentPlan = plan.plans[config.plan_index]
-                    logInfo(.customInfrastPlanIndexAutoSwitch)
-                    if let description = currentPlan.description_post, !description.isEmpty {
-                        logTrace(verbatim: description)
-                    }
-                    var newConfig = config
-                    newConfig.plan_index = (config.plan_index + 1) % plan.plans.count
-                    tasks[id] = .infrast(newConfig)
-                    let nextPlan = plan.plans[newConfig.plan_index]
-                    if let name = nextPlan.name, !name.isEmpty {
-                        logInfo(verbatim: name)
-                    }
-                    let periods = nextPlan.period?.compactMap { period in
-                        guard period.count >= 2 else { return String?.none }
-                        return "[ \(period[0]) – \(period[1]) ]"
-                    }
-                    if let periods, !periods.isEmpty {
-                        logTrace(verbatim: periods.joined(separator: ", "))
-                    }
-                    if let description = nextPlan.description, !description.isEmpty {
-                        logTrace(verbatim: description)
+                    let nextIndex = (config.plan_index + 1) % plan.plans.count
+                    if applyDailyTaskCallback(.infrastructurePlanIndex(nextIndex), coreID: info.taskid) {
+                        let currentPlan = plan.plans[config.plan_index]
+                        logInfo(.customInfrastPlanIndexAutoSwitch)
+                        if let description = currentPlan.description_post, !description.isEmpty {
+                            logTrace(verbatim: description)
+                        }
+                        let nextPlan = plan.plans[nextIndex]
+                        if let name = nextPlan.name, !name.isEmpty {
+                            logInfo(verbatim: name)
+                        }
+                        let periods = nextPlan.period?.compactMap { period in
+                            guard period.count >= 2 else { return String?.none }
+                            return "[ \(period[0]) – \(period[1]) ]"
+                        }
+                        if let periods, !periods.isEmpty {
+                            logTrace(verbatim: periods.joined(separator: ", "))
+                        }
+                        if let description = nextPlan.description, !description.isEmpty {
+                            logTrace(verbatim: description)
+                        }
                     }
                 }
             }
@@ -777,20 +816,10 @@ extension MAAViewModel {
             switch process.task {
             case "StageDrops-Stars-3":
                 // TODO: (Achievement) Record completed credit fights.
-                if let id = taskID(coreID: info.taskid),
-                    case .mall(var config) = tasks[id]
-                {
-                    config.creditFightDate = .now
-                    tasks[id] = .mall(config)
-                }
+                _ = applyDailyTaskCallback(.creditFightDate(.now), coreID: info.taskid)
                 logInfo(.completeTask(name: L(.creditFight)))
             case "VisitLimited":
-                if let id = taskID(coreID: info.taskid),
-                    case .mall(var config) = tasks[id]
-                {
-                    config.friendVisitDate = .now
-                    tasks[id] = .mall(config)
-                }
+                _ = applyDailyTaskCallback(.friendVisitDate(.now), coreID: info.taskid)
                 logInfo(.completeTask(name: L(.visiting)))
             case "VisitNextBlack":
                 logInfo(.completeTask(name: L(.visiting)))
@@ -1638,7 +1667,7 @@ extension MAAViewModel {
 
     func dailyTask(coreID: Int32?) -> MAATask? {
         guard let id = taskID(coreID: coreID) else { return nil }
-        return tasks[id]
+        return (dailyRunTasks ?? tasks)[id]
     }
 
     private func taskID(coreID: Int32?) -> UUID? {
