@@ -121,6 +121,7 @@
 		9BC2EEB32E3F188D0039C4DB /* MiniGameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */; };
 		AEA8E3A02E77003F00355D84 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = AEA8E39F2E77003F00355D84 /* AppIcon.icon */; };
 		B2F78243EABE3F6910568B94 /* SwitchThemeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */; };
+		B30000000000000000000001 /* LoginItemService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B30000000000000000000002 /* LoginItemService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -265,6 +266,7 @@
 		92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskTimerManager.swift; sourceTree = "<group>"; };
 		9BC2EEB22E3F188D0039C4DB /* MiniGameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniGameView.swift; sourceTree = "<group>"; };
 		AEA8E39F2E77003F00355D84 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		B30000000000000000000002 /* LoginItemService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginItemService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -524,6 +526,7 @@
 		92CDF6202A065E20005669EC /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				B30000000000000000000002 /* LoginItemService.swift */,
 				92CDF6212A065E55005669EC /* Codeable+JSON.swift */,
 				92F78D4E2A0B361C00999BD0 /* TaskTimerManager.swift */,
 				8347B5AE2CDF925400AEB627 /* URLSession+downloadProgress.swift */,
@@ -718,6 +721,7 @@
 				832903A9302C9802008E1DC6 /* URL+contentType.swift in Sources */,
 				835252A12D534A9E00C6D6D3 /* GitHub.swift in Sources */,
 				838FF82729FDD0F9000566A0 /* GachaView.swift in Sources */,
+				B30000000000000000000001 /* LoginItemService.swift in Sources */,
 				83AAF81830416ACF003752BD /* ByteReader.swift in Sources */,
 				83782A2B2CFFAF2900A32BDD /* LegacyConfigurations.swift in Sources */,
 				83264A2F29EBEE140074E33A /* RecruitConfiguration.swift in Sources */,
