@@ -39,6 +39,8 @@ extension MAAClientChannel {
         case .Official, .Bilibili, .txwy:
             HGCalendar(timeZone: .utc(hours: 8), resetTime: resetTime)
         case .YoStarEN:
+            // EN server time stays at UTC-7 year-round; do not use Pacific daylight-saving rules.
+            // Official winter schedule: https://www.arknights.global/news/2116
             HGCalendar(timeZone: .utc(hours: -7), resetTime: resetTime)
         case .YoStarJP, .YoStarKR:
             HGCalendar(timeZone: .utc(hours: 9), resetTime: resetTime)

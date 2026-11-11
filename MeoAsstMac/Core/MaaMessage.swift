@@ -745,6 +745,12 @@ private struct SubTaskCompletedMessage {
 }
 
 extension MAAViewModel {
+    /// 跨 04:00 处理完成消息时保守回写轮始游戏日（取舍详见 MallConfiguration.dailyWriteBackDate）。
+    private func mallDailyWriteBackDate(for channel: MAAClientChannel) -> Date {
+        MallConfiguration.dailyWriteBackDate(
+            now: Date.now, roundStart: logStore?.taskStartTime, calendar: channel.calendar)
+    }
+
     private func processSubTaskCompleted(_ details: JSON) {
         guard let info = SubTaskCompletedMessage(json: details, context: "SubTaskCompleted") else {
             return
@@ -780,7 +786,7 @@ extension MAAViewModel {
                 if let id = taskID(coreID: info.taskid),
                     case .mall(var config) = tasks[id]
                 {
-                    config.creditFightDate = .now
+                    config.creditFightDate = mallDailyWriteBackDate(for: config.clientChannel)
                     tasks[id] = .mall(config)
                 }
                 logInfo(.completeTask(name: L(.creditFight)))
@@ -788,7 +794,7 @@ extension MAAViewModel {
                 if let id = taskID(coreID: info.taskid),
                     case .mall(var config) = tasks[id]
                 {
-                    config.friendVisitDate = .now
+                    config.friendVisitDate = mallDailyWriteBackDate(for: config.clientChannel)
                     tasks[id] = .mall(config)
                 }
                 logInfo(.completeTask(name: L(.visiting)))

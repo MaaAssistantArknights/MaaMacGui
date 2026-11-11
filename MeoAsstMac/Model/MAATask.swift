@@ -5,6 +5,7 @@
 //  Created by hguandl on 15/4/2023.
 //
 
+import OSLog
 import SwiftUI
 
 enum MAATask: Codable, Equatable {
@@ -119,8 +120,15 @@ extension Array where Element == DailyTask {
 }
 
 extension MAAViewModel {
+    private static let taskProfileLogger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "TaskProfile")
+
+    // 写盘失败（磁盘满、权限等）会让去重日期停留在上次保存的值，重启后可能重复提交子任务，必须留痕。
     func writeBack(_ newValue: [DailyTask]) {
-        let data = try? PropertyListEncoder().encode(newValue)
-        try? data?.write(to: tasksURL)
+        do {
+            let data = try PropertyListEncoder().encode(newValue)
+            try data.write(to: tasksURL, options: .atomic)
+        } catch {
+            Self.taskProfileLogger.error("Failed to write task profiles: \(String(describing: error), privacy: .private)")
+        }
     }
 }
