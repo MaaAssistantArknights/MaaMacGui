@@ -47,6 +47,9 @@ struct StartupSettingsView: View {
                     Text(account).tag(account)
                 }
             }
+#if arch(arm64) && WITH_MAC_NATIVE
+            .disabled(touchMode == .MacNative)
+#endif
 
             if touchMode == .MacPlayTools {
                 Text("请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。")

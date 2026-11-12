@@ -8,6 +8,9 @@
 import Combine
 import IOKit.pwr_mgt
 import SwiftUI
+#if arch(arm64) && WITH_MAC_NATIVE
+import ApplicationServices
+#endif
 
 @MainActor class MAAViewModel: ObservableObject {
     // MARK: - Core Status
@@ -93,6 +96,10 @@ import SwiftUI
 
     @AppStorage("MAAConnectionAddress") var connectionAddress = "127.0.0.1:5555"
 
+#if arch(arm64) && WITH_MAC_NATIVE
+    @AppStorage("MAAMacNativeBundleID") var macNativeBundleID = "com.hypergryph.arknights"
+#endif
+
     @AppStorage("MAAUseGzip") var useGzip = false
 
     @AppStorage("MAAUseAdbLite") var useAdbLite = true
@@ -102,7 +109,11 @@ import SwiftUI
     @AppStorage("MAATouchMode") var touchMode = MaaTouchMode.maatouch {
         didSet {
             guard touchMode != oldValue else { return }
-            if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
+            var reloadsPlatformResources = touchMode == .MacPlayTools || oldValue == .MacPlayTools
+#if arch(arm64) && WITH_MAC_NATIVE
+            reloadsPlatformResources = reloadsPlatformResources || touchMode == .MacNative || oldValue == .MacNative
+#endif
+            if reloadsPlatformResources {
                 Task { try await loadResource(channel: clientChannel) }
             }
         }
@@ -223,9 +234,24 @@ extension MAAViewModel {
                 logInfo("运行过程中，请勿将游戏设置为全屏幕、最小化，或移动窗口至其他显示器")
             }
         }
+#if arch(arm64) && WITH_MAC_NATIVE
+        if touchMode == .MacNative {
+            if !CGPreflightScreenCaptureAccess() {
+                logError("Screen Recording permission is required for native macOS control")
+            }
+            if !AXIsProcessTrusted() {
+                logError("Accessibility permission is required for native macOS control")
+            }
+            logInfo("Start the game first and keep its window open; minimized or hidden windows are unsupported")
+        }
+#endif
 
         let connectionProfile: String
         switch (touchMode, toolsMode, useGzip) {
+#if arch(arm64) && WITH_MAC_NATIVE
+        case (.MacNative, _, _):
+            connectionProfile = "MacNative"
+#endif
         case (.MacPlayTools, .MacSCK, _):
             connectionProfile = "MacSCK"
         case (.MacPlayTools, .BGR, _):
@@ -236,7 +262,16 @@ extension MAAViewModel {
             connectionProfile = "CompatMac"
         }
 
-        try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
+        let targetAddress: String
+        let targetAdbPath: String
+#if arch(arm64) && WITH_MAC_NATIVE
+        targetAddress = touchMode == .MacNative ? macNativeBundleID : connectionAddress
+        targetAdbPath = touchMode == .MacNative ? "" : adbPath
+#else
+        targetAddress = connectionAddress
+        targetAdbPath = adbPath
+#endif
+        try await handle?.connect(adbPath: targetAdbPath, address: targetAddress, profile: connectionProfile)
         logTrace("Running")
     }
 
@@ -299,7 +334,11 @@ extension MAAViewModel {
     private func loadResource(url: URL) async throws {
         try await MAAProvider.shared.loadResource(path: url.path)
 
-        if touchMode == .MacPlayTools {
+        var loadsIOSPlatformResources = touchMode == .MacPlayTools
+#if arch(arm64) && WITH_MAC_NATIVE
+        loadsIOSPlatformResources = loadsIOSPlatformResources || touchMode == .MacNative
+#endif
+        if loadsIOSPlatformResources {
             let platformResource = url.appendingPathComponent("resource")
                 .appendingPathComponent("platform_diff")
                 .appendingPathComponent("iOS")
@@ -417,9 +456,13 @@ extension MAAViewModel {
     }
 
     private var instanceOptions: MAAInstanceOptions {
-        [
+        var adbLiteEnabled = touchMode != .MacPlayTools && useAdbLite
+#if arch(arm64) && WITH_MAC_NATIVE
+        adbLiteEnabled = adbLiteEnabled && touchMode != .MacNative
+#endif
+        return [
             .TouchMode: touchMode.rawValue,
-            .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
+            .AdbLiteEnabled: adbLiteEnabled ? "1" : "0",
         ]
     }
 
@@ -452,6 +495,11 @@ extension MAAViewModel {
             }
 
             config.client_type = clientChannel
+#if arch(arm64) && WITH_MAC_NATIVE
+            if touchMode == .MacNative {
+                config.account_name = ""
+            }
+#endif
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
@@ -460,6 +508,26 @@ extension MAAViewModel {
                 }
                 firstStart = false
             }
+#if arch(arm64) && WITH_MAC_NATIVE
+            if touchMode == .MacNative, task.enabled, config.start_game_enabled, firstStart {
+                let appURL = URL(fileURLWithPath: "/Applications/Arknights.app")
+                guard FileManager.default.fileExists(atPath: appURL.path) else {
+                    logError("MacNative 自动启动要求游戏位于 /Applications/Arknights.app")
+                    throw MAAError.gameStartFailed
+                }
+                guard Bundle(url: appURL)?.bundleIdentifier == macNativeBundleID else {
+                    logError("MacNative 游戏的 Bundle ID 与连接设置不一致：/Applications/Arknights.app")
+                    throw MAAError.gameStartFailed
+                }
+                do {
+                    try await NSWorkspace.shared.openApplication(at: appURL, configuration: .init())
+                } catch {
+                    logError("MacNative 无法启动 /Applications/Arknights.app：\(error.localizedDescription)")
+                    throw MAAError.gameStartFailed
+                }
+                firstStart = false
+            }
+#endif
         }
 
         for (index, task) in tasks.enumerated() {
