@@ -3792,6 +3792,22 @@
         }
       }
     },
+    "副手换人" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assistant change"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보조 인원 교체"
+          }
+        }
+      }
+    },
     "剿灭模式" : {
       "localizations" : {
         "ko" : {
@@ -3959,6 +3975,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "주간 임무"
+          }
+        }
+      }
+    },
+    "回收站" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recycling Station (speculative translation, not yet released)"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "재활용 시설 (추측 번역, 미실장)"
           }
         }
       }

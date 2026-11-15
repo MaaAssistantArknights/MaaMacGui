@@ -23,9 +23,11 @@ struct InfrastConfiguration: MAATaskConfiguration {
         case Control
         case Reception
         case Office
+        case Recycle
         case Dorm
         case Processing
         case Training
+        case AssistantChange
     }
 
     enum DroneUsage: String, CaseIterable, Codable {
@@ -115,12 +117,16 @@ extension InfrastConfiguration.Facility: CustomStringConvertible, Identifiable {
             return String(localized: "会客室")
         case .Office:
             return String(localized: "办公室")
+        case .Recycle:
+            return String(localized: "回收站")
         case .Dorm:
             return String(localized: "宿舍")
         case .Processing:
             return String(localized: "加工站")
         case .Training:
             return String(localized: "训练室")
+        case .AssistantChange:
+            return String(localized: "副手换人")
         }
     }
 }
@@ -152,7 +158,8 @@ extension InfrastConfiguration {
         self.mode = try container.decodeIfPresent(InfrastConfiguration.Mode.self, forKey: .mode) ?? .default
         self.facility =
             try container.decodeIfPresent([InfrastConfiguration.Facility].self, forKey: .facility) ?? [
-                .Mfg, .Trade, .Control, .Power, .Reception, .Office, .Dorm, .Processing, .Training,
+                .Mfg, .Trade, .Control, .Power, .Reception, .Office, .Recycle, .Dorm, .Processing, .Training,
+                .AssistantChange,
             ]
         self.drones = try container.decodeIfPresent(InfrastConfiguration.DroneUsage.self, forKey: .drones) ?? .NotUse
         self.threshold = try container.decodeIfPresent(Double.self, forKey: .threshold) ?? 0.3
