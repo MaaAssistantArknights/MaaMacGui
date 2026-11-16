@@ -60,8 +60,24 @@ struct FightConfiguration: MAATaskConfiguration {
 
     typealias Params = Self
 
+    // Normalize short stage codes (AP-5, PR-A-1, JT8-2, OF-F3) regardless of input case.
+    // Preserve special task names such as AveMujica-8 and difficulty suffixes;
+    // the core already handles the latter case-insensitively.
+    static func normalizedStage(_ stage: String) -> String {
+        let trimmed = stage.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmed.lowercased() == "annihilation" {
+            return "Annihilation"
+        }
+        if trimmed.range(of: "^[A-Za-z0-9]{1,3}(?:-[A-Za-z])?-[A-Za-z]?[0-9]+$", options: .regularExpression) != nil {
+            return trimmed.uppercased()
+        }
+        return trimmed
+    }
+
     var params: Self {
-        self
+        var config = self
+        config.stage = Self.normalizedStage(config.stage)
+        return config
     }
 
     // 掉落物品列表
