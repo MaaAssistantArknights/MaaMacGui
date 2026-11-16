@@ -66,6 +66,8 @@ extension RecruitConfiguration {
         self.set_time = config.set_time
         self.expedite = config.expedite
         self.skip_robot = config.skip_robot
+        self.preserve_tags = config.skip_robot ? ["支援机械"] : []
+        self.preserve_tags_enabled = config.skip_robot
         self.recruitment_time = config.recruitment_time
     }
 }

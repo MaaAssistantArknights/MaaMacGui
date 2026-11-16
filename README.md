@@ -18,6 +18,8 @@ MAA 的意思是 MAA Assistant Arknights
 1. 安装依赖 `brew install ninja`
 2. 运行位于主仓库的脚本 `MAA_DEBUG=1 ./tools/build_macos_universal.zsh`
 
+> 公招「保留标签」依赖 MaaCore ≥ 6.11.0 引入的 `preserve_tags` 参数，更早版本会静默忽略该设置
+
 🎉 打开 Xcode 可以尝试 build 了
 
 ### Q&A
