@@ -1,0 +1,5 @@
+{
+  "_note": "停止日志轮次的历史快照，此后未再刷新哈希。本清单与 artifacts/pr-161-post-start/manifest.json 均为各自轮次的历史记录：post-start 清单记录于 71af78f，其中 MeoAsstMac/Model/MAAViewModel.swift、MeoAsstMac/Model/NewViewModel.swift、Tests/TaskOperationTests.swift、Tests/TaskOperationTestSupport.swift、Tests/run-task-operation-tests.py、artifacts/pr-161-stop-log/mutation-check.py 等条目已被 d932363 及其后的修复提交修改而过期（过期条目包括但不限于以上列举；本清单中的 Tests/TaskOperationTests.swift 同样过期）。现行文件内容一律以 git 仓库对应提交中的文件为准，不以任何 artifacts 清单为准。",
+  "Tests/TaskOperationTests.swift": "81510d44230748069cdc752c3a5d9d93e7019f118348ccdfcd72ce6a36a4b989",
+  "artifacts/pr-161-stop-log/mutation-check.py": "14d4674c30432c28d762f3ff33ade5df04cce8f8d88e5ca278436e4030c338aa"
+}

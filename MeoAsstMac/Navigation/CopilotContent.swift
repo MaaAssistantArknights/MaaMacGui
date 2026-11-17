@@ -215,7 +215,7 @@ private struct CopilotListToolbar: ToolbarContent {
                     Label("开始", systemImage: "play.fill")
                 }
                 .help("开始")
-                .disabled(!newModel.copilot.isReady)
+                .disabled(!newModel.canStartTasks || !newModel.copilot.isReady)
             }
         }
     }

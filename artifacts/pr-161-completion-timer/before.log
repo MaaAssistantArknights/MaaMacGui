@@ -1,0 +1,30 @@
+FAIL: Daily does not overwrite completed state after start returns
+FAIL: Daily does not restore cleared start metadata
+FAIL: Daily can restart after fast completion
+FAIL: Daily restart after completion succeeds
+FAIL: Copilot does not overwrite completed state after start returns
+FAIL: Copilot can restart after fast completion
+FAIL: Copilot restart after completion succeeds
+FAIL: Recruit does not overwrite completed state after start returns
+FAIL: Recruit can restart after fast completion
+FAIL: Recruit restart after completion succeeds
+FAIL: Depot does not overwrite completed state after start returns
+FAIL: Depot can restart after fast completion
+FAIL: Depot restart after completion succeeds
+FAIL: Video does not overwrite completed state after start returns
+FAIL: Video can restart after fast completion
+FAIL: Video restart after completion succeeds
+FAIL: OperBox does not overwrite completed state after start returns
+FAIL: OperBox can restart after fast completion
+FAIL: OperBox restart after completion succeeds
+FAIL: Gacha does not overwrite completed state after start returns
+FAIL: Gacha can restart after fast completion
+FAIL: Gacha restart after completion succeeds
+FAIL: MiniGame does not overwrite completed state after start returns
+FAIL: MiniGame can restart after fast completion
+FAIL: MiniGame restart after completion succeeds
+FAIL: timer reports connection failure distinctly
+FAIL: timer does not label connection failure as skipped
+FAIL: timer reports core failure distinctly
+FAIL: timer does not label core failure as skipped
+289 assertions; 29 failures

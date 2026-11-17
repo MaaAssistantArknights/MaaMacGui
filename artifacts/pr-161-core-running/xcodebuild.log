@@ -1,0 +1,863 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -scheme MAA -configuration Debug -destination platform=macOS,arch=arm64 -derivedDataPath /tmp/maa-pr161-derived -clonedSourcePackagesDirPath /tmp/maa-pr163-20261029-derived/SourcePackages -disableAutomaticPackageResolution -skipPackageUpdates -skipMacroValidation CODE_SIGNING_ALLOWED=NO ARCHS=arm64 ONLY_ACTIVE_ARCH=YES build
+
+Build settings from command line:
+    ARCHS = arm64
+    CODE_SIGNING_ALLOWED = NO
+    ONLY_ACTIVE_ARCH = YES
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  Sparkle: https://github.com/sparkle-project/Sparkle @ 2.10.1
+  LegacyUserTasks: /tmp/maa-pr161-build-project/Packages/LegacyUserTasks
+  JBird: https://github.com/hguandl/JBird.git @ xcode-26 (c9d750d)
+  swift-syntax: https://github.com/swiftlang/swift-syntax.git @ 603.0.2
+  ZIPFoundation: https://github.com/weichsel/ZIPFoundation @ 0.9.20
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (20 targets)
+    Target 'MAA' in project 'MeoAsstMac'
+        ➜ Explicit dependency on target 'JBird-product' in project 'JBird'
+        ➜ Explicit dependency on target 'LegacyUserTasks-product' in project 'LegacyUserTasks'
+        ➜ Explicit dependency on target 'Sparkle-product' in project 'Sparkle'
+        ➜ Explicit dependency on target 'ZIPFoundation-product' in project 'ZIPFoundation'
+    Target 'ZIPFoundation-product' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation'
+    Target 'ZIPFoundation' in project 'ZIPFoundation'
+        ➜ Explicit dependency on target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation'
+    Target 'ZIPFoundation_ZIPFoundation' in project 'ZIPFoundation' (no dependencies)
+    Target 'Sparkle-product' in project 'Sparkle' (no dependencies)
+    Target 'LegacyUserTasks-product' in project 'LegacyUserTasks'
+        ➜ Explicit dependency on target 'LegacyUserTasks' in project 'LegacyUserTasks'
+    Target 'LegacyUserTasks' in project 'LegacyUserTasks' (no dependencies)
+    Target 'JBird-product' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBird' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCore' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdBuilders' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdMacrosCompilerPlugin' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdMacros' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCodableSupport' in project 'JBird'
+    Target 'JBird' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBird' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCore' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdBuilders' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdMacrosCompilerPlugin' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdMacros' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCodableSupport' in project 'JBird'
+    Target 'JBirdCodableSupport' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBirdCodableSupport' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCore' in project 'JBird'
+    Target 'JBird_JBirdCodableSupport' in project 'JBird' (no dependencies)
+    Target 'JBirdMacros' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBirdMacros' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdMacrosCompilerPlugin' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCore' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdBuilders' in project 'JBird'
+    Target 'JBird_JBirdMacros' in project 'JBird' (no dependencies)
+    Target 'JBirdMacrosCompilerPlugin' in project 'JBird' (no dependencies)
+    Target 'JBirdBuilders' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBirdBuilders' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdCore' in project 'JBird'
+    Target 'JBird_JBirdBuilders' in project 'JBird' (no dependencies)
+    Target 'JBirdCore' in project 'JBird'
+        ➜ Explicit dependency on target 'JBird_JBirdCore' in project 'JBird'
+        ➜ Explicit dependency on target 'JBirdParser' in project 'JBird'
+    Target 'JBird_JBirdCore' in project 'JBird' (no dependencies)
+    Target 'JBirdParser' in project 'JBird' (no dependencies)
+    Target 'JBird_JBird' in project 'JBird' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/xcstringstool compile --dry-run --output-directory /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build /tmp/maa-pr161-build-project/Resources/Localizable.xcstrings
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ReadFileContents /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/share/docc/features.json
+
+Build description signature: b4a67810061a1752ed0e13993733f0e9
+Build description path: /tmp/maa-pr161-derived/Build/Intermediates.noindex/XCBuildData/b4a67810061a1752ed0e13993733f0e9.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin normal (in target 'JBirdMacrosCompilerPlugin' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -Xlinker -reproducible -target arm64-apple-macos13.0 -emit-executable -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -suppress-warnings -Xlinker -no_warn_duplicate_libraries -L/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/maa-pr161-derived/Build/Products/Debug -L/tmp/maa-pr163-20261029-derived/SourcePackages/prebuilts/swift-syntax/603.0.2/swiftlang-6.4.0.34.1-macosx27.0-MacroSupport/lib -L/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug -Fsystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacrosCompilerPlugin-t.build/Objects-normal/arm64/JBirdMacrosCompilerPlugin.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacrosCompilerPlugin-t.build/Objects-normal/arm64/JBirdMacrosCompilerPlugin_lto.o -Xclang-linker -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacrosCompilerPlugin-t.build/Objects-normal/arm64/JBirdMacrosCompilerPlugin_dependency_info.dat -link-objc-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacrosCompilerPlugin-t.build/Objects-normal/arm64/JBirdMacrosCompilerPlugin.swiftmodule -lMacroSupport -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin -no-stdlib-rpath
+
+RegisterExecutionPolicyException /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin (in target 'JBirdMacrosCompilerPlugin' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-RegisterExecutionPolicyException /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin
+
+SwiftDriver JBirdMacros normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBirdMacros -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ JBirdMacros (in target 'JBirdMacros' from project 'JBird')
+
+SwiftCompile normal arm64 (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for JBirdMacros (in target 'JBirdMacros' from project 'JBird')
+
+SwiftDriver\ Compilation\ Requirements JBirdMacros normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBirdMacros -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.swiftmodule/arm64-apple-macos.abi.json /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.abi.json (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.abi.json /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriver JBird normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBird' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBird -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+SwiftDriver\ Compilation JBird normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBird' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBird -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBird.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBird-b.build/empty-JBird_JBird.plist (in target 'JBird_JBird' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBird-b.build/empty-JBird_JBird.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBird.bundle/Contents/Info.plist
+
+SwiftDriver\ Compilation\ Requirements JBird normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBird' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBird -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdParser.o normal (in target 'JBirdParser' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdParser-t.build/Objects-normal/arm64/JBirdParser.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdParser-t.build/Objects-normal/arm64/JBirdParser_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdParser-t.build/Objects-normal/arm64/JBirdParser_dependency_info.dat -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdParser.o
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCore.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdCore-b.build/empty-JBird_JBirdCore.plist (in target 'JBird_JBirdCore' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdCore-b.build/empty-JBird_JBirdCore.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCore.bundle/Contents/Info.plist
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCore.o normal (in target 'JBirdCore' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCore.o
+
+ExtractAppIntentsMetadata (in target 'JBirdCore' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name JBirdCore --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 13.0 --bundle-identifier jbird.JBirdCore --output /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCore.appintents --target-triple arm64-apple-macos13.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCore.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/JBirdCore.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/JBirdCore.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCore-t.build/Objects-normal/arm64/JBirdCore.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:30:59.066 appintentsmetadataprocessor[2553:15258570] Starting appintentsmetadataprocessor export
+2026-10-29 19:30:59.188 appintentsmetadataprocessor[2553:15258570] Extracted no relevant App Intents symbols, skipping writing output
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdBuilders.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdBuilders-b.build/empty-JBird_JBirdBuilders.plist (in target 'JBird_JBirdBuilders' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdBuilders-b.build/empty-JBird_JBirdBuilders.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdBuilders.bundle/Contents/Info.plist
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdBuilders.o normal (in target 'JBirdBuilders' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdBuilders.o
+
+ExtractAppIntentsMetadata (in target 'JBirdBuilders' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name JBirdBuilders --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 13.0 --bundle-identifier jbird.JBirdBuilders --output /tmp/maa-pr161-derived/Build/Products/Debug/JBirdBuilders.appintents --target-triple arm64-apple-macos13.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/JBirdBuilders.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/JBirdBuilders.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/JBirdBuilders.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdBuilders-t.build/Objects-normal/arm64/JBirdBuilders.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:30:59.248 appintentsmetadataprocessor[2666:15258764] Starting appintentsmetadataprocessor export
+2026-10-29 19:30:59.328 appintentsmetadataprocessor[2666:15258764] Extracted no relevant App Intents symbols, skipping writing output
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdMacros.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdMacros-b.build/empty-JBird_JBirdMacros.plist (in target 'JBird_JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdMacros-b.build/empty-JBird_JBirdMacros.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdMacros.bundle/Contents/Info.plist
+
+SwiftCompile normal arm64 Compiling\ JBirdMacros.swift /private/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdMacros/JBirdMacros.swift (in target 'JBirdMacros' from project 'JBird')
+
+SwiftCompile normal arm64 (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+
+
+SwiftDriverJobDiscovery normal arm64 Compiling JBirdMacros.swift (in target 'JBirdMacros' from project 'JBird')
+
+SwiftDriver\ Compilation JBirdMacros normal arm64 com.apple.xcode.tools.swift.compiler (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name JBirdMacros -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DCodableSupport -DConformanceMacros -DDeclarativeAPI -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -DXcode -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-upcoming-feature ExistentialAny -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos13.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -suppress-warnings -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/maa-pr161-derived/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -package-name jbird -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_const_extract_protocols.json -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros-Swift.h -working-directory /tmp/maa-pr161-build-project/MeoAsstMac.xcodeproj -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.o normal (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.o
+
+ExtractAppIntentsMetadata (in target 'JBirdMacros' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name JBirdMacros --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 13.0 --bundle-identifier jbird.JBirdMacros --output /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.appintents --target-triple arm64-apple-macos13.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacros.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/JBirdMacros.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/JBirdMacros.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdMacros-t.build/Objects-normal/arm64/JBirdMacros.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:30:59.744 appintentsmetadataprocessor[2828:15259078] Starting appintentsmetadataprocessor export
+2026-10-29 19:30:59.874 appintentsmetadataprocessor[2828:15259078] Extracted no relevant App Intents symbols, skipping writing output
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCodableSupport.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdCodableSupport-b.build/empty-JBird_JBirdCodableSupport.plist (in target 'JBird_JBirdCodableSupport' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird_JBirdCodableSupport-b.build/empty-JBird_JBirdCodableSupport.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCodableSupport.bundle/Contents/Info.plist
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCodableSupport.o normal (in target 'JBirdCodableSupport' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCodableSupport.o
+
+ExtractAppIntentsMetadata (in target 'JBirdCodableSupport' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name JBirdCodableSupport --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 13.0 --bundle-identifier jbird.JBirdCodableSupport --output /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCodableSupport.appintents --target-triple arm64-apple-macos13.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/JBirdCodableSupport.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/JBirdCodableSupport.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/JBirdCodableSupport.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBirdCodableSupport-t.build/Objects-normal/arm64/JBirdCodableSupport.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:30:59.988 appintentsmetadataprocessor[2853:15259173] Starting appintentsmetadataprocessor export
+2026-10-29 19:31:00.174 appintentsmetadataprocessor[2853:15259173] Extracted no relevant App Intents symbols, skipping writing output
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/JBird.o normal (in target 'JBird' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos13.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/JBird.o
+
+ExtractAppIntentsMetadata (in target 'JBird' from project 'JBird')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name JBird --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 13.0 --bundle-identifier jbird.JBird --output /tmp/maa-pr161-derived/Build/Products/Debug/JBird.appintents --target-triple arm64-apple-macos13.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/JBird.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/JBird.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/JBird.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/JBird.build/Debug/JBird-t.build/Objects-normal/arm64/JBird.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:31:00.390 appintentsmetadataprocessor[2928:15259358] Starting appintentsmetadataprocessor export
+2026-10-29 19:31:00.830 appintentsmetadataprocessor[2928:15259358] Extracted no relevant App Intents symbols, skipping writing output
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/LegacyUserTasks.o normal (in target 'LegacyUserTasks' from project 'LegacyUserTasks')
+    cd /tmp/maa-pr161-build-project/Packages/LegacyUserTasks
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos12.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/LegacyUserTasks.o
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Info.plist /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation-b.build/empty-ZIPFoundation_ZIPFoundation.plist (in target 'ZIPFoundation_ZIPFoundation' from project 'ZIPFoundation')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/ZIPFoundation
+    builtin-infoPlistUtility /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation_ZIPFoundation-b.build/empty-ZIPFoundation_ZIPFoundation.plist -producttype com.apple.product-type.bundle -expandbuildsettings -platform macosx -o /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle/Contents/Info.plist
+
+SwiftDriver MAA normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MAA -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/maa-pr161-derived/Build/Products/Debug -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -emit-localized-strings -emit-localized-strings-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-generated-files.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-own-target-headers.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MeoAsstMac-43bdddc57957d76bc620a89f0feb5862-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-project-headers.hmap -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-Swift.h -working-directory /tmp/maa-pr161-build-project -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation.o normal (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/ZIPFoundation
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos12.0 -r -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -w -Xlinker -no_warn_duplicate_libraries -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug -iframework /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation.LinkFileList -nostdlib -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation_lto.o -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation.swiftmodule -o /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation.o
+
+ExtractAppIntentsMetadata (in target 'LegacyUserTasks' from project 'LegacyUserTasks')
+    cd /tmp/maa-pr161-build-project/Packages/LegacyUserTasks
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name LegacyUserTasks --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 12.0 --bundle-identifier legacyusertasks.LegacyUserTasks --output /tmp/maa-pr161-derived/Build/Products/Debug/LegacyUserTasks.appintents --target-triple arm64-apple-macos12.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/LegacyUserTasks.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/LegacyUserTasks.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/LegacyUserTasks.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/LegacyUserTasks.build/Debug/LegacyUserTasks-t.build/Objects-normal/arm64/LegacyUserTasks.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:31:01.744 appintentsmetadataprocessor[3366:15260086] Starting appintentsmetadataprocessor export
+2026-10-29 19:31:01.931 appintentsmetadataprocessor[3366:15260086] Extracted no relevant App Intents symbols, skipping writing output
+
+ExtractAppIntentsMetadata (in target 'ZIPFoundation' from project 'ZIPFoundation')
+    cd /tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/ZIPFoundation
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name ZIPFoundation --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 12.0 --bundle-identifier zipfoundation.ZIPFoundation --output /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation.appintents --target-triple arm64-apple-macos12.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation.o --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/ZIPFoundation.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/ZIPFoundation.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/ZIPFoundation.build/Debug/ZIPFoundation-t.build/Objects-normal/arm64/ZIPFoundation.SwiftConstValuesFileList --force --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:31:01.801 appintentsmetadataprocessor[3381:15260123] Starting appintentsmetadataprocessor export
+2026-10-29 19:31:02.051 appintentsmetadataprocessor[3381:15260123] Extracted no relevant App Intents symbols, skipping writing output
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/__preview.dylib normal (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/maa-pr161-derived/Build/Products/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -install_name @rpath/MAA.debug.dylib -Xlinker -dead_strip -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_dependency_info.dat -o /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/__preview.dylib
+
+SwiftCompile normal arm64 Compiling\ CopilotContent.swift,\ TasksContent.swift,\ RecruitView.swift,\ LogView.swift,\ EditableTextList.swift,\ MaaToolsView.swift,\ Binding+semicolonString.swift,\ MAALog.swift,\ AwardSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotContent.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/TasksContent.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/RecruitView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/LogView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/EditableTextList.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/MaaToolsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/Binding+semicolonString.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAALog.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/AwardSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotContent.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CopilotContent.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/TasksContent.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TasksContent.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/RecruitView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile RecruitView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/LogView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile LogView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/EditableTextList.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile EditableTextList.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/MaaToolsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MaaToolsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/Binding+semicolonString.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile Binding+semicolonString.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAALog.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAALog.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/AwardSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile AwardSettingsView.swift
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotContent.swift:237:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+235 |
+236 |     private func stop() {
+237 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+238 |             try await newModel.stop()
+239 |         }
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotContent.swift:243:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+241 |
+242 |     private func start() {
+243 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+244 |             try await newModel.startCopilot()
+245 |         }
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Navigation/TasksContent.swift:90:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 88 |
+ 89 |     private func stop() {
+ 90 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 91 |             try await viewModel.stop()
+ 92 |         }
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+SwiftCompile normal arm64 Compiling\ MAAViewModel.swift,\ TaskTimerView.swift,\ PixelPainter.swift,\ FightSettingsView.swift,\ DailyStageTipView.swift,\ CopilotView.swift,\ TaskCommands.swift,\ OpenLogFileView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAViewModel.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskTimerView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/PixelPainter.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/FightSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/DailyStageTipView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/CopilotView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/TaskCommands.swift /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/OpenLogFileView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAViewModel.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAAViewModel.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskTimerView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskTimerView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/PixelPainter.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile PixelPainter.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/FightSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FightSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/DailyStageTipView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile DailyStageTipView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/CopilotView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CopilotView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/TaskCommands.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskCommands.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/OpenLogFileView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile OpenLogFileView.swift
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAViewModel.swift:142:17: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+140 |             guard touchMode != oldValue else { return }
+141 |             if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
+142 |                 Task { try await loadResource(channel: clientChannel) }
+    |                 |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |                 `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+143 |             }
+144 |         }
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAViewModel.swift:440:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+438 |         }
+439 |
+440 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+441 |             try await loadResource(channel: channel)
+442 |         }
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+SwiftCompile normal arm64 Compiling\ Maa.swift,\ MAAContent.swift,\ CheckForUpdatesView.swift,\ ReclamationConfiguration.swift,\ MeoAsstMacApp.swift,\ MAATask.swift,\ URLSession+downloadProgress.swift,\ FileManager+Atomic.swift,\ MaaMessage.swift /tmp/maa-pr161-build-project/MeoAsstMac/Core/Maa.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/MAAContent.swift /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/CheckForUpdatesView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/ReclamationConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/MeoAsstMacApp.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAATask.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/URLSession+downloadProgress.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/FileManager+Atomic.swift /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaMessage.swift (in target 'MAA' from project 'MeoAsstMac')
+/tmp/maa-pr161-build-project/MeoAsstMac/Main Menu/CheckForUpdatesView.swift:15:34: warning: cannot form key path to main actor-isolated property 'canCheckForUpdates'; this is an error in the Swift 6 language mode
+13 |
+14 |     init(updater: SPUUpdater) {
+15 |         updater.publisher(for: \.canCheckForUpdates)
+   |                                  `- warning: cannot form key path to main actor-isolated property 'canCheckForUpdates'; this is an error in the Swift 6 language mode
+16 |             .assign(to: &$canCheckForUpdates)
+17 |     }
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Core/Maa.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile Maa.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/MAAContent.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAAContent.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Main\ Menu/CheckForUpdatesView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CheckForUpdatesView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/ReclamationConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ReclamationConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/MeoAsstMacApp.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MeoAsstMacApp.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAATask.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAATask.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/URLSession+downloadProgress.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile URLSession+downloadProgress.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/FileManager+Atomic.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FileManager+Atomic.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaMessage.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MaaMessage.swift
+
+SwiftCompile normal arm64 Compiling\ InfrastSettingsView.swift,\ MallSettingsView.swift,\ CopilotListContent.swift,\ RecruitSettingsView.swift,\ UtilityContent.swift,\ MAAError.swift,\ MAARecruit.swift,\ OTAFetcher.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/InfrastSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/MallSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotListContent.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/RecruitSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityContent.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAError.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAARecruit.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/OTAFetcher.swift (in target 'MAA' from project 'MeoAsstMac')
+/tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityContent.swift:59:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 57 |
+ 58 |     private func stop() {
+ 59 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 60 |             try await viewModel.stop()
+ 61 |         }
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityContent.swift:65:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 63 |
+ 64 |     private func start() {
+ 65 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 66 |             switch selection {
+ 67 |             case .recruit:
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/InfrastSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile InfrastSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/MallSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MallSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotListContent.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CopilotListContent.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/RecruitSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile RecruitSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityContent.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile UtilityContent.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAError.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAAError.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAARecruit.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAARecruit.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/OTAFetcher.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile OTAFetcher.swift
+
+SwiftCompile normal arm64 Compiling\ InfrastConfiguration.swift,\ MAATaskConfiguration.swift,\ MallConfiguration.swift,\ FileLogger.swift,\ MAACopilot.swift,\ ResourceUpdateView.swift,\ MaaToolClient.swift,\ URL+contentType.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/InfrastConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/MAATaskConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/MallConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/FileLogger.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAACopilot.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/ResourceUpdateView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaToolClient.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/URL+contentType.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/InfrastConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile InfrastConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/MAATaskConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAATaskConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/MallConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MallConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/FileLogger.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FileLogger.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAACopilot.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAACopilot.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/ResourceUpdateView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ResourceUpdateView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaToolClient.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MaaToolClient.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/URL+contentType.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile URL+contentType.swift
+
+SwiftCompile normal arm64 Compiling\ ReclamationSettingsView.swift,\ FightStage.swift,\ MAADepot.swift,\ RoguelikeSettingsView.swift,\ SystemSettingsView.swift,\ StartupSettingsView.swift,\ AwardConfiguration.swift,\ SwitchThemeConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/ReclamationSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/FightStage.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAADepot.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/RoguelikeSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Settings/SystemSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/StartupSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/AwardConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/SwitchThemeConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/ReclamationSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ReclamationSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/FightStage.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FightStage.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAADepot.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAADepot.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/RoguelikeSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile RoguelikeSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Settings/SystemSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile SystemSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/StartupSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile StartupSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/AwardConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile AwardConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/SwitchThemeConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile SwitchThemeConfiguration.swift
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ MAA (in target 'MAA' from project 'MeoAsstMac')
+/tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAViewModel.swift:142:17: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+140 |             guard touchMode != oldValue else { return }
+141 |             if touchMode == .MacPlayTools || oldValue == .MacPlayTools {
+142 |                 Task { try await loadResource(channel: clientChannel) }
+    |                 |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |                 `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+143 |             }
+144 |         }
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+
+SwiftCompile normal arm64 (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+
+
+SwiftCompile normal arm64 Compiling\ MAAInfrast.swift,\ ContentView.swift,\ TaskCell.swift,\ HGCalendar.swift,\ ConnectionSettingsView.swift,\ TaskTimerManager.swift,\ UpdaterSettingsView.swift,\ Codeable+JSON.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAInfrast.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/ContentView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskCell.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/HGCalendar.swift /tmp/maa-pr161-build-project/MeoAsstMac/Settings/ConnectionSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/TaskTimerManager.swift /tmp/maa-pr161-build-project/MeoAsstMac/Settings/UpdaterSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/Codeable+JSON.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAInfrast.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAAInfrast.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/ContentView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ContentView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskCell.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskCell.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/HGCalendar.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile HGCalendar.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Settings/ConnectionSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ConnectionSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/TaskTimerManager.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskTimerManager.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Settings/UpdaterSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile UpdaterSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/Codeable+JSON.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile Codeable+JSON.swift
+
+SwiftCompile normal arm64 Compiling\ TCPConnection.swift,\ CopilotConfiguration.swift,\ MaaToolsClient.swift,\ PixelPaintView.swift,\ FileTreeView.swift,\ MAAOperBox.swift,\ CopilotDetail.swift,\ GameSettingsView.swift,\ DepotView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/TCPConnection.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/CopilotConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaToolsClient.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/PixelPaintView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/FileTreeView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAOperBox.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotDetail.swift /tmp/maa-pr161-build-project/MeoAsstMac/Settings/GameSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/DepotView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/TCPConnection.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TCPConnection.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/CopilotConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CopilotConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Core/MaaToolsClient.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MaaToolsClient.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/PixelPaintView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile PixelPaintView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/FileTreeView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FileTreeView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/MAAOperBox.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAAOperBox.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/CopilotDetail.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CopilotDetail.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Settings/GameSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile GameSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/DepotView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile DepotView.swift
+
+SwiftCompile normal arm64 Compiling\ NewViewModel.swift,\ MAADetail.swift,\ FightConfiguration.swift,\ CapsulePicker.swift,\ OperBoxView.swift,\ UtilityDetail.swift,\ MirrorChyan.swift,\ ResourceUpdater.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/NewViewModel.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/MAADetail.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/FightConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/CapsulePicker.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/OperBoxView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityDetail.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/MirrorChyan.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/ResourceUpdater.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/NewViewModel.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile NewViewModel.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/MAADetail.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MAADetail.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/FightConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile FightConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/CapsulePicker.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile CapsulePicker.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/OperBoxView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile OperBoxView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/UtilityDetail.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile UtilityDetail.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/MirrorChyan.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MirrorChyan.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/ResourceUpdater.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ResourceUpdater.swift
+
+SwiftCompile normal arm64 Compiling\ SwitchThemeSettingsView.swift,\ MiniGameView.swift,\ TaskDetail.swift,\ ClosedownConfiguration.swift,\ StageActivity.swift,\ TaskButtons.swift,\ UserDefaults+KVO.swift,\ Sidebar.swift,\ VideoRecogView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/SwitchThemeSettingsView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/MiniGameView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/TaskDetail.swift /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/ClosedownConfiguration.swift /tmp/maa-pr161-build-project/MeoAsstMac/Model/StageActivity.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskButtons.swift /tmp/maa-pr161-build-project/MeoAsstMac/Utils/UserDefaults+KVO.swift /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/Sidebar.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/VideoRecogView.swift (in target 'MAA' from project 'MeoAsstMac')
+/tmp/maa-pr161-build-project/MeoAsstMac/Views/MiniGameView.swift:87:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 85 |
+ 86 |     private func startMiniGame() {
+ 87 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 88 |             try await viewModel.miniGame(name: selectedGame.taskName, params: taskParams)
+ 89 |         }
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskButtons.swift:23:13: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+21 |
+22 |         Button("停止任务") {
+23 |             Task {
+   |             |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+   |             `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+24 |                 try await viewModel.stop()
+25 |             }
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Configuration\ Views/SwitchThemeSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile SwitchThemeSettingsView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/MiniGameView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile MiniGameView.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/TaskDetail.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskDetail.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Task\ Configurations/ClosedownConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile ClosedownConfiguration.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Model/StageActivity.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile StageActivity.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/TaskButtons.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile TaskButtons.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Utils/UserDefaults+KVO.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile UserDefaults+KVO.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Navigation/Sidebar.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile Sidebar.swift
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/VideoRecogView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile VideoRecogView.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MAAInfrast.swift, ContentView.swift, TaskCell.swift, HGCalendar.swift, ConnectionSettingsView.swift, TaskTimerManager.swift, UpdaterSettingsView.swift, Codeable+JSON.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling InfrastSettingsView.swift, MallSettingsView.swift, CopilotListContent.swift, RecruitSettingsView.swift, UtilityContent.swift, MAAError.swift, MAARecruit.swift, OTAFetcher.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling ReclamationSettingsView.swift, FightStage.swift, MAADepot.swift, RoguelikeSettingsView.swift, SystemSettingsView.swift, StartupSettingsView.swift, AwardConfiguration.swift, SwitchThemeConfiguration.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling InfrastConfiguration.swift, MAATaskConfiguration.swift, MallConfiguration.swift, FileLogger.swift, MAACopilot.swift, ResourceUpdateView.swift, MaaToolClient.swift, URL+contentType.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling NewViewModel.swift, MAADetail.swift, FightConfiguration.swift, CapsulePicker.swift, OperBoxView.swift, UtilityDetail.swift, MirrorChyan.swift, ResourceUpdater.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for MAA (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriver\ Compilation\ Requirements MAA normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MAA -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/maa-pr161-derived/Build/Products/Debug -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -emit-localized-strings -emit-localized-strings-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-generated-files.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-own-target-headers.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MeoAsstMac-43bdddc57957d76bc620a89f0feb5862-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-project-headers.hmap -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-Swift.h -working-directory /tmp/maa-pr161-build-project -experimental-emit-module-separately -disable-cmo
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftsourceinfo (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftsourceinfo /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling CopilotContent.swift, TasksContent.swift, RecruitView.swift, LogView.swift, EditableTextList.swift, MaaToolsView.swift, Binding+semicolonString.swift, MAALog.swift, AwardSettingsView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/arm64-apple-macos.swiftmodule /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/arm64-apple-macos.abi.json /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.abi.json (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.abi.json /tmp/maa-pr161-derived/Build/Products/Debug/MAA.swiftmodule/arm64-apple-macos.abi.json
+
+SwiftDriverJobDiscovery normal arm64 Compiling SwitchThemeSettingsView.swift, MiniGameView.swift, TaskDetail.swift, ClosedownConfiguration.swift, StageActivity.swift, TaskButtons.swift, UserDefaults+KVO.swift, Sidebar.swift, VideoRecogView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TCPConnection.swift, CopilotConfiguration.swift, MaaToolsClient.swift, PixelPaintView.swift, FileTreeView.swift, MAAOperBox.swift, CopilotDetail.swift, GameSettingsView.swift, DepotView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling Maa.swift, MAAContent.swift, CheckForUpdatesView.swift, ReclamationConfiguration.swift, MeoAsstMacApp.swift, MAATask.swift, URLSession+downloadProgress.swift, FileManager+Atomic.swift, MaaMessage.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 Compiling\ GachaView.swift /tmp/maa-pr161-build-project/MeoAsstMac/Views/GachaView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftCompile normal arm64 /tmp/maa-pr161-build-project/MeoAsstMac/Views/GachaView.swift (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-SwiftPerFileCompile GachaView.swift
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Views/GachaView.swift:72:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 70 |
+ 71 |     private func gachaPoll(once: Bool) {
+ 72 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 73 |             try await viewModel.gachaPoll(once: once)
+ 74 |             submitted = true
+
+/tmp/maa-pr161-build-project/MeoAsstMac/Views/GachaView.swift:83:9: warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+ 81 |             return
+ 82 |         }
+ 83 |         Task {
+    |         |- warning: unstructured throwing task created by 'init(name:priority:operation:)' is not used, which may accidentally ignore errors thrown inside the task [#NoUseUnstructuredThrowingTask]
+    |         `- note: to silence this warning, handle the error inside the task, or store/discard the task value explicitly
+ 84 |             submitted = false
+ 85 |             screenshot = try await viewModel.screenshot()
+
+[#NoUseUnstructuredThrowingTask]: <https://docs.swift.org/compiler/documentation/diagnostics/no-use-throwing-unstructured-task>
+SwiftDriverJobDiscovery normal arm64 Compiling MAAViewModel.swift, TaskTimerView.swift, PixelPainter.swift, FightSettingsView.swift, DailyStageTipView.swift, CopilotView.swift, TaskCommands.swift, OpenLogFileView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriverJobDiscovery normal arm64 Compiling GachaView.swift (in target 'MAA' from project 'MeoAsstMac')
+
+SwiftDriver\ Compilation MAA normal arm64 com.apple.xcode.tools.swift.compiler (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name MAA -Onone @/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include/module.modulemap -enable-upcoming-feature StrictConcurrency -enable-bare-slash-regex -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -Xfrontend -serialize-debugging-options -enable-testing -index-store-path /tmp/maa-pr161-derived/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 5 -I /tmp/maa-pr161-derived/Build/Products/Debug -F /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F /tmp/maa-pr161-derived/Build/Products/Debug -Xfrontend -load-plugin-executable -Xfrontend /tmp/maa-pr161-derived/Build/Products/Debug/JBirdMacrosCompilerPlugin\#JBirdMacrosCompilerPlugin -emit-localized-strings -emit-localized-strings-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64 -c -j10 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/maa-pr161-derived/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/maa-pr161-derived/ModuleCache.noindex -sdk-module-cache-path /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/maa-pr161-derived/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-generated-files.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-own-target-headers.hmap -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MeoAsstMac-43bdddc57957d76bc620a89f0feb5862-VFS/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-project-headers.hmap -Xcc -I/tmp/maa-pr163-20261029-derived/SourcePackages/checkouts/JBird/Sources/JBirdParser/include -Xcc -I/tmp/maa-pr161-derived/Build/Products/Debug/include -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources-normal/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources/arm64 -Xcc -I/tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA-Swift.h -working-directory /tmp/maa-pr161-build-project -experimental-emit-module-separately -disable-cmo
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA.debug.dylib normal (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/tmp/maa-pr161-derived/Build/Products/Debug -F/tmp/maa-pr161-derived/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -filelist /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.LinkFileList -install_name @rpath/MAA.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -dependency_info -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_dependency_info.dat -fobjc-link-runtime -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.swiftmodule -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -lMaaUtils -framework Sparkle -lfastdeploy_ppocr -lMaaCore -lonnxruntime.1.19.2 -lopencv_world4.4.12.0 -o /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA.debug.dylib
+
+ConstructStubExecutorLinkFileList /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-ExecutorLinkFileList-normal-arm64.txt (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    construct-stub-executor-link-file-list /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'MAA' from project 'MeoAsstMac')
+
+Ld /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA normal (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/maa-pr161-derived/Build/Products/Debug -F/tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -F/tmp/maa-pr161-derived/Build/Products/Debug -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /tmp/maa-pr161-derived/Build/Products/Debug/PackageFrameworks -Xlinker -rpath -Xlinker @executable_path/../Frameworks -rdynamic -Xlinker -no_deduplicate -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA-ExecutorLinkFileList-normal-arm64.txt /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA.debug.dylib -o /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA
+
+ExtractAppIntentsMetadata (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name MAA --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk --xcode-version 27A9275 --platform-family macOS --deployment-target 14.0 --bundle-identifier com.hguandl.MeoAsstMac --output /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources --target-triple arm64-apple-macos14.0 --binary-file /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA --dependency-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA_dependency_info.dat --stringsdata-file /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.SwiftFileList --metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA.DependencyMetadataFileList --static-metadata-file-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/MAA.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/Objects-normal/arm64/MAA.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-29 19:31:13.123 appintentsmetadataprocessor[5645:15264154] Starting appintentsmetadataprocessor export
+2026-10-29 19:31:13.127 appintentsmetadataprocessor[5645:15264154] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBird.bundle /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBird.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBird.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+CopySwiftLibs /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/MacOS/MAA.debug.dylib --scan-folder /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Frameworks --scan-folder /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/PlugIns --scan-folder /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Library/SystemExtensions --scan-folder /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+Ignoring --strip-bitcode because --sign was not passed
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdCore.bundle /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCore.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCore.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/ZIPFoundation_ZIPFoundation.bundle /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/ZIPFoundation_ZIPFoundation.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdCodableSupport.bundle /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCodableSupport.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdCodableSupport.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdBuilders.bundle /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdBuilders.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdBuilders.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+Copy /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdMacros.bundle /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdMacros.bundle (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks /tmp/maa-pr161-derived/Build/Products/Debug/JBird_JBirdMacros.bundle /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources
+
+ProcessInfoPlistFile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Info.plist /tmp/maa-pr161-build-project/MeoAsstMac/Info.plist (in target 'MAA' from project 'MeoAsstMac')
+    cd /tmp/maa-pr161-build-project
+    builtin-infoPlistUtility /tmp/maa-pr161-build-project/MeoAsstMac/Info.plist -producttype com.apple.product-type.application -genpkginfo /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /tmp/maa-pr161-derived/Build/Intermediates.noindex/MeoAsstMac.build/Debug/MAA.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Frameworks/Sparkle.framework -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBird.bundle -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdBuilders.bundle -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdCodableSupport.bundle -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdCore.bundle -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/JBird_JBirdMacros.bundle -scanforprivacyfile /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Resources/ZIPFoundation_ZIPFoundation.bundle -o /tmp/maa-pr161-derived/Build/Products/Debug/MAA.app/Contents/Info.plist
+
+PruneExplicitPrecompiledModules /tmp/maa-pr161-derived/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/maa-pr161-derived/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/maa-pr161-derived/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+note: Disabling hardened runtime with ad-hoc codesigning. (in target 'MAA' from project 'MeoAsstMac')
+** BUILD SUCCEEDED **

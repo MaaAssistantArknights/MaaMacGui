@@ -1,0 +1,33 @@
+FAIL: Copilot reconciles idle UI to running core
+FAIL: Copilot disables start after running-core rejection
+FAIL: Copilot rejects running core before publishing pending
+FAIL: Copilot checks running core before ensureHandle
+FAIL: Recruit reconciles idle UI to running core
+FAIL: Recruit disables start after running-core rejection
+FAIL: Recruit rejects running core before publishing pending
+FAIL: Recruit checks running core before ensureHandle
+FAIL: Depot reconciles idle UI to running core
+FAIL: Depot disables start after running-core rejection
+FAIL: Depot rejects running core before publishing pending
+FAIL: Depot checks running core before ensureHandle
+FAIL: Video reconciles idle UI to running core
+FAIL: Video disables start after running-core rejection
+FAIL: Video rejects running core before publishing pending
+FAIL: Video checks running core before ensureHandle
+FAIL: OperBox reconciles idle UI to running core
+FAIL: OperBox disables start after running-core rejection
+FAIL: OperBox rejects running core before publishing pending
+FAIL: OperBox checks running core before ensureHandle
+FAIL: Gacha reconciles idle UI to running core
+FAIL: Gacha disables start after running-core rejection
+FAIL: Gacha rejects running core before publishing pending
+FAIL: Gacha checks running core before ensureHandle
+FAIL: MiniGame reconciles idle UI to running core
+FAIL: MiniGame disables start after running-core rejection
+FAIL: MiniGame rejects running core before publishing pending
+FAIL: MiniGame checks running core before ensureHandle
+FAIL: Daily reconciles idle UI to running core
+FAIL: Daily disables start after running-core rejection
+FAIL: Daily rejects before publishing pending
+FAIL: Daily checks running core before ensureHandle
+178 assertions; 32 failures

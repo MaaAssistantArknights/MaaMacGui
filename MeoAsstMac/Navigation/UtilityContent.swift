@@ -42,6 +42,7 @@ struct UtilityContent: View {
                         Label("开始", systemImage: "play.fill")
                     }
                     .help("开始")
+                    .disabled(!viewModel.canStartTasks)
                 default:
                     Button(action: {}) {
                         Label("停止", systemImage: "stop.fill")

@@ -11,5 +11,7 @@ enum MAAError: Error {
     case emptyItemObject
     case gameStartFailed
     case handleNotRunning
+    case taskOperationInProgress
+    case taskAlreadyRunning
     case imageUnavailable
 }

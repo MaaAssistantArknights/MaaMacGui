@@ -73,6 +73,7 @@ struct TasksContent: View {
                     Label("开始", systemImage: "play.fill")
                 }
                 .help("开始")
+                .disabled(!viewModel.canStartTasks)
             }
         }
     }

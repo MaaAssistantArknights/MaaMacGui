@@ -1,0 +1,69 @@
+{
+  "gui_commit": "71af78f365b5f60f9c01408229e3279d88b0390e",
+  "bundle_id": "com.acfufu.MaaMacGui.PR161Validation",
+  "core_version": "DEBUG_VERSION",
+  "avd": "Arknight",
+  "serial": "emulator-5554",
+  "game_package": "com.hypergryph.arknights.bilibili",
+  "game_version": "2.7.81",
+  "hashes": {
+    "Contents/MacOS/MAA": "a1be5a39061bd60c3ced75ad32ecb6682545ca4997491464a3b054cd3d9bb26c",
+    "Contents/MacOS/MAA.debug.dylib": "24736df39d50013df9c4e86fefd3bb776bfd59a4177eb3359a7b072ab5d9effe",
+    "Contents/Frameworks/libMaaCore.dylib": "4e209087da57e5fd214c54ff77a8a427d223e19c6dce1af80bfa938a8e77d450"
+  },
+  "test_date_local": "2026-10-29",
+  "timezone": "Asia/Shanghai",
+  "test_window_local": "21:04:36-21:15:32",
+  "core_kind": "local development build; ad-hoc signed; DEBUG_VERSION",
+  "enabled_task": "StartUp only; auto-launch false; account switching disabled; empty-queue subcase disables all tasks",
+  "scheduled_failure_address_actual": "127.0.0.165432",
+  "restored_connection": "127.0.0.1:5555",
+  "timers_after": [
+    {
+      "isEnabled": false,
+      "minute": 14,
+      "hour": 21,
+      "id": "98DCB0BD-0E98-47C0-B84A-AE2E8C706D72"
+    }
+  ],
+  "counts": {
+    "appended_tasks": 7,
+    "core_start_calls": 9,
+    "task_chain_starts": 7,
+    "all_tasks_completed": 6,
+    "task_chain_stopped": 1,
+    "core_stop_calls": 1,
+    "scheduled_failures": 1,
+    "scheduled_skips": 0
+  },
+  "source_files_sha256": {
+    "MeoAsstMac/Model/MAAError.swift": "e6f48cffd7c1b0998032ed7765d22f2a665f277da0c2ac0e73056c1ed1c59470",
+    "MeoAsstMac/Model/MAAViewModel.swift": "c9349c4e854c32a1d761f7af7bd137e546c4fb02f30aa8ec5918adb1bd40a71e",
+    "MeoAsstMac/Model/NewViewModel.swift": "a8cc4f758bce777e8e488466c861b3c66069e0794d1dfce121f54cd32017392c",
+    "MeoAsstMac/Navigation/CopilotContent.swift": "fa184ef737cc4b5ebfd8dc745b4d7de160259efa35d5cec105bbafd8768a1150",
+    "MeoAsstMac/Navigation/TasksContent.swift": "1dab66d23982d2a96e44404d9855af8543db203cf63ee6f48fdb67f7b9a30475",
+    "MeoAsstMac/Navigation/UtilityContent.swift": "0ba152994b2016eef830b1d5c823f7913f2e4956126449a44890ab82f9e667d6",
+    "MeoAsstMac/Views/GachaView.swift": "342536ac2219d0bd575428caa979920a2c754621cf9e4c227a30dcec1d13bb75",
+    "MeoAsstMac/Views/MiniGameView.swift": "cfbafa2ab4fd9b4901283e39ec0634aa2ac99a75307417f6f0f390f65c2fa7f9",
+    "MeoAsstMac/Views/TaskButtons.swift": "df945c109c5ecea6bf36de527d533dbacad78db94aabb2abd2c9882aad8b453f",
+    "Tests/TaskOperationTestSupport.swift": "13568759e87b593e496bc93c10b546f28701aee05a3fa26a80bc06b108fc7c58",
+    "Tests/TaskOperationTests.swift": "7c0e891a7e9b6b6053c6aadb03ef4b138cdb3d4ef8b5930cfbecb4cd07eebf19",
+    "Tests/run-task-operation-tests.py": "4376f034c499705ca7b81b6e84d32914832e2aaed79e4ab9824dff359ea7e480",
+    "MeoAsstMac/Utils/TaskTimerManager.swift": "2c5ae2cd94e02177b6078edccecf050eba8fbc21882994d4b48946b907bba1ef",
+    "artifacts/pr-161-stop-log/mutation-check.py": "d649a728f1381d9e274692218f36746cf52259ad4b6157c33247a1721c793bc9"
+  },
+  "private_raw_sha256": {
+    "console.log": "8b83e44b0fc9bd0c3dea0eb0edd03b82b896494346eceb8d1c6065b21ceba30a",
+    "console-error.log": "c6df4c22862700ec940f2c1482c55d9371e251e517d8600f1e13a74fe0c6a061",
+    "gui.log": "7a34b9521048b3f62a10f2e435fa021bf2ab1f0bbee4e50acefce4d4e182987f",
+    "asst.log": "44be19398592e0c1ef62e917581233db215a7f572684cf7da00a81b4d16f0372",
+    "game-baseline.png": "6152ec097900f86cee66620e5cd7ef006b340f92f06518818ff72a8b207231f4",
+    "game-final.png": "e703edb0de2e9186183fc46851a97bb63053b126b0e64f0106f4b5707cc4007f"
+  },
+  "published_evidence_sha256": {
+    "gui-events.log": "63df5b4a79a69c8167c48d1890a04e88ab4e115e413bef558f8425ed32867f18",
+    "timer-events.log": "e85fb72eaa81614a3a8a9584e7d17bb27a4c6d07dea8a73996623beab0f1b9f4",
+    "core-events.log": "8cd6d724d6f08aa5ae80de7316ce9a4447d736447538ee0ffb17412edb9032f3"
+  },
+  "screenshots_policy": "Game account screenshots and complete raw logs stay local; no account screenshots included in repository."
+}

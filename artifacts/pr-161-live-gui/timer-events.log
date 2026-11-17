@@ -1,0 +1,4 @@
+Found new timer, start to setup it with id: 98DCB0BD-0E98-47C0-B84A-AE2E8C706D72 hour: 21 min: 14
+Timer 98DCB0BD-0E98-47C0-B84A-AE2E8C706D72-21-14 is scheduled at 2026年10月29日 星期四 中国标准时间21:14:00
+Failed to start scheduled daily task. Timer id: 98DCB0BD-0E98-47C0-B84A-AE2E8C706D72
+Found outdated timer, clening up key: 98DCB0BD-0E98-47C0-B84A-AE2E8C706D72-21-14

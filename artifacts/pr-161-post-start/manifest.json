@@ -1,0 +1,17 @@
+{
+  "_note": "post-start 轮次（71af78f，305 断言）的历史快照。其中 MeoAsstMac/Model/MAAViewModel.swift、MeoAsstMac/Model/NewViewModel.swift、Tests/TaskOperationTests.swift、Tests/TaskOperationTestSupport.swift、Tests/run-task-operation-tests.py、artifacts/pr-161-stop-log/mutation-check.py 等条目已被 d932363 及其后的修复提交修改而过期（过期条目包括但不限于以上列举）；本清单仅作为该轮证据留存，现行文件内容以 git 仓库对应提交为准。",
+  "MeoAsstMac/Model/MAAError.swift": "e6f48cffd7c1b0998032ed7765d22f2a665f277da0c2ac0e73056c1ed1c59470",
+  "MeoAsstMac/Model/MAAViewModel.swift": "c9349c4e854c32a1d761f7af7bd137e546c4fb02f30aa8ec5918adb1bd40a71e",
+  "MeoAsstMac/Model/NewViewModel.swift": "a8cc4f758bce777e8e488466c861b3c66069e0794d1dfce121f54cd32017392c",
+  "MeoAsstMac/Navigation/CopilotContent.swift": "fa184ef737cc4b5ebfd8dc745b4d7de160259efa35d5cec105bbafd8768a1150",
+  "MeoAsstMac/Navigation/TasksContent.swift": "1dab66d23982d2a96e44404d9855af8543db203cf63ee6f48fdb67f7b9a30475",
+  "MeoAsstMac/Navigation/UtilityContent.swift": "0ba152994b2016eef830b1d5c823f7913f2e4956126449a44890ab82f9e667d6",
+  "MeoAsstMac/Views/GachaView.swift": "342536ac2219d0bd575428caa979920a2c754621cf9e4c227a30dcec1d13bb75",
+  "MeoAsstMac/Views/MiniGameView.swift": "cfbafa2ab4fd9b4901283e39ec0634aa2ac99a75307417f6f0f390f65c2fa7f9",
+  "MeoAsstMac/Views/TaskButtons.swift": "df945c109c5ecea6bf36de527d533dbacad78db94aabb2abd2c9882aad8b453f",
+  "Tests/TaskOperationTestSupport.swift": "13568759e87b593e496bc93c10b546f28701aee05a3fa26a80bc06b108fc7c58",
+  "Tests/TaskOperationTests.swift": "7c0e891a7e9b6b6053c6aadb03ef4b138cdb3d4ef8b5930cfbecb4cd07eebf19",
+  "Tests/run-task-operation-tests.py": "4376f034c499705ca7b81b6e84d32914832e2aaed79e4ab9824dff359ea7e480",
+  "MeoAsstMac/Utils/TaskTimerManager.swift": "2c5ae2cd94e02177b6078edccecf050eba8fbc21882994d4b48946b907bba1ef",
+  "artifacts/pr-161-stop-log/mutation-check.py": "d649a728f1381d9e274692218f36746cf52259ad4b6157c33247a1721c793bc9"
+}

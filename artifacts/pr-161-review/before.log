@@ -1,0 +1,28 @@
+FAIL: Copilot preserves busy UI on rejection
+FAIL: Copilot rejects before touching handle
+FAIL: Recruit preserves busy UI on rejection
+FAIL: Recruit rejects before touching handle
+FAIL: Depot preserves busy UI on rejection
+FAIL: Depot rejects before touching handle
+FAIL: Video preserves busy UI on rejection
+FAIL: Video rejects before touching handle
+FAIL: OperBox preserves busy UI on rejection
+FAIL: OperBox rejects before touching handle
+FAIL: Gacha preserves busy UI on rejection
+FAIL: Gacha rejects before touching handle
+FAIL: MiniGame preserves busy UI on rejection
+FAIL: MiniGame rejects before touching handle
+FAIL: menu disabled while idle callback overlaps startup
+FAIL: stop during startup reports explicit rejection
+FAIL: stop rejection emits user-facing log
+FAIL: Copilot reports in-flight rejection
+FAIL: Recruit reports in-flight rejection
+FAIL: Depot reports in-flight rejection
+FAIL: Video reports in-flight rejection
+FAIL: invalid Copilot leaves token unchanged
+FAIL: failed Copilot leaves token unchanged
+FAIL: pending Copilot does not announce success
+FAIL: busy Copilot preserves prior token
+FAIL: menu disabled until stop returns despite idle callback
+FAIL: duplicate stop reports conflict
+82 assertions; 27 failures

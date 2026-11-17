@@ -1,0 +1,57 @@
+[2026-10-29 21:04:39.436][INF][Px93524][Tx44474] │││ append_task | task_id: 1
+[2026-10-29 21:04:39.449][TRC][Px93524][Tx44474] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:04:39.449][INF][Px93524][Tx44474] ││││ Start | block
+[2026-10-29 21:04:39.449][TRC][Px93524][Tx44474] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:04:39.449][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":1,"uuid":"<device-id>"}
+[2026-10-29 21:04:43.923][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":1,"uuid":"<device-id>"}
+[2026-10-29 21:04:43.923][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[1],"taskchain":"StartUp","taskid":1,"uuid":"<device-id>"}
+[2026-10-29 21:05:01.576][INF][Px93524][Tx3353] │││ append_task | task_id: 2
+[2026-10-29 21:05:01.586][TRC][Px93524][Tx3353] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:05:01.587][INF][Px93524][Tx3353] ││││ Start | block
+[2026-10-29 21:05:01.587][TRC][Px93524][Tx3353] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:05:01.587][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":2,"uuid":"<device-id>"}
+[2026-10-29 21:05:06.293][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":2,"uuid":"<device-id>"}
+[2026-10-29 21:05:06.293][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[2],"taskchain":"StartUp","taskid":2,"uuid":"<device-id>"}
+[2026-10-29 21:07:31.757][INF][Px93524][Tx65343] │││ append_task | task_id: 3
+[2026-10-29 21:07:31.776][TRC][Px93524][Tx65343] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:07:31.776][INF][Px93524][Tx65343] ││││ Start | block
+[2026-10-29 21:07:31.776][TRC][Px93524][Tx65343] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:07:31.776][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":3,"uuid":"<device-id>"}
+[2026-10-29 21:07:36.292][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":3,"uuid":"<device-id>"}
+[2026-10-29 21:07:36.292][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[3],"taskchain":"StartUp","taskid":3,"uuid":"<device-id>"}
+[2026-10-29 21:08:21.658][INF][Px93524][Tx30733] │││ append_task | task_id: 4
+[2026-10-29 21:08:21.670][TRC][Px93524][Tx30733] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:08:21.671][INF][Px93524][Tx30733] ││││ Start | block
+[2026-10-29 21:08:21.671][TRC][Px93524][Tx30733] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:08:21.671][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":4,"uuid":"<device-id>"}
+[2026-10-29 21:08:25.268][TRC][Px93524][Tx30733] │││││┌ asst::Assistant::stop | enter
+[2026-10-29 21:08:25.268][TRC][Px93524][Tx30733] │││││└ asst::Assistant::stop | leave, 0 ms
+[2026-10-29 21:08:26.350][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStopped {"taskchain":"StartUp","taskid":4,"uuid":"<device-id>"}
+[2026-10-29 21:10:21.818][INF][Px93524][Tx8056] │││ append_task | task_id: 5
+[2026-10-29 21:10:21.842][TRC][Px93524][Tx3353] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:10:21.842][INF][Px93524][Tx3353] ││││ Start | block
+[2026-10-29 21:10:21.842][TRC][Px93524][Tx3353] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:10:21.842][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":5,"uuid":"<device-id>"}
+[2026-10-29 21:10:27.383][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":5,"uuid":"<device-id>"}
+[2026-10-29 21:10:27.383][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[5],"taskchain":"StartUp","taskid":5,"uuid":"<device-id>"}
+[2026-10-29 21:10:44.312][INF][Px93524][Tx8056] │││ append_task | task_id: 6
+[2026-10-29 21:10:44.352][TRC][Px93524][Tx3597] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:10:44.352][INF][Px93524][Tx3597] ││││ Start | block
+[2026-10-29 21:10:44.352][TRC][Px93524][Tx3597] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:10:44.353][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":6,"uuid":"<device-id>"}
+[2026-10-29 21:10:53.833][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":6,"uuid":"<device-id>"}
+[2026-10-29 21:10:53.834][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[6],"taskchain":"StartUp","taskid":6,"uuid":"<device-id>"}
+[2026-10-29 21:12:00.456][TRC][Px93524][Tx51683] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:12:00.456][INF][Px93524][Tx51683] ││││ Start | block
+[2026-10-29 21:12:00.456][TRC][Px93524][Tx51683] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:12:04.913][TRC][Px93524][Tx8056] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:12:04.913][INF][Px93524][Tx8056] ││││ Start | block
+[2026-10-29 21:12:04.913][TRC][Px93524][Tx8056] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:14:00.174][INF][Px93524][Tx59175] │││││││ Assistant::append_callback | ConnectionInfo {"details":{"adb":"/private/tmp/maa-pr161-live/MAA-PR161.app/Contents/MacOS/adb","address":"127.0.0.165432","config":"CompatMac"},"uuid":"<device-id>","what":"ConnectFailed","why":"Cannot connect: address appears to be serial number but device not found"}
+[2026-10-29 21:15:27.906][INF][Px93524][Tx8056] │││ append_task | task_id: 7
+[2026-10-29 21:15:27.915][TRC][Px93524][Tx8056] │││┌ asst::Assistant::start | enter
+[2026-10-29 21:15:27.915][INF][Px93524][Tx8056] ││││ Start | block
+[2026-10-29 21:15:27.915][TRC][Px93524][Tx8056] │││└ asst::Assistant::start | leave, 0 ms
+[2026-10-29 21:15:27.915][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainStart {"taskchain":"StartUp","taskid":7,"uuid":"<device-id>"}
+[2026-10-29 21:15:32.378][INF][Px93524][Tx39318] │││ Assistant::append_callback | TaskChainCompleted {"taskchain":"StartUp","taskid":7,"uuid":"<device-id>"}
+[2026-10-29 21:15:32.378][INF][Px93524][Tx39318] │││ Assistant::append_callback | AllTasksCompleted {"finished_tasks":[7],"taskchain":"StartUp","taskid":7,"uuid":"<device-id>"}
