@@ -80,6 +80,18 @@ struct RoguelikeSettingsView: View {
             }
         }
 
+        if let tip = config.tip {
+            LabeledContent {
+                Text(tip)
+                    .font(.callout)
+                    .foregroundStyle(.secondary)
+                    .textSelection(.enabled)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            } label: {
+                Text("推荐配置")
+                    .alignmentGuide(.firstTextBaseline) { d in d[.top] }
+            }
+        }
     }
 
     @ViewBuilder private func startCollectibles() -> some View {
