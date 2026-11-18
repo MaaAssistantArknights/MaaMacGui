@@ -5026,6 +5026,22 @@
         }
       }
     },
+    "模拟器连接失败，%lld 秒后重试（第 %lld/%lld 次连接）" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not connect to the emulator. Retrying in %1$lld seconds (attempt %2$lld of %3$lld)."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "에뮬레이터 연결에 실패했습니다. %1$lld초 후 다시 연결합니다 (%2$lld/%3$lld번째 시도)."
+          }
+        }
+      }
+    },
     "次" : {
       "localizations" : {
         "ko" : {
