@@ -473,15 +473,7 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
-
-        for task in tasks {
-            guard task.enabled else { continue }
-
-            if let coreID = try await handle?.appendTask(task.task, for: channel) {
-                taskIDMap[coreID] = task.id
-            }
-        }
-
+        taskIDMap = try await handle?.appendDailyTasks(tasks, for: channel) ?? [:]
         try await handle?.start()
         logStore?.taskStartTime = .now
 

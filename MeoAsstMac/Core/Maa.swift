@@ -155,6 +155,28 @@ actor MAAHandle {
         }
     }
 
+    func appendDailyTasks(_ tasks: [DailyTask], for channel: MAAClientChannel) throws -> [Int32: UUID] {
+        // Stopping clears the entire core queue, so only roll back a batch that started with an empty queue.
+        var queuedID: AsstTaskId = 0
+        guard !running, AsstGetTasksList(handle, &queuedID, 1) == 0 else {
+            throw MaaCoreError.appendTaskFailed
+        }
+
+        var ids = [Int32: UUID]()
+        do {
+            for task in tasks where task.enabled {
+                let coreID = try appendTask(task.task, for: channel)
+                ids[coreID] = task.id
+            }
+        } catch {
+            if !ids.isEmpty {
+                try stop()
+            }
+            throw error
+        }
+        return ids
+    }
+
     func connect(adbPath: String, address: String, profile: String) async throws {
         let info = try await waitFor(AsstAsyncConnect(handle, adbPath, address, profile, 0))
 
