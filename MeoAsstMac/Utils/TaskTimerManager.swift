@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import Foundation
+import IOKit.pwr_mgt
 
 @MainActor final class TaskTimerManager {
     static let shared = TaskTimerManager()
@@ -13,6 +14,15 @@ import Foundation
     private var viewModel: MAAViewModel?
     private var runningTimers: [String: RunningTimer] = [:]
 
+    private static let maxConnectionAttempts = 3
+    private static let retryDelaySeconds = 60
+    private var pendingRetry: (timerKey: String, task: Task<Void, Never>)?
+
+    private func cancelPendingRetry() {
+        pendingRetry?.task.cancel()
+        pendingRetry = nil
+    }
+
     private var sleepDisabled = false
     var sleepAssertionID: IOPMAssertionID = 0
 
@@ -22,6 +32,11 @@ import Foundation
 
     func connectToModel(viewModel: MAAViewModel) {
         self.viewModel = viewModel
+
+        viewModel.$status
+            .filter { $0 != .idle }
+            .sink { [weak self] _ in self?.cancelPendingRetry() }
+            .store(in: &cancellables)
 
         viewModel.$scheduledDailyTaskTimers
             .sink { [weak self] in
@@ -89,6 +104,7 @@ import Foundation
             if outdated {
                 print("Found outdated timer, clening up key: \(key)")
                 runningTimers.removeValue(forKey: key)?.stop()
+                if pendingRetry?.timerKey == key { cancelPendingRetry() }
             }
         }
     }
@@ -98,7 +114,7 @@ import Foundation
         let oneDayInterval = TimeInterval(24 * 3600)
         let timer = Timer(fire: nextScheduledDate, interval: oneDayInterval, repeats: true) { [weak self] _ in
             Task { @MainActor in
-                self?.startDailyTaskIfNeeded(config: timerConfig)
+                await self?.startDailyTaskIfNeeded(config: timerConfig)
             }
         }
         DispatchQueue.main.async {
@@ -126,7 +142,7 @@ import Foundation
         }
     }
 
-    private func startDailyTaskIfNeeded(config: MAAViewModel.DailyTaskTimer) {
+    private func startDailyTaskIfNeeded(config: MAAViewModel.DailyTaskTimer, attempt: Int = 1) async {
         guard let viewModel else {
             print("Skip scheduled daily task timer, due to missing viewModel. Timer id: \(config.id)")
             return
@@ -137,9 +153,25 @@ import Foundation
             return
         }
 
-        Task {
-            await viewModel.tryStartTasks()
-            print("Started daily task by shcedmed timer (\(config.uniqueKey)")
+        guard runningTimers[config.uniqueKey] != nil else { return }
+        do {
+            try await viewModel.startTasks(isConnectionRetry: attempt > 1)
+        } catch MaaCoreError.connectFailed where attempt < Self.maxConnectionAttempts {
+            guard runningTimers[config.uniqueKey] != nil, viewModel.status == .idle else { return }
+            let nextAttempt = attempt + 1
+            viewModel.logWarn("模拟器连接失败，\(Self.retryDelaySeconds) 秒后重试（第 \(nextAttempt)/\(Self.maxConnectionAttempts) 次连接）")
+            let task = Task { [weak self] in
+                do {
+                    try await Task.sleep(for: .seconds(Self.retryDelaySeconds))
+                } catch { return }
+                guard let self, !Task.isCancelled else { return }
+                pendingRetry = nil
+                await startDailyTaskIfNeeded(config: config, attempt: nextAttempt)
+            }
+            cancelPendingRetry()
+            pendingRetry = (config.uniqueKey, task)
+        } catch {
+            viewModel.logStartFailure(error)
         }
     }
 

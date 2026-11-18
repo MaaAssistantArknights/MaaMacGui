@@ -186,7 +186,7 @@ extension MAAViewModel {
         status = .idle
     }
 
-    func ensureHandle(requireConnect: Bool = true) async throws {
+    func ensureHandle(requireConnect: Bool = true, clearLogs: Bool = true) async throws {
         if handle == nil {
             let handle = try await MAAHandle(options: instanceOptions)
             self.handle = handle
@@ -207,7 +207,7 @@ extension MAAViewModel {
             throw MAAError.handleNotRunning
         }
 
-        logStore?.clearLogs()
+        if clearLogs { logStore?.clearLogs() }
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
@@ -432,16 +432,21 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func tryStartTasks() async {
+        guard status == .idle else { return }
         do {
-            logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
         } catch {
-            logError("StartTasksFailed: \(String(describing: error))")
-            logInfo("CheckSettings")
+            logStartFailure(error)
         }
     }
 
-    private func startTasks() async throws {
+    func logStartFailure(_ error: Error) {
+        logError("StartTasksFailed: \(String(describing: error))")
+        logInfo("CheckSettings")
+    }
+
+    func startTasks(isConnectionRetry: Bool = false) async throws {
+        logStore?.setDailyTasksDetailMode(.log)
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -471,7 +476,7 @@ extension MAAViewModel {
             tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
-        try await ensureHandle()
+        try await ensureHandle(clearLogs: !isConnectionRetry)
 
         for task in tasks {
             guard task.enabled else { continue }
