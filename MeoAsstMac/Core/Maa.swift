@@ -10,6 +10,7 @@ import Foundation
 import JBirdCore
 import MaaCore
 import OSLog
+import os
 
 private let logger = Logger(subsystem: "plus.maa.swift", category: "MAAHandle")
 
@@ -64,6 +65,11 @@ extension MAAProvider {
 
 actor MAAHandle {
     private nonisolated(unsafe) var handle: AsstHandle!
+    private nonisolated let taskIDMap = OSAllocatedUnfairLock(initialState: [Int32: UUID]())
+
+    nonisolated var dailyTaskIDs: [Int32: UUID] {
+        taskIDMap.withLock { $0 }
+    }
 
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation
@@ -155,7 +161,7 @@ actor MAAHandle {
         }
     }
 
-    func appendDailyTasks(_ tasks: [DailyTask], for channel: MAAClientChannel) throws -> [Int32: UUID] {
+    func startDailyTasks(_ tasks: [DailyTask], for channel: MAAClientChannel) throws {
         // Stopping clears the entire core queue, so only roll back a batch that started with an empty queue.
         var queuedID: AsstTaskId = 0
         guard !running, AsstGetTasksList(handle, &queuedID, 1) == 0 else {
@@ -168,13 +174,24 @@ actor MAAHandle {
                 let coreID = try appendTask(task.task, for: channel)
                 ids[coreID] = task.id
             }
+            // The core can send its first task callback before start() returns.
+            taskIDMap.withLock { [ids] map in map = ids }
+            try start()
         } catch {
-            if !ids.isEmpty {
-                try stop()
+            taskIDMap.withLock { $0.removeAll() }
+            if !ids.isEmpty, !AsstStop(handle).isTrue {
+                // The queue still belongs to this attempt. Retire it before another caller can start it.
+                logger.error("Could not clear the daily task queue. Discarding the core instance.")
+                AsstDestroy(handle)
+                handle = nil
+                continuation.finish()
+                for call in pendingCalls.values {
+                    call.resume(throwing: CancellationError())
+                }
+                pendingCalls.removeAll()
             }
             throw error
         }
-        return ids
     }
 
     func connect(adbPath: String, address: String, profile: String) async throws {
@@ -219,6 +236,10 @@ actor MAAHandle {
 
     var connected: Bool {
         AsstConnected(handle).isTrue
+    }
+
+    var isValid: Bool {
+        handle != nil
     }
 
     var running: Bool {

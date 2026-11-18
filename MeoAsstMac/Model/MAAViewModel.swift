@@ -44,7 +44,7 @@ import SwiftUI
     }
 
     @Published var tasks = [DailyTask]()
-    @Published var taskIDMap: [Int32: UUID] = [:]
+    var taskIDMap: [Int32: UUID] { handle?.dailyTaskIDs ?? [:] }
     @Published var newTaskAdded = false
 
     enum TaskStatus: Equatable {
@@ -187,14 +187,15 @@ extension MAAViewModel {
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
-        if handle == nil {
+        if await handle?.isValid != true {
+            messageTask?.cancel()
             let handle = try await MAAHandle(options: instanceOptions)
             self.handle = handle
-            messageTask?.cancel()
 
             let messages = handle.messages
             messageTask = Task { [weak self, messages] in
                 for await message in messages {
+                    guard !Task.isCancelled else { return }
                     self?.processMessage(message)
                 }
             }
@@ -208,7 +209,6 @@ extension MAAViewModel {
         }
 
         logStore?.clearLogs()
-        taskIDMap.removeAll()
         taskStatus.removeAll()
 
         guard requireConnect else { return }
@@ -446,38 +446,36 @@ extension MAAViewModel {
         defer { handleEarlyReturn(backTo: .idle) }
 
         let channel = clientChannel
-        var firstStart = true
+        var shouldStartGame = false
         for (index, task) in tasks.enumerated() {
-            guard case .startup(var config) = task.task else {
-                continue
-            }
-
-            config.client_type = channel
-            tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
-
-            if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
-                guard await startGame(client: config.client_type) else {
-                    throw MAAError.gameStartFailed
+            switch task.task {
+            case .startup(var config):
+                config.client_type = channel
+                tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
+                if task.enabled && config.start_game_enabled {
+                    shouldStartGame = true
                 }
-                firstStart = false
+            case .closedown(var config):
+                config.client_type = channel
+                tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
+            default:
+                continue
             }
         }
 
-        for (index, task) in tasks.enumerated() {
-            guard case .closedown(var config) = task.task else {
-                continue
+        let batch = tasks
+        if touchMode == .MacPlayTools, shouldStartGame {
+            guard await startGame(client: channel) else {
+                throw MAAError.gameStartFailed
             }
-
-            config.client_type = channel
-            tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
         try await ensureHandle()
-        taskIDMap = try await handle?.appendDailyTasks(tasks, for: channel) ?? [:]
-        try await handle?.start()
-        logStore?.taskStartTime = .now
-
-        status = .busy
+        try await handle?.startDailyTasks(batch, for: channel)
+        if status == .pending {
+            logStore?.taskStartTime = .now
+            status = .busy
+        }
     }
 
     private func initScheduledDailyTaskTimer() {
