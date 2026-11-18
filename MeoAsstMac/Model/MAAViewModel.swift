@@ -445,13 +445,14 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
+        let channel = clientChannel
         var firstStart = true
         for (index, task) in tasks.enumerated() {
             guard case .startup(var config) = task.task else {
                 continue
             }
 
-            config.client_type = clientChannel
+            config.client_type = channel
             tasks[index] = .init(id: task.id, task: .startup(config), enabled: task.enabled)
 
             if touchMode == .MacPlayTools, task.enabled, config.start_game_enabled, firstStart {
@@ -467,7 +468,7 @@ extension MAAViewModel {
                 continue
             }
 
-            config.client_type = clientChannel
+            config.client_type = channel
             tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
@@ -476,7 +477,7 @@ extension MAAViewModel {
         for task in tasks {
             guard task.enabled else { continue }
 
-            if let coreID = try await handle?.appendTask(task.task) {
+            if let coreID = try await handle?.appendTask(task.task, for: channel) {
                 taskIDMap[coreID] = task.id
             }
         }
@@ -542,12 +543,10 @@ extension MAAViewModel {
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
-        guard let params = try? recruitConfig.params.jsonString() else {
-            return
-        }
-
+        let task = MAATask.recruit(recruitConfig)
+        let channel = clientChannel
         try await ensureHandle()
-        try await _ = handle?.appendTask(type: .Recruit, params: params)
+        try await _ = handle?.appendTask(task, for: channel)
         try await handle?.start()
 
         status = .busy
