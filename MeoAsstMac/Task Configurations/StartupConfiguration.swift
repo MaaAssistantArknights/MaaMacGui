@@ -76,6 +76,16 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
         ![MAAClientChannel.Official, .Bilibili].contains(self)
     }
 
+    var reportServer: String {
+        switch self {
+        case .Official, .Bilibili: "CN"
+        case .YoStarEN: "US"
+        case .YoStarJP: "JP"
+        case .YoStarKR: "KR"
+        case .txwy: "ZH_TW"
+        }
+    }
+
     var appBundleName: String {
         switch self {
         case .Official, .Bilibili, .txwy:
