@@ -5,7 +5,10 @@
 //  Created by hguandl on 15/4/2023.
 //
 
+import OSLog
 import SwiftUI
+
+private let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "MAATask")
 
 enum MAATask: Codable, Equatable {
     case startup(StartupConfiguration)
@@ -120,7 +123,13 @@ extension Array where Element == DailyTask {
 
 extension MAAViewModel {
     func writeBack(_ newValue: [DailyTask]) {
-        let data = try? PropertyListEncoder().encode(newValue)
-        try? data?.write(to: tasksURL)
+        do {
+            try DailyTaskProfileStore(profileURL: tasksURL).save(newValue)
+        } catch {
+            // A persistently failing write (e.g. the sidecar directory blocked by
+            // a file) must remain visible in the log instead of stdout only;
+            // default privacy keeps the user's home-directory path redacted.
+            logger.warning("Failed to save daily task profile: \(error)")
+        }
     }
 }
