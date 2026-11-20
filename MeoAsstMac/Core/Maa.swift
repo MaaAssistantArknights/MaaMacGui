@@ -10,7 +10,6 @@ import Foundation
 import JBirdCore
 import MaaCore
 import OSLog
-import os
 
 private let logger = Logger(subsystem: "plus.maa.swift", category: "MAAHandle")
 
@@ -100,8 +99,14 @@ actor MAAHandle {
     }
 
     deinit {
+        close(cancelling: &pendingCalls)
+    }
+
+    private nonisolated func close(cancelling calls: inout [AsstAsyncCallId: CheckedContinuation<JSON, Error>]) {
         AsstDestroy(handle)
-        pendingCalls.forEach { $1.resume(throwing: CancellationError()) }
+        handle = nil
+        calls.values.forEach { $0.resume(throwing: CancellationError()) }
+        calls.removeAll()
         continuation.finish()
     }
 
@@ -182,13 +187,7 @@ actor MAAHandle {
             if !ids.isEmpty, !AsstStop(handle).isTrue {
                 // The queue still belongs to this attempt. Retire it before another caller can start it.
                 logger.error("Could not clear the daily task queue. Discarding the core instance.")
-                AsstDestroy(handle)
-                handle = nil
-                continuation.finish()
-                for call in pendingCalls.values {
-                    call.resume(throwing: CancellationError())
-                }
-                pendingCalls.removeAll()
+                close(cancelling: &pendingCalls)
             }
             throw error
         }
