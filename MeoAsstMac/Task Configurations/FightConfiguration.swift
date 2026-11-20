@@ -13,6 +13,7 @@ struct FightConfiguration: MAATaskConfiguration {
     var stage: String
     var medicine: Int?
     var medicine_expire_days: Int
+    var useActivityMedicine: Bool = false
     var stone: Int?
     var times: Int?
     var series: Int?
@@ -58,10 +59,46 @@ struct FightConfiguration: MAATaskConfiguration {
         .fight(self)
     }
 
-    typealias Params = Self
+    // Core parameters deliberately exclude GUI preferences and require an explicit
+    // activity context before the medicine window can be extended.
+    struct Params: Encodable {
+        let stage: String
+        let medicine: Int?
+        var medicine_expire_days: Int
+        let stone: Int?
+        let times: Int?
+        let series: Int?
+        let drops: [String: Int]?
+        let report_to_penguin: Bool
+        let penguin_id: String
+        let server: String
+        let client_type: String
+        let DrGrandet: Bool
 
-    var params: Self {
-        self
+        init(_ config: FightConfiguration) {
+            stage = config.stage
+            medicine = config.medicine
+            medicine_expire_days = config.medicine_expire_days
+            stone = config.stone
+            times = config.times
+            series = config.series
+            drops = config.drops
+            report_to_penguin = config.report_to_penguin
+            penguin_id = config.penguin_id
+            server = config.server
+            client_type = config.client_type
+            DrGrandet = config.DrGrandet
+        }
+    }
+
+    var params: Params { Params(self) }
+
+    func params(at date: Date, stageActivity: StageActivityContext) -> Params {
+        var result = params
+        if case .extended(let days) = stageActivity.medicineWindow(at: date, enabled: useActivityMedicine) {
+            result.medicine_expire_days = max(medicine_expire_days, days)
+        }
+        return result
     }
 
     // 掉落物品列表
@@ -142,6 +179,7 @@ extension FightConfiguration {
             let medicine = try legacyContainer.decodeIfPresent(Int.self, forKey: .expiring_medicine)
             medicine_expire_days = (medicine ?? 0) > 0 ? 2 : 0
         }
+        self.useActivityMedicine = try container.decodeIfPresent(Bool.self, forKey: .useActivityMedicine) ?? false
         self.stone = try container.decodeIfPresent(Int.self, forKey: .stone)
         self.times = try container.decodeIfPresent(Int.self, forKey: .times)
         self.series = try container.decodeIfPresent(Int.self, forKey: .series)
@@ -155,6 +193,10 @@ extension FightConfiguration {
 }
 
 extension FightConfiguration {
+    var localizedExpiry: LocalizedStringResource { params.localizedExpiry }
+}
+
+extension FightConfiguration.Params {
     var localizedExpiry: LocalizedStringResource {
         switch medicine_expire_days {
         case 0: "不启用"

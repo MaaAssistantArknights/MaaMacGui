@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FightSettingsView: View {
     @Binding var config: FightConfiguration
+    @EnvironmentObject private var viewModel: MAAViewModel
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
@@ -101,6 +102,17 @@ struct FightSettingsView: View {
                 } label: {
                     Stepper("吃临期理智药", value: $config.medicine_expire_days, in: 0...7, step: 1)
                 }
+                Toggle("活动结束前使用本周临期药", isOn: $config.useActivityMedicine)
+                if config.useActivityMedicine {
+                    Text("仅活动结束前不足 48 小时生效，使用本周结束前到期的药。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    TimelineView(.periodic(from: .now, by: 60)) { timeline in
+                        activityMedicineStatus(at: timeline.date)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                }
                 Toggle("博朗台碎石模式", isOn: $config.DrGrandet)
             }
 
@@ -116,6 +128,18 @@ struct FightSettingsView: View {
         }
         .padding()
         .animation(.default, value: useCustomStage)
+    }
+
+    @ViewBuilder private func activityMedicineStatus(at date: Date) -> some View {
+        let context = StageActivityContext(channel: viewModel.clientChannel, activities: viewModel.stageActivity)
+        switch context.medicineWindow(at: date, enabled: config.useActivityMedicine) {
+        case .unavailable:
+            Text("活动数据不可用，沿用原临期药设置")
+        case .inactive:
+            Text("当前不在活动临期窗口，沿用原临期药设置")
+        case .extended:
+            Text("当前有效临期药窗口：\(config.params(at: date, stageActivity: context).medicine_expire_days) 天（包含当天）")
+        }
     }
 
     private var useMedicine: Binding<Bool> {
@@ -217,5 +241,6 @@ struct FightSettingsView: View {
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         FightSettingsView(config: .constant(.init()))
+            .environmentObject(MAAViewModel())
     }
 }
