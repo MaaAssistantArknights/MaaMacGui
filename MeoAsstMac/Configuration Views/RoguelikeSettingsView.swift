@@ -63,20 +63,24 @@ struct RoguelikeSettingsView: View {
                 Text(squad).tag(squad)
             }
         }
+        .disabled(config.usesBlackflowFastFlight)
 
         Picker("开局职业组", selection: $config.roles) {
             ForEach(config.theme.roles, id: \.self) { role in
                 Text(role).tag(role)
             }
         }
+        .disabled(config.usesBlackflowFastFlight)
 
         TextField("开局干员（单个）", text: $config.core_char)
+            .disabled(config.usesBlackflowFastFlight)
 
         HStack {
             Toggle("“开局干员”使用助战", isOn: $config.use_support)
-                .disabled(config.start_with_elite_two)
+                .disabled(config.start_with_elite_two || config.usesBlackflowFastFlight)
             if config.use_support {
                 Toggle("可以使用非好友助战", isOn: $config.use_nonfriend_support)
+                    .disabled(config.usesBlackflowFastFlight)
             }
         }
 
@@ -191,6 +195,28 @@ struct RoguelikeSettingsView: View {
             }
         }
 
+        if config.theme == .BlackFlow, config.mode == .exp {
+            Picker("目标结局", selection: $config.blackflowEnding) {
+                ForEach(RoguelikeConfiguration.BlackflowEnding.allCases, id: \.self) {
+                    Text($0.description).tag($0)
+                }
+            }
+            .disabled(config.blackflowFastFlight)
+            if config.blackflowEnding != .coreDefault, !config.blackflowFastFlight {
+                Text("已选择目标结局：将按该结局推进，上方的难度与开局设置照常生效。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            Toggle("疾速飞行", isOn: $config.blackflowFastFlight)
+            Text("疾速飞行需要自有精二机械师，并已在“训练 → 精通”中解锁“招募精通Ⅱ → 效果提升Ⅱ”，开局获得可全图任意飞行 3 次的“结构性原理”零件。启用时使用特勤分队、稳扎稳打、不借助战。关闭后恢复原开局配置。")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+
         if config.theme == .BlackFlow, config.mode == .babyAnimal {
             Picker("目标襁褓动物", selection: $config.blackflowCultivationTarget) {
                 ForEach(RoguelikeConfiguration.BlackflowCultivation.allCases, id: \.self) {
@@ -217,7 +243,7 @@ extension RoguelikeConfiguration.Mode {
     func description(theme: RoguelikeConfiguration.Theme) -> String {
         switch (self, theme) {
         case (.exp, .BlackFlow):
-            String(localized: "刷等级，快速飞三层")
+            String(localized: "刷等级，选择结局或疾速飞行")
         case (.investment, .BlackFlow):
             String(localized: "刷源石锭，投资完成后自动退出")
         case (.exp, _):

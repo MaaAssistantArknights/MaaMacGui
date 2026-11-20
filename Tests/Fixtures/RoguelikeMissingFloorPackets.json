@@ -1,0 +1,34 @@
+[
+  {
+    "what": "RoguelikeSettlement",
+    "details": {
+      "boss": 0,
+      "collection": 4,
+      "combat": 1,
+      "difficulty": 0,
+      "emergency": 0,
+      "exp": "MAX",
+      "game_pass": false,
+      "recruit": 2,
+      "score": 36,
+      "skill": "MAX",
+      "step": 2
+    }
+  },
+  {
+    "what": "RoguelikeSettlement",
+    "details": {
+      "boss": 0,
+      "collection": 5,
+      "combat": 0,
+      "difficulty": 0,
+      "emergency": 0,
+      "exp": "MAX",
+      "game_pass": false,
+      "recruit": 6,
+      "score": 119,
+      "skill": "MAX",
+      "step": 2
+    }
+  }
+]
