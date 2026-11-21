@@ -82,7 +82,7 @@ final class TCPConnection: @unchecked Sendable {
         }
     }
 
-    private func cancel() {
+    func cancel() {
         queue.async {
             self.terminate(with: CancellationError())
         }

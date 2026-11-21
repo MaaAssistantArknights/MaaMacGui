@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Network
 
 struct MaaToolsClient: ~Copyable {
     private let connection: TCPConnection
@@ -46,13 +47,27 @@ struct MaaToolsClient: ~Copyable {
         try await handshake.version()
     }
 
+    static func runningBundle(at address: String) async throws -> String? {
+        guard var client = Self(to: address) else { throw MaaToolsError.handshakeFailed }
+        do {
+            return try await client.bundleName()
+        } catch NWError.posix(.ECONNREFUSED), NWError.posix(.ECONNRESET) {
+            return nil
+        }
+    }
+
     mutating func bundleName() async throws -> String {
+        let socket = connection
+        let timeout = Task { try await Task.sleep(for: .seconds(3)); socket.cancel() }
+        defer { timeout.cancel() }
         try await handshake.check(minimumVersion: 3)
         try await connection.send([0x00, 0x04] + "BNDL".utf8)
-        let (header, _) = try await connection.receive(exactly: 12)
+        let (header, _) = try await connection.receive(exactly: 4)
         var reader = ByteReader(header)
         let length = try reader.read(UInt32.self)
+        guard (1...8192).contains(length) else { throw MaaToolsError.handshakeFailed }
         let (data, _) = try await connection.receive(exactly: Int(length))
+        guard data.count == Int(length) else { throw MaaToolsError.handshakeFailed }
         return String(decoding: data, as: UTF8.self)
     }
 

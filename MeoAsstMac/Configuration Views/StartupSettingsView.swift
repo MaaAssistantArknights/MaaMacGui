@@ -30,15 +30,20 @@ struct StartupSettingsView: View {
 
     var body: some View {
         Form {
-            VStack(alignment: .leading, spacing: 3) {
-                Text("客户端类型：\(config.client_type.description)")
-                Text("请在“设置” > “游戏设置” 中选择客户端类型。")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            Picker("客户端类型：", selection: $config.clientOverride) {
+                Text("跟随游戏设置").tag(nil as MAAClientChannel?)
+                ForEach(MAAClientChannel.allCases, id: \.self) { client in
+                    Text(client.description).tag(Optional(client))
+                        .disabled(touchMode == .MacPlayTools && client == .Bilibili)
+                }
             }
             Divider()
 
-            Toggle("自动启动客户端", isOn: $config.start_game_enabled)
+            Toggle("自动启动客户端", isOn: Binding(
+                get: { config.launchesClient },
+                set: { config.start_game_enabled = $0 }
+            ))
+                .disabled(config.clientOverride != nil)
                 .padding(.vertical)
 
             Picker("账号切换", selection: $config.account_name) {

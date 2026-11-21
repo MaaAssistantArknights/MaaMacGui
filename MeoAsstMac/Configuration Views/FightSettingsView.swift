@@ -9,6 +9,7 @@ import SwiftUI
 
 struct FightSettingsView: View {
     @Binding var config: FightConfiguration
+    let client: MAAClientChannel
 
     @State private var useCustomStage = false
     @State private var dropItemList: [(name: String, id: String)] = []
@@ -112,7 +113,7 @@ struct FightSettingsView: View {
 
             Divider()
 
-            DailyStageTipView()
+            DailyStageTipView(clientChannel: client)
         }
         .padding()
         .animation(.default, value: useCustomStage)
@@ -216,6 +217,6 @@ struct FightSettingsView: View {
 
 struct FightSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        FightSettingsView(config: .constant(.init()))
+        FightSettingsView(config: .constant(.init()), client: .Official)
     }
 }

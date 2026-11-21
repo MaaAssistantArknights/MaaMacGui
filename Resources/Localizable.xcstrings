@@ -4,12 +4,76 @@
     "" : {
       "shouldTranslate" : false
     },
+    "PlayCover 没有独立的 B 服客户端。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayCover does not provide a separate Bilibili client."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayCover에는 별도의 Bilibili 클라이언트가 없습니다."
+          }
+        }
+      }
+    },
     "“开局干员”使用助战" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "\"시작 오퍼레이터\" 지원 사용"
+          }
+        }
+      }
+    },
+    "关闭当前客户端" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close the current game client"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 게임 클라이언트 종료"
+          }
+        }
+      }
+    },
+    "跟随游戏设置" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use game settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 설정 따르기"
+          }
+        }
+      }
+    },
+    "连接到的客户端为 %@，预期为 %@。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connected to %1$@. Expected %2$@."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@에 연결되었습니다. 선택한 클라이언트는 %2$@입니다."
           }
         }
       }
@@ -4139,16 +4203,6 @@
         }
       }
     },
-    "客户端类型：%@" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "클라이언트 유형: %@"
-          }
-        }
-      }
-    },
     "宽度：" : {
 
     },
@@ -5925,16 +5979,6 @@
     "请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。" : {
 
     },
-    "请在“设置” > “游戏设置” 中选择客户端类型。" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\"설정\" > \"게임 설정\"에서 클라이언트 유형을 선택해주세요."
-          }
-        }
-      }
-    },
     "请在活动商店页面开始。" : {
       "localizations" : {
         "ko" : {
@@ -5974,16 +6018,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "주의하세요, 이건 진짜 뽑기입니다! 시뮬레이션이 아닙니다!!!"
-          }
-        }
-      }
-    },
-    "请确保这是最后一个任务" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이것이 마지막 작업인지 확인해주세요."
           }
         }
       }

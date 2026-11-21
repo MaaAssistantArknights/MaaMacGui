@@ -11,6 +11,8 @@ struct StartupConfiguration: MAATaskConfiguration {
     var type: MAATaskType { .StartUp }
 
     var client_type: MAAClientChannel
+    // Older profiles saved a copy of the global client in client_type, even if the user never chose one.
+    var clientOverride: MAAClientChannel?
     var start_game_enabled: Bool
     var account_name: String
 
@@ -19,11 +21,13 @@ struct StartupConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
-        return client_type.description
+        clientOverride?.description ?? String(localized: "跟随游戏设置")
     }
 
+    var launchesClient: Bool { clientOverride != nil || start_game_enabled }
+
     var summary: String {
-        let startGame = start_game_enabled ? String(localized: "自动启动") : ""
+        let startGame = launchesClient ? String(localized: "自动启动") : ""
         return "\(account_name) \(startGame)"
     }
 
@@ -42,6 +46,7 @@ extension StartupConfiguration {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.client_type = try container.decodeIfPresent(MAAClientChannel.self, forKey: .client_type) ?? .Official
+        self.clientOverride = try container.decodeIfPresent(MAAClientChannel.self, forKey: .clientOverride)
         self.start_game_enabled = try container.decodeIfPresent(Bool.self, forKey: .start_game_enabled) ?? false
         self.account_name = try container.decodeIfPresent(String.self, forKey: .account_name) ?? ""
     }
@@ -76,6 +81,16 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
         ![MAAClientChannel.Official, .Bilibili].contains(self)
     }
 
+    var reportServer: String {
+        switch self {
+        case .Official, .Bilibili: "CN"
+        case .YoStarEN: "US"
+        case .YoStarJP: "JP"
+        case .YoStarKR: "KR"
+        case .txwy: "ZH_TW"
+        }
+    }
+
     var appBundleName: String {
         switch self {
         case .Official, .Bilibili, .txwy:
@@ -102,5 +117,11 @@ enum MAAClientChannel: String, Codable, CaseIterable, CustomStringConvertible {
         case .txwy:
             return "tw.txwy.ios.arknights"
         }
+    }
+
+    var playCoverURL: URL {
+        URL(fileURLWithPath: "/Users").appendingPathComponent(NSUserName())
+            .appendingPathComponent("Library/Containers/io.playcover.PlayCover/Applications")
+            .appendingPathComponent(appBundleID).appendingPathExtension("app")
     }
 }

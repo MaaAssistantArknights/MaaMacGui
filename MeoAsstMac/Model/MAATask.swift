@@ -82,6 +82,47 @@ struct DailyTask: Codable, Equatable, Identifiable {
     var enabled: Bool
 }
 
+struct ClientTaskBatch: Codable {
+    let client: MAAClientChannel
+    var tasks: [DailyTask]
+    var followedByAnotherClient = false
+
+    static func batches(for tasks: [DailyTask], defaultClient: MAAClientChannel) -> [Self] {
+        var batches = [Self]()
+        var client = defaultClient
+        for entry in tasks where entry.enabled {
+            var task = entry.task
+            switch task {
+            case .startup(var config):
+                let next = config.clientOverride ?? defaultClient
+                config.start_game_enabled = config.launchesClient || next != client
+                client = next
+                config.client_type = client
+                config.clientOverride = nil
+                task = .startup(config)
+            case .closedown(var config):
+                config.client_type = client
+                task = .closedown(config)
+            case .fight(var config):
+                config.client_type = client.rawValue
+                config.server = client.reportServer
+                task = .fight(config)
+            case .recruit(var config):
+                config.server = client.reportServer
+                task = .recruit(config)
+            default:
+                break
+            }
+            if batches.last?.client != client {
+                if !batches.isEmpty { batches[batches.count - 1].followedByAnotherClient = true }
+                batches.append(Self(client: client, tasks: []))
+            }
+            batches[batches.count - 1].tasks.append(.init(id: entry.id, task: task, enabled: true))
+        }
+        return batches
+    }
+}
+
 extension DailyTask {
     init<T: MAATaskConfiguration>(config: T) {
         switch config.type {
@@ -94,6 +135,13 @@ extension DailyTask {
 }
 
 extension Array where Element == DailyTask {
+    func client(before id: UUID, defaultClient: MAAClientChannel) -> MAAClientChannel {
+        for entry in prefix(while: { $0.id != id }).reversed() where entry.enabled {
+            if case .startup(let config) = entry.task { return config.clientOverride ?? defaultClient }
+        }
+        return defaultClient
+    }
+
     subscript(_ id: UUID) -> MAATask? {
         get {
             first { $0.id == id }?.task

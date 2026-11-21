@@ -26,6 +26,8 @@ import SwiftUI
     private var wakeupAssertionID: UInt32?
     private var awakeAssertionID: UInt32?
     private var handle: MAAHandle?
+    private var clientQueue: Task<Void, Error>?
+    private(set) var runningClient: MAAClientChannel?
     private var cancellables = Set<AnyCancellable>()
 
     // MARK: - Core Callback
@@ -136,7 +138,8 @@ import SwiftUI
 
     // MARK: - Initializer
 
-    init() {
+    init(loadDailyTasks: Bool = true) {
+        guard loadDailyTasks else { return }
         do {
             let data = try Data(contentsOf: tasksURL)
             tasks = try PropertyListDecoder().decode([DailyTask].self, from: data)
@@ -176,17 +179,18 @@ import SwiftUI
 // MARK: - MaaCore
 
 extension MAAViewModel {
-    func initialize() async throws {
+    func initialize(for client: MAAClientChannel? = nil) async throws {
         status = .pending
         try await MAAProvider.shared.setUserDirectory(path: Self.userDirectory.path)
         if useWebGPU {
             try await MAAProvider.shared.setStaticOption(key: 2, value: "webgpu:0")
         }
-        try await loadResource(channel: clientChannel)
+        try await loadResource(channel: client ?? clientChannel, checkForUpdates: client == nil)
         status = .idle
     }
 
     func ensureHandle(requireConnect: Bool = true) async throws {
+        guard clientQueue == nil else { throw MAAError.handleNotRunning }
         if handle == nil {
             let handle = try await MAAHandle(options: instanceOptions)
             self.handle = handle
@@ -211,8 +215,10 @@ extension MAAViewModel {
         taskIDMap.removeAll()
         taskStatus.removeAll()
 
-        guard requireConnect else { return }
+        if requireConnect, let handle { try await connect(handle) }
+    }
 
+    func connect(_ handle: MAAHandle) async throws {
         logTrace("ConnectingToEmulator")
         if touchMode == .MacPlayTools {
             logTrace("如果长时间连接不上或出错，请尝试下载使用“文件” > “PlayCover链接…”中的最新版本")
@@ -236,11 +242,16 @@ extension MAAViewModel {
             connectionProfile = "CompatMac"
         }
 
-        try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
+        try await handle.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
     }
 
     func stop() async throws {
+        if let clientQueue {
+            clientQueue.cancel()
+            _ = await clientQueue.result
+            return
+        }
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
@@ -312,18 +323,14 @@ extension MAAViewModel {
     /// Fetches OTA resources for the specified channel.
     private func fetchOTAResource(channel: MAAClientChannel) async throws {
         let otaFetcher = OTAFetcher()
-        var files = [
+        let files = [
             (path: "resource/tasks.json", name: "resource/tasks/tasks.json"),
             (path: "gui/StageActivityV2.json", name: "gui/StageActivityV2.json"),
         ]
-        if channel.isGlobal {
-            files.append(
-                (
-                    path: "resource/global/\(channel.rawValue)/resource/tasks.json",
-                    name: "resource/global/\(channel.rawValue)/resource/tasks/tasks.json"
-                ))
-        }
         try await withThrowingTaskGroup(of: Void.self) { group in
+            if channel.isGlobal {
+                group.addTask { try await Self.fetchClientOTAResource(channel) }
+            }
             for (path, name) in files {
                 group.addTask {
                     try await otaFetcher.download(path: path, name: name)
@@ -336,10 +343,15 @@ extension MAAViewModel {
         stageActivities = try decoder.decode([String: MAAStageActivity].self, from: data)
     }
 
+    private nonisolated static func fetchClientOTAResource(_ channel: MAAClientChannel) async throws {
+        let base = "resource/global/\(channel.rawValue)/resource/"
+        try await OTAFetcher().download(path: base + "tasks.json", name: base + "tasks/tasks.json")
+    }
+
     /// Load resources from bundled, user, and remote resources.
     ///
     /// Should be the outermost call to load resources.
-    private func loadResource(channel: MAAClientChannel) async throws {
+    private func loadResource(channel: MAAClientChannel, checkForUpdates: Bool = true) async throws {
         let (preferUser, currentResourceVersion) = try resourceChannel.version()
         try await loadResource(url: Bundle.main.resourceURL!, channel: channel)
 
@@ -357,13 +369,21 @@ extension MAAViewModel {
                 内置资源版本：\(currentResourceVersion.title)
                 更新时间：\(currentResourceVersion.last_updated)
                 """)
-            let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
-            try? FileManager.default.removeItem(at: url)
+            if checkForUpdates {
+                let url = documentsDirectory.appendingPathComponent("resource", isDirectory: true)
+                try? FileManager.default.removeItem(at: url)
+            }
         }
 
+        let cachedBaseURL = documentsDirectory.appendingPathComponent("cache")
+        if !checkForUpdates {
+            if FileManager.default.fileExists(atPath: cachedBaseURL.appendingPathComponent("resource").path) {
+                try await loadResource(url: cachedBaseURL, channel: channel)
+            }
+            return
+        }
         do {
             try await fetchOTAResource(channel: channel)
-            let cachedBaseURL = documentsDirectory.appendingPathComponent("cache")
             try await loadResource(url: cachedBaseURL, channel: channel)
         } catch {
             logError("关卡数据获取失败: \(error.localizedDescription)")
@@ -416,7 +436,7 @@ extension MAAViewModel {
         FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
     }
 
-    private var instanceOptions: MAAInstanceOptions {
+    var instanceOptions: MAAInstanceOptions {
         [
             .TouchMode: touchMode.rawValue,
             .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
@@ -432,9 +452,12 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func tryStartTasks() async {
+        guard status == .idle, clientQueue == nil else { return }
         do {
             logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
+        } catch is CancellationError {
+            logTrace(.stopped)
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
@@ -442,6 +465,46 @@ extension MAAViewModel {
     }
 
     private func startTasks() async throws {
+        if tasks.contains(where: { entry in
+            guard entry.enabled, case .startup(let config) = entry.task else { return false }
+            return config.clientOverride != nil
+        }) {
+            let batches = ClientTaskBatch.batches(for: tasks, defaultClient: clientChannel)
+            status = .busy
+            taskStatus.removeAll()
+            logStore?.clearLogs()
+            logStore?.taskStartTime = .now
+            let queue = Task {
+                var refreshedClients: Set<MAAClientChannel> = [clientChannel]
+                for (index, batch) in batches.enumerated() {
+                    try Task.checkCancellation()
+                    runningClient = batch.client
+                    taskIDMap.removeAll()
+                    logInfo(verbatim: batch.client.description)
+                    if batch.client.isGlobal, refreshedClients.insert(batch.client).inserted {
+                        do { try await Self.fetchClientOTAResource(batch.client) }
+                        catch { logError("关卡数据获取失败: \(error.localizedDescription)") }
+                    }
+                    try Task.checkCancellation()
+                    let completed = try await ClientTaskRunner.run(batch) { event in
+                        switch event {
+                        case .task(let coreID, let id): taskIDMap[coreID] = id
+                        case .message(let message): processMessage(message)
+                        }
+                    }
+                    if index == batches.count - 1 { processMessage(completed) }
+                }
+            }
+            clientQueue = queue
+            defer {
+                clientQueue = nil
+                runningClient = nil
+                for (id, state) in taskStatus where state == .running { taskStatus[id] = .cancel }
+                if status != .idle { resetStatus() }
+            }
+            try await queue.value
+            return
+        }
         status = .pending
         defer { handleEarlyReturn(backTo: .idle) }
 
@@ -687,18 +750,37 @@ extension MAAViewModel {
 // MARK: - MaaTools Client
 
 extension MAAViewModel {
-    nonisolated func startGame(client: MAAClientChannel) async -> Bool {
-        let appBundle = URL(fileURLWithPath: "/Users")
-            .appendingPathComponent(NSUserName())
-            .appendingPathComponent("Library")
-            .appendingPathComponent("Containers")
-            .appendingPathComponent("io.playcover.PlayCover")
-            .appendingPathComponent("Applications")
-            .appendingPathComponent(client.appBundleID)
-            .appendingPathExtension("app")
+    func preparePlayCover(client: MAAClientChannel, launch: Bool) async throws {
+        guard client != .Bilibili else {
+            throw ClientTaskRunner.Failure(String(localized: "PlayCover 没有独立的 B 服客户端。"))
+        }
+        let expected = client.appBundleID
+        let portDeadline = ContinuousClock.now + .seconds(6)
+        while let current = try await MaaToolsClient.runningBundle(at: connectionAddress) {
+            if current == expected { return }
+            guard launch, ContinuousClock.now < portDeadline else {
+                throw ClientTaskRunner.Failure(String(localized: "连接到的客户端为 \(current)，预期为 \(expected)。"))
+            }
+            try await Task.sleep(for: .milliseconds(200))
+        }
+        guard launch else { throw MaaCoreError.connectFailed }
+        let game = try await NSWorkspace.shared.openApplication(at: client.playCoverURL, configuration: .init())
+        let deadline = ContinuousClock.now + .seconds(45)
+        while !game.isTerminated, ContinuousClock.now < deadline {
+            if let current = try await MaaToolsClient.runningBundle(at: connectionAddress) {
+                guard current == expected else {
+                    throw ClientTaskRunner.Failure(String(localized: "连接到的客户端为 \(current)，预期为 \(expected)。"))
+                }
+                return
+            }
+            try await Task.sleep(for: .milliseconds(250))
+        }
+        throw MAAError.gameStartFailed
+    }
 
+    nonisolated func startGame(client: MAAClientChannel) async -> Bool {
         do {
-            try await NSWorkspace.shared.openApplication(at: appBundle, configuration: .init())
+            try await NSWorkspace.shared.openApplication(at: client.playCoverURL, configuration: .init())
             let client = await MaaToolClient(address: connectionAddress)
             return client != nil
         } catch {

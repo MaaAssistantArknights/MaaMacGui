@@ -243,6 +243,7 @@ enum MAAInstanceOptionKey: Int32 {
     case DeploymentWithPause = 3
     case AdbLiteEnabled = 4
     case KillAdbOnExit = 5
+    case ClientType = 6
 }
 
 typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]

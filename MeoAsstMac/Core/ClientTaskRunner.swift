@@ -1,0 +1,166 @@
+import Foundation
+import JBirdCore
+
+/// MaaCore overlays resources process-wide. Each client gets a fresh process so its OCR rules
+/// and templates cannot leak into the next client's run.
+@MainActor
+enum ClientTaskRunner {
+    static let argument = "--maa-client-task-batch"
+
+    enum Event {
+        case task(Int32, UUID)
+        case message(MaaMessage)
+    }
+
+    private enum Record: Codable {
+        case task(Int32, UUID)
+        case message(Int, Data)
+        case completed([Int32])
+        case failure(String)
+    }
+
+    struct Failure: Error, CustomStringConvertible {
+        let description: String
+        init(_ description: String) { self.description = description }
+    }
+
+    static func run(_ batch: ClientTaskBatch, receive: (Event) -> Void) async throws -> MaaMessage {
+        let process = Process()
+        let input = Pipe()
+        let output = Pipe()
+        process.executableURL = Bundle.main.executableURL
+        process.arguments = [argument]
+        process.standardInput = input
+        process.standardOutput = output
+        let request = try JSONEncoder().encode(batch) + [0x0a]
+        try process.run()
+        defer {
+            try? input.fileHandleForWriting.close()
+            if process.isRunning { process.terminate() }
+            process.waitUntilExit()
+        }
+        return try await withTaskCancellationHandler {
+            try Task.checkCancellation()
+            try input.fileHandleForWriting.write(contentsOf: request)
+            var completed: [Int32]?
+            for try await line in output.fileHandleForReading.bytes.lines {
+                try Task.checkCancellation()
+                switch try JSONDecoder().decode(Record.self, from: Data(line.utf8)) {
+                case .task(let coreID, let id): receive(.task(coreID, id))
+                case .message(let code, let details): receive(.message(MaaMessage(code: code, details: try JSON(details))))
+                case .completed(let ids): completed = ids
+                case .failure(let detail): throw Failure(detail)
+                }
+            }
+            process.waitUntilExit()
+            try Task.checkCancellation()
+            guard process.terminationStatus == 0, let completed else { throw MaaCoreError.startFailed }
+            let details = try JSONEncoder().encode(["finished_tasks": completed])
+            return MaaMessage(code: .AllTasksCompleted, details: try JSON(details))
+        } onCancel: {
+            if process.isRunning { process.terminate() }
+        }
+    }
+
+    static func workerMain() async -> Int32 {
+        // Reserve the pipe for framed events, including when native libraries print diagnostics.
+        let descriptor = fcntl(STDOUT_FILENO, F_DUPFD_CLOEXEC, 0)
+        guard descriptor >= 0 else { return EXIT_FAILURE }
+        let output = FileHandle(fileDescriptor: descriptor, closeOnDealloc: true)
+        guard dup2(STDERR_FILENO, STDOUT_FILENO) >= 0 else { return EXIT_FAILURE }
+        func send(_ record: Record) throws {
+            try output.write(contentsOf: JSONEncoder().encode(record) + [0x0a])
+        }
+        do {
+            guard let line = readLine() else { throw CancellationError() }
+            let batch = try JSONDecoder().decode(ClientTaskBatch.self, from: Data(line.utf8))
+            // A closed parent (including a crash) must not leave an automation process running.
+            DispatchQueue.global().async {
+                _ = try? FileHandle.standardInput.readToEnd()
+                _exit(EXIT_FAILURE)
+            }
+            try await execute(batch, send: send)
+            return EXIT_SUCCESS
+        } catch {
+            try? send(.failure(String(describing: error)))
+            return EXIT_FAILURE
+        }
+    }
+
+    private static func execute(_ batch: ClientTaskBatch, send: (Record) throws -> Void) async throws {
+        let model = MAAViewModel(loadDailyTasks: false)
+        try await model.initialize(for: batch.client)
+        var options = model.instanceOptions
+        options[.ClientType] = batch.client.rawValue
+        let handle = try await MAAHandle(options: options)
+        var messages = handle.messages.makeAsyncIterator()
+        var entries = batch.tasks
+        if model.touchMode == .MacPlayTools, batch.followedByAnotherClient {
+            var close = ClosedownConfiguration()
+            close.client_type = batch.client
+            if entries.last?.task != .closedown(close) { entries.append(DailyTask(config: close)) }
+        }
+        var remaining = entries[...]
+        var completed = [Int32]()
+        while let first = remaining.first {
+            // Wait for each login to succeed before submitting actions for that account.
+            let tasks: ArraySlice<DailyTask>
+            if case .startup(let startup) = first.task {
+                if model.touchMode == .MacPlayTools {
+                    try await model.preparePlayCover(client: batch.client, launch: startup.start_game_enabled)
+                }
+                try await model.connect(handle)
+                tasks = remaining.prefix(1)
+            } else {
+                if completed.isEmpty {
+                    if model.touchMode == .MacPlayTools {
+                        try await model.preparePlayCover(client: batch.client, launch: false)
+                    }
+                    try await model.connect(handle)
+                }
+                tasks = remaining.prefix {
+                    if case .startup = $0.task { return false }
+                    return true
+                }
+            }
+            var ids = [Int32]()
+            for task in tasks {
+                let id = try await handle.appendTask(task.task)
+                ids.append(id)
+                try send(.task(id, task.id))
+            }
+            try await handle.start()
+            while true {
+                guard let message = await messages.next() else { throw MaaCoreError.startFailed }
+                if message.code == .AllTasksCompleted {
+                    let finished: [Int32] = try message.details["finished_tasks"]
+                    guard finished == ids else { throw MaaCoreError.startFailed }
+                    completed += finished
+                    break
+                }
+                try send(.message(message.code, message.details.serialize()))
+                if message.code == .TaskChainStopped {
+                    throw CancellationError()
+                }
+                if message.code == .TaskChainError, case .startup = first.task {
+                    try await handle.stop()
+                    throw MaaCoreError.startFailed
+                }
+            }
+            remaining = remaining.dropFirst(tasks.count)
+            if !remaining.isEmpty, model.touchMode == .MacPlayTools, case .closedown? = tasks.last?.task {
+                // A second login on this same client must not attach to its closing window.
+                let deadline = ContinuousClock.now + .seconds(6)
+                while try await MaaToolsClient.runningBundle(at: model.connectionAddress) == batch.client.appBundleID {
+                    guard ContinuousClock.now < deadline else { throw MAAError.gameStartFailed }
+                    try await Task.sleep(for: .milliseconds(200))
+                }
+            }
+            // The completion callback precedes the core thread returning to its idle state.
+            while !remaining.isEmpty, await handle.running {
+                try await Task.sleep(for: .milliseconds(50))
+            }
+        }
+        try send(.completed(completed))
+    }
+}

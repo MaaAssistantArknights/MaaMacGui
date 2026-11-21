@@ -17,7 +17,7 @@ struct ClosedownConfiguration: MAATaskConfiguration {
     }
 
     var subtitle: String {
-        String(localized: "请确保这是最后一个任务")
+        String(localized: "关闭当前客户端")
     }
 
     var summary: String {
