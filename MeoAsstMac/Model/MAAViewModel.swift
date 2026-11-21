@@ -193,9 +193,11 @@ extension MAAViewModel {
             messageTask?.cancel()
 
             let messages = handle.messages
+            // 串行消费回调：`processMessage` 收尾时可能 await Core 停止，
+            // 逐条处理保证状态复位不会与后续回调乱序。
             messageTask = Task { [weak self, messages] in
                 for await message in messages {
-                    self?.processMessage(message)
+                    await self?.processMessage(message)
                 }
             }
         } else {
@@ -203,8 +205,12 @@ extension MAAViewModel {
             try await handle?.apply(options: instanceOptions)
         }
 
+        // Core 仍在运行时不能重新连接，先置为 .busy 再抛错。`handleEarlyReturn` 只在
+        // .pending 时复位，因此各调用入口都不会把它误恢复为 Start；这里也不主动停止
+        // Core，以免打断其他入口正在运行的任务。
         guard await handle?.running == false else {
-            throw MAAError.handleNotRunning
+            status = .busy
+            throw MAAError.handleAlreadyRunning
         }
 
         logStore?.clearLogs()
@@ -240,11 +246,13 @@ extension MAAViewModel {
         logTrace("Running")
     }
 
+    /// 手动停止。`AsstStop()` 只是发出停止请求，需等 `stopAndWait()` 确认 Core
+    /// 真正停止后才置为 idle；失败时沿用 pending→busy 的 defer 回滚。
     func stop() async throws {
         status = .pending
         defer { handleEarlyReturn(backTo: .busy) }
 
-        try await handle?.stop()
+        try await handle?.stopAndWait()
         status = .idle
     }
 
@@ -261,6 +269,18 @@ extension MAAViewModel {
         logStore?.fightReport = nil
         logStore?.stoneUsedTimes = 0
         logStore?.recruitConfirmTimes = 0
+    }
+
+    /// 等 Core 退出运行态后再复位界面。超时保持 .busy 并记录错误——宁可让用户
+    /// 看到 ｢停止中｣，也不在 Core 仍运行时提前放出 Start。
+    func resetStatusWhenCoreStopped() async {
+        do {
+            try await handle?.waitUntilStopped()
+            resetStatus()
+        } catch {
+            status = .busy
+            logError("Core did not become idle: \(String(describing: error))")
+        }
     }
 
     func screenshot() async throws -> NSImage {
@@ -431,6 +451,8 @@ extension MAAViewModel {
 // MARK: Daily Tasks
 
 extension MAAViewModel {
+    /// 启动任务队列。失败时先 `stopAndWait()` 清理 Core 中残留的运行态，
+    /// 确认停止后才回到 idle；清理超时则保持 .busy。
     func tryStartTasks() async {
         do {
             logStore?.setDailyTasksDetailMode(.log)
@@ -438,12 +460,22 @@ extension MAAViewModel {
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
+            status = .pending
+            do {
+                try await handle?.stopAndWait()
+                status = .idle
+            } catch {
+                status = .busy
+                logError("Core did not become idle: \(String(describing: error))")
+            }
         }
     }
 
+    /// 真正启动任务的实现。这里故意没有 `defer { handleEarlyReturn(backTo: .busy) }`：
+    /// 启动中途失败时保持 .busy，交由 `tryStartTasks()` 停止 Core 后再恢复，
+    /// 避免按钮在 Core 仍运行时提前变回 Start。
     private func startTasks() async throws {
         status = .pending
-        defer { handleEarlyReturn(backTo: .idle) }
 
         var firstStart = true
         for (index, task) in tasks.enumerated() {
