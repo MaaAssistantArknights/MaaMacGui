@@ -1,5 +1,6 @@
 import Foundation
 import JBirdCore
+import Network
 import os
 
 /// MaaCore overlays resources process-wide. Each client gets a fresh process so its OCR rules
@@ -79,7 +80,9 @@ enum ClientTaskRunner {
                 }
                 await Task.detached { process.waitUntilExit() }.value
                 try Task.checkCancellation()
-                guard process.terminationStatus == 0, let completed else { throw MaaCoreError.startFailed }
+                guard process.terminationStatus == 0, let completed else {
+                    throw Failure(String(localized: .taskError(name: batch.client.description)))
+                }
                 let details = try JSONEncoder().encode(["finished_tasks": completed])
                 return MaaMessage(code: .AllTasksCompleted, details: try JSON(details))
             } onCancel: {
@@ -89,7 +92,7 @@ enum ClientTaskRunner {
             watchdog.cancel()
             try Task.checkCancellation()
             if (try? await watchdog.value) == true {
-                throw Failure(String(localized: "\(batch.client.description)任务长时间未响应，队列已停止。"))
+                throw Failure(String(localized: "\(batch.client.description)：任务超时，已停止"))
             }
             throw error
         }
@@ -115,7 +118,16 @@ enum ClientTaskRunner {
             try await execute(batch, send: send)
             return EXIT_SUCCESS
         } catch {
-            try? send(.failure(String(describing: error)))
+            let message = switch error {
+            case let failure as Failure: failure.description
+            case MaaToolsError.handshakeFailed, MaaCoreError.connectFailed, is NWError: String(localized: "连接失败")
+            case MaaToolsError.unsupportedVersion: String(localized: "不支持此版本PlayCover")
+            case MAAError.gameStartFailed: String(localized: .failedToOpenClient)
+            case is CancellationError: String(localized: .stopped)
+            default: String(localized: "StartTasksFailed: \(String(describing: error))")
+            }
+            Logger(subsystem: "plus.maa.swift", category: "ClientTaskRunner").error("Worker failed: \(String(describing: error))")
+            try? send(.failure(message))
             return EXIT_FAILURE
         }
     }
@@ -177,7 +189,7 @@ enum ClientTaskRunner {
                 }
                 if message.code == .TaskChainError, case .startup = first.task {
                     try await handle.stop()
-                    throw MaaCoreError.startFailed
+                    throw Failure(String(localized: .stopped))
                 }
             }
             remaining = remaining.dropFirst(tasks.count)

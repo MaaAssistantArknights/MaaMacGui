@@ -16,9 +16,7 @@ struct ClosedownConfiguration: MAATaskConfiguration {
         type.description
     }
 
-    var subtitle: String {
-        String(localized: "关闭当前客户端")
-    }
+    var subtitle: String { "" }
 
     var summary: String {
         ""

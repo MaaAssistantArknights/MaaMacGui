@@ -458,6 +458,8 @@ extension MAAViewModel {
             try await startTasks()
         } catch is CancellationError {
             logTrace(.stopped)
+        } catch let error as ClientTaskRunner.Failure {
+            logError(verbatim: error.description)
         } catch {
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
@@ -477,8 +479,9 @@ extension MAAViewModel {
                 let index = tasks.firstIndex(id: id)
             {
                 taskStatus[id] = .failure
-                throw ClientTaskRunner.Failure(
-                    String(localized: "PlayCover 不支持队列第 \(index + 1) 项使用的 B 服。请更换客户端或使用安卓模拟器。"))
+                let row = "#\(index + 1)"
+                let reason = String(localized: "PlayCover 不支持 \(MAAClientChannel.Bilibili.description)")
+                throw ClientTaskRunner.Failure(String(localized: "\(row)：\(reason)"))
             }
             status = .busy
             logStore?.taskStartTime = .now
@@ -764,14 +767,18 @@ extension MAAViewModel {
 extension MAAViewModel {
     func preparePlayCover(client: MAAClientChannel, launch: Bool) async throws {
         guard client != .Bilibili else {
-            throw ClientTaskRunner.Failure(String(localized: "PlayCover 没有独立的 B 服客户端。"))
+            throw ClientTaskRunner.Failure(String(localized: "PlayCover 不支持 \(client.description)"))
         }
         let expected = client.appBundleID
+        func mismatch(_ current: String) -> ClientTaskRunner.Failure {
+            NSLog("PlayCover bundle mismatch: %@ (expected %@)", current, expected)
+            return ClientTaskRunner.Failure(String(localized: "客户端不匹配，请切换到\(client.description)"))
+        }
         let portDeadline = ContinuousClock.now + .seconds(6)
         while let current = try await MaaToolsClient.runningBundle(at: connectionAddress) {
             if current == expected { return }
             guard launch, ContinuousClock.now < portDeadline else {
-                throw ClientTaskRunner.Failure(String(localized: "连接到的客户端为 \(current)，预期为 \(expected)。"))
+                throw mismatch(current)
             }
             try await Task.sleep(for: .milliseconds(200))
         }
@@ -781,7 +788,7 @@ extension MAAViewModel {
         while !game.isTerminated, ContinuousClock.now < deadline {
             if let current = try await MaaToolsClient.runningBundle(at: connectionAddress) {
                 guard current == expected else {
-                    throw ClientTaskRunner.Failure(String(localized: "连接到的客户端为 \(current)，预期为 \(expected)。"))
+                    throw mismatch(current)
                 }
                 return
             }
