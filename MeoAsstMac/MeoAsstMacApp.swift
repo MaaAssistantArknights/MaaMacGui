@@ -9,6 +9,17 @@ import Sparkle
 import SwiftUI
 
 @main
+@MainActor
+enum MAAEntryPoint {
+    static func main() {
+        if CommandLine.arguments.dropFirst().first == ClientTaskRunner.argument {
+            Task { exit(await ClientTaskRunner.workerMain()) }
+            dispatchMain()
+        }
+        MeoAsstMacApp.main()
+    }
+}
+
 struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @StateObject private var appViewModel: MAAViewModel

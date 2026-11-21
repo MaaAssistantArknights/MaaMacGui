@@ -9,7 +9,7 @@ import SwiftUI
 
 /// 内嵌于刷理智设置页底部的今日开放关卡展示。
 struct DailyStageTipView: View {
-    @AppStorage("MAAClientChannel") private var clientChannel = MAAClientChannel.Official
+    let clientChannel: MAAClientChannel
 
     @Environment(\.defaultMinListRowHeight) private var rowHeight
 
@@ -57,7 +57,7 @@ struct DailyStageTipView: View {
 struct DailyStageTipView_Previews: PreviewProvider {
     static var previews: some View {
         Form {
-            DailyStageTipView()
+            DailyStageTipView(clientChannel: .Official)
         }
     }
 }

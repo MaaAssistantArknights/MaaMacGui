@@ -25,7 +25,8 @@ struct TaskDetail: View {
                     case .infrast(let config):
                         InfrastSettingsView(config: taskConfigBinding(config, id: id))
                     case .fight(let config):
-                        FightSettingsView(config: taskConfigBinding(config, id: id))
+                        FightSettingsView(config: taskConfigBinding(config, id: id),
+                                          client: viewModel.tasks.client(before: id, defaultClient: viewModel.clientChannel))
                     case .mall(let config):
                         MallSettingsView(config: taskConfigBinding(config, id: id))
                     case .award(let config):

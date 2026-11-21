@@ -4,12 +4,92 @@
     "" : {
       "shouldTranslate" : false
     },
+    "%@：任务超时，已停止" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: queue stopped after timeout"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 작업 시간 초과로 중지됨"
+          }
+        }
+      }
+    },
+    "PlayCover 不支持 %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayCover does not support %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PlayCover에서 %@를 지원하지 않습니다"
+          }
+        }
+      }
+    },
+    "连接失败" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Connection Failed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "연결 실패"
+          }
+        }
+      }
+    },
     "“开局干员”使用助战" : {
       "localizations" : {
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "\"시작 오퍼레이터\" 지원 사용"
+          }
+        }
+      }
+    },
+    "跟随游戏设置" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Follow game settings"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "게임 설정 따르기"
+          }
+        }
+      }
+    },
+    "客户端不匹配，请切换到%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wrong client. Switch to %@."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "클라이언트가 일치하지 않습니다. %@로 전환하세요."
           }
         }
       }
@@ -26,6 +106,12 @@
     "%@：%@" : {
       "localizations" : {
         "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@: %2$@"
+          }
+        },
+        "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%1$@: %2$@"
@@ -392,6 +478,12 @@
     },
     "Bilibili服" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilibili"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -1137,6 +1229,12 @@
     "FailedToOpenClient" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to open the client. Please check the configuration file"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2712,7 +2810,26 @@
       }
     },
     "StartTasksFailed: %@" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to start tasks: %@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 시작 실패: %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动任务失败：%@"
+          }
+        }
+      }
     },
     "StoneUsed" : {
       "extractionState" : "manual",
@@ -2745,6 +2862,12 @@
     "Stopped" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stopped"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -2762,6 +2885,12 @@
     "TaskError" : {
       "extractionState" : "manual",
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task error: %(name)@"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3027,6 +3156,12 @@
     },
     "不切换" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't Switch"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3059,7 +3194,20 @@
       }
     },
     "不支持此版本PlayCover" : {
-
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsupported PlayCover version"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "지원하지 않는 PlayCover 버전"
+          }
+        }
+      }
     },
     "不购物" : {
       "localizations" : {
@@ -3472,6 +3620,12 @@
     },
     "关闭游戏" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Close Game"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -3965,6 +4119,12 @@
     },
     "国际服（YoStarEN）" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YostarEN"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4098,6 +4258,12 @@
     },
     "官服" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Official (CN)"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4131,20 +4297,16 @@
     },
     "客户端类型：" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Client Type:"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "클라이언트 유형:"
-          }
-        }
-      }
-    },
-    "客户端类型：%@" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "클라이언트 유형: %@"
           }
         }
       }
@@ -4348,6 +4510,12 @@
     },
     "开始唤醒" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Login"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -4803,6 +4971,12 @@
     },
     "日服（YoStarJP）" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YostarJP"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5545,6 +5719,12 @@
     },
     "繁中服（txwy）" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "txwy"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5598,6 +5778,12 @@
     },
     "自动启动" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auto-start"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5608,6 +5794,12 @@
     },
     "自动启动客户端" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Launch Client on Start"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -5925,16 +6117,6 @@
     "请参考“实用工具” > “分辨率指南”设置PlayCover的分辨率。" : {
 
     },
-    "请在“设置” > “游戏设置” 中选择客户端类型。" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "\"설정\" > \"게임 설정\"에서 클라이언트 유형을 선택해주세요."
-          }
-        }
-      }
-    },
     "请在活动商店页面开始。" : {
       "localizations" : {
         "ko" : {
@@ -5978,16 +6160,6 @@
         }
       }
     },
-    "请确保这是最后一个任务" : {
-      "localizations" : {
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이것이 마지막 작업인지 확인해주세요."
-          }
-        }
-      }
-    },
     "请选择作业项目" : {
 
     },
@@ -6017,6 +6189,12 @@
     },
     "账号切换" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Account Switch"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
@@ -6311,6 +6489,12 @@
     },
     "韩服（YoStarKR）" : {
       "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "YostarKR"
+          }
+        },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",

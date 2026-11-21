@@ -136,7 +136,7 @@ extension MAAViewModel {
 
         case "ResolutionInfo":
             if let (width, height) = parseResolution(details: details) {
-                if clientChannel == .YoStarEN, width != 1920 || height != 1080 {
+                if (runningClient ?? clientChannel) == .YoStarEN, width != 1920 || height != 1080 {
                     logError(.resolutionInfoYoStarEN)
                 }
             }
@@ -1546,7 +1546,7 @@ extension Int {
     /// 连接相关信息
     fileprivate static let ConnectionInfo = 2
     /// 全部任务完成
-    fileprivate static let AllTasksCompleted = 3
+    static let AllTasksCompleted = 3
     /// 外部异步调用信息
     fileprivate static let AsyncCallInfo = 4
     /// 实例已销毁
@@ -1555,7 +1555,7 @@ extension Int {
     /* TaskChain Info */
 
     /// 任务链执行/识别错误
-    fileprivate static let TaskChainError = 10000
+    static let TaskChainError = 10000
     /// 任务链开始
     fileprivate static let TaskChainStart = 10001
     /// 任务链完成
@@ -1563,7 +1563,7 @@ extension Int {
     /// 任务链额外信息
     fileprivate static let TaskChainExtraInfo = 10003
     /// 任务链手动停止
-    fileprivate static let TaskChainStopped = 10004
+    static let TaskChainStopped = 10004
 
     /* SubTask Info */
 
