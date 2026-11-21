@@ -49,6 +49,11 @@ struct MiniGameView: View {
             switch selectedGame.taskName {
             case "MiniGame@PixelPaint@Begin":
                 PixelPaintView(params: $taskParams)
+            case "StrongholdProtocol":
+                LazyVStack {
+                    Text(selectedGame.instructions)
+                    StrongholdProtocolSettingsView(params: $taskParams)
+                }
             default:
                 ScrollView {
                     LazyVStack {
@@ -95,6 +100,7 @@ enum MiniGameOption: String, CaseIterable {
     case greenTicketStore
     case yellowTickerStore
     case reclamationStore
+    case strongholdProtocol
 
     var taskName: String {
         switch self {
@@ -106,6 +112,8 @@ enum MiniGameOption: String, CaseIterable {
             return "SS@Store@Begin"
         case .reclamationStore:
             return "RA@Store@Begin"
+        case .strongholdProtocol:
+            return "StrongholdProtocol"
         }
     }
 
@@ -119,6 +127,8 @@ enum MiniGameOption: String, CaseIterable {
             return String(localized: "活动商店")
         case .reclamationStore:
             return String(localized: "生息演算商店")
+        case .strongholdProtocol:
+            return String(localized: "卫戍协议")
         }
     }
 
@@ -150,6 +160,14 @@ enum MiniGameOption: String, CaseIterable {
                 localized:
                     """
                     请在活动商店页面开始。
+                    """)
+        case .strongholdProtocol:
+            String(
+                localized:
+                    """
+                    请使用活动默认皮肤，
+                    在有“极速模拟”的活动主界面开始任务。
+                    已有存档时，请先手动放弃。
                     """)
         }
     }

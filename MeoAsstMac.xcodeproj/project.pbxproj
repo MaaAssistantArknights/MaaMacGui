@@ -96,6 +96,7 @@
 		83985BC23026055400D2A789 /* FileTreeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83985BC13026055400D2A789 /* FileTreeView.swift */; };
 		83AAF81830416ACF003752BD /* ByteReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81730416ACF003752BD /* ByteReader.swift */; };
 		83AAF81A30417267003752BD /* MaaToolsClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83AAF81930417267003752BD /* MaaToolsClient.swift */; };
+		83B1F29830B2154D00B4A046 /* StrongholdProtocolSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B1F29730B2154D00B4A046 /* StrongholdProtocolSettingsView.swift */; };
 		83B8E0D93053131B00AB0B56 /* HGCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83B8E0D83053131B00AB0B56 /* HGCalendar.swift */; };
 		83BC2509302E0CFA00080642 /* UserDefaults+KVO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */; };
 		83BC250B302E431000080642 /* FileManager+Atomic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83BC250A302E431000080642 /* FileManager+Atomic.swift */; };
@@ -243,6 +244,7 @@
 		83985BC13026055400D2A789 /* FileTreeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTreeView.swift; sourceTree = "<group>"; };
 		83AAF81730416ACF003752BD /* ByteReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ByteReader.swift; sourceTree = "<group>"; };
 		83AAF81930417267003752BD /* MaaToolsClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaaToolsClient.swift; sourceTree = "<group>"; };
+		83B1F29730B2154D00B4A046 /* StrongholdProtocolSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StrongholdProtocolSettingsView.swift; sourceTree = "<group>"; };
 		83B8E0D83053131B00AB0B56 /* HGCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HGCalendar.swift; sourceTree = "<group>"; };
 		83BC2508302E0CFA00080642 /* UserDefaults+KVO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefaults+KVO.swift"; sourceTree = "<group>"; };
 		83BC250A302E431000080642 /* FileManager+Atomic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FileManager+Atomic.swift"; sourceTree = "<group>"; };
@@ -334,6 +336,7 @@
 				714ED6EEFCEED065D64918F3 /* SwitchThemeSettingsView.swift */,
 				83D3283828F3048E00018D10 /* RoguelikeSettingsView.swift */,
 				83264A2529EBC9C10074E33A /* ReclamationSettingsView.swift */,
+				83B1F29730B2154D00B4A046 /* StrongholdProtocolSettingsView.swift */,
 			);
 			path = "Configuration Views";
 			sourceTree = "<group>";
@@ -633,6 +636,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8341195D29EC719B00044F45 /* CopilotContent.swift in Sources */,
+				83B1F29830B2154D00B4A046 /* StrongholdProtocolSettingsView.swift in Sources */,
 				8355E7B429E918A2005D5A1C /* TasksContent.swift in Sources */,
 				832985AA29EE9958009F7ED5 /* RecruitView.swift in Sources */,
 				83264A3B29EC0F2E0074E33A /* LogView.swift in Sources */,

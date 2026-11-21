@@ -614,11 +614,22 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
-        let params = ["task_names": [name], "params": params]
-        let data = try JSONSerialization.data(withJSONObject: params)
+        let taskParams: [String: Any?]
+        if name == "StrongholdProtocol" {
+            taskParams = (params as? [String: Any]) ?? [:]
+        } else {
+            taskParams = ["task_names": [name], "params": params]
+        }
+
+        let data = try JSONSerialization.data(withJSONObject: taskParams)
         let string = String(data: data, encoding: .utf8)
 
-        try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
+        if name == "StrongholdProtocol" {
+            try await _ = handle?.appendTask(type: .StrongholdProtocol, params: string ?? "")
+        } else {
+            try await _ = handle?.appendTask(type: .Custom, params: string ?? "")
+        }
+
         try await handle?.start()
 
         status = .busy

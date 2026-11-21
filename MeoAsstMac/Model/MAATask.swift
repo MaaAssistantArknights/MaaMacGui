@@ -64,6 +64,8 @@ extension MAATaskType: Codable, CustomStringConvertible {
             return String(localized: "仓库识别")
         case .Reclamation:
             return String(localized: "生息演算")
+        case .StrongholdProtocol:
+            return String(localized: "卫戍协议")
         case .VideoRecognition:
             return String(localized: "视频识别")
         case .OperBox:
