@@ -4,6 +4,38 @@
     "" : {
       "shouldTranslate" : false
     },
+    "%@任务长时间未响应，队列已停止。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The %@ client stopped responding. The queue has been stopped."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 클라이언트가 오랫동안 응답하지 않아 대기열을 중지했습니다."
+          }
+        }
+      }
+    },
+    "PlayCover 不支持队列第 %lld 项使用的 B 服。请更换客户端或使用安卓模拟器。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Task %lld uses the Bilibili client, which PlayCover does not support. Select another client or use an Android emulator."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기열의 %lld번째 작업은 PlayCover에서 지원하지 않는 Bilibili 클라이언트를 사용합니다. 다른 클라이언트를 선택하거나 Android 에뮬레이터를 사용하세요."
+          }
+        }
+      }
+    },
     "PlayCover 没有独立的 B 服客户端。" : {
       "localizations" : {
         "en" : {

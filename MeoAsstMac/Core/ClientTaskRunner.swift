@@ -1,5 +1,6 @@
 import Foundation
 import JBirdCore
+import os
 
 /// MaaCore overlays resources process-wide. Each client gets a fresh process so its OCR rules
 /// and templates cannot leak into the next client's run.
@@ -24,7 +25,9 @@ enum ClientTaskRunner {
         init(_ description: String) { self.description = description }
     }
 
-    static func run(_ batch: ClientTaskBatch, receive: (Event) -> Void) async throws -> MaaMessage {
+    static func run(
+        _ batch: ClientTaskBatch, inactivityTimeout: Duration = .seconds(30 * 60), receive: (Event) -> Void
+    ) async throws -> MaaMessage {
         let process = Process()
         let input = Pipe()
         let output = Pipe()
@@ -33,32 +36,62 @@ enum ClientTaskRunner {
         process.standardInput = input
         process.standardOutput = output
         let request = try JSONEncoder().encode(batch) + [0x0a]
+        // A worker can exit while a large request is still in the pipe. Return EPIPE to the GUI.
+        guard fcntl(input.fileHandleForWriting.fileDescriptor, F_SETNOSIGPIPE, 1) == 0 else {
+            throw MaaCoreError.startFailed
+        }
         try process.run()
+        @Sendable func killWorker() -> Bool {
+            process.isRunning && kill(process.processIdentifier, SIGKILL) == 0
+        }
+        // The parent must be able to stop a worker even if its core or main thread is blocked.
+        let activity = OSAllocatedUnfairLock(initialState: SuspendingClock.now)
+        let watchdog = Task.detached {
+            while true {
+                let deadline = activity.withLock { $0 + inactivityTimeout }
+                try await Task.sleep(until: deadline, clock: .suspending)
+                guard activity.withLock({ $0 + inactivityTimeout <= .now }) else { continue }
+                return killWorker()
+            }
+        }
         defer {
+            watchdog.cancel()
             try? input.fileHandleForWriting.close()
-            if process.isRunning { process.terminate() }
+            _ = killWorker()
             process.waitUntilExit()
         }
-        return try await withTaskCancellationHandler {
-            try Task.checkCancellation()
-            try input.fileHandleForWriting.write(contentsOf: request)
-            var completed: [Int32]?
-            for try await line in output.fileHandleForReading.bytes.lines {
+        do {
+            return try await withTaskCancellationHandler {
                 try Task.checkCancellation()
-                switch try JSONDecoder().decode(Record.self, from: Data(line.utf8)) {
-                case .task(let coreID, let id): receive(.task(coreID, id))
-                case .message(let code, let details): receive(.message(MaaMessage(code: code, details: try JSON(details))))
-                case .completed(let ids): completed = ids
-                case .failure(let detail): throw Failure(detail)
+                try await Task.detached { try input.fileHandleForWriting.write(contentsOf: request) }.value
+                var completed: [Int32]?
+                for try await line in output.fileHandleForReading.bytes.lines {
+                    try Task.checkCancellation()
+                    let record = try JSONDecoder().decode(Record.self, from: Data(line.utf8))
+                    activity.withLock { $0 = .now }
+                    switch record {
+                    case .task(let coreID, let id): receive(.task(coreID, id))
+                    case .message(let code, let details):
+                        receive(.message(MaaMessage(code: code, details: try JSON(details))))
+                    case .completed(let ids): completed = ids
+                    case .failure(let detail): throw Failure(detail)
+                    }
                 }
+                await Task.detached { process.waitUntilExit() }.value
+                try Task.checkCancellation()
+                guard process.terminationStatus == 0, let completed else { throw MaaCoreError.startFailed }
+                let details = try JSONEncoder().encode(["finished_tasks": completed])
+                return MaaMessage(code: .AllTasksCompleted, details: try JSON(details))
+            } onCancel: {
+                _ = killWorker()
             }
-            process.waitUntilExit()
+        } catch {
+            watchdog.cancel()
             try Task.checkCancellation()
-            guard process.terminationStatus == 0, let completed else { throw MaaCoreError.startFailed }
-            let details = try JSONEncoder().encode(["finished_tasks": completed])
-            return MaaMessage(code: .AllTasksCompleted, details: try JSON(details))
-        } onCancel: {
-            if process.isRunning { process.terminate() }
+            if (try? await watchdog.value) == true {
+                throw Failure(String(localized: "\(batch.client.description)任务长时间未响应，队列已停止。"))
+            }
+            throw error
         }
     }
 

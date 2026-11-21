@@ -470,9 +470,17 @@ extension MAAViewModel {
             return config.clientOverride != nil
         }) {
             let batches = ClientTaskBatch.batches(for: tasks, defaultClient: clientChannel)
-            status = .busy
             taskStatus.removeAll()
             logStore?.clearLogs()
+            if touchMode == .MacPlayTools,
+                let id = batches.first(where: { $0.client == .Bilibili })?.tasks.first?.id,
+                let index = tasks.firstIndex(id: id)
+            {
+                taskStatus[id] = .failure
+                throw ClientTaskRunner.Failure(
+                    String(localized: "PlayCover 不支持队列第 \(index + 1) 项使用的 B 服。请更换客户端或使用安卓模拟器。"))
+            }
+            status = .busy
             logStore?.taskStartTime = .now
             let queue = Task {
                 var refreshedClients: Set<MAAClientChannel> = [clientChannel]
@@ -496,13 +504,17 @@ extension MAAViewModel {
                 }
             }
             clientQueue = queue
-            defer {
-                clientQueue = nil
-                runningClient = nil
-                for (id, state) in taskStatus where state == .running { taskStatus[id] = .cancel }
-                if status != .idle { resetStatus() }
+            let result = await queue.result
+            clientQueue = nil
+            runningClient = nil
+            for (id, state) in taskStatus where state == .running {
+                switch result {
+                case .failure(let error) where !(error is CancellationError): taskStatus[id] = .failure
+                default: taskStatus[id] = .cancel
+                }
             }
-            try await queue.value
+            if status != .idle { resetStatus() }
+            try result.get()
             return
         }
         status = .pending
