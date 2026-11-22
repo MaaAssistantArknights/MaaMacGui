@@ -10,6 +10,7 @@ import Foundation
 enum MAAError: Error {
     case emptyItemObject
     case gameStartFailed
-    case handleNotRunning
+    /// Core 仍在运行，暂时不能重新连接实例。
+    case handleAlreadyRunning
     case imageUnavailable
 }

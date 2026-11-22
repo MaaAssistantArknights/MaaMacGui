@@ -50,7 +50,9 @@ extension Decodable {
 // MARK: - Process Message
 
 extension MAAViewModel {
-    func processMessage(_ message: MaaMessage) {
+    /// 逐条顺序消费 Core 回调。处理函数是 async 的，因为部分收尾逻辑需要等待 Core
+    /// 真正退出运行态（`AsstRunning()` 返回 false）后才把界面恢复为可启动。
+    func processMessage(_ message: MaaMessage) async {
         switch message.code {
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
@@ -74,7 +76,8 @@ extension MAAViewModel {
             break
 
         case .AllTasksCompleted, .TaskChainError ... .TaskChainStopped:
-            processTaskChainMessage(message)
+            // 完成与停止回调内需要 await Core 空闲，故不能同步处理。
+            await processTaskChainMessage(message)
 
         case .SubTaskError ... .SubTaskExtraInfo:
             processSubTaskMessage(message)
@@ -175,6 +178,15 @@ extension MAAViewModel {
         case "ScreencapFailed":
             logError(.screencapFailed)
 
+        case "ScreencapTimeout":
+            let stage: String? = try? details["details"]["stage"]
+            let attempts: Int? = try? details["details"]["consecutive_timeouts"]
+            let retrying: Bool? = try? details["details"]["will_retry"]
+            logError(.screencapFailed)
+            if let attempts, let retrying {
+                logWarn(verbatim: "Screenshot timed out (attempt \(attempts)); \(retrying ? "restarting capture" : "stopping task chain")\(stage.map { " at \($0)" } ?? "")")
+            }
+
         case "TouchModeNotAvailable":
             // TODO: (ConnectionState) Mark the current connection as unavailable.
             logError(.touchModeNotAvailable)
@@ -270,7 +282,9 @@ private struct TaskChainMessage {
 }
 
 extension MAAViewModel {
-    private func processTaskChainMessage(_ message: MaaMessage) {
+    /// 处理任务链回调。`AllTasksCompleted` 与 `TaskChainStopped` 可能在 `AsstRunning()`
+    /// 仍为 true 时到达，两者都需等 Core 真正停止后再复位界面状态。
+    private func processTaskChainMessage(_ message: MaaMessage) async {
         if message.code == .AllTasksCompleted {
             // TODO: (LogCard) Update the all-tasks-completed log card.
             // TODO: (Notification) Show the all-tasks-completed notification.
@@ -283,40 +297,40 @@ extension MAAViewModel {
             // TODO: (Dialog) Present the credit-store easter-egg dialog when applicable.
             // TODO: (ViewState) Apply the easter-egg language after confirmation.
             // TODO: (Achievement) Mirror WPF all-tasks-completed achievement progress.
-            defer {
-                resetStatus()
-            }
-            guard let ids: [Int32] = try? message.details["finished_tasks"] else {
-                return
-            }
-            for id in ids {
-                guard let task = dailyTask(coreID: id) else {
-                    continue
-                }
-                if case .closedown = task {
-                    continue
-                }
-                guard let start = logStore?.taskStartTime else {
+            if let ids: [Int32] = try? message.details["finished_tasks"] {
+                for id in ids {
+                    guard let task = dailyTask(coreID: id) else {
+                        continue
+                    }
+                    if case .closedown = task {
+                        continue
+                    }
+                    guard let start = logStore?.taskStartTime else {
+                        break
+                    }
+                    let now = Date.now
+                    let duration = (start..<now).formatted(.timeDuration)
+                    let sanitySuffix: String
+                    if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+                        let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
+                        let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
+                        sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
+                    } else {
+                        sanitySuffix = ""
+                    }
+                    logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
                     break
                 }
-                let now = Date.now
-                let duration = (start..<now).formatted(.timeDuration)
-                let sanitySuffix: String
-                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
-                    let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
-                    let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
-                    sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
-                } else {
-                    sanitySuffix = ""
-                }
-                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
-                break
             }
+            // 显式收尾而非 defer：上面的 `finished_tasks` 解析失败时同样会走到这里，
+            // 先等 Core 空闲再复位，避免按钮在 Core 仍运行时提前恢复为 Start。
+            await resetStatusWhenCoreStopped()
             return
         }
 
         if message.code == .TaskChainStopped {
-            resetStatus()
+            // 停止回调可能先于 `AsstRunning() == false` 到达，同样等 Core 空闲后再复位。
+            await resetStatusWhenCoreStopped()
             logTrace(.stopped)
         }
 
@@ -348,7 +362,8 @@ extension MAAViewModel {
         switch message.code {
         case .TaskChainStopped:
             if let id = taskID(coreID: info.taskid) {
-                taskStatus[id] = .cancel
+                let error: String? = try? message.details["details"]["error"]
+                taskStatus[id] = error == "ScreencapTimeout" ? .failure : .cancel
             }
 
         case .TaskChainError:

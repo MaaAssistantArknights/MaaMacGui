@@ -175,6 +175,25 @@ actor MAAHandle {
         }
     }
 
+    /// 等待 Core 真正退出运行态（`AsstRunning()` 返回 false）。`AsstStop()` 只是发出停止请求，
+    /// 运行标记由 worker 稍后清除，其间 `AsstRunning()` 仍可能为 true。每 50 ms 轮询一次，最多等 30 秒。
+    func waitUntilStopped() async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(30))
+        while running {
+            guard clock.now < deadline else {
+                throw MaaCoreError.stopTimedOut
+            }
+            try await Task.sleep(for: .milliseconds(50))
+        }
+    }
+
+    /// 发出停止请求并等待 Core 真正停止，返回时 `running` 已为 false。
+    func stopAndWait() async throws {
+        try stop()
+        try await waitUntilStopped()
+    }
+
     func getImage() throws -> CGImage {
         let size = 1280 * 720 * 3
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: size)
@@ -233,6 +252,8 @@ enum MaaCoreError: Error {
     case appendTaskFailed
     case startFailed
     case stopFailed
+    /// 等待 Core 停止超时（30 秒内 `AsstRunning()` 仍为 true）。
+    case stopTimedOut
     case connectFailed
     case getImageFailed
     case asyncCallFailed
