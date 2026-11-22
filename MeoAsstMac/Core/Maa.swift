@@ -64,6 +64,11 @@ extension MAAProvider {
 
 actor MAAHandle {
     private nonisolated(unsafe) var handle: AsstHandle!
+    private nonisolated let taskIDMap = OSAllocatedUnfairLock(initialState: [Int32: UUID]())
+
+    nonisolated var dailyTaskIDs: [Int32: UUID] {
+        taskIDMap.withLock { $0 }
+    }
 
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation
@@ -94,8 +99,14 @@ actor MAAHandle {
     }
 
     deinit {
+        close(cancelling: &pendingCalls)
+    }
+
+    private nonisolated func close(cancelling calls: inout [AsstAsyncCallId: CheckedContinuation<JSON, Error>]) {
         AsstDestroy(handle)
-        pendingCalls.forEach { $1.resume(throwing: CancellationError()) }
+        handle = nil
+        calls.values.forEach { $0.resume(throwing: CancellationError()) }
+        calls.removeAll()
         continuation.finish()
     }
 
@@ -155,6 +166,32 @@ actor MAAHandle {
         }
     }
 
+    func startDailyTasks(_ tasks: [DailyTask], for channel: MAAClientChannel) throws {
+        // Stopping clears the entire core queue, so only roll back a batch that started with an empty queue.
+        guard !running, queueIsEmpty else {
+            throw MaaCoreError.appendTaskFailed
+        }
+
+        var ids = [Int32: UUID]()
+        do {
+            for task in tasks where task.enabled {
+                let coreID = try appendTask(task.task, for: channel)
+                ids[coreID] = task.id
+            }
+            // The core can send its first task callback before start() returns.
+            taskIDMap.withLock { [ids] map in map = ids }
+            try start()
+        } catch {
+            taskIDMap.withLock { $0.removeAll() }
+            if !ids.isEmpty, !AsstStop(handle).isTrue {
+                // The queue still belongs to this attempt. Retire it before another caller can start it.
+                logger.error("Could not clear the daily task queue. Discarding the core instance.")
+                close(cancelling: &pendingCalls)
+            }
+            throw error
+        }
+    }
+
     func connect(adbPath: String, address: String, profile: String) async throws {
         let info = try await waitFor(AsstAsyncConnect(handle, adbPath, address, profile, 0))
 
@@ -199,8 +236,26 @@ actor MAAHandle {
         AsstConnected(handle).isTrue
     }
 
+    var isValid: Bool {
+        handle != nil
+    }
+
     var running: Bool {
         AsstRunning(handle).isTrue
+    }
+
+    private var queueIsEmpty: Bool {
+        var id: AsstTaskId = 0
+        return AsstGetTasksList(handle, &id, 1) == 0
+    }
+
+    func waitForIdle() async throws {
+        // Core can report completion before its final task delay expires.
+        let deadline = ContinuousClock.now + .seconds(5)
+        while running {
+            guard queueIsEmpty, ContinuousClock.now < deadline else { throw MAAError.handleNotRunning }
+            try await Task.sleep(for: .milliseconds(50))
+        }
     }
 }
 

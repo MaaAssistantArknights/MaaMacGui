@@ -31,17 +31,19 @@ extension MAATaskConfiguration {
 // MARK: JSON TaskParams
 
 extension MAAHandle {
-    func appendTask(_ task: MAATask) throws -> Int32 {
+    func appendTask(_ task: MAATask, for channel: MAAClientChannel) throws -> Int32 {
         switch task {
         case .startup(let config):
             return try appendTask(config: config)
         case .closedown(let config):
             return try appendTask(config: config)
-        case .recruit(let config):
+        case .recruit(var config):
+            config.server = channel.reportServer
             return try appendTask(config: config)
         case .infrast(let config):
             return try appendTask(config: config)
-        case .fight(let config):
+        case .fight(var config):
+            config.server = channel.reportServer
             return try appendTask(config: config)
         case .mall(let config):
             return try appendTask(config: config)
