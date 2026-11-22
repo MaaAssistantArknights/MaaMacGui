@@ -194,13 +194,19 @@ enum ClientTaskRunner {
             remaining = remaining.dropFirst(tasks.count)
             if !remaining.isEmpty || batch.followedByAnotherClient, model.touchMode == .MacPlayTools,
                case .closedown? = tasks.last?.task {
-                // PlayTools can stop answering the handshake before the game releases its listening port.
                 let bundleID = batch.client.appBundleID
                 let game = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).first
                 let deadline = ContinuousClock.now + .seconds(60)
                 while true {
-                    if game?.isTerminated != false,
-                       try await MaaToolsClient.runningBundle(at: model.connectionAddress) != bundleID { break }
+                    do {
+                        if game?.isTerminated != false,
+                            try await MaaToolsClient.runningBundle(at: model.connectionAddress) != bundleID
+                        {
+                            break
+                        }
+                    } catch NWError.posix(.EPIPE), MaaToolsError.handshakeFailed, is ByteReader<Data>.OutOfBoundsError {
+                        // A partial reply during shutdown does not confirm that the port was released.
+                    }
                     guard ContinuousClock.now < deadline else { throw MAAError.gameStartFailed }
                     try await Task.sleep(for: .milliseconds(200))
                 }
