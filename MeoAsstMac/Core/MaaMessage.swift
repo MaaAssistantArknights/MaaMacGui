@@ -12,6 +12,9 @@ import OSLog
 struct MaaMessage: Hashable {
     let code: Int
     let details: JSON
+
+    // GUI-generated messages use negative codes to travel through the worker's existing message stream.
+    static let mallShoppingSkipped = Self(code: -1, details: [:])
 }
 
 private let logger = Logger(subsystem: "com.hguandl.MeoAsstMac", category: "MaaMessage")
@@ -52,6 +55,9 @@ extension Decodable {
 extension MAAViewModel {
     func processMessage(_ message: MaaMessage) {
         switch message.code {
+        case MaaMessage.mallShoppingSkipped.code:
+            logWarn("无法确认当前区服的黑名单，已跳过本次信用购物")
+
         case .InternalError:
             // WPF retains this callback but currently performs no operation.
             break

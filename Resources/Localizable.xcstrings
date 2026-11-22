@@ -4746,6 +4746,22 @@
     "无法添加视频作业：%@" : {
 
     },
+    "无法确认当前区服的黑名单，已跳过本次信用购物" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Credit shopping skipped because the blacklist could not be verified for this server."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 서버의 구매 제외 목록을 확인할 수 없어 이번 크레딧 구매를 건너뜁니다."
+          }
+        }
+      }
+    },
     "无法识别配置" : {
       "localizations" : {
         "ko" : {

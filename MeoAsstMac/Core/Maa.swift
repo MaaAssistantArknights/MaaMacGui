@@ -68,6 +68,7 @@ actor MAAHandle {
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation
     private var pendingCalls = [AsstAsyncCallId: CheckedContinuation<JSON, Error>]()
+    private(set) var clientChannel: MAAClientChannel = .Official
 
     init(options: MAAInstanceOptions = [:]) async throws {
         (messages, continuation) = AsyncStream<MaaMessage>.makeStream()
@@ -90,6 +91,9 @@ actor MAAHandle {
             guard success.isTrue else {
                 throw MaaCoreError.setInstanceOptionFailed
             }
+        }
+        if let value = options[.ClientType], let channel = MAAClientChannel(rawValue: value) {
+            clientChannel = channel
         }
     }
 
@@ -144,6 +148,15 @@ actor MAAHandle {
             }
             pendingCalls[callID] = continuation
         }
+    }
+
+    func appendMall(_ config: MallConfiguration) throws -> Int32 {
+        let localized = config.localizedItems(for: clientChannel)
+        let id = try appendTask(type: .Mall, params: localized.params.jsonString())
+        if config.shopping && !localized.shopping {
+            continuation.yield(.mallShoppingSkipped)
+        }
+        return id
     }
 
     func appendTask(type: MAATaskType, params: String) throws -> Int32 {
@@ -244,6 +257,7 @@ enum MAAInstanceOptionKey: Int32 {
     case DeploymentWithPause = 3
     case AdbLiteEnabled = 4
     case KillAdbOnExit = 5
+    case ClientType = 6
 }
 
 typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]

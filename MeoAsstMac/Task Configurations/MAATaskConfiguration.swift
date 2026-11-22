@@ -44,7 +44,7 @@ extension MAAHandle {
         case .fight(let config):
             return try appendTask(config: config)
         case .mall(let config):
-            return try appendTask(config: config)
+            return try appendMall(config)
         case .award(let config):
             return try appendTask(config: config)
         case .switchTheme(let config):

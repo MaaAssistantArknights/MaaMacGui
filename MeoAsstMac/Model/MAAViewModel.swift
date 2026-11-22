@@ -419,6 +419,7 @@ extension MAAViewModel {
     private var instanceOptions: MAAInstanceOptions {
         [
             .TouchMode: touchMode.rawValue,
+            .ClientType: clientChannel.rawValue,
             .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
         ]
     }
