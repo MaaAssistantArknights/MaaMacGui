@@ -31,7 +31,7 @@ extension MAATaskConfiguration {
 // MARK: JSON TaskParams
 
 extension MAAHandle {
-    func appendTask(_ task: MAATask) throws -> Int32 {
+    func appendTask(_ task: MAATask) async throws -> Int32 {
         switch task {
         case .startup(let config):
             return try appendTask(config: config)
@@ -44,7 +44,7 @@ extension MAAHandle {
         case .fight(let config):
             return try appendTask(config: config)
         case .mall(let config):
-            return try appendTask(config: config)
+            return try appendTask(config: await config.localizedItems())
         case .award(let config):
             return try appendTask(config: config)
         case .switchTheme(let config):

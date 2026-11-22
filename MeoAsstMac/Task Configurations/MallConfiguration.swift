@@ -63,6 +63,28 @@ struct MallConfiguration: MAATaskConfiguration {
 }
 
 extension MallConfiguration {
+    private static let itemIDsByName: [String: String] = {
+        guard let url = Bundle.main.url(forResource: "item_index", withExtension: "json", subdirectory: "resource"),
+            let data = try? Data(contentsOf: url),
+            let items = try? JSONDecoder().decode([String: DropItem].self, from: data)
+        else { return [:] }
+        return Dictionary(grouping: items, by: { $0.value.name })
+            .compactMapValues { $0.count == 1 ? $0.first?.key : nil }
+    }()
+
+    func localizedItems() async -> Self {
+        func itemID(_ name: String) -> String { Self.itemIDsByName[name] ?? name }
+        let names = await MAAProvider.shared.itemNames(for: Set((buy_first + blacklist).map(itemID)))
+        func localized(_ name: String) -> String {
+            guard let value = names[itemID(name)], !value.isEmpty else { return name }
+            return value
+        }
+        var config = self
+        config.buy_first = buy_first.map(localized)
+        config.blacklist = blacklist.map(localized)
+        return config
+    }
+
     init(from decoder: any Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.shopping = try container.decodeIfPresent(Bool.self, forKey: .shopping) ?? true
