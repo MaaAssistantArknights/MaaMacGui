@@ -63,35 +63,65 @@ struct MallConfiguration: MAATaskConfiguration {
 }
 
 extension MallConfiguration {
-    func localizedItems(for client: MAAClientChannel) throws -> Self {
+    func localizedItems(for client: MAAClientChannel) -> Self {
         guard shopping, !buy_first.isEmpty || !blacklist.isEmpty else { return self }
-        let bundle = Bundle.main.resourceURL!
-        let updated = try MAAResourceChannel.localVersion().preferUser ? URL.documentsDirectory : nil
-        func names(for channel: MAAClientChannel) throws -> [String: String] {
+        var config = self
+        func names(for channel: MAAClientChannel, updated: URL?) throws -> [String: String] {
             struct Item: Decodable { let name: String }
-            let path = channel.isGlobal
+            let path =
+                channel.isGlobal
                 ? "resource/global/\(channel.rawValue)/resource/item_index.json" : "resource/item_index.json"
             let url = updated?.appending(path: path)
-            let source = url.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
-                ?? bundle.appending(path: path)
+            let source =
+                url.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
+                ?? Bundle.main.resourceURL!.appending(path: path)
             let data = try Data(contentsOf: source)
             let items = try JSONDecoder().decode([String: Item].self, from: data)
             guard !items.isEmpty else { throw CocoaError(.fileReadCorruptFile) }
             return items.mapValues(\.name)
         }
-        let base = try names(for: .Official)
-        let local = client.isGlobal ? try names(for: client) : base
-        let ids = Dictionary(grouping: base, by: \.value).compactMapValues { $0.count == 1 ? $0.first?.key : nil }
-        func localized(_ input: String) throws -> String {
-            guard let id = ids[input] ?? (base[input] == nil ? nil : input) else { return local[input] ?? input }
-            guard let name = local[id], !name.isEmpty else {
-                throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "No \(client.rawValue) item name for \(id)"))
-            }
-            return name
+        let base: [String: String]
+        let local: [String: String]
+        let updated: URL?
+        do {
+            updated = try MAAResourceChannel.localVersion().preferUser ? URL.documentsDirectory : nil
+            base = try names(for: .Official, updated: updated)
+            local = client.isGlobal ? try names(for: client, updated: updated) : base
+        } catch {
+            config.buy_first = []
+            config.shopping = blacklist.isEmpty
+            return config
         }
-        var config = self
-        config.buy_first = try buy_first.map(localized)
-        config.blacklist = try blacklist.map(localized)
+        var itemsByName = Dictionary(grouping: base, by: \.value)
+        let unknown = Set(buy_first + blacklist).filter {
+            itemsByName[$0] == nil && base[$0] == nil && local[$0] == nil && !local.values.contains($0)
+        }
+        var checkedAllNames = true
+        if !unknown.isEmpty {
+            for channel in MAAClientChannel.allCases where channel.isGlobal && channel != client {
+                guard let items = try? names(for: channel, updated: updated) else {
+                    checkedAllNames = false
+                    break
+                }
+                for item in items where unknown.contains(item.value) {
+                    itemsByName[item.value, default: []].append(item)
+                }
+            }
+        }
+        func localized(_ input: String) -> String? {
+            if !checkedAllNames && unknown.contains(input) { return nil }
+            if let items = itemsByName[input], let first = items.first {
+                guard let name = local[first.key], !name.isEmpty,
+                    items.allSatisfy({ local[$0.key] == name })
+                else { return nil }
+                return name
+            }
+            if let name = local[input] { return name.isEmpty ? nil : name }
+            return base[input] == nil ? input : nil
+        }
+        config.buy_first = buy_first.compactMap(localized)
+        config.blacklist = blacklist.compactMap(localized)
+        config.shopping = config.blacklist.count == blacklist.count
         return config
     }
 

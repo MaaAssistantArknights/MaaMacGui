@@ -474,17 +474,12 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
-        do {
-            for task in tasks where task.enabled {
-                if let coreID = try await handle?.appendTask(task.task) {
-                    taskIDMap[coreID] = task.id
-                }
+        for task in tasks {
+            guard task.enabled else { continue }
+
+            if let coreID = try await handle?.appendTask(task.task) {
+                taskIDMap[coreID] = task.id
             }
-        } catch {
-            // No task has started. Discard any entries appended before preparation failed.
-            handle = nil
-            taskIDMap.removeAll()
-            throw error
         }
 
         try await handle?.start()
