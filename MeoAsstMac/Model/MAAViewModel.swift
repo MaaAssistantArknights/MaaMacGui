@@ -419,6 +419,7 @@ extension MAAViewModel {
     private var instanceOptions: MAAInstanceOptions {
         [
             .TouchMode: touchMode.rawValue,
+            .ClientType: clientChannel.rawValue,
             .AdbLiteEnabled: (touchMode != .MacPlayTools && useAdbLite) ? "1" : "0",
         ]
     }
@@ -473,12 +474,17 @@ extension MAAViewModel {
 
         try await ensureHandle()
 
-        for task in tasks {
-            guard task.enabled else { continue }
-
-            if let coreID = try await handle?.appendTask(task.task) {
-                taskIDMap[coreID] = task.id
+        do {
+            for task in tasks where task.enabled {
+                if let coreID = try await handle?.appendTask(task.task) {
+                    taskIDMap[coreID] = task.id
+                }
             }
+        } catch {
+            // No task has started. Discard any entries appended before preparation failed.
+            handle = nil
+            taskIDMap.removeAll()
+            throw error
         }
 
         try await handle?.start()

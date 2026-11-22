@@ -83,6 +83,10 @@ extension MAAResourceChannel {
 
 extension MAAResourceChannel {
     func version() throws -> (preferUser: Bool, MAAResourceVersion) {
+        try Self.localVersion()
+    }
+
+    static func localVersion() throws -> (preferUser: Bool, MAAResourceVersion) {
         let bundledResourceVersion = try resourceVersion(of: Bundle.main.resourceURL!)
 
         #if DEBUG
@@ -99,7 +103,7 @@ extension MAAResourceChannel {
         return (false, bundledResourceVersion)
     }
 
-    private func resourceVersion(of url: URL) throws -> MAAResourceVersion {
+    private static func resourceVersion(of url: URL) throws -> MAAResourceVersion {
         let versionURL = url.appendingPathComponent("resource").appendingPathComponent("version.json")
         let data = try Data(contentsOf: versionURL)
         let decoder = JSONDecoder()

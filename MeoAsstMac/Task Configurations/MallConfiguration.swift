@@ -63,25 +63,35 @@ struct MallConfiguration: MAATaskConfiguration {
 }
 
 extension MallConfiguration {
-    private static let itemIDsByName: [String: String] = {
-        guard let url = Bundle.main.url(forResource: "item_index", withExtension: "json", subdirectory: "resource"),
-            let data = try? Data(contentsOf: url),
-            let items = try? JSONDecoder().decode([String: DropItem].self, from: data)
-        else { return [:] }
-        return Dictionary(grouping: items, by: { $0.value.name })
-            .compactMapValues { $0.count == 1 ? $0.first?.key : nil }
-    }()
-
-    func localizedItems() async -> Self {
-        func itemID(_ name: String) -> String { Self.itemIDsByName[name] ?? name }
-        let names = await MAAProvider.shared.itemNames(for: Set((buy_first + blacklist).map(itemID)))
-        func localized(_ name: String) -> String {
-            guard let value = names[itemID(name)], !value.isEmpty else { return name }
-            return value
+    func localizedItems(for client: MAAClientChannel) throws -> Self {
+        guard shopping, !buy_first.isEmpty || !blacklist.isEmpty else { return self }
+        let bundle = Bundle.main.resourceURL!
+        let updated = try MAAResourceChannel.localVersion().preferUser ? URL.documentsDirectory : nil
+        func names(for channel: MAAClientChannel) throws -> [String: String] {
+            struct Item: Decodable { let name: String }
+            let path = channel.isGlobal
+                ? "resource/global/\(channel.rawValue)/resource/item_index.json" : "resource/item_index.json"
+            let url = updated?.appending(path: path)
+            let source = url.flatMap { FileManager.default.fileExists(atPath: $0.path) ? $0 : nil }
+                ?? bundle.appending(path: path)
+            let data = try Data(contentsOf: source)
+            let items = try JSONDecoder().decode([String: Item].self, from: data)
+            guard !items.isEmpty else { throw CocoaError(.fileReadCorruptFile) }
+            return items.mapValues(\.name)
+        }
+        let base = try names(for: .Official)
+        let local = client.isGlobal ? try names(for: client) : base
+        let ids = Dictionary(grouping: base, by: \.value).compactMapValues { $0.count == 1 ? $0.first?.key : nil }
+        func localized(_ input: String) throws -> String {
+            guard let id = ids[input] ?? (base[input] == nil ? nil : input) else { return local[input] ?? input }
+            guard let name = local[id], !name.isEmpty else {
+                throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "No \(client.rawValue) item name for \(id)"))
+            }
+            return name
         }
         var config = self
-        config.buy_first = buy_first.map(localized)
-        config.blacklist = blacklist.map(localized)
+        config.buy_first = try buy_first.map(localized)
+        config.blacklist = try blacklist.map(localized)
         return config
     }
 

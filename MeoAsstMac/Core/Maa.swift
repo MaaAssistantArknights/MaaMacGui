@@ -64,6 +64,7 @@ extension MAAProvider {
 
 actor MAAHandle {
     private nonisolated(unsafe) var handle: AsstHandle!
+    private(set) var clientChannel: MAAClientChannel = .Official
 
     nonisolated let messages: AsyncStream<MaaMessage>
     private let continuation: AsyncStream<MaaMessage>.Continuation
@@ -90,6 +91,9 @@ actor MAAHandle {
             guard success.isTrue else {
                 throw MaaCoreError.setInstanceOptionFailed
             }
+        }
+        if let value = options[.ClientType], let channel = MAAClientChannel(rawValue: value) {
+            clientChannel = channel
         }
     }
 
@@ -243,6 +247,7 @@ enum MAAInstanceOptionKey: Int32 {
     case DeploymentWithPause = 3
     case AdbLiteEnabled = 4
     case KillAdbOnExit = 5
+    case ClientType = 6
 }
 
 typealias MAAInstanceOptions = [MAAInstanceOptionKey: String]
