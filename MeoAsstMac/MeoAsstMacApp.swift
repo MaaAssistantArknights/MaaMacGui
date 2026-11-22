@@ -13,8 +13,12 @@ import SwiftUI
 enum MAAEntryPoint {
     static func main() {
         if CommandLine.arguments.dropFirst().first == ClientTaskRunner.argument {
+            // ScreenCaptureKit needs a WindowServer connection on the worker's main thread.
+            let app = NSApplication.shared
+            app.setActivationPolicy(.prohibited)
             Task { exit(await ClientTaskRunner.workerMain()) }
-            dispatchMain()
+            app.run()
+            return
         }
         MeoAsstMacApp.main()
     }

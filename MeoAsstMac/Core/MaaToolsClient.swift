@@ -51,7 +51,7 @@ struct MaaToolsClient: ~Copyable {
         guard var client = Self(to: address) else { throw MaaToolsError.handshakeFailed }
         do {
             return try await client.bundleName()
-        } catch NWError.posix(.ECONNREFUSED), NWError.posix(.ECONNRESET) {
+        } catch NWError.posix(.ECONNREFUSED), NWError.posix(.ECONNRESET), NWError.posix(.ENOTCONN) {
             return nil
         }
     }
@@ -125,7 +125,10 @@ private actor Handshake {
         }
         let task = Task {
             try await connection.send("MAA".utf8 + [0x00])
-            let (content, _) = try await connection.receive(exactly: 4)
+            let (content, metadata) = try await connection.receive(exactly: 4)
+            if content.isEmpty && metadata.endOfStream {
+                throw NWError.posix(.ENOTCONN)
+            }
             if content == Data("OKAY".utf8) {
                 try await connection.send([0x00, 0x04] + "VERN".utf8)
                 let (content, _) = try await connection.receive(exactly: 4)

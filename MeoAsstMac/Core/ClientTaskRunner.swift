@@ -1,4 +1,4 @@
-import Foundation
+import AppKit
 import JBirdCore
 import Network
 import os
@@ -193,16 +193,21 @@ enum ClientTaskRunner {
                 }
             }
             remaining = remaining.dropFirst(tasks.count)
-            if !remaining.isEmpty, model.touchMode == .MacPlayTools, case .closedown? = tasks.last?.task {
-                // A second login on this same client must not attach to its closing window.
-                let deadline = ContinuousClock.now + .seconds(6)
-                while try await MaaToolsClient.runningBundle(at: model.connectionAddress) == batch.client.appBundleID {
+            if !remaining.isEmpty || batch.followedByAnotherClient, model.touchMode == .MacPlayTools,
+               case .closedown? = tasks.last?.task {
+                // PlayTools can stop answering the handshake before the game releases its listening port.
+                let bundleID = batch.client.appBundleID
+                let game = NSRunningApplication.runningApplications(withBundleIdentifier: bundleID).first
+                let deadline = ContinuousClock.now + .seconds(60)
+                while true {
+                    if game?.isTerminated != false,
+                       try await MaaToolsClient.runningBundle(at: model.connectionAddress) != bundleID { break }
                     guard ContinuousClock.now < deadline else { throw MAAError.gameStartFailed }
                     try await Task.sleep(for: .milliseconds(200))
                 }
             }
             // The completion callback precedes the core thread returning to its idle state.
-            while !remaining.isEmpty, await handle.running {
+            while await handle.running {
                 try await Task.sleep(for: .milliseconds(50))
             }
         }
