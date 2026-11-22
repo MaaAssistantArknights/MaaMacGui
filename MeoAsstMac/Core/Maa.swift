@@ -168,8 +168,7 @@ actor MAAHandle {
 
     func startDailyTasks(_ tasks: [DailyTask], for channel: MAAClientChannel) throws {
         // Stopping clears the entire core queue, so only roll back a batch that started with an empty queue.
-        var queuedID: AsstTaskId = 0
-        guard !running, AsstGetTasksList(handle, &queuedID, 1) == 0 else {
+        guard !running, queueIsEmpty else {
             throw MaaCoreError.appendTaskFailed
         }
 
@@ -243,6 +242,20 @@ actor MAAHandle {
 
     var running: Bool {
         AsstRunning(handle).isTrue
+    }
+
+    private var queueIsEmpty: Bool {
+        var id: AsstTaskId = 0
+        return AsstGetTasksList(handle, &id, 1) == 0
+    }
+
+    func waitForIdle() async throws {
+        // Core can report completion before its final task delay expires.
+        let deadline = ContinuousClock.now + .seconds(5)
+        while running {
+            guard queueIsEmpty, ContinuousClock.now < deadline else { throw MAAError.handleNotRunning }
+            try await Task.sleep(for: .milliseconds(50))
+        }
     }
 }
 

@@ -204,9 +204,8 @@ extension MAAViewModel {
             try await handle?.apply(options: instanceOptions)
         }
 
-        guard await handle?.running == false else {
-            throw MAAError.handleNotRunning
-        }
+        guard let handle else { throw MAAError.handleNotRunning }
+        try await handle.waitForIdle()
 
         logStore?.clearLogs()
         taskStatus.removeAll()
@@ -236,7 +235,7 @@ extension MAAViewModel {
             connectionProfile = "CompatMac"
         }
 
-        try await handle?.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
+        try await handle.connect(adbPath: adbPath, address: connectionAddress, profile: connectionProfile)
         logTrace("Running")
     }
 
@@ -432,10 +431,12 @@ extension MAAViewModel {
 
 extension MAAViewModel {
     func tryStartTasks() async {
+        guard status == .idle else { return }
         do {
             logStore?.setDailyTasksDetailMode(.log)
             try await startTasks()
         } catch {
+            logStore?.taskStartTime = nil
             logError("StartTasksFailed: \(String(describing: error))")
             logInfo("CheckSettings")
         }
@@ -471,9 +472,9 @@ extension MAAViewModel {
         }
 
         try await ensureHandle()
+        logStore?.taskStartTime = .now
         try await handle?.startDailyTasks(batch, for: channel)
         if status == .pending {
-            logStore?.taskStartTime = .now
             status = .busy
         }
     }
