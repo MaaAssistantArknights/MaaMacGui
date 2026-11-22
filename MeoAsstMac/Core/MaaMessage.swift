@@ -309,7 +309,12 @@ extension MAAViewModel {
                 } else {
                     sanitySuffix = ""
                 }
-                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+                let failed = taskStatus.values.filter { $0 == .failure }.count
+                if failed > 0 {
+                    logWarn(.queueFinishedWithErrors(count: failed, duration: duration, sanity: sanitySuffix))
+                } else {
+                    logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+                }
                 break
             }
             return
