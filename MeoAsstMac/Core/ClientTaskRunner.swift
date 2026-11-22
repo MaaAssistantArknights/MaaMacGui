@@ -28,7 +28,7 @@ enum ClientTaskRunner {
 
     static func run(
         _ batch: ClientTaskBatch, inactivityTimeout: Duration = .seconds(30 * 60), receive: (Event) -> Void
-    ) async throws -> MaaMessage {
+    ) async throws -> [Int32] {
         let process = Process()
         let input = Pipe()
         let output = Pipe()
@@ -83,8 +83,7 @@ enum ClientTaskRunner {
                 guard process.terminationStatus == 0, let completed else {
                     throw Failure(String(localized: .taskError(name: batch.client.description)))
                 }
-                let details = try JSONEncoder().encode(["finished_tasks": completed])
-                return MaaMessage(code: .AllTasksCompleted, details: try JSON(details))
+                return completed
             } onCancel: {
                 _ = killWorker()
             }

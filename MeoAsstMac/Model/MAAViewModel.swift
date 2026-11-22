@@ -487,7 +487,8 @@ extension MAAViewModel {
             logStore?.taskStartTime = .now
             let queue = Task {
                 var refreshedClients: Set<MAAClientChannel> = [clientChannel]
-                for (index, batch) in batches.enumerated() {
+                var finishedTasks = [UUID]()
+                for batch in batches {
                     try Task.checkCancellation()
                     runningClient = batch.client
                     taskIDMap.removeAll()
@@ -503,8 +504,9 @@ extension MAAViewModel {
                         case .message(let message): processMessage(message)
                         }
                     }
-                    if index == batches.count - 1 { processMessage(completed) }
+                    finishedTasks += completed.compactMap { taskIDMap[$0] }
                 }
+                logDailyTaskCompletion(finishedTasks)
             }
             clientQueue = queue
             let result = await queue.result

@@ -270,6 +270,31 @@ private struct TaskChainMessage {
 }
 
 extension MAAViewModel {
+    func logDailyTaskCompletion(_ ids: [UUID]) {
+        guard let start = logStore?.taskStartTime, ids.contains(where: { id in
+            guard let task = tasks[id] else { return false }
+            if case .closedown = task { return false }
+            return true
+        }) else { return }
+
+        let now = Date.now
+        let duration = (start..<now).formatted(.timeDuration)
+        let sanitySuffix: String
+        if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
+            let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
+            let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
+            sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
+        } else {
+            sanitySuffix = ""
+        }
+        let failed = ids.filter { taskStatus[$0] == .failure }.count
+        if failed > 0 {
+            logWarn(.queueFinishedWithErrors(count: failed, duration: duration, sanity: sanitySuffix))
+        } else {
+            logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
+        }
+    }
+
     private func processTaskChainMessage(_ message: MaaMessage) {
         if message.code == .AllTasksCompleted {
             // TODO: (LogCard) Update the all-tasks-completed log card.
@@ -289,29 +314,7 @@ extension MAAViewModel {
             guard let ids: [Int32] = try? message.details["finished_tasks"] else {
                 return
             }
-            for id in ids {
-                guard let task = dailyTask(coreID: id) else {
-                    continue
-                }
-                if case .closedown = task {
-                    continue
-                }
-                guard let start = logStore?.taskStartTime else {
-                    break
-                }
-                let now = Date.now
-                let duration = (start..<now).formatted(.timeDuration)
-                let sanitySuffix: String
-                if let recoveryTime = logStore?.sanityReport?.fullRecoveryTime() {
-                    let recoveryDate = recoveryTime.formatted(date: .numeric, time: .shortened)
-                    let remaining = (now..<max(now, recoveryTime)).formatted(.timeDuration)
-                    sanitySuffix = "\n\(L(.sanityReport(date: recoveryDate, duration: remaining)))"
-                } else {
-                    sanitySuffix = ""
-                }
-                logTrace(.allTasksComplete(duration: duration, sanity: sanitySuffix))
-                break
-            }
+            logDailyTaskCompletion(ids.compactMap { taskIDMap[$0] })
             return
         }
 

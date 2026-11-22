@@ -2145,6 +2145,41 @@
     "prts://" : {
       "shouldTranslate" : false
     },
+    "QueueFinishedWithErrors" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queue finished in %2$(duration)@ s (%1$(count)lld failed).%3$(sanity)@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "キュー終了（失敗タスク数：%1$(count)lld、所要時間：%2$(duration)@秒）%3$(sanity)@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대기열 종료 (실패한 작업 %1$(count)lld개, 소요 시간 %2$(duration)@초)%3$(sanity)@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "队列已结束，%1$(count)lld 项任务失败（用时%2$(duration)@秒）%3$(sanity)@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "佇列已結束，%1$(count)lld 項任務失敗（耗時%2$(duration)@秒）%3$(sanity)@"
+          }
+        }
+      }
+    },
     "RA-1" : {
 
     },
