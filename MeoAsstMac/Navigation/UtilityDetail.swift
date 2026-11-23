@@ -26,6 +26,8 @@ struct UtilityDetail: View {
                 GachaView()
             case .minigame:
                 MiniGameView()
+            case .peep:
+                PeepView()
             case .maatools:
                 MaaToolsView()
             case .none:
