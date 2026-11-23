@@ -1,6 +1,116 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+    "使用种子开局" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start with seed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시드로 시작"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用种子开局"
+          }
+        }
+      }
+    },
+    "种子" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seed"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시드"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "种子"
+          }
+        }
+      }
+    },
+    "种子格式有误，应为“2b3c4d,rogue_1,120”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Invalid seed format. Expected something like “2b3c4d,rogue_1,120”."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시드 형식이 올바르지 않습니다. 예: “2b3c4d,rogue_1,120”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "种子格式有误，应为“2b3c4d,rogue_1,120”"
+          }
+        }
+      }
+    },
+    "种子仅适用于萨卡兹投资模式的点刺成锭分队或后勤分队。需当前 Core 支持对应主题的种子功能、游戏提供“启用参数”入口，并使用有效种子；开放情况与账号条件以游戏内提示为准。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seeds require Sarkaz investment mode with the Ingots Squad or Support Squad. The current MaaCore build must support seeds for this theme, the in-game “启用参数” entry must be visible, and the seed must be valid. Check in-game prompts for current availability and account requirements."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시드는 살카즈 투자 모드의 연금술분대 또는 지원분대에서 사용할 수 있습니다. 현재 MaaCore가 해당 테마의 시드 기능을 지원해야 하며, 게임 내 “启用参数” 항목이 표시되고 유효한 시드가 필요합니다. 개방 여부와 계정 조건은 현재 게임 내 안내를 확인하세요."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "种子仅适用于萨卡兹投资模式的点刺成锭分队或后勤分队。需当前 Core 支持对应主题的种子功能、游戏提供“启用参数”入口，并使用有效种子；开放情况与账号条件以游戏内提示为准。"
+          }
+        }
+      }
+    },
+    "当前连接不支持种子文本输入；请选择 ADB 控制通路。PlayTools 与 MacSCK 暂不支持。" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This connection cannot enter seed text. Select an ADB control method. PlayTools and MacSCK are not supported yet."
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "현재 연결은 시드 텍스트 입력을 지원하지 않습니다. ADB 제어 방식을 선택하세요. PlayTools와 MacSCK는 아직 지원하지 않습니다."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "当前连接不支持种子文本输入；请选择 ADB 控制通路。PlayTools 与 MacSCK 暂不支持。"
+          }
+        }
+      }
+    },
     "" : {
       "shouldTranslate" : false
     },

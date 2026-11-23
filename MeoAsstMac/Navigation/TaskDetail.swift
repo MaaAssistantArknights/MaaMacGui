@@ -33,7 +33,7 @@ struct TaskDetail: View {
                     case .switchTheme(let config):
                         SwitchThemeSettingsView(config: taskConfigBinding(config, id: id))
                     case .roguelike(let config):
-                        RoguelikeSettingsView(config: taskConfigBinding(config, id: id))
+                        RoguelikeSettingsView(config: taskConfigBinding(config, id: id), supportsSeedInput: viewModel.touchMode != .MacPlayTools)
                     case .reclamation(let config):
                         ReclamationSettingsView(config: taskConfigBinding(config, id: id))
                     case .closedown(_):
