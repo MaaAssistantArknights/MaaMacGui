@@ -1,0 +1,190 @@
+import Combine
+import ServiceManagement
+
+/// System status is authoritative; no separate enabled preference is persisted.
+@MainActor protocol LoginItemManaging {
+    var status: SMAppService.Status { get }
+    func register() async throws
+    func unregister() async throws
+    func openSettings()
+}
+
+@MainActor struct MainAppLoginItem: LoginItemManaging {
+    private let readStatus: @MainActor () -> SMAppService.Status
+    private let registerOperation: @Sendable () throws -> Void
+    private let unregisterOperation: @Sendable () async throws -> Void
+
+    init(
+        readStatus: @escaping @MainActor () -> SMAppService.Status = { SMAppService.mainApp.status },
+        registerOperation: @escaping @Sendable () throws -> Void = { try SMAppService.mainApp.register() },
+        unregisterOperation: @escaping @Sendable () async throws -> Void = {
+            try await SMAppService.mainApp.unregister()
+        }
+    ) {
+        self.readStatus = readStatus
+        self.registerOperation = registerOperation
+        self.unregisterOperation = unregisterOperation
+    }
+
+    var status: SMAppService.Status { readStatus() }
+
+    // Explicit executor hop: a synchronous ServiceManagement call must not block
+    // settings. A detached task avoids the @concurrent attribute (Swift 6.2) so the
+    // app target also builds with older toolchains.
+    func register() async throws {
+        let operation = registerOperation
+        try await Task.detached(priority: .userInitiated) { try operation() }.value
+    }
+
+    func unregister() async throws {
+        let operation = unregisterOperation
+        try await Task.detached(priority: .userInitiated) { try await operation() }.value
+    }
+
+    func openSettings() {
+        SMAppService.openSystemSettingsLoginItems()
+    }
+}
+
+@MainActor final class LoginItemService: ObservableObject {
+    @Published private(set) var status: SMAppService.Status
+    @Published private(set) var isUpdating = false
+    @Published private(set) var errorMessage: String?
+    private let manager: any LoginItemManaging
+    private let operationTimeout: Duration
+    private var failedRequest: Bool?
+    @Published private var pendingRequest: Bool?
+    private var waiter: CheckedContinuation<Void, Never>?
+    private var timeoutTask: Task<Void, Never>?
+    private var requestGeneration = 0
+
+    var hasPendingOperation: Bool { pendingRequest != nil }
+
+    convenience init() {
+        self.init(manager: MainAppLoginItem())
+    }
+
+    init(manager: any LoginItemManaging, operationTimeout: Duration = .seconds(10)) {
+        self.manager = manager
+        self.operationTimeout = operationTimeout
+        status = manager.status
+    }
+
+    func refresh() {
+        status = manager.status
+        // A timed-out request may have settled in the system by now; the authoritative
+        // status is the in-app escape hatch that re-enables controls without a restart.
+        if let pending = pendingRequest, !isUpdating,
+            (pending ? status == .enabled : status == .notRegistered)
+        {
+            pendingRequest = nil
+            errorMessage = nil
+            failedRequest = nil
+            // Abandoning the request invalidates its eventual result: bump the
+            // generation so its late complete() cannot touch a successor request.
+            requestGeneration += 1
+        }
+    }
+
+    func openSettings() {
+        manager.openSettings()
+    }
+
+    func retry() async {
+        guard !isUpdating else { return }
+        if hasPendingOperation {
+            // SMAppService has no cancellation API. Rejoin the existing request rather
+            // than launching overlapping writes whose eventual order is unknown.
+            await waitForPendingOperation()
+            return
+        }
+        guard let failedRequest else { return }
+        await setEnabled(failedRequest)
+    }
+
+    func setEnabled(_ enabled: Bool) async {
+        guard !isUpdating, !hasPendingOperation else { return }
+        errorMessage = nil
+        failedRequest = nil
+        refresh()
+        if enabled {
+            switch status {
+            case .enabled:
+                return
+            case .requiresApproval:
+                manager.openSettings()
+                return
+            default:
+                break
+            }
+        } else if status == .notRegistered {
+            return
+        }
+        pendingRequest = enabled
+        // Unstructured work deliberately outlives the UI deadline: cancellation
+        // cannot stop the underlying OS request. Observe its eventual result.
+        // The generation token marks which tracked request the result belongs to.
+        let generation = requestGeneration
+        Task { [weak self, manager] in
+            let result: Result<Void, Error>
+            do {
+                if enabled {
+                    try await manager.register()
+                } else {
+                    try await manager.unregister()
+                }
+                result = .success(())
+            } catch {
+                result = .failure(error)
+            }
+            self?.complete(result, enabled: enabled, generation: generation)
+        }
+        await waitForPendingOperation()
+    }
+
+    private func waitForPendingOperation() async {
+        guard hasPendingOperation else { return }
+        isUpdating = true
+        errorMessage = nil
+        await withCheckedContinuation { continuation in
+            waiter = continuation
+            timeoutTask = Task { [weak self, operationTimeout] in
+                do {
+                    try await Task.sleep(for: operationTimeout)
+                } catch {
+                    return
+                }
+                guard !Task.isCancelled, let self else { return }
+                self.errorMessage = String(localized: "登录项操作超时，系统可能仍在处理。可重试等待结果，或打开系统登录项设置检查。")
+                self.finishWaiting()
+            }
+        }
+    }
+
+    private func complete(_ result: Result<Void, Error>, enabled: Bool, generation: Int) {
+        // The tracked request may have been reconciled away by refresh() while its
+        // OS call was still in flight; the stale result must not clear the pending
+        // bookkeeping, deadline or error surface of a successor request.
+        guard generation == requestGeneration else { return }
+        pendingRequest = nil
+        refresh()
+        switch result {
+        case .success:
+            errorMessage = nil
+            failedRequest = nil
+        case .failure(let error):
+            errorMessage = error.localizedDescription
+            failedRequest = enabled
+        }
+        finishWaiting()
+    }
+
+    private func finishWaiting() {
+        timeoutTask?.cancel()
+        timeoutTask = nil
+        isUpdating = false
+        let continuation = waiter
+        waiter = nil
+        continuation?.resume()
+    }
+}
