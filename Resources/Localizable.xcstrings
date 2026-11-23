@@ -1,6 +1,116 @@
 {
   "sourceLanguage" : "zh-Hans",
   "strings" : {
+  "当前有效临期药窗口：%lld 天（包含当天）": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Current medicine expiry window: %lld days (including today)"
+        }
+      },
+      "ko": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "현재 만료 회복제 범위: %lld일(오늘 포함)"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "当前有效临期药窗口：%lld 天（包含当天）"
+        }
+      }
+    }
+  },
+  "当前不在活动临期窗口，沿用原临期药设置": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Outside the activity expiry window; using the original medicine expiry setting."
+        }
+      },
+      "ko": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "현재 이벤트 종료 임박 기간이 아니므로 기존 만료 회복제 설정을 유지합니다."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "当前不在活动临期窗口，沿用原临期药设置"
+        }
+      }
+    }
+  },
+  "活动数据不可用，沿用原临期药设置": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Activity data unavailable; using the original medicine expiry setting."
+        }
+      },
+      "ko": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "이벤트 데이터를 사용할 수 없어 기존 만료 회복제 설정을 유지합니다."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "活动数据不可用，沿用原临期药设置"
+        }
+      }
+    }
+  },
+  "仅活动结束前不足 48 小时生效，使用本周结束前到期的药。": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Applies only within 48 hours of an activity ending. Uses medicine expiring before the game week ends."
+        }
+      },
+      "ko": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "이벤트 종료까지 48시간 미만일 때만 적용됩니다. 게임 주간 종료 전에 만료되는 회복제를 사용합니다."
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "仅活动结束前不足 48 小时生效，使用本周结束前到期的药。"
+        }
+      }
+    }
+  },
+  "活动结束前使用本周临期药": {
+    "localizations": {
+      "en": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "Use this week’s expiring medicine before an activity ends"
+        }
+      },
+      "ko": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "이벤트 종료 전 이번 주 만료 이성 회복제 사용"
+        }
+      },
+      "zh-Hans": {
+        "stringUnit": {
+          "state": "translated",
+          "value": "活动结束前使用本周临期药"
+        }
+      }
+    }
+  },
     "" : {
       "shouldTranslate" : false
     },

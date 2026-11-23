@@ -28,6 +28,13 @@ public struct HGCalendar: Sendable {
         calendar.weekdaySymbols[weekday(for: date)]
     }
 
+    /// Core medicine expiry counts include the current partial day. The week
+    /// ends at the next Monday reset, independent of the host calendar/locale.
+    public func medicineExpiryDaysUntilWeekEnd(at date: Date) -> Int {
+        let weekday = weekday(for: date)
+        return weekday == 0 ? 1 : 8 - weekday
+    }
+
     public func nextReset(after date: Date) -> Date {
         calendar.nextDate(after: date, matching: resetTime, matchingPolicy: .nextTime)!
     }

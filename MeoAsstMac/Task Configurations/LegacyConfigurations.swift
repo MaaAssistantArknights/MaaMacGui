@@ -91,6 +91,7 @@ extension FightConfiguration {
         self.stage = config.stage
         self.medicine = config.medicine
         self.medicine_expire_days = (config.expiring_medicine ?? 0) > 0 ? 2 : 0
+        self.useActivityMedicine = false
         self.stone = config.stone
         self.times = config.times
         self.series = config.series
