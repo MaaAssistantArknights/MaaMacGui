@@ -13,6 +13,7 @@ struct MeoAsstMacApp: App {
     @NSApplicationDelegateAdaptor private var appDelegate: AppDelegate
     @StateObject private var appViewModel: MAAViewModel
     @State private var newViewModel: NewViewModel
+    @StateObject private var announcements = AnnouncementStore()
 
     private let updaterController: SPUStandardUpdaterController
     private let updaterDelegate = MaaUpdaterDelegate()
@@ -38,6 +39,7 @@ struct MeoAsstMacApp: App {
             ContentView()
                 .environmentObject(appViewModel)
                 .environment(newViewModel)
+                .environmentObject(announcements)
                 .onAppear {
                     TaskTimerManager.shared.connectToModel(viewModel: appViewModel)
                 }
@@ -48,10 +50,16 @@ struct MeoAsstMacApp: App {
             }
             CommandGroup(after: .appInfo) {
                 CheckForUpdatesView(updater: updaterController.updater)
+                AnnouncementMenuButton(store: announcements)
             }
             SidebarCommands()
             TaskCommands(viewModel: appViewModel)
         }
+
+        Window("Announcement.Title", id: "community-announcements") {
+            AnnouncementView(store: announcements)
+        }
+        .defaultSize(width: 660, height: 580)
 
         Settings {
             TabView {
