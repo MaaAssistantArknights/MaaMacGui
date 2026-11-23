@@ -515,7 +515,9 @@ extension MAAViewModel {
             logError(.dropRecognitionError)
 
         case "ReportToPenguinStats":
-            if case .fight(let config) = dailyTask(coreID: info.taskid), config.stage == "Annihilation" {
+            if case .fight(let config) = dailyTask(coreID: info.taskid),
+                FightConfiguration.normalizedStage(config.stage) == "Annihilation"
+            {
                 logTrace(.giveUpUploadingPenguins(reason: L(.annihilationStage)))
             } else {
                 logWarn(.giveUpUploadingPenguins(reason: localizedWhy(info.why)))
