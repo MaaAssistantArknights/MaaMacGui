@@ -471,9 +471,55 @@ extension MAAViewModel {
             tasks[index] = .init(id: task.id, task: .closedown(config), enabled: task.enabled)
         }
 
+        // 同一批次可能存在多个 Mall 任务：若都放行信用战/好友访问，第一个完成后第二个早已提交给
+        // core，同一游戏日重复执行。这里按注入时刻的游戏日共享判定，每种每日任务只放行首个待执行
+        // 的 Mall，其余回写当日日期；判定基准同时物化为 batchSnapshotDate，参数闸门与预标记共用
+        // 同一时刻，append 前跨 04:00 也不会同批双放行（次日自愈）。
+        //
+        // 注入与 append 共用同一份任务快照：ensureHandle 的 await 窗口内新增的任务不进入本批次
+        // （避免绕过渠道注入与同批去重），窗口内保存的陈旧草稿也无法回滚已物化进快照的预标记；
+        // 两者均在下一轮生效。
+        let mallSnapshotDate = Date.now
+        let mallCalendar = clientChannel.calendar
+        var batch = tasks
+        var mallIndices: [Int] = []
+        var mallEntries: [(enabled: Bool, config: MallConfiguration)] = []
+        for (index, task) in batch.enumerated() {
+            guard case .mall(let config) = task.task else {
+                continue
+            }
+            mallIndices.append(index)
+            mallEntries.append((enabled: task.enabled, config: config))
+        }
+
+        let admissions = MallConfiguration.batchDailyAdmissions(
+            of: mallEntries, snapshotDate: mallSnapshotDate, calendar: mallCalendar)
+
+        for (index, admission) in zip(mallIndices, admissions) {
+            guard case .mall(var config) = batch[index].task else {
+                continue
+            }
+
+            config.clientChannel = clientChannel
+            config.batchSnapshotDate = mallSnapshotDate
+
+            if let markedDate = admission.creditFightMarkedDate {
+                config.creditFightDate = markedDate
+            }
+            if let markedDate = admission.friendVisitMarkedDate {
+                config.friendVisitDate = markedDate
+            }
+
+            batch[index] = .init(id: batch[index].id, task: .mall(config), enabled: batch[index].enabled)
+        }
+
+        if batch != tasks {
+            tasks = batch
+        }
+
         try await ensureHandle()
 
-        for task in tasks {
+        for task in batch {
             guard task.enabled else { continue }
 
             if let coreID = try await handle?.appendTask(task.task) {
