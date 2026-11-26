@@ -18,6 +18,8 @@ import Observation
     /// Observe changes to this value to detect the start of a copilot task.
     private(set) var copilotStartToken: UUID?
 
+    @ObservationIgnored @MainActor private var isStartingCopilot = false
+
     /// The progress of the current copilot download.
     ///
     /// A `nil` value indicates that no download is in progress.
@@ -127,23 +129,36 @@ extension NewViewModel {
         try await parent.stop()
     }
 
-    nonisolated(nonsending) func startCopilot() async throws {
-        copilotStartToken = UUID()
+    @MainActor func startCopilot() async throws {
+        guard !isStartingCopilot, parent.status == .idle else { return }
+        isStartingCopilot = true
+        defer { isStartingCopilot = false }
 
         var config = copilot.config
         let type: MAATaskType
 
+        if !config.enableUserAdditional {
+            config.user_additional = []
+        }
+        if !config.enableLoop || copilot.category == .list {
+            config.loop_times = 1
+        }
         if copilot.category == .list {
             guard let kind = copilot.copilotSet?.kind else {
                 return
             }
 
             config.filename = nil
-            config.copilot_list = copilot.copilotList.filter(\.isOn).map {
+            // A missing file makes Core reject the whole list, so skip entries whose file was removed.
+            let items = copilot.copilotList.filter {
+                $0.isOn && FileManager.default.fileExists(atPath: $0.url.path(percentEncoded: false))
+            }
+            config.copilot_list = items.enumerated().map { index, item in
                 .init(
-                    filename: $0.url.path(percentEncoded: false),
-                    nav_name_override: nil,
-                    is_raid: $0.isRaid ?? false)
+                    id: index,
+                    filename: item.url.path(percentEncoded: false),
+                    nav_name_override: MAACopilot.navigationOverride(code: item.stageCode),
+                    is_raid: item.isRaid ?? false)
             }
 
             switch kind {
@@ -156,8 +171,29 @@ extension NewViewModel {
             }
         } else {
             switch copilot.content {
-            case .copilot(let url, let kind, _):
-                config.filename = url.path(percentEncoded: false)
+            case .copilot(let url, let kind, let pilot):
+                let path = url.path(percentEncoded: false)
+                if kind == .regular, config.preferAdverse {
+                    // `is_raid` exists only on copilot_list entries. Repeat the entry to honor loop count,
+                    // because loop_times is ignored once a list is set.
+                    let level = await MAAProvider.shared.mapLevel(matching: pilot.stage_name)
+                    let navigation = MAACopilot.navigationOverride(code: level?.code)
+                    let times = max(config.loop_times, 1)
+                    config.filename = nil
+                    config.loop_times = 1
+                    config.copilot_list = (0..<times).map { index in
+                        .init(
+                            id: index,
+                            filename: path,
+                            nav_name_override: navigation,
+                            is_raid: true)
+                    }
+                } else {
+                    // Core reads the sanity potion flag only for copilot_list runs.
+                    config.filename = path
+                    config.copilot_list = []
+                    config.use_sanity_potion = false
+                }
                 switch kind {
                 case .regular:
                     type = .Copilot
@@ -171,10 +207,16 @@ extension NewViewModel {
             }
         }
 
-        guard let params = try? config.jsonString() else {
+        if config.filename == nil, config.copilot_list.isEmpty {
             return
         }
 
+        guard let params = try? config.coreParamsJSON(type: type) else {
+            return
+        }
+
+        guard parent.status == .idle else { return }
+        copilotStartToken = UUID()
         try await parent.startCopilot(type: type, params: params)
     }
 

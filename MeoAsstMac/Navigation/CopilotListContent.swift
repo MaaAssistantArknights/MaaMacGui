@@ -12,8 +12,96 @@ struct CopilotListContent: View {
 
     var body: some View {
         ForEach($context.copilotList) { $item in
-            Toggle(item.description, isOn: $item.isOn)
+            let itemID = item.id
+            let index = context.copilotList.firstIndex { $0.id == itemID } ?? 0
+            HStack {
+                Toggle(isOn: $item.isOn) {
+                    HStack(spacing: 6) {
+                        Text(stageTitle(item))
+                            .fontWeight(.medium)
+                            .lineLimit(1)
+                        if showsStageName(item) {
+                            Text(item.stageName)
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                        }
+                        if context.copilotSet?.kind != .regular, item.isRaid == true {
+                            Text("突袭")
+                                .font(.caption)
+                                .foregroundStyle(.orange)
+                        }
+                    }
+                }
+                .help(item.description)
+                if context.copilotSet?.kind == .regular {
+                    Menu {
+                        difficultyButton(title: "普通", isRaid: false, itemID: itemID)
+                        difficultyButton(title: "磨难", isRaid: true, itemID: itemID)
+                    } label: {
+                        Text(item.isRaid == true ? "磨难" : "普通")
+                            .font(.caption)
+                            .foregroundStyle(item.isRaid == true ? Color.orange : Color.secondary)
+                    }
+                    .menuStyle(.borderlessButton)
+                    .fixedSize()
+                    .help("磨难会在进入关卡时切换为突袭模式。")
+                }
+                Button {
+                    move(itemID, by: -1)
+                } label: {
+                    Image(systemName: "arrow.up")
+                }
+                .disabled(index == 0)
+                .help("上移作业")
+                Button {
+                    move(itemID, by: 1)
+                } label: {
+                    Image(systemName: "arrow.down")
+                }
+                .disabled(index >= context.copilotList.count - 1)
+                .help("下移作业")
+                Button {
+                    context.copilotList.removeAll { $0.id == itemID }
+                } label: {
+                    Image(systemName: "xmark")
+                }
+                .help("移除作业")
+            }
+            .buttonStyle(.borderless)
         }
+    }
+
+    private func stageTitle(_ item: CopilotContext.ListItem) -> String {
+        if let code = MAACopilot.navigationOverride(code: item.stageCode) {
+            return code
+        }
+        if !item.stageName.isEmpty {
+            return item.stageName
+        }
+        return item.stageCode
+    }
+
+    private func showsStageName(_ item: CopilotContext.ListItem) -> Bool {
+        let title = stageTitle(item)
+        return !item.stageName.isEmpty && item.stageName != title && !MAACopilot.isDecimalID(item.stageName)
+    }
+
+    private func difficultyButton(title: LocalizedStringKey, isRaid: Bool, itemID: CopilotContext.ItemID) -> some View {
+        let current = context.copilotList.first { $0.id == itemID }?.isRaid == true
+        let taken = context.copilotList.contains { $0.id == .init(url: itemID.url, isRaid: isRaid) }
+        return Button(title) {
+            context.setRaid(itemID, isRaid: isRaid)
+        }
+        .disabled(taken && current != isRaid)
+    }
+
+    private func move(_ id: CopilotContext.ItemID, by offset: Int) {
+        guard let index = context.copilotList.firstIndex(where: { $0.id == id }),
+            context.copilotList.indices.contains(index + offset)
+        else {
+            return
+        }
+        context.copilotList.swapAt(index, index + offset)
     }
 }
 
@@ -45,10 +133,19 @@ struct CopilotListControls: View {
 
 extension CopilotContext.ListItem: CustomStringConvertible {
     var description: String {
-        if isRaid == true {
-            return "\(stageCode)\(String(localized: "（突袭）"))"
+        let code = MAACopilot.navigationOverride(code: stageCode)
+        let stage: String
+        if let code {
+            stage = stageName.isEmpty || stageName == code ? code : "\(code) · \(stageName)"
+        } else if !stageName.isEmpty, !MAACopilot.isDecimalID(stageName) {
+            stage = stageName
         } else {
-            return stageCode
+            stage = stageCode
+        }
+        if isRaid == true {
+            return "\(stage)\(String(localized: "（磨难）"))"
+        } else {
+            return stage
         }
     }
 }

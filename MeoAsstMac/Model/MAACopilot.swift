@@ -51,6 +51,54 @@ extension MAACopilot.Operator: CustomStringConvertible {
 }
 
 extension MAACopilot {
+    /// Sidebar / log label. Prefer the mapped stage code, then a non-numeric `stage_name`, then the job title.
+    static func displayTitle(
+        code: String?,
+        name: String?,
+        stageName: String,
+        documentTitle: String?,
+        filename: String
+    ) -> String {
+        if let code = code?.trimmingCharacters(in: .whitespacesAndNewlines),
+            !code.isEmpty,
+            !isDecimalID(code)
+        {
+            if let name = name?.trimmingCharacters(in: .whitespacesAndNewlines),
+                !name.isEmpty,
+                name != code
+            {
+                return "\(code) · \(name)"
+            }
+            return code
+        }
+
+        let stage = stageName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !stage.isEmpty, !isDecimalID(stage) {
+            return stage
+        }
+        if let documentTitle = documentTitle?.trimmingCharacters(in: .whitespacesAndNewlines),
+            !documentTitle.isEmpty
+        {
+            return documentTitle
+        }
+        return filename
+    }
+
+    /// Stage code passed to Core as `nav_name_override`. Nil lets Core infer the code from the job file.
+    static func navigationOverride(code: String?) -> String? {
+        guard let code = code?.trimmingCharacters(in: .whitespacesAndNewlines),
+            !code.isEmpty,
+            !isDecimalID(code)
+        else {
+            return nil
+        }
+        return code
+    }
+
+    static func isDecimalID(_ text: String) -> Bool {
+        !text.isEmpty && text.unicodeScalars.allSatisfy(CharacterSet.decimalDigits.contains)
+    }
+
     init?(url: URL) {
         do {
             let data = try Data(contentsOf: url)
